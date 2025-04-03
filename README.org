@@ -1,0 +1,482 @@
+#+title: Cyber Valley Tickets
+#+author: aishift
+#+LATEX_HEADER: \usepackage[margin=1.3in]{geometry}
+
+* Table of contents                                          :toc_3:noexport:
+- [[#problem][Problem]]
+- [[#solution][Solution]]
+  - [[#roles][Roles]]
+    - [[#customer][Customer]]
+    - [[#staff][Staff]]
+    - [[#creator][Creator]]
+    - [[#master][Master]]
+  - [[#use-cases][Use cases]]
+    - [[#create-event-place][Create event place]]
+    - [[#save-socials][Save socials]]
+    - [[#submit-event-request][Submit event request]]
+    - [[#approve-event-request][Approve event request]]
+    - [[#edit-event-request][Edit event request]]
+    - [[#list-events][List events]]
+    - [[#buy-ticket][Buy ticket]]
+    - [[#assign-events-staff][Assign event's staff]]
+    - [[#show-ticket][Show ticket]]
+    - [[#verify-bought-ticket][Verify bought ticket]]
+    - [[#cancel-event][Cancel Event]]
+    - [[#close-event][Close event]]
+  - [[#tech-stack][Tech stack]]
+  - [[#excluded-features-from-the-first-stage][Excluded features from the first stage]]
+  - [[#proxy-contract-vs-multiple-versions][Proxy contract vs multiple versions]]
+- [[#questions][Questions]]
+  - [[#both-desktop-and-mobile-are-required][Both desktop and mobile are required?]]
+  - [[#is-it-required-to-verify-tickets-without-internet-connection][Is it required to verify tickets without internet connection?]]
+  - [[#will-be-there-multiple-masters-or-the-only-one-in-foreseeable-future][Will be there multiple masters or the only one in foreseeable future?]]
+  - [[#event-request-price-fixed-in-eth-depends-on-ethusd-rate-or-could-be-changed-by-the-master][Event request price fixed in ETH, depends on ETH/USD rate or could be changed by the master?]]
+  - [[#is-a-ticket-transfer-allowed-eg-customer-a-bought-a-ticket-but-sent-it-to-the-customer-b][Is a ticket transfer allowed e.g. customer A bought a ticket, but sent it to the customer B?]]
+  - [[#will-tickets-have-some-metainfo-about-the-owner-name-number-etc][Will tickets have some metainfo about the owner (name, number etc)]]
+  - [[#is-it-applicable-to-show-available-seats-count-for-all-so-the-creator-and-master-can-see-it-as-well-without-additional-screen][Is it applicable to show available seats count for all (so the creator and master can see it as well without additional screen)?]]
+  - [[#ui-design-references][UI design references]]
+
+* Problem
+
+Cyber Valley wants to host events and needs a convenient way to accept events offers from creators, sell tickets in crypto, verify bought tickets from customer's devices and distribution of acquired means across creator, master and dev team
+
+* Solution
+
+Create Web3 mobile first web app based on Ethereum network which covers main needs
+
+** Roles
+
+*** Customer
+
+Public role which has the following authorities:
+
+- List events
+- Buy ticket to event
+
+*** Staff
+
+Assigned to each event by the master role. Has all customer's authorities and:
+
+- Verify tickets for the assigned event
+
+*** Creator
+
+A.k.a shaman has all customer's authorities and:
+
+- Send event request
+- Edit own event requests
+
+*** Master
+
+Has all customer's, staff's and creator's authorities and:
+
+- Create event space
+- Approve event requests
+- Approve event changes
+- Cancel event
+- Close events
+
+** Use cases
+
+*** Create event place
+
+#+begin_src plantuml :file ./img/event-place.png
+class EventPlace {
+  minTickets: uint16
+  maxTickets: uint16
+  minPrice: uint16
+  minDays: uint8
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-place.png]]
+
+#+begin_src plantuml :file ./img/create-event-place.png
+title Create event place
+
+actor Master
+participant TicketsApp
+actor IPFS
+participant SmartContract
+
+Master -> TicketsApp: New event place data
+TicketsApp -> IPFS: Upload event place meta info
+TicketsApp -> SmartContract: Store new event place
+#+end_src
+
+#+RESULTS:
+[[file:./img/create-event-place.png]]
+
+*** Save socials
+
+Supported socials:
+
+- Telegram
+- Discord
+- Whats App
+- Instagram
+
+**** V1
+
+Used socials stored in the browser cache, so customer should input his social on each new device
+
+#+begin_src plantuml :file ./img/v1-save-socials.png
+title Save socials
+
+actor Customer
+participant TicketsApp
+actor BrowserLocalStorage
+
+Customer -> TicketsApp: Provide one of the socials
+TicketsApp -> BrowserLocalStorage: Save socials for the future use
+#+end_src
+
+#+RESULTS:
+[[file:./img/v1-save-socials.png]]
+
+**** V2
+
+Used socials stored in the centralized database which allows to sync state of the all devices
+
+#+begin_src plantuml :file ./img/v2-save-socials.png
+title Save socials
+
+actor Customer
+participant TicketsApp
+participant Backend
+participant Database
+actor BrowserLocalStorage
+
+Customer -> TicketsApp: Provide one of the socials
+TicketsApp -> BrowserLocalStorage: Save socials for the future use
+TicketsApp -> Backend: Send used socials
+Backend -> Database: Persis used socials
+#+end_src
+
+#+RESULTS:
+[[file:./img/v2-save-socials.png]]
+
+*** Submit event request
+
+#+begin_src plantuml :file ./img/event-request.png
+class EventRequest {
+  eventPlaceId: uint16
+  ticketPrice: uint16
+  startDate: uint256
+  daysAmount: uint8
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-request.png]]
+
+#+begin_src plantuml :file ./img/submit-event-request.png
+title Submit event request
+
+actor Creator
+participant TicketsApp
+participant SmartContract
+participant EventRequestStorage
+actor Master
+
+Creator -> TicketsApp: Fill event request form
+TicketsApp -> EventRequestStorage: Store metadata
+TicketsApp -> Creator: Send bid
+Creator -> SmartContract: Send required funds
+TicketsApp -> Master: New event added to the pending requets list
+#+end_src
+
+#+RESULTS:
+[[file:./img/submit-event-request.png]]
+
+*** Approve event request
+
+#+begin_src plantuml :file ./img/event-approve.png
+class EventApprove {
+  eventId: uint256
+  eventMetadataMultihash: Multihash
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-approve.png]]
+
+#+begin_src plantuml :file ./img/approve-event-request.png
+title Approve event request
+
+actor Master
+participant TicketsApp
+participant EventRequestStorage
+actor IPFS
+participant SmartContract
+
+Master -> TicketsApp: Approve event
+TicketsApp -> EventRequestStorage: Get event request metadata
+TicketsApp -> IPFS: Upload event metadata
+TicketsApp -> SmartContract: Approve event
+#+end_src
+
+#+RESULTS:
+[[file:./img/approve-event-request.png]]
+
+*** Edit event request
+
+#+begin_src plantuml :file ./img/edit-event-request.png
+title Edit event request
+
+actor Creator
+participant TicketsApp
+participant SmartContract
+participant EventRequestStorage
+actor Master
+
+Creator -> TicketsApp: Update approved event metadata
+alt event approved
+  TicketsApp -> SmartContract: Add edit for the approve
+  Master -> TicketsApp: Approve edit
+  TicketsApp -> IPFS: Update value
+  TicketsApp -> SmartContract: Save changes
+else
+  TicketsApp -> SmartContract: View requested event
+  TicketsApp -> EventRequestStorage: Update value
+end
+#+end_src
+
+#+RESULTS:
+[[file:./img/edit-event-request.png]]
+
+*** List events
+
+#+begin_src plantuml :file ./img/list-events.png
+title List events
+
+actor Customer
+participant TicketsApp
+participant SmartContract
+actor IPFS
+
+Customer -> TicketsApp: List events
+TicketsApp -> SmartContract: View events
+loop for each event
+  TicketsApp -> IPFS: Fetch meta data
+  TicketsApp -> Customer: Show event
+end
+#+end_src
+
+#+RESULTS:
+[[file:./img/list-events.png]]
+
+*** Buy ticket
+
+**** V1
+#+begin_src plantuml :file ./img/v1-buy-ticket.png
+title Buy ticket
+
+actor Customer
+participant TicketsApp
+actor IPFS
+participant SmartContract
+
+Customer -> TicketsApp: Buy a ticket for the selected event
+TicketsApp -> Customer: Request socials
+TicketsApp -> IPFS: Store socials
+TicketsApp -> Customer: Send bid
+Customer -> SmartContract: Transfer USDT
+SmartContract -> TicketsApp: Emits the success event
+TicketsApp -> Customer: Congratualition here is your ticket
+#+end_src
+
+#+RESULTS:
+[[file:./img/v1-buy-ticket.png]]
+
+**** V2
+#+begin_src plantuml :file ./img/v2-buy-ticket.png
+title Buy ticket
+
+actor Customer
+participant TicketsApp
+actor IPFS
+participant SmartContract
+
+Customer -> TicketsApp: Buy a ticket for the selected event
+TicketsApp -> Customer: Request socials
+TicketsApp -> IPFS: Store socials
+TicketsApp -> Customer: Send bid
+alt Customer does not have enough USDT
+  TicketsApp -> Customer: Offer to swap the biggest asset to USDT
+end
+Customer -> SmartContract: Transfer USDT
+SmartContract -> TicketsApp: Emits the success event
+TicketsApp -> Customer: Congratualition here is your ticket
+#+end_src
+
+#+RESULTS:
+[[file:./img/v2-buy-ticket.png]]
+
+*** Assign event's staff
+
+This could be changed to the array of staff independent from the event which can be edited by the master.
+
+Also given approach makes it difficult to list events for the given staff's address and requires GAS for each edit.
+
+As and alternative we can store staff addresses in the IPFS, but it'll introduce some latency in exchange of less GAS cost.
+
+#+begin_src plantuml :file ./img/assign-event-staff.png
+title Assign event staff
+
+actor Master
+participant TicketsApp
+participant SmartContract
+
+Master -> TicketsApp: Assign given EOA as staff for the event
+TicketsApp -> SmartContract: Store EOA as staff
+#+end_src
+
+#+RESULTS:
+[[file:./img/assign-event-staff.png]]
+
+*** Show ticket
+
+#+begin_src plantuml :file ./img/show-ticket.png
+actor Customer
+participant TicketsApp
+participant SmartContract
+actor IPFS
+
+Customer -> TicketsApp: Show ticket for the given event
+TicketsApp -> IPFS: Fetch ticket socials
+TicketsApp -> SmartContract: View bought ticket
+TicketsApp -> Customer: Show ticket QR
+#+end_src
+
+#+RESULTS:
+[[file:./img/show-ticket.png]]
+
+*** Verify bought ticket
+
+#+begin_src plantuml :file ./img/verify-bought-ticket.png
+title Verify bought ticket
+
+actor Customer
+actor Staff
+participant TicketsApp
+participant SmartContract
+
+Customer -> TicketsApp: Display QR
+Customer -> Staff: Show QR
+Staff -> TicketsApp: Verify QR
+TicketsApp -> SmartContract: Verify authority and NFT correctness
+#+end_src
+
+#+RESULTS:
+[[file:./img/verify-bought-ticket.png]]
+
+*** Cancel Event
+
+#+begin_src plantuml :file ./img/cancel-event.png
+title Cancel event
+
+actor Master
+actor Creator
+actor Customer
+participant TicketsApp
+participant SmartContract
+
+Master -> TicketsApp: Cancel event
+TicketsApp -> SmartContract: Cancel event
+SmartContract -> Creator: Send refund
+loop for each customer with a ticket
+  SmartContract -> Customer: Send refund
+end
+#+end_src
+
+#+RESULTS:
+[[file:./img/cancel-event.png]]
+
+*** Close event
+
+#+begin_src plantuml :file ./img/close-event.png
+actor Master
+participant TicketsApp
+participant SmartContract
+actor Creator
+actor DevTeam
+
+Master -> TicketsApp: Close event
+TicketsApp -> SmartContract: Close event
+SmartContract -> Master: Send funds
+SmartContract -> Creator: Send funds
+SmartContract -> DevTeam: Send funds
+#+end_src
+
+#+RESULTS:
+[[file:./img/close-event.png]]
+
+** Tech stack
+
+Solidity, OpenZeppelin, React, TypeScript, Tailwind, ethers.js, IPFS
+
+Also a thin backend over database is required to provide free of charge ability to change event request data before it's approve, so it'll be implemented with Python, SQLite and Litestar
+
+** Excluded features from the first stage
+
+Given list of features can be interpreted as obviously required or any section below can unintentionally imply them, so they explicitly mentioned
+
+- Tickets refund
+- Cancel or refund event request submission
+- Any sort of push notifications about any updates or new data
+- Ticket price change on sold out and increasing available seats
+- Remove assigned staff person to the event
+
+** Proxy contract vs multiple versions
+
+Because of big amount of reads from the blockchain (which lead to spending gas on call delegation in proxy) we offer to use multiple versions and support them on the client side. To prevent difficulties of funds & data migration between versions, we'll create new events in a new version, but still support the previous ones until all events there will be closed or canceled.
+
+* Questions
+
+** Both desktop and mobile are required?
+
+#+begin_quote
+Mobile only
+#+end_quote
+
+** Is it required to verify tickets without internet connection?
+
+#+begin_quote
+No
+#+end_quote
+
+** Will be there multiple masters or the only one in foreseeable future?
+
+#+begin_quote
+Only one
+#+end_quote
+
+** Event request price fixed in ETH, depends on ETH/USD rate or could be changed by the master?
+
+#+begin_quote
+Smart contract should work with USDT
+#+end_quote
+
+** Is a ticket transfer allowed e.g. customer A bought a ticket, but sent it to the customer B?
+
+#+begin_quote
+Yes
+#+end_quote
+
+It requires additional UI and flows to properly update ticket's meta data, so this feature will be skipped in the V1
+
+** Will tickets have some metainfo about the owner (name, number etc)
+
+#+begin_quote
+Yes, socials i.e. one or many {Telegram, Discord, Instagram, Whats App}
+#+end_quote
+
+** Is it applicable to show available seats count for all (so the creator and master can see it as well without additional screen)?
+
+#+begin_quote
+Yes
+#+end_quote
+
+** UI design references
