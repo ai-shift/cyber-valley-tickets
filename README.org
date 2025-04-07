@@ -480,3 +480,7 @@ Yes
 #+end_quote
 
 ** UI design references
+
+#+begin_quote
+https://dribbble.com/shots/23082238-Earthquake-Warning-App-Cyberpunk-Design-Style
+#+end_quote
