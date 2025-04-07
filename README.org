@@ -477,11 +477,12 @@ Backend -- Database : Stores unapproved event requests
 **** Event manager
 
 #+begin_src plantuml :file ./img/event-manager.png
-class EventManager {
+class CyberValleyEventManager {
   - event[uint256 => Event]
   - eventPlace[uint256 => EventPlace]
   - eventRequest[uint256 => EventRequest]
-  - usdtTokenAddress: address
+  - usdtTokenContract: address
+  - cyberValleyTicketContract: address
   - devTeamPercentage: uint256
   - masterPercentage: uint256
 
@@ -496,7 +497,9 @@ class EventRequest {
 }
 
 class EventPlace {
-  - minTickets: uint16
+  - maxTickets: uint16
+  - minPrice: uint16
+  - minDays: uint8
 }
 
 class Event {
@@ -527,12 +530,12 @@ class TetherToken {
 
 interface IERC20 {}
 
-EventManager --|> AccessControl
-EventManager --> EventRequest
-EventManager --> EventPlace
-EventManager --> Event
-EventManager --> Multihash
-EventManager --o TetherToken
+CyberValleyEventManager --|> AccessControl
+CyberValleyEventManager --> EventRequest
+CyberValleyEventManager --> EventPlace
+CyberValleyEventManager --> Event
+CyberValleyEventManager --> Multihash
+CyberValleyEventManager --o TetherToken
 TetherToken ..|> IERC20
 Event --> Multihash
 #+end_src
@@ -548,7 +551,7 @@ Adds a new event place
 
 *Emits* ~NewEventPlaceAvailable~
 
-***** Set event place
+***** Update event place
 
 *Accessible only by master*
 
@@ -559,6 +562,11 @@ Updates existing event place by it's id
 *Emits* ~EventPlaceUpdated~
 
 ***** Submit event request
+
+*Public*
+
+- Checks that chosen place is free for the requested period of time
+- Checks if requested amount of tickets can fit in the chosen place
 
 Creates new event request, stores it in centralized DB and sends telegram notification to the master
 
@@ -617,6 +625,9 @@ Accepts new event request submission, stores it in the centralized database and 
 ***** Buy ticket
 
 *Public*
+
+- Checks if the event is available
+- Checks if there is available seats for the requested amount of tickets
 
 Sends newly minted asked amount of NFT tickets for the given event in exchange of USDT.
 
