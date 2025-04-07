@@ -478,32 +478,41 @@ Backend -- Database : Stores unapproved event requests
 
 #+begin_src plantuml :file ./img/event-manager.png
 class EventManager {
-  - eventCount: uint256
-  - events[uint256]: Event
-  - eventDataCIDs[uint256]: uint256
-  - eventApproved[uint256]: bool
+  - event[uint256 => Event]
+  - eventPlace[uint256 => EventPlace]
+  - eventRequest[uint256 => EventRequest]
   - usdtTokenAddress: address
   - devTeamPercentage: uint256
   - masterPercentage: uint256
-  - eventBalances[uint256]: uint256
 
-  - {static} MASTER_ROLE: bytes32 = keccak256("MASTER_ROLE")
-  - {static} STAFF_ROLE: bytes32 = keccak256("STAFF_ROLE")
+  - {static} MASTER_ROLE: bytes32
+  - {static} STAFF_ROLE: bytes32
 
-  + constructor(address _usdtTokenAddress, address devTeamAccount, uint256 _devTeamPercentage, address masterAccount, uint256 _masterPercentage)
-  + createEventPlace(Multihash eventPlaceDataCID) onlyRole(MASTER_ROLE)
-  + setEventPlace(uint256 eventPlaceId, Multihash eventPlaceDataCID) onlyRole(MASTER_ROLE))
-  + createEvent(address creator, Multihash eventDataCID) onlyRole(MASTER_ROLE)
+  + createEventPlace(EventPlace eventPlace) onlyRole(MASTER_ROLE)
+  + setEventPlace(uint256 eventPlaceId, EventPlace eventPlace) onlyRole(MASTER_ROLE))
+  + approveEventRequest(uint256 eventRequestId, Multihash eventPlaceDataCID) onlyRole(MASTER_ROLE)
+  + declineEventRequest(uint256 eventRequestId) onlyRole(MASTER_ROLE)
   + setEventDataCID(uint256 eventId, Multihash eventDataCID) onlyRole(getRoleAdmin(role)) onlyRole(MASTER_ROLE)
   + cancelEvent(uint256 eventId) onlyRole(MASTER_ROLE)
   + closeEvent(uint256 eventId) onlyRole(MASTER_ROLE)
   + verifyTicket(uint256 eventId, uint256 tokenId) onlyRole(STAFF_ROLE)
+  + submitEventRequest(EventRequest request)
   + buyTicket(uint256 eventId, uint8 quantity)
+}
+
+class EventRequest {
+  - creator: address
+  - eventPlaceId: uint256
+}
+
+class EventPlace {
+  - minTickets: uint16
 }
 
 class Event {
   - creator: address
   - eventDataCID: Multihash
+  - balance: uint256
   - cancelled: bool
   - closed: bool
 }
@@ -515,14 +524,26 @@ class Multihash {
 }
 
 abstract class AccessControl {
-    + grantRole(bytes32 role, address account)
-    + revokeRole(bytes32 role, address account)
-    + onlyRole(bytes32 role)
+  + grantRole(bytes32 role, address account)
+  + revokeRole(bytes32 role, address account)
+  + onlyRole(bytes32 role)
 }
 
+class TetherToken {
+  + transferFrom(address sender, address recipient, uint256 amount)
+  + transfer(address recipient, uint256 amount)
+  + balanceOf(address account)
+}
+
+interface IERC20 {}
+
 EventManager --|> AccessControl
+EventManager --> EventRequest
+EventManager --> EventPlace
 EventManager --> Event
 EventManager --> Multihash
+EventManager --o TetherToken
+TetherToken ..|> IERC20
 Event --> Multihash
 #+end_src
 
