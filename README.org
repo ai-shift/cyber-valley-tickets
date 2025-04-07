@@ -487,22 +487,12 @@ class EventManager {
 
   - {static} MASTER_ROLE: bytes32
   - {static} STAFF_ROLE: bytes32
-
-  + createEventPlace(EventPlace eventPlace) onlyRole(MASTER_ROLE)
-  + setEventPlace(uint256 eventPlaceId, EventPlace eventPlace) onlyRole(MASTER_ROLE))
-  + approveEventRequest(uint256 eventRequestId, Multihash eventPlaceDataCID) onlyRole(MASTER_ROLE)
-  + declineEventRequest(uint256 eventRequestId) onlyRole(MASTER_ROLE)
-  + setEventDataCID(uint256 eventId, Multihash eventDataCID) onlyRole(getRoleAdmin(role)) onlyRole(MASTER_ROLE)
-  + cancelEvent(uint256 eventId) onlyRole(MASTER_ROLE)
-  + closeEvent(uint256 eventId) onlyRole(MASTER_ROLE)
-  + verifyTicket(uint256 eventId, uint256 tokenId) onlyRole(STAFF_ROLE)
-  + submitEventRequest(EventRequest request)
-  + buyTicket(uint256 eventId, uint8 quantity)
 }
 
 class EventRequest {
   - creator: address
   - eventPlaceId: uint256
+  - startTimestamp: uint256
 }
 
 class EventPlace {
@@ -549,6 +539,88 @@ Event --> Multihash
 
 #+RESULTS:
 [[file:./img/event-manager.png]]
+
+***** Create event place
+
+*Accessible only by master*
+
+Adds a new event place
+
+*Emits* ~NewEventPlaceAvailable~
+
+***** Set event place
+
+*Accessible only by master*
+
+Updates existing event place by it's id
+
+@@warning:Event place can't be changed if there is another event@@
+
+*Emits* ~EventPlaceUpdated~
+
+***** Submit event request
+
+Creates new event request, stores it in centralized DB and sends telegram notification to the master
+
+***** Approve event request
+
+*Accessible only by master*
+
+Transforms event request into the proper event which is visible to others
+
+*Emits* ~NewEventAvailable~
+
+***** Decline event request
+
+*Accessible only by master*
+
+Removes event request from the queue and refunds means to the creator
+
+***** Update event
+
+*Accessible only by master*
+
+Allows to change the event data and update it's metadata
+
+*Emits* ~EventWasUpdated~
+
+***** Cancel event
+
+*Accessible only by master*
+
+Cancels given event and refunds all means between creator and customers who bought a ticket
+
+*Emits* ~EventCancelled~
+
+***** Close event
+
+*Accessible only by master*
+
+Closes given event and sends means to the master, creator and dev team according to their shares
+
+*Emits* ~EventClosed~
+
+***** Verify ticket
+
+*Accessible by master or staff*
+
+Checks if provided NFT was minted by the EventManager contract and connected to the given event.
+
+@@warning:Marks the ticket as used for the current day and makes it impossible to reenter the event@@
+
+***** Submit event request
+
+*Public*
+
+Accepts new event request submission, stores it in the centralized database and notifies the master via Telegram message.
+
+***** Buy ticket
+
+*Public*
+
+Sends newly minted asked amount of NFT tickets for the given event in exchange of USDT.
+
+@@warning:Refund is possible only if the event will be canceled@@
 
 * Questions
 
