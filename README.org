@@ -604,7 +604,7 @@ Closes given event and sends means to the master, creator and dev team according
 
 *Accessible by master or staff*
 
-Checks if provided NFT was minted by the EventManager contract and connected to the given event.
+Checks if provided NFT was minted by the =EventManager= contract and connected to the given event.
 
 @@warning:Marks the ticket as used for the current day and makes it impossible to reenter the event@@
 
