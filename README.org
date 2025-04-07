@@ -26,6 +26,9 @@
   - [[#tech-stack][Tech stack]]
   - [[#excluded-features-from-the-first-stage][Excluded features from the first stage]]
   - [[#proxy-contract-vs-multiple-versions][Proxy contract vs multiple versions]]
+  - [[#component-design][Component design]]
+    - [[#general-overview][General overview]]
+    - [[#smart-contract][Smart contract]]
 - [[#questions][Questions]]
   - [[#both-desktop-and-mobile-are-required][Both desktop and mobile are required?]]
   - [[#is-it-required-to-verify-tickets-without-internet-connection][Is it required to verify tickets without internet connection?]]
@@ -432,6 +435,99 @@ Given list of features can be interpreted as obviously required or any section b
 ** Proxy contract vs multiple versions
 
 Because of big amount of reads from the blockchain (which lead to spending gas on call delegation in proxy) we offer to use multiple versions and support them on the client side. To prevent difficulties of funds & data migration between versions, we'll create new events in a new version, but still support the previous ones until all events there will be closed or canceled.
+
+** Component design
+
+*** General overview
+
+#+begin_src plantuml :file ./img/component-design.png
+title General component design
+
+() Customer
+
+component TicketsApp {
+}
+
+component SmartContracts {
+  [EventManager.sol]
+  [EventTicket.sol]
+}
+
+database Backend {
+  database Database
+}
+
+cloud IPFS
+
+[Customer] -- TicketsApp : Uses
+
+TicketsApp -- SmartContracts : Interacts with
+TicketsApp -- IPFS : Stores/Fetches Metadata
+TicketsApp -- Backend : Interacts with
+Backend -- Database : Stores unapproved event requests
+
+[EventManager.sol] -- [EventTicket.sol] : Mints Tickets
+#+end_src
+
+#+RESULTS:
+[[file:./img/component-design.png]]
+
+*** Smart contract
+
+**** Event manager
+
+#+begin_src plantuml :file ./img/event-manager.png
+class EventManager {
+  - eventCount: uint256
+  - events[uint256]: Event
+  - eventDataCIDs[uint256]: uint256
+  - eventApproved[uint256]: bool
+  - usdtTokenAddress: address
+  - devTeamPercentage: uint256
+  - masterPercentage: uint256
+  - eventBalances[uint256]: uint256
+
+  - {static} MASTER_ROLE: bytes32 = keccak256("MASTER_ROLE")
+  - {static} STAFF_ROLE: bytes32 = keccak256("STAFF_ROLE")
+
+  + constructor(address _usdtTokenAddress, address devTeamAccount, uint256 _devTeamPercentage, address masterAccount, uint256 _masterPercentage)
+  + createEventPlace(Multihash eventPlaceDataCID) onlyRole(MASTER_ROLE)
+  + setEventPlace(uint256 eventPlaceId, Multihash eventPlaceDataCID) onlyRole(MASTER_ROLE))
+  + createEvent(address creator, Multihash eventDataCID) onlyRole(MASTER_ROLE)
+  + setEventDataCID(uint256 eventId, Multihash eventDataCID) onlyRole(getRoleAdmin(role)) onlyRole(MASTER_ROLE)
+  + cancelEvent(uint256 eventId) onlyRole(MASTER_ROLE)
+  + closeEvent(uint256 eventId) onlyRole(MASTER_ROLE)
+  + verifyTicket(uint256 eventId, uint256 tokenId) onlyRole(STAFF_ROLE)
+  + buyTicket(uint256 eventId, uint8 quantity)
+}
+
+class Event {
+  - creator: address
+  - eventDataCID: Multihash
+  - cancelled: bool
+  - closed: bool
+}
+
+class Multihash {
+  - digest: bytes32
+  - hashFunction: uint8
+  - size: uint8
+}
+
+abstract class AccessControl {
+    + grantRole(bytes32 role, address account)
+    + revokeRole(bytes32 role, address account)
+    + onlyRole(bytes32 role)
+}
+
+EventManager --|> AccessControl
+EventManager --> Event
+EventManager --> Multihash
+Event --> Multihash
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-manager.png]]
 
 * Questions
 
