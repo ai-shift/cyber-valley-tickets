@@ -633,6 +633,34 @@ Sends newly minted asked amount of NFT tickets for the given event in exchange o
 
 @@warning:Refund is possible only if the event will be canceled@@
 
+
+**** Event ticket
+
+#+begin_src plantuml :file ./img/event-ticket.png
+class EventTicket {
+  - name: string
+  - symbol: string
+  - eventManagerAddress: address
+}
+
+interface IERC721 {
+    function balanceOf(address owner) external view returns (uint256 balance);
+    function ownerOf(uint256 tokenId) external view returns (address owner);
+}
+
+interface IERC721Metadata {
+    function name() external view returns (string memory);
+    function symbol() external view returns (string memory);
+    function tokenURI(uint256 tokenId) external view returns (string memory);
+}
+
+EventTicket --|> IERC721
+EventTicket --|> IERC721Metadata
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-ticket.png]]
+
 * Questions
 
 ** Both desktop and mobile are required?
