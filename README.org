@@ -168,6 +168,7 @@ class EventRequest {
   eventPlaceId: uint16
   ticketPrice: uint16
   startDate: uint256
+  cancelDate: uint256
   daysAmount: uint8
 }
 #+end_src
@@ -181,11 +182,11 @@ title Submit event request
 actor Creator
 participant TicketsApp
 participant SmartContract
-participant EventRequestStorage
+participant Backend
 actor Master
 
 Creator -> TicketsApp: Fill event request form
-TicketsApp -> EventRequestStorage: Store metadata
+TicketsApp -> Backend: Store metadata
 TicketsApp -> Creator: Send bid
 Creator -> SmartContract: Send required funds
 TicketsApp -> Master: New event added to the pending requets list
@@ -211,12 +212,12 @@ title Approve event request
 
 actor Master
 participant TicketsApp
-participant EventRequestStorage
+participant Backend
 actor IPFS
 participant SmartContract
 
 Master -> TicketsApp: Approve event
-TicketsApp -> EventRequestStorage: Get event request metadata
+TicketsApp -> Backend: Get event request metadata
 TicketsApp -> IPFS: Upload event metadata
 TicketsApp -> SmartContract: Approve event
 #+end_src
@@ -232,18 +233,16 @@ title Edit event request
 actor Creator
 participant TicketsApp
 participant SmartContract
-participant EventRequestStorage
+participant Backend
 actor Master
 
-Creator -> TicketsApp: Update approved event metadata
 alt event approved
-  TicketsApp -> SmartContract: Add edit for the approve
-  Master -> TicketsApp: Approve edit
+  Master -> TicketsApp: Edit event
   TicketsApp -> IPFS: Update value
   TicketsApp -> SmartContract: Save changes
 else
-  TicketsApp -> SmartContract: View requested event
-  TicketsApp -> EventRequestStorage: Update value
+  Creator -> TicketsApp: Update event metadata
+  TicketsApp -> Backend: Update value
 end
 #+end_src
 
@@ -381,14 +380,12 @@ TicketsApp -> SmartContract: Verify authority and NFT correctness
 #+begin_src plantuml :file ./img/cancel-event.png
 title Cancel event
 
-actor Master
+participant Backend
 actor Creator
 actor Customer
-participant TicketsApp
 participant SmartContract
 
-Master -> TicketsApp: Cancel event
-TicketsApp -> SmartContract: Cancel event
+Backend -> SmartContract: Cancel event
 SmartContract -> Creator: Send refund
 loop for each customer with a ticket
   SmartContract -> Customer: Send refund
@@ -421,7 +418,7 @@ SmartContract -> DevTeam: Send funds
 
 Solidity, OpenZeppelin, React, TypeScript, Tailwind, ethers.js, IPFS
 
-Also a thin backend over database is required to provide free of charge ability to change event request data before it's approve, so it'll be implemented with Python, SQLite and Litestar
+Also a thin backend over database is required to provide free of charge ability to change event request data before it's approve, so it'll be implemented with Python, Valkey and Litestar
 
 ** Excluded features from the first stage
 
@@ -499,6 +496,7 @@ class EventRequest {
 
 class EventPlace {
   - maxTickets: uint16
+  - minTickets: uint16
   - minPrice: uint16
   - minDays: uint8
 }
@@ -595,6 +593,8 @@ Allows to change the event data and update it's metadata
 
 ***** Cancel event
 
+TODO: Autocancel event on specified cancelDate
+
 *Accessible only by master*
 
 Cancels given event and refunds all means between creator and customers who bought a ticket
@@ -648,7 +648,7 @@ class EventTicket {
 class Ticket {
   eventId: uint256
   days: uint8
-  usage: uint256
+  isUsed: bool
 }
 
 interface IERC721 {
@@ -680,7 +680,6 @@ It's required for the two general purposes:
 Both of this solutions provide the most minimal off-chain reading pricing (probably even fit into free tier) and allow to publicly expose them without difficult caching system
 
 **** Temporal event request storage
-
 ***** POST /events/requests
 
 *Auth* public
@@ -697,6 +696,7 @@ class EventRequestModel {
   eventPlaceId: int
   ticketPrice: int
   startDate: datetime
+  cancelDate: datetime
   daysAmount: int
 }
 #+end_src
@@ -729,7 +729,6 @@ class NewEventModel {
 [[file:./img/new-event-model.png]]
 
 **** Indexer
-
 ***** GET /events
 
 Allows to effectively fetch all events (finished and pending)
@@ -755,6 +754,7 @@ class CreatorModel {
 
 class DescriptionModel {
   + text: string
+  + links: string[]
   + pictureUrl: string
 }
 
@@ -776,10 +776,9 @@ CreatorModel --> SocialContactModel
 #+RESULTS:
 [[file:./img/event-model.png]]
 
-
 ***** GET /event/{event-id}/ticket/{ticket-id}
 
-*Auth* Public
+*Auth* Master & staff
 
 *Returns* Ticket metadata for the given event
 
