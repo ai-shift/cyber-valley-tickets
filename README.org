@@ -29,6 +29,7 @@
   - [[#component-design][Component design]]
     - [[#general-overview][General overview]]
     - [[#smart-contract][Smart contract]]
+    - [[#backend][Backend]]
 - [[#questions][Questions]]
   - [[#both-desktop-and-mobile-are-required][Both desktop and mobile are required?]]
   - [[#is-it-required-to-verify-tickets-without-internet-connection][Is it required to verify tickets without internet connection?]]
@@ -641,6 +642,13 @@ class EventTicket {
   - name: string
   - symbol: string
   - eventManagerAddress: address
+  - tickets[uint256, Ticket]
+}
+
+class Ticket {
+  eventId: uint256
+  days: uint8
+  usage: uint256
 }
 
 interface IERC721 {
@@ -654,12 +662,164 @@ interface IERC721Metadata {
     function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
+EventTicket --> Ticket
 EventTicket --|> IERC721
 EventTicket --|> IERC721Metadata
 #+end_src
 
 #+RESULTS:
 [[file:./img/event-ticket.png]]
+
+*** Backend
+
+It's required for the two general purposes:
+
+- Temporal storage for the event requests
+- Indexing of smart contract state
+
+Both of this solutions provide the most minimal off-chain reading pricing (probably even fit into free tier) and allow to publicly expose them without difficult caching system
+
+**** Temporal event request storage
+
+***** POST /events/requests
+
+*Auth* public
+
+Saves event request before the payment and storing in the blockchain. Customer who had sent event request becomes creator and can list his submissions.
+
+Because this endpoint is publicly available for the V1 the request pool is introduced of big enough size (100_000 or even more). Requests from it will be translated to the persistent memory only after getting event from the =EventManager= about approved payment. This will make it harder to spam requests and make it harder to block the system in general.
+
+*Returns* Saved event request id
+
+#+begin_src plantuml :file ./img/event-request-model.png
+class EventRequestModel {
+  creator: string
+  eventPlaceId: int
+  ticketPrice: int
+  startDate: datetime
+  daysAmount: int
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-request-model.png]]
+
+***** GET /events/requests
+
+*Auth* master or creator
+
+*Returns* List of all pending =EventRequestModel= for the master and only owned for creator
+
+***** POST /events
+
+*Auth* master
+
+Converts given event request by it's id into event and stores it in IPFS
+Deletes event request from the storage
+
+*Returns* =404= if event request wasn't found
+
+#+begin_src plantuml :file ./img/new-event-model.png
+class NewEventModel {
+  eventRequestId: int
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/new-event-model.png]]
+
+**** Indexer
+
+***** GET /events
+
+Allows to effectively fetch all events (finished and pending)
+
+*Returns* List of =EventModel=
+
+#+begin_src plantuml :file ./img/event-model.png
+class EventModel {
+  + name: string
+  + creator: CreatorModel
+  + description: DescriptionModel
+  + startsAt: datetime
+  + daysAmount: int
+  + place: EventPlaceModel
+  + availableSeats: int
+  + ticketPrice: int
+}
+
+class CreatorModel {
+  + name: string
+  + contact: SocialContactModel
+}
+
+class DescriptionModel {
+  + text: string
+  + pictureUrl: string
+}
+
+class EventPlaceModel {
+  + name: string
+  + totalSeats: int
+}
+
+class SocialContactModel {
+  + value: Telegram | Discord | WhatsApp | Instagram
+}
+
+EventModel --> CreatorModel
+EventModel --> DescriptionModel
+EventModel --> EventPlaceModel
+CreatorModel --> SocialContactModel
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-model.png]]
+
+
+***** GET /event/{event-id}/ticket/{ticket-id}
+
+*Auth* Public
+
+*Returns* Ticket metadata for the given event
+
+#+begin_src plantuml :file ./img/event-ticket-model.png
+class EventTicketModel {
+  eventId: string
+  owner: string
+  socials: Socials
+  days: int
+  usage: int
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-ticket-model.png]]
+
+**** Sign-in with Ethereum
+
+Because of requirement to allow posting and fetching event requests for the master some authentication process should be made. It could be made with JWT and [[https://docs.metamask.io/wallet/how-to/sign-data/#use-personal_sign][Infura's ~personal_sign~ method]]
+
+***** POST /auth/generate-nonce/{public-address}
+
+Generates session and checks if the given ~public-address~ is allowed to sign-in
+
+*Returns* nonce or =403=
+
+***** POST /auth/verify-signature/{public-address}
+
+Verifies signature and returns JWT
+
+*Returns* JWT token or =403=
+
+#+begin_src plantuml :file ./img/verify-signature-model.png
+class VerifySignatureModel {
+  signature: string
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/verify-signature-model.png]]
 
 * Questions
 
