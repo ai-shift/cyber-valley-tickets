@@ -1,0 +1,8 @@
+{
+	"dependencies": {
+		"solc": "^0.8.29"
+	},
+	"devDependencies": {
+		"truffle": "^5.11.5"
+	}
+}
