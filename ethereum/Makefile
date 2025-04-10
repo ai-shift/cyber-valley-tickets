@@ -6,6 +6,9 @@ compile:
 deploy: run-ganache
 	pnpm exec truffle migrate
 
+check:
+	pnpm exec biome check --write test/
+
 run-ganache:
 	@if docker ps --filter "name=$(GANACHE_CONTAINER_NAME)" | grep -q $(GANACHE_CONTAINER_NAME); then \
 		echo "Ganache container already running."; \

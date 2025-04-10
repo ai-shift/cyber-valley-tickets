@@ -4,6 +4,7 @@
 		"solc": "^0.8.29"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
 		"truffle": "^5.11.5"
 	}
 }
