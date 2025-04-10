@@ -85,7 +85,7 @@ describe("CyberValleyEventManager", () => {
         minDays: 0,
       },
       revertedWith: "Values must be greater than zero",
-    }
+    },
   ];
 
   async function deployContract(): Promise<ContractsFixture> {
@@ -107,7 +107,6 @@ describe("CyberValleyEventManager", () => {
 
   async function createEventPlace(request: CreateEventPlaceRequest) {
     const { eventManager, master } = await loadFixture(deployContract);
-    console.log("Creating event place", request);
     return await eventManager
       .connect(master)
       .createEventPlace(...asArguments(request));
@@ -117,18 +116,24 @@ describe("CyberValleyEventManager", () => {
     return await createEventPlace(createEventPlaceRequest);
   }
 
+  async function updateEventPlace(request) {
+    const { eventManager, master } = await loadFixture(deployContract);
+    return await eventManager
+      .connect(master)
+      .updateEventPlace(...asArguments(request));
+  }
+
   async function createAndUpdateEventPlace() {
     const tx = await createValidEventPlace();
     const receipt = await tx.wait();
-    const event = receipt.events.find(
-      (e) => e.event === "NewEventPlaceAvailable",
+    const event = receipt.logs.find(
+      (e) => e.fragment?.name === "NewEventPlaceAvailable",
     );
-    return updateEventPlace(
-      ...asArguments({
-        ...updateEventPlaceRequest,
-        eventPlaceId: event.args.eventPlaceId,
-      }),
-    );
+    assert(event != null, "NewEventPlaceAvailable wasn't emitted");
+    return updateEventPlace({
+      ...updateEventPlaceRequest,
+      eventPlaceId: event.args.eventPlaceId,
+    });
   }
 
   /**
@@ -138,14 +143,19 @@ describe("CyberValleyEventManager", () => {
   function itExpectsOnlyMaster(methodName, request) {
     it(`${methodName} allowed only to master`, async () => {
       const { eventManager } = await loadFixture(deployContract);
-      const method = eventManager[methodName]
-      assert(method != null)
-      await expect(method.apply(eventManager, request)).to.be.revertedWith("Must have master role");
-    })
+      const method = eventManager[methodName];
+      assert(method != null);
+      await expect(method.apply(eventManager, request)).to.be.revertedWith(
+        "Must have master role",
+      );
+    });
   }
 
   describe("createEventPlace", () => {
-    itExpectsOnlyMaster("createEventPlace", asArguments(createEventPlaceRequest))
+    itExpectsOnlyMaster(
+      "createEventPlace",
+      asArguments(createEventPlaceRequest),
+    );
 
     it("should emit NewEventPlaceAvailable", async () => {
       const { eventManager } = await loadFixture(deployContract);
@@ -155,13 +165,41 @@ describe("CyberValleyEventManager", () => {
     });
 
     eventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
-      it(`should validate invariants. Case ${idx+1}: ${JSON.stringify(patch)}`, async () => {
+      it(`should validate invariants. Case ${idx + 1}: ${JSON.stringify(patch)}`, async () => {
         const { eventManager, master } = await loadFixture(deployContract);
         await expect(
           eventManager
             .connect(master)
             .createEventPlace(
               ...asArguments({ ...createEventPlaceRequest, ...patch }),
+            ),
+        ).to.be.revertedWith(revertedWith);
+      }),
+    );
+  });
+
+  describe("updateEventPlace", () => {
+    itExpectsOnlyMaster(
+      "updateEventPlace",
+      asArguments(updateEventPlaceRequest),
+    );
+
+    it("should emit NewEventPlaceAvailable", async () => {
+      const { eventManager } = await loadFixture(deployContract);
+      const tx = await createAndUpdateEventPlace();
+      await expect(tx)
+        .to.emit(eventManager, "EventPlaceUpdated")
+        .withArgs(...asArguments(updateEventPlaceRequest));
+    });
+
+    eventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
+      it(`should validate invariants. Case ${idx + 1}: ${JSON.stringify(patch)}`, async () => {
+        const { eventManager, master } = await loadFixture(deployContract);
+        await expect(
+          eventManager
+            .connect(master)
+            .updateEventPlace(
+              ...asArguments({ ...updateEventPlaceRequest, ...patch }),
             ),
         ).to.be.revertedWith(revertedWith);
       }),

@@ -4,7 +4,7 @@ compile:
 	pnpm exec hardhat compile
 
 tests:
-	pnpm exec hardhat test
+	pnpm exec hardhat test --vv
 
 deploy:
 	pnpm exec truffle migrate
