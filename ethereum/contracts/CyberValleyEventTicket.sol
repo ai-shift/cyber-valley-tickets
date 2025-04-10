@@ -2,13 +2,11 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CyberValleyEventTicket is ERC721, Ownable {
-    using Counters for Counters.Counter;
 
-    Counters.Counter private _tokenIds;
+    uint256 private _tokenIds;
 
     address public eventManagerAddress;
     mapping(uint256 => uint256) public eventIdByTicketId; // Map ticket ID to event ID
@@ -31,9 +29,9 @@ contract CyberValleyEventTicket is ERC721, Ownable {
     }
 
     function mintTicket(uint256 eventId, address to) external onlyEventManager returns (uint256) {
-        _tokenIds.increment();
+        _tokenIds += 1;
 
-        uint256 newItemId = _tokenIds.current();
+        uint256 newItemId = _tokenIds;
         _mint(to, newItemId);
 
         eventIdByTicketId[newItemId] = eventId;
@@ -44,16 +42,6 @@ contract CyberValleyEventTicket is ERC721, Ownable {
     }
 
     function getEventId(uint256 ticketId) external view returns (uint256) {
-        require(_exists(ticketId), "Ticket does not exist");
         return eventIdByTicketId[ticketId];
-    }
-
-    // The following functions are overrides required by Solidity.
-
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
-        internal
-        override
-    {
-        super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 }

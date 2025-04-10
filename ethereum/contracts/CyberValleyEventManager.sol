@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-import "./EventTicket.sol";
+import "./CyberValleyEventTicket.sol";
 
 contract CyberValleyEventManager is AccessControl {
     using Strings for uint256;
@@ -44,7 +44,7 @@ contract CyberValleyEventManager is AccessControl {
     mapping(uint256 => EventRequest) public eventRequests;
 
     IERC20 public usdtTokenContract;
-    EventTicket public cyberValleyTicketContract;
+    CyberValleyEventTicket public cyberValleyTicketContract;
 
     uint256 public devTeamPercentage;
     uint256 public masterPercentage;
@@ -79,12 +79,12 @@ contract CyberValleyEventManager is AccessControl {
         devTeamPercentage = _devTeamPercentage;
         masterPercentage = _masterPercentage;
 
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(MASTER_ROLE, _msgSender());
+        grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        grantRole(MASTER_ROLE, _msgSender());
     }
 
     function setCyberValleyTicketContract(address _cyberValleyTicketContract) external onlyMaster {
-        cyberValleyTicketContract = EventTicket(_cyberValleyTicketContract);
+        cyberValleyTicketContract = CyberValleyEventTicket(_cyberValleyTicketContract);
     }
 
     // Event Place Management
