@@ -1,12 +1,12 @@
 {
-	"dependencies": {
-		"@openzeppelin/contracts": "^5.3.0",
-		"solc": "^0.8.29"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@openzeppelin/test-environment": "^0.1.9",
-		"@openzeppelin/test-helpers": "^0.5.16",
-		"truffle": "^5.11.5"
-	}
+  "name": "hardhat-project",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "ethers": "^6.13.5",
+    "hardhat": "^2.22.19"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.3.0"
+  }
 }

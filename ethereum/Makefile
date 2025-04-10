@@ -1,10 +1,10 @@
 GANACHE_CONTAINER_NAME := "cyber-valley-tickets-ganache-node"
 
 compile:
-	pnpm exec truffle compile
+	pnpm exec hardhat compile
 
-tests: compile
-	pnpm exec truffle test
+tests:
+	pnpm exec hardhat test
 
 deploy:
 	pnpm exec truffle migrate
