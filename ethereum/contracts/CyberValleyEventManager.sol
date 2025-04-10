@@ -46,8 +46,9 @@ contract CyberValleyEventManager is AccessControl {
     }
 
     function createEventPlace(uint16 _maxTickets, uint16 _minTickets, uint16 _minPrice, uint8 _minDays) external onlyMaster {
-        require(_maxTickets > 0 && _minTickets > 0 && _minPrice > 0 && _minDays > 0, "Values must be greater than zero");
         require(_maxTickets >= _minTickets, "Max tickets must be greater or equal min tickets");
+        require(_maxTickets > 0 && _minTickets > 0 && _minPrice > 0 && _minDays > 0, "Values must be greater than zero");
+
         eventPlaces.push(EventPlace({
                 maxTickets: _maxTickets,
                 minTickets: _minTickets,
