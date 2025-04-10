@@ -19,42 +19,77 @@ type ContractsFixture = {
 describe("CyberValleyEventManager", () => {
   const devTeamPercentage = 10;
   const masterPercentage = 50;
-    const createEventPlaceRequest = {
-      maxTickets: 100,
-      minTickets: 50,
-      minPrice: 20,
-      minDays: 1,
-    };
+  const createEventPlaceRequest = {
+    maxTickets: 100,
+    minTickets: 50,
+    minPrice: 20,
+    minDays: 1,
+  };
 
-    type CreateEventPlaceRequest = typeof createEventPlaceRequest;
+  type CreateEventPlaceRequest = typeof createEventPlaceRequest;
 
-    const updateEventPlaceRequest = {
-      eventPlaceId: 0,
-      maxTickets: 150,
-      minTickets: 20,
-      minPrice: 30,
-      minDays: 2,
-    };
+  const updateEventPlaceRequest = {
+    eventPlaceId: 0,
+    maxTickets: 150,
+    minTickets: 20,
+    minPrice: 30,
+    minDays: 2,
+  };
 
-    type UpdateEventPlaceRequest = typeof updateEventPlaceRequest;
+  type UpdateEventPlaceRequest = typeof updateEventPlaceRequest;
 
-    const asArguments = (
-      req: CreateEventPlaceRequest | UpdateEventPlaceRequest,
-    ): integer[] => {
-      if ("eventPlaceId" in req) {
-        return [
-          req.eventPlaceId,
-          req.maxTickets,
-          req.minTickets,
-          req.minPrice,
-          req.minDays,
-        ];
-      }
-      return [req.maxTickets, req.minTickets, req.minPrice, req.minDays];
-    };
+  const asArguments = (
+    req: CreateEventPlaceRequest | UpdateEventPlaceRequest,
+  ): integer[] => {
+    if ("eventPlaceId" in req) {
+      return [
+        req.eventPlaceId,
+        req.maxTickets,
+        req.minTickets,
+        req.minPrice,
+        req.minDays,
+      ];
+    }
+    return [req.maxTickets, req.minTickets, req.minPrice, req.minDays];
+  };
 
+  const eventPlaceCornerCases = [
+    {
+      patch: {
+        minTickets: 0,
+      },
+      revertedWith: "Values must be greater than zero",
+    },
+    {
+      patch: {
+        minTickets: 0,
+        maxTickets: 0,
+      },
+      revertedWith: "Values must be greater than zero",
+    },
+    {
+      patch: {
+        minTickets: 5,
+        maxTickets: 0,
+      },
+      revertedWith: "Max tickets must be greater or equal min tickets",
+    },
+    {
+      patch: {
+        minPrice: 0,
+      },
+      revertedWith: "Values must be greater than zero",
+    },
+    {
+      patch: {
+        minDays: 0,
+      },
+      revertedWith: "Values must be greater than zero",
+    }
+  ];
 
   async function deployContract(): Promise<ContractsFixture> {
+    console.log("Deploying contract");
     const [owner, master, devTeam] = await hre.ethers.getSigners();
     const sex = await hre.ethers.deployContract("SimpleERC20Xylose");
     const CyberValleyEventManagerFactory = await hre.ethers.getContractFactory(
@@ -70,16 +105,19 @@ describe("CyberValleyEventManager", () => {
     return { sex, eventManager, owner, master, devTeam };
   }
 
-  async function createEventPlace(request) {
+  async function createEventPlace(request: CreateEventPlaceRequest) {
     const { eventManager, master } = await loadFixture(deployContract);
-    return await eventManager.connect(master).createEventPlace();
+    console.log("Creating event place", request);
+    return await eventManager
+      .connect(master)
+      .createEventPlace(...asArguments(request));
   }
 
   async function createValidEventPlace() {
-    return await createEventPlace(...asArguments(createEventPlaceRequest));
+    return await createEventPlace(createEventPlaceRequest);
   }
 
-  async function updateExistingEventPlace() {
+  async function createAndUpdateEventPlace() {
     const tx = await createValidEventPlace();
     const receipt = await tx.wait();
     const event = receipt.events.find(
@@ -93,80 +131,40 @@ describe("CyberValleyEventManager", () => {
     );
   }
 
-  async function expectOnlyMaster(tx) {
-    await expect(tx).to.be.revertedWith("Must have master role");
+  /**
+   * The fuck do u mean that expect works only inside of `it`
+   * i.e. it raises `AssertionError`, but the runner doesn't care and ignore it
+   */
+  function itExpectsOnlyMaster(methodName, request) {
+    it(`${methodName} allowed only to master`, async () => {
+      const { eventManager } = await loadFixture(deployContract);
+      const method = eventManager[methodName]
+      assert(method != null)
+      await expect(method.apply(eventManager, request)).to.be.revertedWith("Must have master role");
+    })
   }
 
-  describe("EventPlace", () => {
-    it("allowed only to master", async () => {
+  describe("createEventPlace", () => {
+    itExpectsOnlyMaster("createEventPlace", asArguments(createEventPlaceRequest))
+
+    it("should emit NewEventPlaceAvailable", async () => {
       const { eventManager } = await loadFixture(deployContract);
-      await expectOnlyMaster(
-        eventManager.createEventPlace(...asArguments(createEventPlaceRequest)),
-      );
-    });
-
-    it("should emit events", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
-      const createEventPlaceTx = await loadFixture(createValidEventPlace);
-
-      await expect(createEventPlaceTx)
+      await expect(await createValidEventPlace())
         .to.emit(eventManager, "NewEventPlaceAvailable")
         .withArgs(0, ...asArguments(createEventPlaceRequest));
     });
 
-    it("should validate min and max tickets", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
-      await expect(
-        eventManager
-          .connect(master)
-          .createEventPlace(
-            ...asArguments({ ...createEventPlaceRequest, minTickets: 0 }),
-          ),
-      ).to.be.revertedWith("Values must be greater than zero");
-      await expect(
-        eventManager.connect(master).createEventPlace(
-          ...asArguments({
-            ...createEventPlaceRequest,
-            minTickets: 0,
-            maxTickets: 0,
-          }),
-        ),
-      ).to.be.revertedWith("Values must be greater than zero");
-      await expect(
-        eventManager
-          .connect(master)
-          .createEventPlace(
-            ...asArguments({ ...createEventPlaceRequest, maxTickets: 0 }),
-          ),
-      ).to.be.revertedWith("Max tickets must be greater or equal min tickets");
-    });
-
-    it("should validate min price", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
-      await expect(
-        eventManager
-          .connect(master)
-          .createEventPlace(
-            ...asArguments({ ...createEventPlaceRequest, minPrice: 0 }),
-          ),
-      ).to.be.revertedWith("Values must be greater than zero");
-    });
-
-    it("should validate min days", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
-      await expect(
-        eventManager
-          .connect(master)
-          .createEventPlace(
-            ...asArguments({ ...createEventPlaceRequest, minDays: 0 }),
-          ),
-      ).to.be.revertedWith("Values must be greater than zero");
-    });
-
-    it("should revert updating unexisting event place", async () => {});
-
-    it("should update existing event place", async () => {});
-
-    it("should revert updating event for the approved event", async () => {});
+    eventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
+      it(`should validate invariants. Case ${idx+1}: ${JSON.stringify(patch)}`, async () => {
+        const { eventManager, master } = await loadFixture(deployContract);
+        await expect(
+          eventManager
+            .connect(master)
+            .createEventPlace(
+              ...asArguments({ ...createEventPlaceRequest, ...patch }),
+            ),
+        ).to.be.revertedWith(revertedWith);
+      }),
+    );
   });
 });
