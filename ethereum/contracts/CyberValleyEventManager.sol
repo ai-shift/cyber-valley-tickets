@@ -57,8 +57,5 @@ contract CyberValleyEventManager is AccessControl {
                 }));
         emit NewEventPlaceAvailable(eventPlaces.length - 1, _maxTickets, _minTickets, _minPrice, _minDays);
     }
-    event Event();
-    function call () public {
-        emit Event();
-    }
+
 }
