@@ -1,3 +1,4 @@
+import fc from 'fast-check';
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, Assertion, expect } from "chai";
 import type { BaseContract, Signer } from "ethers";
@@ -221,5 +222,55 @@ describe("CyberValleyEventManager", () => {
         ).to.be.revertedWith(revertedWith);
       }),
     );
+  });
+
+  describe("submitEventRequest", () => {
+    itExpectsOnlyMaster("submitEventRequest", asArguments(submitEventRequest));
+
+    it("emits NewEventRequest", () => {
+
+    });
+
+    it("transfers funds to ERC20", () => {
+
+    });
+
+    it("reverts on incompatibale data with event place", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      await expect(
+        eventManager
+          .connect(master)
+          .submitEventRequest({ ...submitEventRequestRequest, ...patch }),
+      ).to.be.revertedWith(revertedWith);
+    });
+
+    it("reverts on date overlap in given event place", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      fc.assert(
+        fc.property(
+          fc.integer(),
+          fc.integer(),
+          fc.integer(),
+          (daysAmount, approvedEventStart, requestedEventStart) => {
+            const validAStart = startA <= endA ? startA : endA;
+            const validAEnd = startA <= endA ? endA : startA;
+            const validBStart = startB <= endB ? startB : endB;
+            const validBEnd = startB <= endB ? endB : startB;
+
+            if (validAEnd < validBStart) {
+              // We got two different ranges
+              return true;
+            }
+
+            await createEventPlace(eventManager, master, {daysAmount: 5})
+            const tx = await createEvent(eventManager, master);
+            await tx.wait();
+            await submitEventRequest(eventManager, master, )
+          }
+        ),
+        {numRuns: 100}
+      )
+
+    });
   });
 });
