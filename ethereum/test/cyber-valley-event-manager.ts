@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, Assertion, expect } from "chai";
-import type { BaseContract, Signer } from "ethers";
+import type { BaseContract, Signer, ContractTransaction } from "ethers";
 import hre from "hardhat";
 import {
   type CyberValleyEventManager,
@@ -105,7 +105,7 @@ describe("CyberValleyEventManager", () => {
   }
 
   type EventPlaceCreated = {
-    tx: any;
+    tx: ContractTransaction;
     eventPlaceId: number;
   }
 
