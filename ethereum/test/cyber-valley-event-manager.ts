@@ -11,7 +11,7 @@ import {
 } from "../typechain-types";
 
 type ContractsFixture = {
-  sex: SimpleERC20Xylose & BaseContract;
+  ERC20: SimpleERC20Xylose & BaseContract;
   eventManager: CyberValleyEventManager & BaseContract;
   owner: Signer;
   master: Signer;
@@ -23,13 +23,13 @@ describe("CyberValleyEventManager", () => {
   const devTeamPercentage = 10;
   const masterPercentage = 50;
   const eventRequestSubmitionPrice = 100;
-  const createEventPlaceRequest = {
+  const defaultCreateEventPlaceRequest = {
     maxTickets: 100,
     minTickets: 50,
     minPrice: 20,
     minDays: 1,
   };
-  type CreateEventPlaceRequest = typeof createEventPlaceRequest;
+  type CreateEventPlaceRequest = typeof defaultCreateEventPlaceRequest;
 
   const updateEventPlaceRequest = {
     eventPlaceId: 0,
@@ -39,6 +39,14 @@ describe("CyberValleyEventManager", () => {
     minDays: 2,
   };
   type UpdateEventPlaceRequest = typeof updateEventPlaceRequest;
+
+  const defaultSubmitEventRequest = {
+    id: Math.floor(Math.random() * 10e6),
+    ticketPrice: defaultCreateEventPlaceRequest.minPrice,
+    startDate: 5,
+    cancelDate: 3,
+    daysAmount: defaultCreateEventPlaceRequest.minDays,
+  };
 
   function asArguments(
     req: CreateEventPlaceRequest | UpdateEventPlaceRequest,
@@ -104,18 +112,18 @@ describe("CyberValleyEventManager", () => {
   async function deployContract(): Promise<ContractsFixture> {
     console.log("Deploying contract");
     const [owner, master, devTeam, creator] = await hre.ethers.getSigners();
-    const sex = await hre.ethers.deployContract("SimpleERC20Xylose");
+    const ERC20 = await hre.ethers.deployContract("SimpleERC20Xylose");
     const CyberValleyEventManagerFactory = await hre.ethers.getContractFactory(
       "CyberValleyEventManager",
     );
     const eventManager = await CyberValleyEventManagerFactory.deploy(
-      await sex.getAddress(),
+      await ERC20.getAddress(),
       master,
       50,
       devTeam,
       10,
     );
-    return { sex, eventManager, owner, master, devTeam, creator };
+    return { ERC20, eventManager, owner, master, devTeam, creator };
   }
 
   type EventPlaceCreated = {
@@ -126,11 +134,13 @@ describe("CyberValleyEventManager", () => {
   async function createEventPlace(
     eventManager: CyberValleyEventManager,
     master: Signer,
-    patch: Partial<CreateEventPlaceRequest>,
+    patch?: Partial<CreateEventPlaceRequest>,
   ): Promise<EventPlaceCreated> {
     const tx = await eventManager
       .connect(master)
-      .createEventPlace(...asArguments({ ...createEventPlace, ...patch }));
+      .createEventPlace(
+        ...asArguments({ ...defaultCreateEventPlaceRequest, ...patch }),
+      );
     const receipt = await tx.wait();
     const event = receipt.logs.find(
       (e) => e.fragment?.name === "NewEventPlaceAvailable",
@@ -146,7 +156,7 @@ describe("CyberValleyEventManager", () => {
     return await createEventPlace(
       eventManager,
       master,
-      createEventPlaceRequest,
+      defaultCreateEventPlaceRequest,
     );
   }
 
@@ -208,7 +218,7 @@ describe("CyberValleyEventManager", () => {
     };
     const tx = eventManager
       .connect(creator)
-      .submitEvent(...eventRequestAsArguments(request));
+      .submitEventRequest(...eventRequestAsArguments(request));
     return { request, tx };
   }
 
@@ -230,7 +240,7 @@ describe("CyberValleyEventManager", () => {
   describe("createEventPlace", () => {
     itExpectsOnlyMaster(
       "createEventPlace",
-      asArguments(createEventPlaceRequest),
+      asArguments(defaultCreateEventPlaceRequest),
     );
 
     it("should emit NewEventPlaceAvailable", async () => {
@@ -238,7 +248,7 @@ describe("CyberValleyEventManager", () => {
       const { tx } = await createValidEventPlace(eventManager, master);
       await expect(tx)
         .to.emit(eventManager, "NewEventPlaceAvailable")
-        .withArgs(0, ...asArguments(createEventPlaceRequest));
+        .withArgs(0, ...asArguments(defaultCreateEventPlaceRequest));
     });
 
     eventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
@@ -246,7 +256,7 @@ describe("CyberValleyEventManager", () => {
         const { eventManager, master } = await loadFixture(deployContract);
         await expect(
           createEventPlace(eventManager, master, {
-            ...createEventPlaceRequest,
+            ...defaultCreateEventPlaceRequest,
             ...patch,
           }),
         ).to.be.revertedWith(revertedWith);
@@ -282,41 +292,146 @@ describe("CyberValleyEventManager", () => {
   });
 
   describe("submitEventRequest", () => {
-    it("emits NewEventRequest", async () => {});
+    it("emits NewEventRequest", async () => {
+      const { eventManager, master, creator } =
+        await loadFixture(deployContract);
+      const { eventPlaceId } = await createEventPlace(eventManager, master);
+      const { tx } = await submitEventRequest(eventManager, master, creator, {
+        eventPlaceId,
+      });
+      await expect(tx)
+        .to.emit(eventManager, "NewEventRequest")
+        .withArgs(...asArguments(updateEventPlaceRequest));
+    });
 
-    it("transfers funds to ERC20", async () => {});
+    it("transfers ERC20 token", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const initialBalance = await ERC20.balanceOf(
+        await eventManager.getAddress(),
+      );
+      assert(
+        initialBalance == 0,
+        `Initial balance should be zero, but it's ${initialBalance}`,
+      );
+      const { eventPlaceId } = await createEventPlace(eventManager, master);
+      await submitEventRequest(eventManager, master, creator, { eventPlaceId });
+      assert(
+        (await ERC20.balanceOf(await eventManager.getAddress())) ===
+          eventRequestSubmitionPrice,
+      );
+    });
 
     it("reverts on insufficient funds", async () => {
       const { eventManager, master, creator } =
         await loadFixture(deployContract);
       const { eventPlaceId } = await createEventPlace(eventManager, master, {
-        ...createEventPlaceRequest,
+        ...defaultCreateEventPlaceRequest,
       });
       const eventRequest = {
         id: Math.floor(Math.random() * 10e6),
         creatorAddress: creator.address,
         eventPlaceId,
-        ticketPrice: createEventPlaceRequest.minPrice,
+        ticketPrice: defaultCreateEventPlaceRequest.minPrice,
         startDate: 5,
         cancelDate: 3,
-        daysAmount: createEventPlaceRequest.minDays,
+        daysAmount: defaultCreateEventPlaceRequest.minDays,
       };
       await expect(
         eventManager
           .connect(creator)
           .submitEventRequest(...eventRequestAsArguments(eventRequest)),
-      ).to.be.revertedWith(revertedWith);
+      ).to.be.revertedWith("Event request payment failed");
     });
 
-    it("reverts on incompatibale data with event place", async () => {
-      const { eventManager, master, creator } =
-        await loadFixture(deployContract);
-      await expect(
-        eventManager
-          .connect(creator)
-          .submitEventRequest({ ...submitEventRequestRequest, ...patch }),
-      ).to.be.revertedWith(revertedWith);
-    });
+    [
+      {
+        eventPlacePatch: {
+          minPrice: 30,
+        },
+        eventRequestPatch: {
+          ticketPrice: 20,
+        },
+        revertsWith: "Ticket price is less than allowed",
+      },
+      {
+        eventPlacePatch: {
+          minDays: 2,
+        },
+        eventRequestPatch: {
+          daysAmount: 1,
+        },
+        revertsWith: "Days amount is less than allowed",
+      },
+      {
+        eventPlacePatch: {},
+        eventRequestPatch: {
+          startDate: Math.floor(
+            new Date(new Date().setDate(new Date().getDate() - 1)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ) / 1000,
+          ),
+        },
+        revertsWith: "Requested event can't be in the past",
+      },
+      {
+        evenPlacePatch: {},
+        eventRequestPatch: {
+          startDate: Math.floor(
+            new Date(new Date().setDate(new Date().getDate() - 2)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ) / 1000,
+          ),
+          cancelDate: Math.floor(
+            new Date(new Date().setDate(new Date().getDate() - 1)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ) / 1000,
+          ),
+        },
+        revertsWith:
+          "Cancel date should be at least one day before the start date",
+      },
+      {
+        eventPlacePatch: {},
+        eventRequestPatch: {
+          startDate: Math.floor(
+            new Date(new Date().setDate(new Date().getDate() + 300)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ) / 1000,
+          ),
+        },
+        revertsWith: "Requested event is too far in the future",
+      },
+    ].forEach(({ eventPlacePatch, eventRequestPatch, revertsWith }, idx) =>
+      it(`reverts on incompatibale data eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
+        const { eventManager, master, creator } =
+          await loadFixture(deployContract);
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          master,
+          eventPlacePatch,
+        );
+        const { tx } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+            ...eventRequestPatch
+        })
+        await expect(
+          tx
+        ).to.be.revertedWith(revertsWith);
+      }),
+    );
 
     it("reverts on date overlap in given event place", async () => {
       const { eventManager, master } = await loadFixture(deployContract);
