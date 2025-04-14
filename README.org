@@ -617,12 +617,6 @@ Checks if provided NFT was minted by the =EventManager= contract and connected t
 
 @@warning:Marks the ticket as used for the current day and makes it impossible to reenter the event@@
 
-***** Submit event request
-
-*Public*
-
-Accepts new event request submission, stores it in the centralized database and notifies the master via Telegram message.
-
 ***** Buy ticket
 
 *Public*
