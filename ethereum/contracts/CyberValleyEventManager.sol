@@ -18,8 +18,20 @@ contract CyberValleyEventManager is AccessControl {
         uint8 minDays;
     }
 
-    event NewEventPlaceAvailable(uint256 eventPlaceId, uint16 maxTickets, uint16 minTickets, uint16 minPrice, uint8 minDays);
-    event EventPlaceUpdated(uint256 eventPlaceId, uint16 maxTickets, uint16 minTickets, uint16 minPrice, uint8 minDays);
+    event NewEventPlaceAvailable(
+        uint256 eventPlaceId,
+        uint16 maxTickets,
+        uint16 minTickets,
+        uint16 minPrice,
+        uint8 minDays
+    );
+    event EventPlaceUpdated(
+        uint256 eventPlaceId,
+        uint16 maxTickets,
+        uint16 minTickets,
+        uint16 minPrice,
+        uint8 minDays
+    );
 
     IERC20 public usdtTokenContract;
 
@@ -34,8 +46,17 @@ contract CyberValleyEventManager is AccessControl {
         _;
     }
 
-    constructor(address _usdtTokenContract, address master, uint256 _masterPercentage, address _devTeam, uint256 _devTeamPercentage) {
-        require(_devTeamPercentage + _masterPercentage <= 100, "Percentages must be less than 100");
+    constructor(
+        address _usdtTokenContract,
+        address master,
+        uint256 _masterPercentage,
+        address _devTeam,
+        uint256 _devTeamPercentage
+    ) {
+        require(
+            _devTeamPercentage + _masterPercentage <= 100,
+            "Percentages must be less than 100"
+        );
 
         usdtTokenContract = IERC20(_usdtTokenContract);
         devTeamPercentage = _devTeamPercentage;
@@ -46,29 +67,66 @@ contract CyberValleyEventManager is AccessControl {
         _grantRole(MASTER_ROLE, master);
     }
 
-    function createEventPlace(uint16 _maxTickets, uint16 _minTickets, uint16 _minPrice, uint8 _minDays) external onlyMaster {
+    function createEventPlace(
+        uint16 _maxTickets,
+        uint16 _minTickets,
+        uint16 _minPrice,
+        uint8 _minDays
+    ) external onlyMaster {
         EventPlace memory place = EventPlace({
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
             minDays: _minDays
-            });
+        });
         _validateEventPlace(place);
         eventPlaces.push(place);
-        emit NewEventPlaceAvailable(eventPlaces.length - 1, _maxTickets, _minTickets, _minPrice, _minDays);
+        emit NewEventPlaceAvailable(
+            eventPlaces.length - 1,
+            _maxTickets,
+            _minTickets,
+            _minPrice,
+            _minDays
+        );
     }
 
-    function updateEventPlace(uint256 eventPlaceId, uint16 _maxTickets, uint16 _minTickets, uint16 _minPrice, uint8 _minDays) external onlyMaster {
+    function updateEventPlace(
+        uint256 eventPlaceId,
+        uint16 _maxTickets,
+        uint16 _minTickets,
+        uint16 _minPrice,
+        uint8 _minDays
+    ) external onlyMaster {
         require(eventPlaceId < eventPlaces.length, "eventPlaceId should exist");
         EventPlace memory place = EventPlace({
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
             minDays: _minDays
-            });
+        });
         _validateEventPlace(place);
         eventPlaces[eventPlaceId] = place;
-        emit EventPlaceUpdated(eventPlaceId, _maxTickets, _minTickets, _minPrice, _minDays);
+        emit EventPlaceUpdated(
+            eventPlaceId,
+            _maxTickets,
+            _minTickets,
+            _minPrice,
+            _minDays
+        );
+    }
+
+    function _validateEventPlace(EventPlace memory eventPlace) internal pure {
+        require(
+            eventPlace.maxTickets >= eventPlace.minTickets,
+            "Max tickets must be greater or equal min tickets"
+        );
+        require(
+            eventPlace.maxTickets > 0 &&
+                eventPlace.minTickets > 0 &&
+                eventPlace.minPrice > 0 &&
+                eventPlace.minDays > 0,
+            "Values must be greater than zero"
+        );
     }
 
     function _validateEventPlace(EventPlace memory eventPlace) pure internal {
