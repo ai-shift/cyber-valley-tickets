@@ -80,8 +80,8 @@ describe("CyberValleyEventManager", () => {
       req.id,
       req.eventPlaceId,
       req.ticketPrice,
-      req.startDate,
       req.cancelDate,
+      req.startDate,
       req.daysAmount,
     ];
   }
@@ -230,6 +230,7 @@ describe("CyberValleyEventManager", () => {
       ...patch,
     };
     assert(request.eventPlaceId != null);
+    console.log("Submitting event request with", request);
     const tx = await eventManager
       .connect(creator)
       .submitEventRequest(...eventRequestAsArguments(request));
@@ -261,7 +262,7 @@ describe("CyberValleyEventManager", () => {
         0,
         0,
         0,
-      ) / 1000,
+      ) / 1000
     );
   }
 

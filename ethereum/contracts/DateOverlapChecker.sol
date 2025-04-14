@@ -8,13 +8,17 @@ contract DateOverlapChecker {
     uint256 public constant SECONDS_IN_DAY = 86400;
     uint256 public constant BUCKET_SIZE = 256;
 
+    constructor(uint256 _initialOffest) {
+        initialOffest = _initialOffest
+    }
+
     function checkNoOverlap(
         uint256 id,
         uint256 startDate,
         uint256 endDate
     ) internal view returns (bool) {
         require(
-            endDate - SECONDS_IN_DAY >= startDate,
+            endDate - startDate >= SECONDS_IN_DAY,
             "Dates should differ at least for one day"
         );
         uint256[] storage buckets = dateRanges[id];

@@ -4,7 +4,7 @@ compile: format-contracts
 	pnpm exec hardhat compile
 
 tests:
-	pnpm exec hardhat test --vv --typecheck
+	pnpm exec hardhat test --typecheck
 
 deploy:
 	pnpm exec truffle migrate

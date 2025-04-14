@@ -169,7 +169,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Days amount is less than allowed"
         );
         require(
-            startDate >= block.timestamp,
+            cancelDate < startDate,
+            "Cancelation date should be earlier than start"
+        );
+        require(
+            cancelDate >= block.timestamp,
             "Requested event can't be in the past"
         );
         require(
@@ -183,7 +187,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Requested event is too far in the future"
         );
         require(
-            checkNoOverlap(eventPlaceId, startDate, startDate + daysAmount),
+            checkNoOverlap(eventPlaceId, startDate, startDate + daysAmount * SECONDS_IN_DAY),
             "Requested event overlaps with existing"
         );
         require(
