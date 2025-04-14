@@ -216,4 +216,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             daysAmount
         );
     }
+
+    function approveEvent(uint256 eventRequestId) external onlyMaster {}
 }

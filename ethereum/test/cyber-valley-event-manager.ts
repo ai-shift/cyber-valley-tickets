@@ -1,9 +1,15 @@
 import { keccak256 } from "@ethersproject/keccak256";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, Assertion, expect } from "chai";
-import type { BaseContract, ContractTransaction, Signer } from "ethers";
-import fc from "fast-check";
-import hre from "hardhat";
+import type {
+  BaseContract,
+  BigNumberish,
+  ContractTransaction,
+  ContractTransactionResponse,
+  EventLog,
+  Signer,
+} from "ethers";
+import { ethers } from "hardhat";
 import {
   type CyberValleyEventManager,
   CyberValleyEventTicket,
@@ -22,12 +28,12 @@ type ContractsFixture = {
 describe("CyberValleyEventManager", () => {
   const devTeamPercentage = 10;
   const masterPercentage = 50;
-  const eventRequestSubmitionPrice = 100;
+  const eventRequestSubmitionPrice = BigInt(100);
   const defaultCreateEventPlaceRequest = {
-    maxTickets: 100,
-    minTickets: 50,
-    minPrice: 20,
-    minDays: 1,
+    maxTickets: 100 as BigNumberish,
+    minTickets: 50 as BigNumberish,
+    minPrice: 20 as BigNumberish,
+    minDays: 1 as BigNumberish,
   };
   type CreateEventPlaceRequest = typeof defaultCreateEventPlaceRequest;
 
@@ -40,30 +46,36 @@ describe("CyberValleyEventManager", () => {
   };
   type UpdateEventPlaceRequest = typeof updateEventPlaceRequest;
 
-  const defaultSubmitEventRequest = {
+  const defaultSubmitEventRequest: EventRequest = {
     id: Math.floor(Math.random() * 10e6),
+    eventPlaceId: updateEventPlaceRequest.eventPlaceId,
     ticketPrice: defaultCreateEventPlaceRequest.minPrice,
-    startDate: 5,
-    cancelDate: 3,
+    startDate: 5 as BigNumberish,
+    cancelDate: 3 as BigNumberish,
     daysAmount: defaultCreateEventPlaceRequest.minDays,
   };
 
-  function asArguments(
-    req: CreateEventPlaceRequest | UpdateEventPlaceRequest,
-  ): number[] {
-    if ("eventPlaceId" in req) {
-      return [
-        req.eventPlaceId,
-        req.maxTickets,
-        req.minTickets,
-        req.minPrice,
-        req.minDays,
-      ];
-    }
+  function updateEventPlaceRequestAsArguments(
+    req: UpdateEventPlaceRequest,
+  ): Parameters<CyberValleyEventManager["updateEventPlace"]> {
+    return [
+      req.eventPlaceId,
+      req.maxTickets,
+      req.minTickets,
+      req.minPrice,
+      req.minDays,
+    ];
+  }
+
+  function createEventPlaceRequestAsArguments(
+    req: CreateEventPlaceRequest,
+  ): Parameters<CyberValleyEventManager["createEventPlace"]> {
     return [req.maxTickets, req.minTickets, req.minPrice, req.minDays];
   }
 
-  function eventRequestAsArguments(req: EventRequest) {
+  function eventRequestAsArguments(
+    req: EventRequest,
+  ): Parameters<CyberValleyEventManager["submitEventRequest"]> {
     return [
       req.id,
       req.eventPlaceId,
@@ -111,9 +123,9 @@ describe("CyberValleyEventManager", () => {
 
   async function deployContract(): Promise<ContractsFixture> {
     console.log("Deploying contract");
-    const [owner, master, devTeam, creator] = await hre.ethers.getSigners();
-    const ERC20 = await hre.ethers.deployContract("SimpleERC20Xylose");
-    const CyberValleyEventManagerFactory = await hre.ethers.getContractFactory(
+    const [owner, master, devTeam, creator] = await ethers.getSigners();
+    const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
+    const CyberValleyEventManagerFactory = await ethers.getContractFactory(
       "CyberValleyEventManager",
     );
     const eventManager = await CyberValleyEventManagerFactory.deploy(
@@ -127,7 +139,7 @@ describe("CyberValleyEventManager", () => {
   }
 
   type EventPlaceCreated = {
-    tx: ContractTransaction;
+    tx: ContractTransactionResponse;
     eventPlaceId: number;
   };
 
@@ -136,15 +148,17 @@ describe("CyberValleyEventManager", () => {
     master: Signer,
     patch?: Partial<CreateEventPlaceRequest>,
   ): Promise<EventPlaceCreated> {
-    const tx = await eventManager
-      .connect(master)
-      .createEventPlace(
-        ...asArguments({ ...defaultCreateEventPlaceRequest, ...patch }),
-      );
-    const receipt = await tx.wait();
-    const event = receipt.logs.find(
-      (e) => e.fragment?.name === "NewEventPlaceAvailable",
+    const tx = await eventManager.connect(master).createEventPlace(
+      ...createEventPlaceRequestAsArguments({
+        ...defaultCreateEventPlaceRequest,
+        ...patch,
+      }),
     );
+    const receipt = await tx.wait();
+    assert(receipt != null);
+    const event = receipt.logs
+      .filter((e): e is EventLog => "fragment" in e && "args" in e)
+      .find((e) => e.fragment?.name === "NewEventPlaceAvailable");
     assert(event != null, "NewEventPlaceAvailable wasn't emitted");
     return { tx, eventPlaceId: event.args.eventPlaceId };
   }
@@ -167,7 +181,7 @@ describe("CyberValleyEventManager", () => {
   ) {
     return await eventManager
       .connect(master)
-      .updateEventPlace(...asArguments(request));
+      .updateEventPlace(...updateEventPlaceRequestAsArguments(request));
   }
 
   async function createAndUpdateEventPlace(
@@ -187,12 +201,12 @@ describe("CyberValleyEventManager", () => {
   }
 
   type EventRequest = {
-    id: string;
-    eventPlaceId: number;
-    ticketPrice: number;
-    startDate: number;
-    cancelDate: number;
-    daysAmount: number;
+    id: BigNumberish;
+    eventPlaceId: BigNumberish;
+    ticketPrice: BigNumberish;
+    startDate: BigNumberish;
+    cancelDate: BigNumberish;
+    daysAmount: BigNumberish;
   };
 
   async function createEvent(
@@ -200,9 +214,9 @@ describe("CyberValleyEventManager", () => {
     master: Signer,
     creator: Signer,
     patch: Partial<EventRequest>,
-  ): Promise<{ request: EventRequest; tx: ContractTransaction }> {
+  ): Promise<{ request: EventRequest; tx: ContractTransactionResponse }> {
     const { request } = await submitEventRequest(eventManager, master, patch);
-    const tx = eventManager.connect(master).approveEvent(request.id);
+    const tx = await eventManager.connect(master).approveEvent(request.id);
     return { request, tx };
   }
 
@@ -210,13 +224,13 @@ describe("CyberValleyEventManager", () => {
     eventManager: CyberValleyEventManager,
     creator: Signer,
     patch: Partial<EventRequest>,
-  ): Promise<{ request: EventRequest; tx: ContractTransaction }> {
+  ): Promise<{ request: EventRequest; tx: ContractTransactionResponse }> {
     const request = {
       ...defaultSubmitEventRequest,
-      creatorAddress: creator,
       ...patch,
     };
-    const tx = eventManager
+    assert(request.eventPlaceId != null);
+    const tx = await eventManager
       .connect(creator)
       .submitEventRequest(...eventRequestAsArguments(request));
     return { request, tx };
@@ -226,8 +240,11 @@ describe("CyberValleyEventManager", () => {
    * The fuck do u mean that expect works only inside of `it`
    * i.e. it raises `AssertionError`, but the runner doesn't care and ignore it
    */
-  function itExpectsOnlyMaster(methodName, request) {
-    it(`${methodName} allowed only to master`, async () => {
+  function itExpectsOnlyMaster<K extends keyof CyberValleyEventManager>(
+    methodName: K,
+    request: Parameters<CyberValleyEventManager[K]>,
+  ) {
+    it(`${String(methodName)} allowed only to master`, async () => {
       const { eventManager } = await loadFixture(deployContract);
       const method = eventManager[methodName];
       assert(method != null);
@@ -240,7 +257,7 @@ describe("CyberValleyEventManager", () => {
   describe("createEventPlace", () => {
     itExpectsOnlyMaster(
       "createEventPlace",
-      asArguments(defaultCreateEventPlaceRequest),
+      createEventPlaceRequestAsArguments(defaultCreateEventPlaceRequest),
     );
 
     it("should emit NewEventPlaceAvailable", async () => {
@@ -248,7 +265,10 @@ describe("CyberValleyEventManager", () => {
       const { tx } = await createValidEventPlace(eventManager, master);
       await expect(tx)
         .to.emit(eventManager, "NewEventPlaceAvailable")
-        .withArgs(0, ...asArguments(defaultCreateEventPlaceRequest));
+        .withArgs(
+          0,
+          ...createEventPlaceRequestAsArguments(defaultCreateEventPlaceRequest),
+        );
     });
 
     eventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
@@ -267,7 +287,7 @@ describe("CyberValleyEventManager", () => {
   describe("updateEventPlace", () => {
     itExpectsOnlyMaster(
       "updateEventPlace",
-      asArguments(updateEventPlaceRequest),
+      updateEventPlaceRequestAsArguments(updateEventPlaceRequest),
     );
 
     it("should emit NewEventPlaceAvailable", async () => {
@@ -275,7 +295,9 @@ describe("CyberValleyEventManager", () => {
       const tx = await createAndUpdateEventPlace(eventManager, master);
       await expect(tx)
         .to.emit(eventManager, "EventPlaceUpdated")
-        .withArgs(...asArguments(updateEventPlaceRequest));
+        .withArgs(
+          ...updateEventPlaceRequestAsArguments(updateEventPlaceRequest),
+        );
     });
 
     eventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
@@ -296,12 +318,14 @@ describe("CyberValleyEventManager", () => {
       const { eventManager, master, creator } =
         await loadFixture(deployContract);
       const { eventPlaceId } = await createEventPlace(eventManager, master);
-      const { tx } = await submitEventRequest(eventManager, master, creator, {
+      const { tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
       });
       await expect(tx)
         .to.emit(eventManager, "NewEventRequest")
-        .withArgs(...asArguments(updateEventPlaceRequest));
+        .withArgs(
+          ...updateEventPlaceRequestAsArguments(updateEventPlaceRequest),
+        );
     });
 
     it("transfers ERC20 token", async () => {
@@ -311,11 +335,11 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
       );
       assert(
-        initialBalance == 0,
+        initialBalance === BigInt(0),
         `Initial balance should be zero, but it's ${initialBalance}`,
       );
       const { eventPlaceId } = await createEventPlace(eventManager, master);
-      await submitEventRequest(eventManager, master, creator, { eventPlaceId });
+      await submitEventRequest(eventManager, creator, { eventPlaceId });
       assert(
         (await ERC20.balanceOf(await eventManager.getAddress())) ===
           eventRequestSubmitionPrice,
@@ -328,20 +352,10 @@ describe("CyberValleyEventManager", () => {
       const { eventPlaceId } = await createEventPlace(eventManager, master, {
         ...defaultCreateEventPlaceRequest,
       });
-      const eventRequest = {
-        id: Math.floor(Math.random() * 10e6),
-        creatorAddress: creator.address,
+      const { tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
-        ticketPrice: defaultCreateEventPlaceRequest.minPrice,
-        startDate: 5,
-        cancelDate: 3,
-        daysAmount: defaultCreateEventPlaceRequest.minDays,
-      };
-      await expect(
-        eventManager
-          .connect(creator)
-          .submitEventRequest(...eventRequestAsArguments(eventRequest)),
-      ).to.be.revertedWith("Event request payment failed");
+      });
+      await expect(tx).to.be.revertedWith("Event request payment failed");
     });
 
     [
@@ -425,16 +439,15 @@ describe("CyberValleyEventManager", () => {
         );
         const { tx } = await submitEventRequest(eventManager, creator, {
           eventPlaceId,
-            ...eventRequestPatch
-        })
-        await expect(
-          tx
-        ).to.be.revertedWith(revertsWith);
+          ...eventRequestPatch,
+        });
+        await expect(tx).to.be.revertedWith(revertsWith);
       }),
     );
 
     it("reverts on date overlap in given event place", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
+      const { eventManager, master, creator } =
+        await loadFixture(deployContract);
       const minDaysAmount = 1;
       const maxDaysAmount = 5;
       for (
@@ -455,11 +468,12 @@ describe("CyberValleyEventManager", () => {
             const { eventPlaceId } = await createEventPlace(
               eventManager,
               master,
-              { daysAmount },
+              { minDays: daysAmount },
             );
-            const { approvedEventRequest } = await createEvent(
+            const { request: approvedEventRequest } = await createEvent(
               eventManager,
               master,
+              creator,
               {
                 eventPlaceId,
                 startDate: approvedEventStart,
@@ -467,7 +481,7 @@ describe("CyberValleyEventManager", () => {
             );
             const { tx } = await submitEventRequest(eventManager, master, {
               eventPlaceId,
-              requestedEventStart,
+              startDate: requestedEventStart,
             });
             await expect(tx).to.be.revertedWith(
               "Requested event overlaps with approved one",
