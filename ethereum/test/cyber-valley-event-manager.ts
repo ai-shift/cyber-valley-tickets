@@ -50,8 +50,8 @@ describe("CyberValleyEventManager", () => {
     id: Math.floor(Math.random() * 10e6),
     eventPlaceId: updateEventPlaceRequest.eventPlaceId,
     ticketPrice: defaultCreateEventPlaceRequest.minPrice,
-    startDate: 5 as BigNumberish,
-    cancelDate: 3 as BigNumberish,
+    startDate: timestamp(5),
+    cancelDate: timestamp(3),
     daysAmount: defaultCreateEventPlaceRequest.minDays,
   };
 
@@ -254,6 +254,17 @@ describe("CyberValleyEventManager", () => {
     });
   }
 
+  function timestamp(daysFromNow: number): BigNumberish {
+    return Math.floor(
+      new Date(new Date().setDate(new Date().getDate() + daysFromNow)).setHours(
+        0,
+        0,
+        0,
+        0,
+      ) / 1000,
+    );
+  }
+
   describe("createEventPlace", () => {
     itExpectsOnlyMaster(
       "createEventPlace",
@@ -380,36 +391,15 @@ describe("CyberValleyEventManager", () => {
       {
         eventPlacePatch: {},
         eventRequestPatch: {
-          startDate: Math.floor(
-            new Date(new Date().setDate(new Date().getDate() - 1)).setHours(
-              0,
-              0,
-              0,
-              0,
-            ) / 1000,
-          ),
+          startDate: timestamp(-1),
         },
         revertsWith: "Requested event can't be in the past",
       },
       {
         evenPlacePatch: {},
         eventRequestPatch: {
-          startDate: Math.floor(
-            new Date(new Date().setDate(new Date().getDate() - 2)).setHours(
-              0,
-              0,
-              0,
-              0,
-            ) / 1000,
-          ),
-          cancelDate: Math.floor(
-            new Date(new Date().setDate(new Date().getDate() - 1)).setHours(
-              0,
-              0,
-              0,
-              0,
-            ) / 1000,
-          ),
+          startDate: timestamp(-2),
+          cancelDate: timestamp(-1),
         },
         revertsWith:
           "Cancel date should be at least one day before the start date",
@@ -417,14 +407,7 @@ describe("CyberValleyEventManager", () => {
       {
         eventPlacePatch: {},
         eventRequestPatch: {
-          startDate: Math.floor(
-            new Date(new Date().setDate(new Date().getDate() + 300)).setHours(
-              0,
-              0,
-              0,
-              0,
-            ) / 1000,
-          ),
+          startDate: timestamp(300),
         },
         revertsWith: "Requested event is too far in the future",
       },
