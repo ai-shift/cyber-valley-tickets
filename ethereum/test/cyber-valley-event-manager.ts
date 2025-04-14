@@ -1,7 +1,8 @@
-import fc from 'fast-check';
+import { keccak256 } from "@ethersproject/keccak256";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, Assertion, expect } from "chai";
-import type { BaseContract, Signer, ContractTransaction } from "ethers";
+import type { BaseContract, ContractTransaction, Signer } from "ethers";
+import fc from "fast-check";
 import hre from "hardhat";
 import {
   type CyberValleyEventManager,
@@ -15,11 +16,13 @@ type ContractsFixture = {
   owner: Signer;
   master: Signer;
   devTeam: Signer;
+  creator: Signer;
 };
 
 describe("CyberValleyEventManager", () => {
   const devTeamPercentage = 10;
   const masterPercentage = 50;
+  const eventRequestSubmitionPrice = 100;
   const createEventPlaceRequest = {
     maxTickets: 100,
     minTickets: 50,
@@ -50,6 +53,17 @@ describe("CyberValleyEventManager", () => {
       ];
     }
     return [req.maxTickets, req.minTickets, req.minPrice, req.minDays];
+  }
+
+  function eventRequestAsArguments(req: EventRequest) {
+    return [
+      req.id,
+      req.eventPlaceId,
+      req.ticketPrice,
+      req.startDate,
+      req.cancelDate,
+      req.daysAmount,
+    ];
   }
 
   const eventPlaceCornerCases = [
@@ -89,7 +103,7 @@ describe("CyberValleyEventManager", () => {
 
   async function deployContract(): Promise<ContractsFixture> {
     console.log("Deploying contract");
-    const [owner, master, devTeam] = await hre.ethers.getSigners();
+    const [owner, master, devTeam, creator] = await hre.ethers.getSigners();
     const sex = await hre.ethers.deployContract("SimpleERC20Xylose");
     const CyberValleyEventManagerFactory = await hre.ethers.getContractFactory(
       "CyberValleyEventManager",
@@ -101,13 +115,13 @@ describe("CyberValleyEventManager", () => {
       devTeam,
       10,
     );
-    return { sex, eventManager, owner, master, devTeam };
+    return { sex, eventManager, owner, master, devTeam, creator };
   }
 
   type EventPlaceCreated = {
     tx: ContractTransaction;
     eventPlaceId: number;
-  }
+  };
 
   async function createEventPlace(
     eventManager: CyberValleyEventManager,
@@ -116,13 +130,13 @@ describe("CyberValleyEventManager", () => {
   ): Promise<EventPlaceCreated> {
     const tx = await eventManager
       .connect(master)
-      .createEventPlace(...asArguments({...createEventPlace, ...patch}));
+      .createEventPlace(...asArguments({ ...createEventPlace, ...patch }));
     const receipt = await tx.wait();
     const event = receipt.logs.find(
       (e) => e.fragment?.name === "NewEventPlaceAvailable",
     );
     assert(event != null, "NewEventPlaceAvailable wasn't emitted");
-    return { tx, eventPlaceId: event.args.eventPlaceId }
+    return { tx, eventPlaceId: event.args.eventPlaceId };
   }
 
   async function createValidEventPlace(
@@ -157,23 +171,45 @@ describe("CyberValleyEventManager", () => {
       master,
       maybeUpdateEventPlaceRequest || {
         ...updateEventPlaceRequest,
-        eventPlaceId
+        eventPlaceId,
       },
     );
   }
 
-  function createEvent(
+  type EventRequest = {
+    id: string;
+    eventPlaceId: number;
+    ticketPrice: number;
+    startDate: number;
+    cancelDate: number;
+    daysAmount: number;
+  };
+
+  async function createEvent(
     eventManager: CyberValleyEventManager,
     master: Signer,
-  ) {
-
+    creator: Signer,
+    patch: Partial<EventRequest>,
+  ): Promise<{ request: EventRequest; tx: ContractTransaction }> {
+    const { request } = await submitEventRequest(eventManager, master, patch);
+    const tx = eventManager.connect(master).approveEvent(request.id);
+    return { request, tx };
   }
 
-  function submitEventRequest(
+  async function submitEventRequest(
     eventManager: CyberValleyEventManager,
-    master: Signer,
-  ) {
-
+    creator: Signer,
+    patch: Partial<EventRequest>,
+  ): Promise<{ request: EventRequest; tx: ContractTransaction }> {
+    const request = {
+      ...defaultSubmitEventRequest,
+      creatorAddress: creator,
+      ...patch,
+    };
+    const tx = eventManager
+      .connect(creator)
+      .submitEvent(...eventRequestAsArguments(request));
+    return { request, tx };
   }
 
   /**
@@ -246,52 +282,84 @@ describe("CyberValleyEventManager", () => {
   });
 
   describe("submitEventRequest", () => {
-    itExpectsOnlyMaster("submitEventRequest", asArguments(submitEventRequest));
+    it("emits NewEventRequest", async () => {});
 
-    it("emits NewEventRequest", () => {
+    it("transfers funds to ERC20", async () => {});
 
-    });
-
-    it("transfers funds to ERC20", () => {
-
+    it("reverts on insufficient funds", async () => {
+      const { eventManager, master, creator } =
+        await loadFixture(deployContract);
+      const { eventPlaceId } = await createEventPlace(eventManager, master, {
+        ...createEventPlaceRequest,
+      });
+      const eventRequest = {
+        id: Math.floor(Math.random() * 10e6),
+        creatorAddress: creator.address,
+        eventPlaceId,
+        ticketPrice: createEventPlaceRequest.minPrice,
+        startDate: 5,
+        cancelDate: 3,
+        daysAmount: createEventPlaceRequest.minDays,
+      };
+      await expect(
+        eventManager
+          .connect(creator)
+          .submitEventRequest(...eventRequestAsArguments(eventRequest)),
+      ).to.be.revertedWith(revertedWith);
     });
 
     it("reverts on incompatibale data with event place", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
+      const { eventManager, master, creator } =
+        await loadFixture(deployContract);
       await expect(
         eventManager
-          .connect(master)
+          .connect(creator)
           .submitEventRequest({ ...submitEventRequestRequest, ...patch }),
       ).to.be.revertedWith(revertedWith);
     });
 
     it("reverts on date overlap in given event place", async () => {
       const { eventManager, master } = await loadFixture(deployContract);
-      fc.assert(
-        fc.property(
-          fc.integer(),
-          fc.integer(),
-          fc.integer(),
-          (daysAmount, approvedEventStart, requestedEventStart) => {
-            const validAStart = startA <= endA ? startA : endA;
-            const validAEnd = startA <= endA ? endA : startA;
-            const validBStart = startB <= endB ? startB : endB;
-            const validBEnd = startB <= endB ? endB : startB;
-
-            if (validAEnd < validBStart) {
-              // We got two different ranges
-              return true;
-            }
-
-            await createEventPlace(eventManager, master, {daysAmount: 5})
-            const tx = await createEvent(eventManager, master);
-            await tx.wait();
-            await submitEventRequest(eventManager, master, )
+      const minDaysAmount = 1;
+      const maxDaysAmount = 5;
+      for (
+        let daysAmount = minDaysAmount;
+        daysAmount < maxDaysAmount;
+        daysAmount++
+      ) {
+        for (
+          let approvedEventStart = minDaysAmount;
+          approvedEventStart <= maxDaysAmount;
+          approvedEventStart++
+        ) {
+          for (
+            let requestedEventStart = approvedEventStart - daysAmount;
+            requestedEventStart <= approvedEventStart + daysAmount;
+            requestedEventStart++
+          ) {
+            const { eventPlaceId } = await createEventPlace(
+              eventManager,
+              master,
+              { daysAmount },
+            );
+            const { approvedEventRequest } = await createEvent(
+              eventManager,
+              master,
+              {
+                eventPlaceId,
+                startDate: approvedEventStart,
+              },
+            );
+            const { tx } = await submitEventRequest(eventManager, master, {
+              eventPlaceId,
+              requestedEventStart,
+            });
+            await expect(tx).to.be.revertedWith(
+              "Requested event overlaps with approved one",
+            );
           }
-        ),
-        {numRuns: 100}
-      )
-
+        }
+      }
     });
   });
 });
