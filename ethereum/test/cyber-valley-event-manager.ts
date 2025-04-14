@@ -104,20 +104,31 @@ describe("CyberValleyEventManager", () => {
     return { sex, eventManager, owner, master, devTeam };
   }
 
+  type EventPlaceCreated = {
+    tx: any;
+    eventPlaceId: number;
+  }
+
   async function createEventPlace(
     eventManager: CyberValleyEventManager,
     master: Signer,
-    request: CreateEventPlaceRequest,
-  ) {
-    return await eventManager
+    patch: Partial<CreateEventPlaceRequest>,
+  ): Promise<EventPlaceCreated> {
+    const tx = await eventManager
       .connect(master)
-      .createEventPlace(...asArguments(request));
+      .createEventPlace(...asArguments({...createEventPlace, ...patch}));
+    const receipt = await tx.wait();
+    const event = receipt.logs.find(
+      (e) => e.fragment?.name === "NewEventPlaceAvailable",
+    );
+    assert(event != null, "NewEventPlaceAvailable wasn't emitted");
+    return { tx, eventPlaceId: event.args.eventPlaceId }
   }
 
   async function createValidEventPlace(
     eventManager: CyberValleyEventManager,
     master: Signer,
-  ) {
+  ): Promise<EventPlaceCreated> {
     return await createEventPlace(
       eventManager,
       master,
@@ -140,20 +151,29 @@ describe("CyberValleyEventManager", () => {
     master: Signer,
     maybeUpdateEventPlaceRequest?: UpdateEventPlaceRequest,
   ) {
-    const tx = await createValidEventPlace(eventManager, master);
-    const receipt = await tx.wait();
-    const event = receipt.logs.find(
-      (e) => e.fragment?.name === "NewEventPlaceAvailable",
-    );
-    assert(event != null, "NewEventPlaceAvailable wasn't emitted");
+    const { eventPlaceId } = await createValidEventPlace(eventManager, master);
     return await updateEventPlace(
       eventManager,
       master,
       maybeUpdateEventPlaceRequest || {
         ...updateEventPlaceRequest,
-        eventPlaceId: event.args.eventPlaceId,
+        eventPlaceId
       },
     );
+  }
+
+  function createEvent(
+    eventManager: CyberValleyEventManager,
+    master: Signer,
+  ) {
+
+  }
+
+  function submitEventRequest(
+    eventManager: CyberValleyEventManager,
+    master: Signer,
+  ) {
+
   }
 
   /**
@@ -179,7 +199,8 @@ describe("CyberValleyEventManager", () => {
 
     it("should emit NewEventPlaceAvailable", async () => {
       const { eventManager, master } = await loadFixture(deployContract);
-      await expect(await createValidEventPlace(eventManager, master))
+      const { tx } = await createValidEventPlace(eventManager, master);
+      await expect(tx)
         .to.emit(eventManager, "NewEventPlaceAvailable")
         .withArgs(0, ...asArguments(createEventPlaceRequest));
     });
