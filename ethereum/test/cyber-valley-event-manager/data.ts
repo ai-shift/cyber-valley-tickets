@@ -1,4 +1,3 @@
-import type { BigNumberish } from "ethers";
 import { timestamp } from "./helpers";
 import type {
   CreateEventPlaceRequest,

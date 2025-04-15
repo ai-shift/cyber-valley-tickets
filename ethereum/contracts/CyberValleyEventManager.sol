@@ -254,7 +254,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             request.creator != address(0),
             "Event request with given id does not exist"
         );
-
         allocateDateRange(
             request.eventPlaceId,
             request.startDate,
@@ -273,4 +272,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         delete eventRequests[eventRequestId];
         emit EventApproved(eventRequestId);
     }
+
+    function declineEvent(uint256 eventRequestId) external onlyMaster {}
 }

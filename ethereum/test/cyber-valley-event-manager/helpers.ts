@@ -23,6 +23,7 @@ import type {
   EventPlaceCreated,
   EventRequest,
   UpdateEventPlaceRequest,
+  ApproveEventRequest,
 } from "./types";
 
 export type ContractsFixture = {
@@ -63,6 +64,10 @@ export function eventRequestAsArguments(
     req.startDate,
     req.daysAmount,
   ];
+}
+
+export function approveEventRequestAsArguments(req: ApproveEventRequest): Parameters<CyberValleyEventManager["approveEvent"]> {
+  return [ req.id ];
 }
 
 export async function deployContract(): Promise<ContractsFixture> {
@@ -143,20 +148,40 @@ export async function createAndUpdateEventPlace(
 
 export async function createEvent(
   eventManager: CyberValleyEventManager,
+  ERC20: SimpleERC20Xylose,
   master: Signer,
   creator: Signer,
-  patch: Partial<EventRequest>,
+  eventPlacePatch: Partial<CreateEventPlaceRequest>,
+  submitEventPatch: Partial<EventRequest>,
+  approveEventPatch: Partial<ApproveEventRequest>
 ): Promise<{
   request: EventRequest;
   tx: Promise<ContractTransactionResponse>;
 }> {
+  // Mint tokens & approve
+  await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+  await ERC20.connect(creator).approve(
+    await eventManager.getAddress(),
+    eventRequestSubmitionPrice,
+  );
+
+  // Create event place
+  const { eventPlaceId } = await createEventPlace(
+    eventManager,
+    master,
+    eventPlacePatch,
+  );
+
+  // Submit request
   const { tx: submitEventRequestTx, request } = await submitEventRequest(
     eventManager,
     creator,
-    patch,
+    submitEventPatch,
   );
   await submitEventRequestTx;
-  const tx = eventManager.connect(master).approveEvent(request.id);
+
+  // Approve
+  const tx = eventManager.connect(master).approveEvent(...approveEventRequestAsArguments({id: request.id, ...approveEventPatch}));
   return { request, tx };
 }
 

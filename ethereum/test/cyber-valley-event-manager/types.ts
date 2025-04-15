@@ -28,3 +28,7 @@ export type EventRequest = {
   cancelDate: BigNumberish;
   daysAmount: BigNumberish;
 };
+
+export type ApproveEventRequest = {
+  id: BigNumberish
+}
