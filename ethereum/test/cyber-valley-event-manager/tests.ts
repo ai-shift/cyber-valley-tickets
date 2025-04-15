@@ -1,0 +1,202 @@
+import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
+import { expect } from "chai";
+import {
+  createAndUpdateEventPlace,
+  createEvent,
+  createEventPlace,
+  createEventPlaceRequestAsArguments,
+  createValidEventPlace,
+  deployContract,
+  eventRequestAsArguments,
+  itExpectsOnlyMaster,
+  stringify,
+  submitEventRequest,
+  updateEventPlaceRequestAsArguments,
+} from "./helpers";
+
+import {
+  defaultCreateEventPlaceRequest,
+  defaultUpdateEventPlaceRequest,
+  eventRequestSubmitionPrice,
+} from "./data";
+
+import {
+  createEventPlaceCornerCases,
+  submitEventDateRangeOverlapCornerCases,
+  submitEventIncompatibleEventPlaceCornerCases,
+} from "./corner-cases";
+
+describe("CyberValleyEventManager", () => {
+  describe("createEventPlace", () => {
+    itExpectsOnlyMaster(
+      "createEventPlace",
+      createEventPlaceRequestAsArguments(defaultCreateEventPlaceRequest),
+    );
+
+    it("should emit NewEventPlaceAvailable", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      const { tx } = await createValidEventPlace(eventManager, master);
+      await expect(tx)
+        .to.emit(eventManager, "NewEventPlaceAvailable")
+        .withArgs(
+          0,
+          ...createEventPlaceRequestAsArguments(defaultCreateEventPlaceRequest),
+        );
+    });
+
+    createEventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
+      it(`should validate invariants. Case ${idx + 1}: ${JSON.stringify(patch)}`, async () => {
+        const { eventManager, master } = await loadFixture(deployContract);
+        await expect(
+          createEventPlace(eventManager, master, {
+            ...defaultCreateEventPlaceRequest,
+            ...patch,
+          }),
+        ).to.be.revertedWith(revertedWith);
+      }),
+    );
+  });
+
+  describe("updateEventPlace", () => {
+    itExpectsOnlyMaster(
+      "updateEventPlace",
+      updateEventPlaceRequestAsArguments(defaultUpdateEventPlaceRequest),
+    );
+
+    it("should emit NewEventPlaceAvailable", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      const tx = await createAndUpdateEventPlace(eventManager, master);
+      await expect(tx)
+        .to.emit(eventManager, "EventPlaceUpdated")
+        .withArgs(
+          ...updateEventPlaceRequestAsArguments(defaultUpdateEventPlaceRequest),
+        );
+    });
+
+    createEventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
+      it(`should validate invariants. Case ${idx + 1}: ${JSON.stringify(patch)}`, async () => {
+        const { eventManager, master } = await loadFixture(deployContract);
+        await expect(
+          createAndUpdateEventPlace(eventManager, master, {
+            ...defaultUpdateEventPlaceRequest,
+            ...patch,
+          }),
+        ).to.be.revertedWith(revertedWith);
+      }),
+    );
+  });
+
+  describe("submitEventRequest", () => {
+    it("emits NewEventRequest", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { eventPlaceId } = await createEventPlace(eventManager, master);
+      const { request, tx } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+      });
+      await expect(tx)
+        .to.emit(eventManager, "NewEventRequest")
+        .withArgs(
+          await creator.getAddress(),
+          ...eventRequestAsArguments(request),
+        );
+    });
+
+    it("transfers ERC20 token", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await expect(
+        await ERC20.balanceOf(await eventManager.getAddress()),
+      ).to.equal(0);
+      const { eventPlaceId, tx: createEventPlaceTx } = await createEventPlace(
+        eventManager,
+        master,
+      );
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { tx } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+      });
+      await expect(tx).to.changeTokenBalances(
+        ERC20,
+        [await eventManager.getAddress(), await creator.getAddress()],
+        [eventRequestSubmitionPrice, -eventRequestSubmitionPrice],
+      );
+    });
+
+    it("reverts on insufficient funds", async () => {
+      const { eventManager, master, creator } =
+        await loadFixture(deployContract);
+      const { eventPlaceId } = await createEventPlace(eventManager, master, {
+        ...defaultCreateEventPlaceRequest,
+      });
+      const { tx } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+      });
+      await expect(tx).to.be.revertedWith("Not enough tokens");
+    });
+
+    submitEventIncompatibleEventPlaceCornerCases.forEach(
+      ({ eventPlacePatch, eventRequestPatch, revertsWith }, idx) =>
+        it(`reverts on incompatibale data eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
+          const { eventManager, master, creator } =
+            await loadFixture(deployContract);
+          const { eventPlaceId } = await createEventPlace(
+            eventManager,
+            master,
+            eventPlacePatch,
+          );
+          const { tx } = await submitEventRequest(eventManager, creator, {
+            eventPlaceId,
+            ...eventRequestPatch,
+          });
+          await expect(tx).to.be.revertedWith(revertsWith);
+        }),
+    );
+
+    submitEventDateRangeOverlapCornerCases.forEach(
+      ({ approvedEventPatch, submittedEventPatch }, idx) =>
+        it(`reverts on overlap: Case ${idx} approved: ${stringify(approvedEventPatch)}, submitted: ${stringify(submittedEventPatch)}`, async () => {
+          const { eventManager, ERC20, master, creator } =
+            await loadFixture(deployContract);
+          const requiredTokensAmount = eventRequestSubmitionPrice * BigInt(2);
+          await ERC20.connect(creator).mint(requiredTokensAmount);
+          await ERC20.connect(creator).approve(
+            await eventManager.getAddress(),
+            requiredTokensAmount,
+          );
+          const { eventPlaceId } = await createEventPlace(
+            eventManager,
+            master,
+            {
+              ...defaultCreateEventPlaceRequest,
+            },
+          );
+          const { tx: createEventTx } = await createEvent(
+            eventManager,
+            master,
+            creator,
+            { ...approvedEventPatch, eventPlaceId },
+          );
+          await createEventTx;
+
+          const { tx } = await submitEventRequest(
+            eventManager,
+            creator,
+            submittedEventPatch,
+          );
+          await expect(tx).to.be.revertedWith(
+            "Requested event overlaps with existing",
+          );
+        }),
+    );
+  });
+});

@@ -273,4 +273,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         delete eventRequests[eventRequestId];
         emit EventApproved(eventRequestId);
     }
+
+    function getEventRequestSubmitionPrice() external view returns(uint256) {
+        return eventRequestPrice;
+    }
 }
