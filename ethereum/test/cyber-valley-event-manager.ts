@@ -331,13 +331,13 @@ describe("CyberValleyEventManager", () => {
       const { eventManager, master, creator } =
         await loadFixture(deployContract);
       const { eventPlaceId } = await createEventPlace(eventManager, master);
-      const { tx } = await submitEventRequest(eventManager, creator, {
+      const { request, tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
       });
       await expect(tx)
         .to.emit(eventManager, "NewEventRequest")
         .withArgs(
-          ...updateEventPlaceRequestAsArguments(updateEventPlaceRequest),
+          await creator.getAddress(), ...eventRequestAsArguments(request),
         );
     });
 

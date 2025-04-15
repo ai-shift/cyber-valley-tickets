@@ -44,8 +44,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 minDays
     );
     event NewEventRequest(
-        uint256 id,
         address creator,
+        uint256 id,
         uint256 eventPlaceId,
         uint16 ticketPrice,
         uint256 cancelDate,
@@ -212,8 +212,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         eventRequests[id] = request;
 
         emit NewEventRequest(
-            id,
             msg.sender,
+            id,
             eventPlaceId,
             ticketPrice,
             cancelDate,
