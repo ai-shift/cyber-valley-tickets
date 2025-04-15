@@ -10,4 +10,8 @@ contract SimpleERC20Xylose is ERC20, ERC20Permit {
         ERC20("SimpleERC20Xylose", "SEX")
         ERC20Permit("SimpleERC20Xylose")
     {}
+
+    function mint(uint256 amount) external {
+        _mint(msg.sender, amount);
+    }
 }

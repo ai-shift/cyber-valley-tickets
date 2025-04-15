@@ -74,6 +74,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 _masterPercentage,
         address _devTeam,
         uint256 _devTeamPercentage,
+        uint256 _eventRequestPrice,
         uint256 _initialOffest
     ) DateOverlapChecker(_initialOffest) {
         require(
@@ -85,6 +86,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         devTeamPercentage = _devTeamPercentage;
         devTeam = _devTeam;
         masterPercentage = _masterPercentage;
+        eventRequestPrice = _eventRequestPrice;
 
         _grantRole(DEFAULT_ADMIN_ROLE, master);
         _grantRole(MASTER_ROLE, master);
@@ -188,8 +190,21 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Requested event is too far in the future"
         );
         require(
-            checkNoOverlap(eventPlaceId, startDate, startDate + daysAmount * SECONDS_IN_DAY),
+            checkNoOverlap(
+                eventPlaceId,
+                startDate,
+                startDate + daysAmount * SECONDS_IN_DAY
+            ),
             "Requested event overlaps with existing"
+        );
+        require(
+            usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice,
+            "Not enough tokens"
+        );
+        require(
+            usdtTokenContract.allowance(msg.sender, address(this)) >=
+                eventRequestPrice,
+            "Required amount was not allowed"
         );
         require(
             usdtTokenContract.transferFrom(

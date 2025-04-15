@@ -17,8 +17,14 @@ contract DateOverlapChecker {
         uint256 startDate,
         uint256 endDate
     ) internal view returns (bool) {
-        require(startDate >= initialOffest, "Start date should be after initial offset");
-        require(endDate >= initialOffest, "End date should be after initial offset");
+        require(
+            startDate >= initialOffest,
+            "Start date should be after initial offset"
+        );
+        require(
+            endDate >= initialOffest,
+            "End date should be after initial offset"
+        );
         require(
             endDate - startDate >= SECONDS_IN_DAY,
             "Dates should differ at least for one day"

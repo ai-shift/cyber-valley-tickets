@@ -134,7 +134,8 @@ describe("CyberValleyEventManager", () => {
       50,
       devTeam,
       10,
-      timestamp(0)
+      eventRequestSubmitionPrice,
+      timestamp(0),
     );
     return { ERC20, eventManager, owner, master, devTeam, creator };
   }
@@ -225,14 +226,13 @@ describe("CyberValleyEventManager", () => {
     eventManager: CyberValleyEventManager,
     creator: Signer,
     patch: Partial<EventRequest>,
-  ): Promise<{ request: EventRequest; tx: ContractTransactionResponse }> {
+  ): Promise<{ request: EventRequest; tx: Promise<ContractTransactionResponse> }> {
     const request = {
       ...defaultSubmitEventRequest,
       ...patch,
     };
     assert(request.eventPlaceId != null);
-    console.log("Submitting event request with", request);
-    const tx = await eventManager
+    const tx = eventManager
       .connect(creator)
       .submitEventRequest(...eventRequestAsArguments(request));
     return { request, tx };
@@ -263,7 +263,7 @@ describe("CyberValleyEventManager", () => {
         0,
         0,
         0,
-      ) / 1000
+      ) / 1000,
     );
   }
 
@@ -328,8 +328,10 @@ describe("CyberValleyEventManager", () => {
 
   describe("submitEventRequest", () => {
     it("emits NewEventRequest", async () => {
-      const { eventManager, master, creator } =
+      const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(await eventManager.getAddress(), eventRequestSubmitionPrice);
       const { eventPlaceId } = await createEventPlace(eventManager, master);
       const { request, tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
@@ -337,25 +339,30 @@ describe("CyberValleyEventManager", () => {
       await expect(tx)
         .to.emit(eventManager, "NewEventRequest")
         .withArgs(
-          await creator.getAddress(), ...eventRequestAsArguments(request),
+          await creator.getAddress(),
+          ...eventRequestAsArguments(request),
         );
     });
 
     it("transfers ERC20 token", async () => {
       const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
-      const initialBalance = await ERC20.balanceOf(
-        await eventManager.getAddress(),
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await expect(
+        await ERC20.balanceOf(await eventManager.getAddress()),
+      ).to.equal(0);
+      const { eventPlaceId, tx: createEventPlaceTx } = await createEventPlace(
+        eventManager,
+        master,
       );
-      assert(
-        initialBalance === BigInt(0),
-        `Initial balance should be zero, but it's ${initialBalance}`,
-      );
-      const { eventPlaceId } = await createEventPlace(eventManager, master);
-      await submitEventRequest(eventManager, creator, { eventPlaceId });
-      assert(
-        (await ERC20.balanceOf(await eventManager.getAddress())) ===
-          eventRequestSubmitionPrice,
+      await ERC20.connect(creator).approve(await eventManager.getAddress(), eventRequestSubmitionPrice);
+      const { tx } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+      });
+      await expect(tx).to.changeTokenBalances(
+        ERC20,
+        [await eventManager.getAddress(), await creator.getAddress()],
+        [eventRequestSubmitionPrice, -eventRequestSubmitionPrice],
       );
     });
 
@@ -368,7 +375,7 @@ describe("CyberValleyEventManager", () => {
       const { tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
       });
-      await expect(tx).to.be.revertedWith("Event request payment failed");
+      await expect(tx).to.be.revertedWith("Not enough tokens");
     });
 
     [
@@ -393,6 +400,7 @@ describe("CyberValleyEventManager", () => {
       {
         eventPlacePatch: {},
         eventRequestPatch: {
+          cancelDate: timestamp(-2),
           startDate: timestamp(-1),
         },
         revertsWith: "Requested event can't be in the past",
@@ -404,7 +412,7 @@ describe("CyberValleyEventManager", () => {
           cancelDate: timestamp(-1),
         },
         revertsWith:
-          "Cancel date should be at least one day before the start date",
+          "Cancelation date should be earlier than start",
       },
       {
         eventPlacePatch: {},
