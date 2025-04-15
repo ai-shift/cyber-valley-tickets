@@ -16,7 +16,124 @@ contract DateOverlapChecker {
         uint256 id,
         uint256 startDate,
         uint256 endDate
-    ) internal view returns (bool) {
+    ) internal view validDateRange(startDate, endDate) returns (bool) {
+        uint256[] storage buckets = dateRanges[id];
+        // There are no any date ranges stored
+        if (buckets.length == 0) {
+            return true;
+        }
+        uint256 startBucketIdx = dateToBucketIdx(startDate);
+        // There is no bucket for the given range
+        if (startBucketIdx >= buckets.length) {
+            return true;
+        }
+        uint256 endBucketIdx = dateToBucketIdx(endDate);
+        uint256 startDaysWithBucketOffset = dateToBucketRelativeDays(
+            startDate,
+            startBucketIdx
+        );
+        uint256 endDaysWithBucketOffset = dateToBucketRelativeDays(
+            endDate,
+            endBucketIdx
+        );
+
+        // Easy way, date range inside of single bucket
+        if (startBucketIdx == endBucketIdx) {
+            return
+                daysRangeToMask(
+                    startDaysWithBucketOffset,
+                    endDaysWithBucketOffset
+                ) &
+                    buckets[startBucketIdx] ==
+                0;
+        }
+
+        // Got date range inside of two buckets
+        uint256 startMask = daysRangeToMask(startDaysWithBucketOffset, 255);
+        // There is no bucket for the second part
+        if (endBucketIdx >= buckets.length) {
+            return startMask & buckets[startBucketIdx] == 0;
+        }
+        uint256 endMask = daysRangeToMask(0, endDaysWithBucketOffset);
+        return
+            startMask & buckets[startBucketIdx] == 0 &&
+            endMask & buckets[endBucketIdx] == 0;
+    }
+
+    function allocateDateRange(
+        uint256 id,
+        uint256 startDate,
+        uint256 endDate
+    ) internal validDateRange(startDate, endDate) returns (bool) {
+        require(
+            checkNoOverlap(id, startDate, endDate),
+            "Can not allocate overlapping date ranges"
+        );
+        return _allocateDateRangeUnsafe(id, startDate, endDate);
+    }
+
+    function _allocateDateRangeUnsafe(
+        uint256 id,
+        uint256 startDate,
+        uint256 endDate
+    ) internal validDateRange(startDate, endDate) returns (bool) {
+        uint256[] storage buckets = dateRanges[id];
+        uint256 startBucketIdx = dateToBucketIdx(startDate);
+        for (uint256 idx = buckets.length - 1; idx <= startBucketIdx; idx++) {
+            buckets.push(0);
+        }
+        uint256 endBucketIdx = dateToBucketIdx(endDate);
+
+        uint256 startDaysWithBucketOffset = dateToBucketRelativeDays(
+            startDate,
+            startBucketIdx
+        );
+        uint256 endDaysWithBucketOffset = dateToBucketRelativeDays(
+            endDate,
+            endBucketIdx
+        );
+        if (startBucketIdx == endBucketIdx) {
+            buckets[startBucketIdx] |= daysRangeToMask(
+                startDaysWithBucketOffset,
+                endDaysWithBucketOffset
+            );
+            return true;
+        }
+        for (uint256 idx = buckets.length - 1; idx <= endBucketIdx; idx++) {
+            buckets.push(0);
+        }
+
+        buckets[startBucketIdx] |= daysRangeToMask(
+            startDaysWithBucketOffset,
+            255
+        );
+        buckets[endBucketIdx] |= daysRangeToMask(0, endDaysWithBucketOffset);
+        return true;
+    }
+
+    function dateToBucketIdx(uint256 date) internal view returns (uint256) {
+        return (date - initialOffest) / SECONDS_IN_DAY / BUCKET_SIZE;
+    }
+
+    function dateToBucketRelativeDays(
+        uint256 date,
+        uint256 bucketIdx
+    ) internal view returns (uint256) {
+        return
+            (date - initialOffest) /
+            SECONDS_IN_DAY -
+            (bucketIdx + 1) *
+            BUCKET_SIZE;
+    }
+
+    function daysRangeToMask(
+        uint256 start,
+        uint256 end
+    ) internal pure returns (uint256) {
+        return ((1 << (end - start + 1)) - 1) << start;
+    }
+
+    modifier validDateRange(uint256 startDate, uint256 endDate) {
         require(
             startDate >= initialOffest,
             "Start date should be after initial offset"
@@ -29,44 +146,6 @@ contract DateOverlapChecker {
             endDate - startDate >= SECONDS_IN_DAY,
             "Dates should differ at least for one day"
         );
-        uint256[] storage buckets = dateRanges[id];
-        // There are no any date ranges stored
-        if (buckets.length == 0) {
-            return true;
-        }
-        uint256 startDays = (startDate - initialOffest) / SECONDS_IN_DAY;
-        uint256 endDays = (endDate - initialOffest) / SECONDS_IN_DAY;
-        uint256 startBucketIdx = startDays / BUCKET_SIZE;
-        // There is no bucket for the given range
-        if (startBucketIdx >= buckets.length) {
-            return true;
-        }
-        uint256 endBucketIdx = endDays / BUCKET_SIZE;
-        uint256 startDaysWithBucketOffset = startDays -
-            (startBucketIdx + 1) *
-            BUCKET_SIZE;
-        uint256 endDaysWithBucketOffset = endDays -
-            (endBucketIdx + 1) *
-            BUCKET_SIZE;
-
-        // Easy way, date range inside of single bucket
-        if (startBucketIdx == endBucketIdx) {
-            uint256 mask = ((1 <<
-                (endDaysWithBucketOffset - startDaysWithBucketOffset + 1)) -
-                1) << startDaysWithBucketOffset;
-            return mask & buckets[startBucketIdx] == 0;
-        }
-
-        // Got date range inside of two buckets
-        uint256 startMask = ((1 << (256 - startDaysWithBucketOffset)) - 1) <<
-            startDaysWithBucketOffset;
-        // There is no bucket for the second part
-        if (endBucketIdx >= buckets.length) {
-            return startMask & buckets[startBucketIdx] == 0;
-        }
-        uint256 endMask = ((1 << (endDaysWithBucketOffset + 1)) - 1) << 0;
-        return
-            startMask & buckets[startBucketIdx] == 0 &&
-            endMask & buckets[endBucketIdx] == 0;
+        _;
     }
 }

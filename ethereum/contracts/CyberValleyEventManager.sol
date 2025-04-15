@@ -29,6 +29,15 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 daysAmount;
     }
 
+    struct Event {
+        address creator;
+        uint256 eventPlaceId;
+        uint16 ticketPrice;
+        uint256 cancelDate;
+        uint256 startDate;
+        uint16 daysAmount;
+    }
+
     event NewEventPlaceAvailable(
         uint256 eventPlaceId,
         uint16 maxTickets,
@@ -52,6 +61,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 startDate,
         uint16 daysAmount
     );
+    event EventApproved(uint256 eventRequestId);
 
     IERC20 public usdtTokenContract;
 
@@ -62,6 +72,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     EventPlace[] public eventPlaces;
     mapping(uint256 => EventRequest) public eventRequests;
+    Event[] public events;
 
     modifier onlyMaster() {
         require(hasRole(MASTER_ROLE, msg.sender), "Must have master role");
@@ -237,5 +248,28 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
     }
 
-    function approveEvent(uint256 eventRequestId) external onlyMaster {}
+    function approveEvent(uint256 eventRequestId) external onlyMaster {
+        EventRequest storage request = eventRequests[eventRequestId];
+        require(
+            request.creator != address(0),
+            "Event request with given id does not exist"
+        );
+        allocateDateRange(
+            request.eventPlaceId,
+            request.startDate,
+            request.startDate + request.daysAmount * SECONDS_IN_DAY
+        );
+        events.push(
+            Event({
+                creator: request.creator,
+                eventPlaceId: request.eventPlaceId,
+                ticketPrice: request.ticketPrice,
+                cancelDate: request.cancelDate,
+                startDate: request.startDate,
+                daysAmount: request.daysAmount
+            })
+        );
+        delete eventRequests[eventRequestId];
+        emit EventApproved(eventRequestId);
+    }
 }
