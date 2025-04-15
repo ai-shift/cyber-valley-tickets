@@ -61,7 +61,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     uint256 public eventRequestPrice;
 
     EventPlace[] public eventPlaces;
-    EventRequest[] public eventRequests;
+    mapping(uint256 => EventRequest) public eventRequests;
 
     modifier onlyMaster() {
         require(hasRole(MASTER_ROLE, msg.sender), "Must have master role");

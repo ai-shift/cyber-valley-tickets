@@ -17,6 +17,8 @@ contract DateOverlapChecker {
         uint256 startDate,
         uint256 endDate
     ) internal view returns (bool) {
+        require(startDate >= initialOffest, "Start date should be after initial offset");
+        require(endDate >= initialOffest, "End date should be after initial offset");
         require(
             endDate - startDate >= SECONDS_IN_DAY,
             "Dates should differ at least for one day"
@@ -46,7 +48,7 @@ contract DateOverlapChecker {
             uint256 mask = ((1 <<
                 (endDaysWithBucketOffset - startDaysWithBucketOffset + 1)) -
                 1) << startDaysWithBucketOffset;
-            return mask & dateRanges[id][startBucketIdx] == 0;
+            return mask & buckets[startBucketIdx] == 0;
         }
 
         // Got date range inside of two buckets
@@ -54,7 +56,7 @@ contract DateOverlapChecker {
             startDaysWithBucketOffset;
         // There is no bucket for the second part
         if (endBucketIdx >= buckets.length) {
-            return startMask & dateRanges[id][startBucketIdx] == 0;
+            return startMask & buckets[startBucketIdx] == 0;
         }
         uint256 endMask = ((1 << (endDaysWithBucketOffset + 1)) - 1) << 0;
         return
