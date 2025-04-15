@@ -51,7 +51,7 @@ describe("CyberValleyEventManager", () => {
     eventPlaceId: updateEventPlaceRequest.eventPlaceId,
     ticketPrice: defaultCreateEventPlaceRequest.minPrice,
     startDate: timestamp(5),
-    cancelDate: timestamp(3),
+    cancelDate: timestamp(1),
     daysAmount: defaultCreateEventPlaceRequest.minDays,
   };
 
@@ -457,13 +457,31 @@ describe("CyberValleyEventManager", () => {
     [
       {
         approvedEventPatch: {
-          cancelDate: timestamp(3),
           startDate: timestamp(5),
           daysAmount: 4,
         },
         submittedEventPatch: {
-          cancelDate: timestamp(4),
           startdate: timestamp(5),
+          daysAmount: 4,
+        },
+      },
+      {
+        approvedEventPatch: {
+          startDate: timestamp(5),
+          daysAmount: 4,
+        },
+        submittedEventPatch: {
+          startdate: timestamp(9),
+          daysAmount: 4,
+        },
+      },
+      {
+        approvedEventPatch: {
+          startDate: timestamp(5),
+          daysAmount: 4,
+        },
+        submittedEventPatch: {
+          startdate: timestamp(1),
           daysAmount: 4,
         },
       },
@@ -493,7 +511,9 @@ describe("CyberValleyEventManager", () => {
           creator,
           submittedEventPatch,
         );
-        await expect(tx).to.be.revertedWith("Requested event overlaps with existing");
+        await expect(tx).to.be.revertedWith(
+          "Requested event overlaps with existing",
+        );
       }),
     );
   });
