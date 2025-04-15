@@ -73,8 +73,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address master,
         uint256 _masterPercentage,
         address _devTeam,
-        uint256 _devTeamPercentage
-    ) {
+        uint256 _devTeamPercentage,
+        uint256 _initialOffest
+    ) DateOverlapChecker(_initialOffest) {
         require(
             _devTeamPercentage + _masterPercentage <= 100,
             "Percentages must be less than 100"

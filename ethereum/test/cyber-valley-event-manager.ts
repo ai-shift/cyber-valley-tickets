@@ -134,6 +134,7 @@ describe("CyberValleyEventManager", () => {
       50,
       devTeam,
       10,
+      timestamp(0)
     );
     return { ERC20, eventManager, owner, master, devTeam, creator };
   }

@@ -9,7 +9,7 @@ contract DateOverlapChecker {
     uint256 public constant BUCKET_SIZE = 256;
 
     constructor(uint256 _initialOffest) {
-        initialOffest = _initialOffest
+        initialOffest = _initialOffest;
     }
 
     function checkNoOverlap(
