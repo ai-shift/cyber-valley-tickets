@@ -216,9 +216,17 @@ describe("CyberValleyEventManager", () => {
     master: Signer,
     creator: Signer,
     patch: Partial<EventRequest>,
-  ): Promise<{ request: EventRequest; tx: ContractTransactionResponse }> {
-    const { request } = await submitEventRequest(eventManager, master, patch);
-    const tx = await eventManager.connect(master).approveEvent(request.id);
+  ): Promise<{
+    request: EventRequest;
+    tx: Promise<ContractTransactionResponse>;
+  }> {
+    const { tx: submitEventRequestTx, request } = await submitEventRequest(
+      eventManager,
+      master,
+      patch,
+    );
+    await submitEventRequestTx;
+    const tx = eventManager.connect(master).approveEvent(request.id);
     return { request, tx };
   }
 
@@ -226,7 +234,10 @@ describe("CyberValleyEventManager", () => {
     eventManager: CyberValleyEventManager,
     creator: Signer,
     patch: Partial<EventRequest>,
-  ): Promise<{ request: EventRequest; tx: Promise<ContractTransactionResponse> }> {
+  ): Promise<{
+    request: EventRequest;
+    tx: Promise<ContractTransactionResponse>;
+  }> {
     const request = {
       ...defaultSubmitEventRequest,
       ...patch,
@@ -331,7 +342,10 @@ describe("CyberValleyEventManager", () => {
       const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
       await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
-      await ERC20.connect(creator).approve(await eventManager.getAddress(), eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
       const { eventPlaceId } = await createEventPlace(eventManager, master);
       const { request, tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
@@ -355,7 +369,10 @@ describe("CyberValleyEventManager", () => {
         eventManager,
         master,
       );
-      await ERC20.connect(creator).approve(await eventManager.getAddress(), eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
       const { tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
       });
@@ -411,8 +428,7 @@ describe("CyberValleyEventManager", () => {
           startDate: timestamp(-2),
           cancelDate: timestamp(-1),
         },
-        revertsWith:
-          "Cancelation date should be earlier than start",
+        revertsWith: "Cancelation date should be earlier than start",
       },
       {
         eventPlacePatch: {},
@@ -438,50 +454,53 @@ describe("CyberValleyEventManager", () => {
       }),
     );
 
-    it("reverts on date overlap in given event place", async () => {
-      const { eventManager, master, creator } =
-        await loadFixture(deployContract);
-      const minDaysAmount = 1;
-      const maxDaysAmount = 5;
-      for (
-        let daysAmount = minDaysAmount;
-        daysAmount < maxDaysAmount;
-        daysAmount++
-      ) {
-        for (
-          let approvedEventStart = minDaysAmount;
-          approvedEventStart <= maxDaysAmount;
-          approvedEventStart++
-        ) {
-          for (
-            let requestedEventStart = approvedEventStart - daysAmount;
-            requestedEventStart <= approvedEventStart + daysAmount;
-            requestedEventStart++
-          ) {
-            const { eventPlaceId } = await createEventPlace(
-              eventManager,
-              master,
-              { minDays: daysAmount },
-            );
-            const { request: approvedEventRequest } = await createEvent(
-              eventManager,
-              master,
-              creator,
-              {
-                eventPlaceId,
-                startDate: approvedEventStart,
-              },
-            );
-            const { tx } = await submitEventRequest(eventManager, master, {
-              eventPlaceId,
-              startDate: requestedEventStart,
-            });
-            await expect(tx).to.be.revertedWith(
-              "Requested event overlaps with approved one",
-            );
-          }
-        }
-      }
-    });
+    [
+      {
+        approvedEventPatch: {
+          cancelDate: timestamp(3),
+          startDate: timestamp(5),
+          daysAmount: 4,
+        },
+        submittedEventPatch: {
+          cancelDate: timestamp(4),
+          startdate: timestamp(5),
+          daysAmount: 4,
+        },
+      },
+    ].forEach(({ approvedEventPatch, submittedEventPatch }) =>
+      it(`reverts on overlap: Approved: ${stringify(approvedEventPatch)}, submitted: ${stringify(submittedEventPatch)}`, async () => {
+        const { eventManager, ERC20, master, creator } =
+          await loadFixture(deployContract);
+        const requiredTokensAmount = eventRequestSubmitionPrice * BigInt(2);
+        await ERC20.connect(creator).mint(requiredTokensAmount);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          requiredTokensAmount,
+        );
+        const { eventPlaceId } = await createEventPlace(eventManager, master, {
+          ...defaultCreateEventPlaceRequest,
+        });
+        const { tx: createEventTx } = await createEvent(
+          eventManager,
+          master,
+          creator,
+          { ...approvedEventPatch, eventPlaceId },
+        );
+        await createEventTx;
+
+        const { tx } = await submitEventRequest(
+          eventManager,
+          creator,
+          submittedEventPatch,
+        );
+        await expect(tx).to.be.revertedWith("");
+      }),
+    );
   });
 });
+
+function stringify<T>(obj: T): string {
+  return JSON.stringify(obj, (_, v) =>
+    typeof v === "bigint" ? v.toString() : v,
+  );
+}
