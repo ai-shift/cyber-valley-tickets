@@ -254,6 +254,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             request.creator != address(0),
             "Event request with given id does not exist"
         );
+
         allocateDateRange(
             request.eventPlaceId,
             request.startDate,

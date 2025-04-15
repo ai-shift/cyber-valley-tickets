@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
+import "@openzeppelin/contracts/utils/math/Math.sol";
+
 contract DateOverlapChecker {
     uint256 initialOffest;
     mapping(uint256 => uint256[]) dateRanges;
@@ -79,9 +81,6 @@ contract DateOverlapChecker {
     ) internal validDateRange(startDate, endDate) returns (bool) {
         uint256[] storage buckets = dateRanges[id];
         uint256 startBucketIdx = dateToBucketIdx(startDate);
-        for (uint256 idx = buckets.length - 1; idx <= startBucketIdx; idx++) {
-            buckets.push(0);
-        }
         uint256 endBucketIdx = dateToBucketIdx(endDate);
 
         uint256 startDaysWithBucketOffset = dateToBucketRelativeDays(
@@ -92,6 +91,9 @@ contract DateOverlapChecker {
             endDate,
             endBucketIdx
         );
+
+        createBucketsIfNeeded(buckets, startBucketIdx);
+
         if (startBucketIdx == endBucketIdx) {
             buckets[startBucketIdx] |= daysRangeToMask(
                 startDaysWithBucketOffset,
@@ -99,9 +101,7 @@ contract DateOverlapChecker {
             );
             return true;
         }
-        for (uint256 idx = buckets.length - 1; idx <= endBucketIdx; idx++) {
-            buckets.push(0);
-        }
+        createBucketsIfNeeded(buckets, endBucketIdx);
 
         buckets[startBucketIdx] |= daysRangeToMask(
             startDaysWithBucketOffset,
@@ -120,10 +120,7 @@ contract DateOverlapChecker {
         uint256 bucketIdx
     ) internal view returns (uint256) {
         return
-            (date - initialOffest) /
-            SECONDS_IN_DAY -
-            (bucketIdx + 1) *
-            BUCKET_SIZE;
+            (date - initialOffest) / SECONDS_IN_DAY - bucketIdx * BUCKET_SIZE;
     }
 
     function daysRangeToMask(
@@ -131,6 +128,19 @@ contract DateOverlapChecker {
         uint256 end
     ) internal pure returns (uint256) {
         return ((1 << (end - start + 1)) - 1) << start;
+    }
+
+    function createBucketsIfNeeded(
+        uint256[] storage buckets,
+        uint256 bucketIdx
+    ) internal {
+        for (
+            uint256 idx = Math.max(buckets.length, 1) - 1;
+            idx <= bucketIdx;
+            idx++
+        ) {
+            buckets.push(0);
+        }
     }
 
     modifier validDateRange(uint256 startDate, uint256 endDate) {

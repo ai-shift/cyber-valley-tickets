@@ -222,7 +222,7 @@ describe("CyberValleyEventManager", () => {
   }> {
     const { tx: submitEventRequestTx, request } = await submitEventRequest(
       eventManager,
-      master,
+      creator,
       patch,
     );
     await submitEventRequestTx;
@@ -493,7 +493,7 @@ describe("CyberValleyEventManager", () => {
           creator,
           submittedEventPatch,
         );
-        await expect(tx).to.be.revertedWith("");
+        await expect(tx).to.be.revertedWith("Requested event overlaps with existing");
       }),
     );
   });
