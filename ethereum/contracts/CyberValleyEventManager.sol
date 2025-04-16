@@ -305,8 +305,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.startDate - evt.cancelDate >= SECONDS_IN_DAY,
             "Cancel date should be at least one day before the start date"
         );
-        // Saves from requests that will allocate a Flot of buckets
+        // Saves from requests that will allocate a lot of buckets
         // in the `DateOverlapChecker`
+        // Written when BUCKET_SIZE == 256
         require(
             evt.startDate - block.timestamp <= SECONDS_IN_DAY * BUCKET_SIZE,
             "Requested event is too far in the future"
