@@ -264,8 +264,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 cancelDate,
         uint256 startDate,
         uint16 daysAmount
-    ) external {
-        require(eventId < events.length, "Event with given id does not exist");
+    ) external onlyMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         evt.eventPlaceId = eventPlaceId;
         evt.ticketPrice = ticketPrice;

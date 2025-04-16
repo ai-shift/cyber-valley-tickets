@@ -241,7 +241,7 @@ describe("CyberValleyEventManager", () => {
         { eventId: BigInt(1000 + Math.floor(Math.random() * 1000)) },
       );
       await expect(tx).to.be.revertedWith(
-        "Event request with given id does not exist",
+        "Event with given id does not exist",
       );
     });
   });
@@ -275,7 +275,7 @@ describe("CyberValleyEventManager", () => {
         eventManager
           .connect(master)
           .declineEvent(Math.floor(Math.random() * 1000)),
-      ).to.be.revertedWith("Event request with given id does not exist");
+      ).to.be.revertedWith("Event with given id does not exist");
     });
 
     it("refunds tokens to creator", async () => {
