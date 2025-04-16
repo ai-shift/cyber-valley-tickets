@@ -715,7 +715,7 @@ Deletes event request from the storage
 
 #+begin_src plantuml :file ./img/new-event-model.png
 class NewEventModel {
-  eventRequestId: int
+  eventId: int
 }
 #+end_src
 

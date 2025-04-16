@@ -4,6 +4,7 @@ import type {
   BaseContract,
   BigNumberish,
   ContractTransactionResponse,
+  ContractTransactionReceipt,
   EventLog,
   Signer,
 } from "ethers";
@@ -19,11 +20,20 @@ import {
   eventRequestSubmitionPrice,
 } from "./data";
 import type {
-  ApproveEventRequest,
-  CreateEventPlaceRequest,
-  EventPlaceCreated,
-  EventRequest,
-  UpdateEventPlaceRequest,
+  ApproveEventArgs,
+  CreateEventPlaceArgs,
+  Event,
+  SubmitEventRequestArgs,
+  UpdateEventPlaceArgs,
+  NewEventPlaceAvailableEvent,
+  NewEventRequestEvent
+} from "./types";
+
+import {
+  createEventPlaceArgsToArray,
+  updateEventPlaceArgsToArray,
+  approveEventArgsToArray,
+  submitEventRequestArgsToArray
 } from "./types";
 
 export type ContractsFixture = {
@@ -33,48 +43,12 @@ export type ContractsFixture = {
   master: Signer;
   devTeam: Signer;
   creator: Signer;
+  staff: Signer;
 };
-
-export function updateEventPlaceRequestAsArguments(
-  req: UpdateEventPlaceRequest,
-): Parameters<CyberValleyEventManager["updateEventPlace"]> {
-  return [
-    req.eventPlaceId,
-    req.maxTickets,
-    req.minTickets,
-    req.minPrice,
-    req.minDays,
-  ];
-}
-
-export function createEventPlaceRequestAsArguments(
-  req: CreateEventPlaceRequest,
-): Parameters<CyberValleyEventManager["createEventPlace"]> {
-  return [req.maxTickets, req.minTickets, req.minPrice, req.minDays];
-}
-
-export function eventRequestAsArguments(
-  req: EventRequest,
-): Parameters<CyberValleyEventManager["submitEventRequest"]> {
-  return [
-    req.id,
-    req.eventPlaceId,
-    req.ticketPrice,
-    req.cancelDate,
-    req.startDate,
-    req.daysAmount,
-  ];
-}
-
-export function approveEventRequestAsArguments(
-  req: ApproveEventRequest,
-): Parameters<CyberValleyEventManager["approveEvent"]> {
-  return [req.id];
-}
 
 export async function deployContract(): Promise<ContractsFixture> {
   console.log("Deploying contract");
-  const [owner, master, devTeam, creator] = await ethers.getSigners();
+  const [owner, master, devTeam, creator, staff] = await ethers.getSigners();
   const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
     "CyberValleyEventManager",
@@ -88,16 +62,16 @@ export async function deployContract(): Promise<ContractsFixture> {
     eventRequestSubmitionPrice,
     timestamp(0),
   );
-  return { ERC20, eventManager, owner, master, devTeam, creator };
+  return { ERC20, eventManager, owner, master, devTeam, creator, staff };
 }
 
 export async function createEventPlace(
   eventManager: CyberValleyEventManager,
   master: Signer,
-  patch?: Partial<CreateEventPlaceRequest>,
-): Promise<EventPlaceCreated> {
+  patch?: Partial<CreateEventPlaceArgs>,
+): Promise<{eventPlaceId: BigNumberish, tx: ContractTransactionResponse}> {
   const tx = await eventManager.connect(master).createEventPlace(
-    ...createEventPlaceRequestAsArguments({
+    ...createEventPlaceArgsToArray({
       ...defaultCreateEventPlaceRequest,
       ...patch,
     }),
@@ -114,7 +88,7 @@ export async function createEventPlace(
 export async function createValidEventPlace(
   eventManager: CyberValleyEventManager,
   master: Signer,
-): Promise<EventPlaceCreated> {
+): ReturnType<typeof createEventPlace> {
   return await createEventPlace(
     eventManager,
     master,
@@ -125,25 +99,26 @@ export async function createValidEventPlace(
 export async function updateEventPlace(
   eventManager: CyberValleyEventManager,
   master: Signer,
-  request: UpdateEventPlaceRequest,
+  request: UpdateEventPlaceArgs,
 ) {
   return await eventManager
     .connect(master)
-    .updateEventPlace(...updateEventPlaceRequestAsArguments(request));
+    .updateEventPlace(...updateEventPlaceArgsToArray(request));
 }
 
 export async function createAndUpdateEventPlace(
   eventManager: CyberValleyEventManager,
   master: Signer,
-  maybeUpdateEventPlaceRequest?: UpdateEventPlaceRequest,
+  request: Partial<UpdateEventPlaceArgs>,
 ) {
   const { eventPlaceId } = await createValidEventPlace(eventManager, master);
   return await updateEventPlace(
     eventManager,
     master,
-    maybeUpdateEventPlaceRequest || {
+    {
       ...defaultUpdateEventPlaceRequest,
       eventPlaceId,
+      ...request
     },
   );
 }
@@ -153,12 +128,13 @@ export async function createEvent(
   ERC20: SimpleERC20Xylose,
   master: Signer,
   creator: Signer,
-  eventPlacePatch: Partial<CreateEventPlaceRequest>,
-  submitEventPatch: Partial<EventRequest>,
-  approveEventPatch: Partial<ApproveEventRequest>,
+  eventPlacePatch: Partial<CreateEventPlaceArgs>,
+  submitEventPatch: Partial<Event>,
+  approveEventPatch: Partial<ApproveEventArgs>,
 ): Promise<{
-  request: EventRequest;
+  request: SubmitEventRequestArgs;
   tx: Promise<ContractTransactionResponse>;
+  eventId: BigNumberish
 }> {
   // Mint tokens & approve
   await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
@@ -175,30 +151,32 @@ export async function createEvent(
   );
 
   // Submit request
-  const { tx: submitEventRequestTx, request } = await submitEventRequest(
+  const { tx: submitEventRequestTx, request, eventId: futureEventId } = await submitEventRequest(
     eventManager,
     creator,
     submitEventPatch,
   );
-  await submitEventRequestTx;
+
+  const eventId = await futureEventId;
 
   // Approve
   const tx = eventManager.connect(master).approveEvent(
-    ...approveEventRequestAsArguments({
-      id: request.id,
+    ...approveEventArgsToArray({
+      eventId,
       ...approveEventPatch,
     }),
   );
-  return { request, tx };
+  return { request, tx, eventId };
 }
 
 export async function submitEventRequest(
   eventManager: CyberValleyEventManager,
   creator: Signer,
-  patch: Partial<EventRequest>,
+  patch: Partial<SubmitEventRequestArgs>,
 ): Promise<{
-  request: EventRequest;
+  request: SubmitEventRequestArgs;
   tx: Promise<ContractTransactionResponse>;
+  eventId: Promise<BigNumberish>
 }> {
   const request = {
     ...defaultSubmitEventRequest,
@@ -207,8 +185,32 @@ export async function submitEventRequest(
   assert(request.eventPlaceId != null);
   const tx = eventManager
     .connect(creator)
-    .submitEventRequest(...eventRequestAsArguments(request));
-  return { request, tx };
+    .submitEventRequest(...submitEventRequestArgsToArray(request));
+  return {
+    request,
+    tx,
+    eventId: new Promise((resolve) => {
+      tx.then(async (tx) => {
+        const { id } = extractEvent<NewEventRequestEvent>(
+          await tx.wait(),
+          "NewEventRequestEvent"
+        );
+        resolve(id);
+      })
+    })
+  };
+}
+
+export function extractEvent<T>(
+  receipt: ContractTransactionReceipt | null,
+  eventName: string
+): T {
+  assert(receipt != null, "Got null receipt");
+  const event = receipt.logs
+    .filter((e): e is EventLog => "fragment" in e && "args" in e)
+    .find((e) => e.fragment?.name === eventName);
+  assert(event != null, `${eventName} wasn't emitted`);
+  return event.args as T
 }
 
 /**
@@ -220,11 +222,31 @@ export function itExpectsOnlyMaster<K extends keyof CyberValleyEventManager>(
   request: Parameters<CyberValleyEventManager[K]>,
 ) {
   it(`${String(methodName)} allowed only to master`, async () => {
-    const { eventManager } = await loadFixture(deployContract);
+    const { eventManager, master } = await loadFixture(deployContract);
     const method = eventManager[methodName];
     assert(method != null);
-    await expect(method.apply(eventManager, request)).to.be.revertedWith(
+    await expect(await method.apply(eventManager, request)).to.be.revertedWith(
       "Must have master role",
+    );
+    await expect(await method.apply(eventManager, request).connect(master)).to.be.revertedWith(
+      "Must have master role",
+    );
+  });
+}
+
+export function itExpectsOnlyStaff<K extends keyof CyberValleyEventManager>(
+  methodName: K,
+  request: Parameters<CyberValleyEventManager[K]>,
+) {
+  it(`${String(methodName)} allowed only to master`, async () => {
+    const { eventManager, staff } = await loadFixture(deployContract);
+    const method = eventManager[methodName];
+    assert(method != null);
+    await expect(await method.apply(eventManager, request)).to.be.revertedWith(
+      "Must have staff role",
+    );
+    await expect(await method.apply(eventManager, request).connect(staff)).to.be.revertedWith(
+      "Must have staff role",
     );
   });
 }

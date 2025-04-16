@@ -19,14 +19,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 minDays;
     }
 
-    struct EventRequest {
-        uint256 id;
-        address creator;
-        uint256 eventPlaceId;
-        uint16 ticketPrice;
-        uint256 cancelDate;
-        uint256 startDate;
-        uint16 daysAmount;
+    enum EventStatus {
+        Submitted,
+        Approved,
+        Declined,
+        Cancelled,
+        Closed
     }
 
     struct Event {
@@ -36,6 +34,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 cancelDate;
         uint256 startDate;
         uint16 daysAmount;
+        EventStatus status;
     }
 
     event NewEventPlaceAvailable(
@@ -53,7 +52,17 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 minDays
     );
     event NewEventRequest(
+        uint256 id,
         address creator,
+        uint256 eventPlaceId,
+        uint16 ticketPrice,
+        uint256 cancelDate,
+        uint256 startDate,
+        uint16 daysAmount
+    );
+    event EventApproved(uint256 eventId);
+    event EventDeclined(uint256 eventId);
+    event EventUpdated(
         uint256 id,
         uint256 eventPlaceId,
         uint16 ticketPrice,
@@ -61,8 +70,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 startDate,
         uint16 daysAmount
     );
-    event EventApproved(uint256 eventRequestId);
-    event EventDeclined(uint256 eventRequestId);
 
     IERC20 public usdtTokenContract;
 
@@ -72,11 +79,15 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     uint256 public eventRequestPrice;
 
     EventPlace[] public eventPlaces;
-    mapping(uint256 => EventRequest) public eventRequests;
     Event[] public events;
 
     modifier onlyMaster() {
         require(hasRole(MASTER_ROLE, msg.sender), "Must have master role");
+        _;
+    }
+
+    modifier onlyExistingEvent(uint256 eventId) {
+        require(eventId < events.length, "Event with given id does not exist");
         _;
     }
 
@@ -167,48 +178,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     }
 
     function submitEventRequest(
-        uint256 id,
         uint256 eventPlaceId,
         uint16 ticketPrice,
         uint256 cancelDate,
         uint256 startDate,
         uint16 daysAmount
     ) external {
-        EventPlace storage place = eventPlaces[eventPlaceId];
-        require(
-            place.minPrice <= ticketPrice,
-            "Ticket price is less than allowed"
-        );
-        require(
-            place.minDays <= daysAmount,
-            "Days amount is less than allowed"
-        );
-        require(
-            cancelDate < startDate,
-            "Cancelation date should be earlier than start"
-        );
-        require(
-            cancelDate >= block.timestamp,
-            "Requested event can't be in the past"
-        );
-        require(
-            startDate - cancelDate >= SECONDS_IN_DAY,
-            "Cancel date should be at least one day before the start date"
-        );
-        // Saves from requests that will allocate a Flot of buckets
-        // in the `DateOverlapChecker`
-        require(
-            startDate - block.timestamp <= SECONDS_IN_DAY * BUCKET_SIZE,
-            "Requested event is too far in the future"
-        );
-        require(
-            checkNoOverlap(
-                eventPlaceId,
-                startDate,
-                startDate + daysAmount * SECONDS_IN_DAY
-            ),
-            "Requested event overlaps with existing"
-        );
         require(
             usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice,
             "Not enough tokens"
@@ -226,21 +201,21 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             ),
             "Event request payment failed"
         );
-
-        EventRequest memory request = EventRequest({
-            id: id,
-            creator: msg.sender,
-            eventPlaceId: eventPlaceId,
-            ticketPrice: ticketPrice,
-            cancelDate: cancelDate,
-            startDate: startDate,
-            daysAmount: daysAmount
-        });
-        eventRequests[id] = request;
-
+        events.push(
+            Event({
+                creator: msg.sender,
+                eventPlaceId: eventPlaceId,
+                ticketPrice: ticketPrice,
+                cancelDate: cancelDate,
+                startDate: startDate,
+                daysAmount: daysAmount,
+                status: EventStatus.Submitted
+            })
+        );
+        validateEvent(events[events.length - 1]);
         emit NewEventRequest(
+            events.length - 1,
             msg.sender,
-            id,
             eventPlaceId,
             ticketPrice,
             cancelDate,
@@ -249,42 +224,107 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
     }
 
-    function approveEvent(uint256 eventRequestId) external onlyMaster {
-        EventRequest storage request = eventRequests[eventRequestId];
+    function approveEvent(
+        uint256 eventId
+    ) external onlyMaster onlyExistingEvent(eventId) {
+        Event storage evt = events[eventId];
         require(
-            request.creator != address(0),
-            "Event request with given id does not exist"
+            evt.status == EventStatus.Submitted,
+            "Event status differs from submitted"
         );
         allocateDateRange(
-            request.eventPlaceId,
-            request.startDate,
-            request.startDate + request.daysAmount * SECONDS_IN_DAY
+            evt.eventPlaceId,
+            evt.startDate,
+            evt.startDate + evt.daysAmount * SECONDS_IN_DAY
         );
-        events.push(
-            Event({
-                creator: request.creator,
-                eventPlaceId: request.eventPlaceId,
-                ticketPrice: request.ticketPrice,
-                cancelDate: request.cancelDate,
-                startDate: request.startDate,
-                daysAmount: request.daysAmount
-            })
-        );
-        delete eventRequests[eventRequestId];
-        emit EventApproved(eventRequestId);
+        evt.status = EventStatus.Approved;
+        emit EventApproved(eventId);
     }
 
-    function declineEvent(uint256 eventRequestId) external onlyMaster {
-        EventRequest storage request = eventRequests[eventRequestId];
+    function declineEvent(
+        uint256 eventId
+    ) external onlyMaster onlyExistingEvent(eventId) {
+        Event storage evt = events[eventId];
         require(
-            request.creator != address(0),
-            "Event request with given id does not exist"
+            evt.status == EventStatus.Submitted,
+            "Event status differs from submitted"
         );
         require(
-            usdtTokenContract.transfer(request.creator, eventRequestPrice),
+            usdtTokenContract.transfer(evt.creator, eventRequestPrice),
             "Failed to refund event request"
         );
-        delete eventRequests[eventRequestId];
-        emit EventDeclined(eventRequestId);
+        evt.status = EventStatus.Declined;
+        emit EventDeclined(eventId);
     }
+
+    function updateEvent(
+        uint256 eventId,
+        uint256 eventPlaceId,
+        uint16 ticketPrice,
+        uint256 cancelDate,
+        uint256 startDate,
+        uint16 daysAmount
+    ) external {
+        require(eventId < events.length, "Event with given id does not exist");
+        Event storage evt = events[eventId];
+        evt.eventPlaceId = eventPlaceId;
+        evt.ticketPrice = ticketPrice;
+        evt.cancelDate = cancelDate;
+        evt.startDate = startDate;
+        evt.daysAmount = daysAmount;
+        validateEvent(evt);
+        emit EventUpdated(
+            eventId,
+            eventPlaceId,
+            ticketPrice,
+            cancelDate,
+            startDate,
+            daysAmount
+        );
+    }
+
+    function validateEvent(Event storage evt) internal view {
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
+        require(evt.status <= EventStatus.Approved, "Event is not available");
+        require(
+            place.minPrice <= evt.ticketPrice,
+            "Ticket price is less than allowed"
+        );
+        require(
+            place.minDays <= evt.daysAmount,
+            "Days amount is less than allowed"
+        );
+        require(
+            evt.cancelDate < evt.startDate,
+            "Cancelation date should be earlier than start"
+        );
+        require(
+            evt.cancelDate >= block.timestamp,
+            "Requested event can't be in the past"
+        );
+        require(
+            evt.startDate - evt.cancelDate >= SECONDS_IN_DAY,
+            "Cancel date should be at least one day before the start date"
+        );
+        // Saves from requests that will allocate a Flot of buckets
+        // in the `DateOverlapChecker`
+        require(
+            evt.startDate - block.timestamp <= SECONDS_IN_DAY * BUCKET_SIZE,
+            "Requested event is too far in the future"
+        );
+        require(
+            checkNoOverlap(
+                evt.eventPlaceId,
+                evt.startDate,
+                evt.startDate + evt.daysAmount * SECONDS_IN_DAY
+            ),
+            "Requested event overlaps with existing"
+        );
+    }
+
+    function verifyTicket(uint256 ticketId) external view {}
+
+    function closeEvent(uint256 eventId) external onlyMaster onlyExistingEvent(eventId) {}
+
+    function cancelEvent(uint256 eventId) external onlyMaster onlyExistingEvent(eventId) {}
 }

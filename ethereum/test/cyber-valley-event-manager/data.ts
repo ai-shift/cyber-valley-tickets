@@ -1,21 +1,25 @@
 import { timestamp } from "./helpers";
 import type {
-  CreateEventPlaceRequest,
-  EventRequest,
-  UpdateEventPlaceRequest,
+  ApproveEventArgs,
+  CreateEventPlaceArgs,
+  Event,
+  SubmitEventRequestArgs,
+  UpdateEventPlaceArgs,
+  NewEventPlaceAvailableEvent,
+  NewEventRequestEvent
 } from "./types";
 
 export const devTeamPercentage = 10;
 export const masterPercentage = 50;
 export const eventRequestSubmitionPrice = BigInt(100);
-export const defaultCreateEventPlaceRequest: CreateEventPlaceRequest = {
+export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   maxTickets: 100,
   minTickets: 50,
   minPrice: 20,
   minDays: 1,
 };
 
-export const defaultUpdateEventPlaceRequest: UpdateEventPlaceRequest = {
+export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   eventPlaceId: 0,
   maxTickets: 150,
   minTickets: 20,
@@ -23,8 +27,7 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceRequest = {
   minDays: 2,
 };
 
-export const defaultSubmitEventRequest: EventRequest = {
-  id: Math.floor(Math.random() * 10e6),
+export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
   eventPlaceId: defaultUpdateEventPlaceRequest.eventPlaceId,
   ticketPrice: defaultCreateEventPlaceRequest.minPrice,
   startDate: timestamp(5),

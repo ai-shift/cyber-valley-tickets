@@ -1,23 +1,29 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { expect } from "chai";
+import { expect, assert } from "chai";
 import {
   createAndUpdateEventPlace,
   createEvent,
   createEventPlace,
-  createEventPlaceRequestAsArguments,
   createValidEventPlace,
   deployContract,
-  eventRequestAsArguments,
   itExpectsOnlyMaster,
+  itExpectsOnlyStaff,
   stringify,
   submitEventRequest,
-  updateEventPlaceRequestAsArguments,
-} from "./helpers";
+  } from "./helpers";
+
+import {
+  createEventPlaceArgsToArray,
+updateEventPlaceArgsToArray,
+approveEventArgsToArray,
+submitEventRequestArgsToArray,
+} from "./types";
 
 import {
   defaultCreateEventPlaceRequest,
   defaultUpdateEventPlaceRequest,
   eventRequestSubmitionPrice,
+  defaultSubmitEventRequest,
 } from "./data";
 
 import {
@@ -30,7 +36,7 @@ describe("CyberValleyEventManager", () => {
   describe("createEventPlace", () => {
     itExpectsOnlyMaster(
       "createEventPlace",
-      createEventPlaceRequestAsArguments(defaultCreateEventPlaceRequest),
+      createEventPlaceArgsToArray(defaultCreateEventPlaceRequest),
     );
 
     it("should emit NewEventPlaceAvailable", async () => {
@@ -40,7 +46,7 @@ describe("CyberValleyEventManager", () => {
         .to.emit(eventManager, "NewEventPlaceAvailable")
         .withArgs(
           0,
-          ...createEventPlaceRequestAsArguments(defaultCreateEventPlaceRequest),
+          ...createEventPlaceArgsToArray(defaultCreateEventPlaceRequest),
         );
     });
 
@@ -60,16 +66,16 @@ describe("CyberValleyEventManager", () => {
   describe("updateEventPlace", () => {
     itExpectsOnlyMaster(
       "updateEventPlace",
-      updateEventPlaceRequestAsArguments(defaultUpdateEventPlaceRequest),
+      updateEventPlaceArgsToArray(defaultUpdateEventPlaceRequest),
     );
 
     it("should emit NewEventPlaceAvailable", async () => {
       const { eventManager, master } = await loadFixture(deployContract);
-      const tx = await createAndUpdateEventPlace(eventManager, master);
+      const tx = await createAndUpdateEventPlace(eventManager, master, {});
       await expect(tx)
         .to.emit(eventManager, "EventPlaceUpdated")
         .withArgs(
-          ...updateEventPlaceRequestAsArguments(defaultUpdateEventPlaceRequest),
+          ...updateEventPlaceArgsToArray(defaultUpdateEventPlaceRequest),
         );
     });
 
@@ -103,7 +109,7 @@ describe("CyberValleyEventManager", () => {
         .to.emit(eventManager, "NewEventRequest")
         .withArgs(
           await creator.getAddress(),
-          ...eventRequestAsArguments(request),
+          ...submitEventRequestArgsToArray(request),
         );
     });
 
@@ -201,7 +207,7 @@ describe("CyberValleyEventManager", () => {
     it("emits EventApproved event", async () => {
       const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
-      const { request, tx } = await createEvent(
+      const { request, tx, eventId } = await createEvent(
         eventManager,
         ERC20,
         master,
@@ -212,7 +218,7 @@ describe("CyberValleyEventManager", () => {
       );
       await expect(tx)
         .to.emit(eventManager, "EventApproved")
-        .withArgs(request.id);
+        .withArgs(eventId);
     });
 
     it("reverts on unexisting event request", async () => {
@@ -225,7 +231,7 @@ describe("CyberValleyEventManager", () => {
         creator,
         {},
         {},
-        { id: BigInt(1000 + Math.floor(Math.random() * 1000)) },
+        { eventId: BigInt(1000 + Math.floor(Math.random() * 1000)) },
       );
       await expect(tx).to.be.revertedWith(
         "Event request with given id does not exist",
@@ -245,14 +251,15 @@ describe("CyberValleyEventManager", () => {
         eventRequestSubmitionPrice,
       );
       await createEventPlace(eventManager, master);
-      const { request, tx } = await submitEventRequest(
+      const { request, tx, eventId } = await submitEventRequest(
         eventManager,
         creator,
         {},
       );
-      await expect(await eventManager.connect(master).declineEvent(request.id))
+      const id = await eventId;
+      await expect(await eventManager.connect(master).declineEvent(id))
         .to.emit(eventManager, "EventDeclined")
-        .withArgs(request.id);
+        .withArgs(id);
     });
 
     it("reverts on unexisting event request", async () => {
@@ -273,14 +280,14 @@ describe("CyberValleyEventManager", () => {
         eventRequestSubmitionPrice,
       );
       await createEventPlace(eventManager, master);
-      const { request, tx } = await submitEventRequest(
+      const { request, tx, eventId } = await submitEventRequest(
         eventManager,
         creator,
         {},
       );
       await tx;
       await expect(
-        await eventManager.connect(master).declineEvent(request.id),
+        await eventManager.connect(master).declineEvent(await eventId),
       ).to.changeTokenBalances(
         ERC20,
         [await eventManager.getAddress(), await creator.getAddress()],
@@ -290,7 +297,7 @@ describe("CyberValleyEventManager", () => {
   });
 
   describe("updateEvent", () => {
-    itExpectsOnlyMaster("updateEvent", [BigInt(0)]);
+    itExpectsOnlyMaster("updateEvent", [BigInt(0), ...submitEventRequestArgsToArray(defaultSubmitEventRequest)]);
 
     it("emits EventUpdated", async () => {
       assert(false);
@@ -328,7 +335,8 @@ describe("CyberValleyEventManager", () => {
   });
 
   describe("verifyTicket", () => {
-    itExpectsStaffOrMaster("verifyTicket", [BigInt(0)]);
+    itExpectsOnlyMaster("verifyTicket", [BigInt(0)]);
+    itExpectsOnlyStaff("verifyTicket", [BigInt(0)]);
 
     it("works only once for each ticket", async () => {
       assert(false);
