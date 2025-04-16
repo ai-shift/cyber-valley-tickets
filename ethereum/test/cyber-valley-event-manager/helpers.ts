@@ -3,8 +3,8 @@ import { assert, expect } from "chai";
 import type {
   BaseContract,
   BigNumberish,
-  ContractTransactionResponse,
   ContractTransactionReceipt,
+  ContractTransactionResponse,
   EventLog,
   Signer,
 } from "ethers";
@@ -23,17 +23,16 @@ import type {
   ApproveEventArgs,
   CreateEventPlaceArgs,
   Event,
+  NewEventRequestEvent,
   SubmitEventRequestArgs,
   UpdateEventPlaceArgs,
-  NewEventPlaceAvailableEvent,
-  NewEventRequestEvent
 } from "./types";
 
 import {
-  createEventPlaceArgsToArray,
-  updateEventPlaceArgsToArray,
   approveEventArgsToArray,
-  submitEventRequestArgsToArray
+  createEventPlaceArgsToArray,
+  submitEventRequestArgsToArray,
+  updateEventPlaceArgsToArray,
 } from "./types";
 
 export type ContractsFixture = {
@@ -69,7 +68,7 @@ export async function createEventPlace(
   eventManager: CyberValleyEventManager,
   master: Signer,
   patch?: Partial<CreateEventPlaceArgs>,
-): Promise<{eventPlaceId: BigNumberish, tx: ContractTransactionResponse}> {
+): Promise<{ eventPlaceId: BigNumberish; tx: ContractTransactionResponse }> {
   const tx = await eventManager.connect(master).createEventPlace(
     ...createEventPlaceArgsToArray({
       ...defaultCreateEventPlaceRequest,
@@ -112,15 +111,11 @@ export async function createAndUpdateEventPlace(
   request: Partial<UpdateEventPlaceArgs>,
 ) {
   const { eventPlaceId } = await createValidEventPlace(eventManager, master);
-  return await updateEventPlace(
-    eventManager,
-    master,
-    {
-      ...defaultUpdateEventPlaceRequest,
-      eventPlaceId,
-      ...request
-    },
-  );
+  return await updateEventPlace(eventManager, master, {
+    ...defaultUpdateEventPlaceRequest,
+    eventPlaceId,
+    ...request,
+  });
 }
 
 export async function createEvent(
@@ -134,7 +129,7 @@ export async function createEvent(
 ): Promise<{
   request: SubmitEventRequestArgs;
   tx: Promise<ContractTransactionResponse>;
-  eventId: BigNumberish
+  eventId: BigNumberish;
 }> {
   // Mint tokens & approve
   await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
@@ -151,13 +146,13 @@ export async function createEvent(
   );
 
   // Submit request
-  const { tx: submitEventRequestTx, request, getEventId } = await submitEventRequest(
-    eventManager,
-    creator,
-    submitEventPatch,
-  );
+  const {
+    tx: submitEventRequestTx,
+    request,
+    getEventId,
+  } = await submitEventRequest(eventManager, creator, submitEventPatch);
 
-  const eventId =  await getEventId();
+  const eventId = await getEventId();
 
   // Approve
   const tx = eventManager.connect(master).approveEvent(
@@ -176,7 +171,7 @@ export async function submitEventRequest(
 ): Promise<{
   request: SubmitEventRequestArgs;
   tx: Promise<ContractTransactionResponse>;
-  getEventId: () => Promise<BigNumberish>
+  getEventId: () => Promise<BigNumberish>;
 }> {
   const request = {
     ...defaultSubmitEventRequest,
@@ -190,25 +185,25 @@ export async function submitEventRequest(
     request,
     tx,
     getEventId: async () => {
-        const { id } = extractEvent<NewEventRequestEvent>(
-          await (await tx).wait(),
-          "NewEventRequest"
-        );
-        return id;
-      }
+      const { id } = extractEvent<NewEventRequestEvent>(
+        await (await tx).wait(),
+        "NewEventRequest",
+      );
+      return id;
+    },
   };
 }
 
 export function extractEvent<T>(
   receipt: ContractTransactionReceipt | null,
-  eventName: string
+  eventName: string,
 ): T {
   assert(receipt != null, "Got null receipt");
   const event = receipt.logs
     .filter((e): e is EventLog => "fragment" in e && "args" in e)
     .find((e) => e.fragment?.name === eventName);
   assert(event != null, `${eventName} wasn't emitted`);
-  return event.args as T
+  return event.args as T;
 }
 
 /**

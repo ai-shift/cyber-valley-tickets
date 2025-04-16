@@ -1,5 +1,5 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { expect, assert } from "chai";
+import { assert, expect } from "chai";
 import {
   createAndUpdateEventPlace,
   createEvent,
@@ -10,20 +10,19 @@ import {
   itExpectsOnlyStaff,
   stringify,
   submitEventRequest,
-  } from "./helpers";
+} from "./helpers";
 
 import {
   createEventPlaceArgsToArray,
-updateEventPlaceArgsToArray,
-approveEventArgsToArray,
-submitEventRequestArgsToArray,
+  submitEventRequestArgsToArray,
+  updateEventPlaceArgsToArray,
 } from "./types";
 
 import {
   defaultCreateEventPlaceRequest,
+  defaultSubmitEventRequest,
   defaultUpdateEventPlaceRequest,
   eventRequestSubmitionPrice,
-  defaultSubmitEventRequest,
 } from "./data";
 
 import {
@@ -102,9 +101,13 @@ describe("CyberValleyEventManager", () => {
         eventRequestSubmitionPrice,
       );
       const { eventPlaceId } = await createEventPlace(eventManager, master);
-      const { request, tx, getEventId } = await submitEventRequest(eventManager, creator, {
-        eventPlaceId,
-      });
+      const { request, tx, getEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        {
+          eventPlaceId,
+        },
+      );
       await expect(tx)
         .to.emit(eventManager, "NewEventRequest")
         .withArgs(
@@ -154,8 +157,14 @@ describe("CyberValleyEventManager", () => {
     submitEventIncompatibleEventPlaceCornerCases.forEach(
       ({ eventPlacePatch, eventRequestPatch, revertsWith }, idx) =>
         it(`reverts on incompatibale data eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
-          const { eventManager, master, creator } =
+          const { eventManager, ERC20, master, creator } =
             await loadFixture(deployContract);
+          await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+          await ERC20.connect(creator).approve(
+            await eventManager.getAddress(),
+            eventRequestSubmitionPrice,
+          );
+
           const { eventPlaceId } = await createEventPlace(
             eventManager,
             master,
@@ -216,9 +225,7 @@ describe("CyberValleyEventManager", () => {
         {},
         {},
       );
-      await expect(tx)
-        .to.emit(eventManager, "EventApproved")
-        .withArgs(eventId);
+      await expect(tx).to.emit(eventManager, "EventApproved").withArgs(eventId);
     });
 
     it("reverts on unexisting event request", async () => {
@@ -294,11 +301,13 @@ describe("CyberValleyEventManager", () => {
         [-eventRequestSubmitionPrice, eventRequestSubmitionPrice],
       );
     });
-
   });
 
   describe("updateEvent", () => {
-    itExpectsOnlyMaster("updateEvent", [BigInt(0), ...submitEventRequestArgsToArray(defaultSubmitEventRequest)]);
+    itExpectsOnlyMaster("updateEvent", [
+      BigInt(0),
+      ...submitEventRequestArgsToArray(defaultSubmitEventRequest),
+    ]);
 
     it("emits EventUpdated", async () => {
       assert(false);
@@ -375,5 +384,4 @@ describe("CyberValleyEventManager", () => {
       assert(false);
     });
   });
-
 });

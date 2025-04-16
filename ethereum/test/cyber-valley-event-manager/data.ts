@@ -1,12 +1,8 @@
 import { timestamp } from "./helpers";
 import type {
-  ApproveEventArgs,
   CreateEventPlaceArgs,
-  Event,
   SubmitEventRequestArgs,
   UpdateEventPlaceArgs,
-  NewEventPlaceAvailableEvent,
-  NewEventRequestEvent
 } from "./types";
 
 export const devTeamPercentage = 10;

@@ -1,5 +1,5 @@
-import { BigNumberish } from "ethers";
-import { CyberValleyEventManager } from "../../typechain-types";
+import type { BigNumberish } from "ethers";
+import type { CyberValleyEventManager } from "../../typechain-types";
 
 export type EventApprovedEvent = { eventRequestId: BigNumberish };
 export type EventDeclinedEvent = { eventRequestId: BigNumberish };
@@ -39,8 +39,16 @@ export type RoleAdminChangedEvent = {
   previousAdminRole: string;
   newAdminRole: string;
 };
-export type RoleGrantedEvent = { role: string; account: string; sender: string };
-export type RoleRevokedEvent = { role: string; account: string; sender: string };
+export type RoleGrantedEvent = {
+  role: string;
+  account: string;
+  sender: string;
+};
+export type RoleRevokedEvent = {
+  role: string;
+  account: string;
+  sender: string;
+};
 
 // Struct types
 export type EventPlace = {
@@ -103,26 +111,57 @@ export type UpdateEventPlaceArgs = {
 
 // Conversion functions
 
-export const approveEventArgsToArray = (args: ApproveEventArgs): Parameters<CyberValleyEventManager["approveEvent"]> => {
+export const approveEventArgsToArray = (
+  args: ApproveEventArgs,
+): Parameters<CyberValleyEventManager["approveEvent"]> => {
   return [args.eventId];
 };
 
-export const declineEventArgsToArray = (args: DeclineEventArgs): Parameters<CyberValleyEventManager["declineEvent"]> => {
+export const declineEventArgsToArray = (
+  args: DeclineEventArgs,
+): Parameters<CyberValleyEventManager["declineEvent"]> => {
   return [args.eventId];
 };
 
-export const createEventPlaceArgsToArray = (args: CreateEventPlaceArgs): Parameters<CyberValleyEventManager["createEventPlace"]> => {
+export const createEventPlaceArgsToArray = (
+  args: CreateEventPlaceArgs,
+): Parameters<CyberValleyEventManager["createEventPlace"]> => {
   return [args.maxTickets, args.minTickets, args.minPrice, args.minDays];
 };
 
-export const submitEventRequestArgsToArray = (args: SubmitEventRequestArgs): Parameters<CyberValleyEventManager["submitEventRequest"]> => {
-  return [args.eventPlaceId, args.ticketPrice, args.cancelDate, args.startDate, args.daysAmount];
+export const submitEventRequestArgsToArray = (
+  args: SubmitEventRequestArgs,
+): Parameters<CyberValleyEventManager["submitEventRequest"]> => {
+  return [
+    args.eventPlaceId,
+    args.ticketPrice,
+    args.cancelDate,
+    args.startDate,
+    args.daysAmount,
+  ];
 };
 
-export const updateEventArgsToArray = (args: UpdateEventArgs): Parameters<CyberValleyEventManager["updateEvent"]> => {
-  return [args.eventId, args.eventPlaceId, args.ticketPrice, args.cancelDate, args.startDate, args.daysAmount];
+export const updateEventArgsToArray = (
+  args: UpdateEventArgs,
+): Parameters<CyberValleyEventManager["updateEvent"]> => {
+  return [
+    args.eventId,
+    args.eventPlaceId,
+    args.ticketPrice,
+    args.cancelDate,
+    args.startDate,
+    args.daysAmount,
+  ];
 };
 
-export const updateEventPlaceArgsToArray = (args: UpdateEventPlaceArgs): Parameters<CyberValleyEventManager["updateEventPlace"]> => {
-  return [args.eventPlaceId, args.maxTickets, args.minTickets, args.minPrice, args.minDays];
+export const updateEventPlaceArgsToArray = (
+  args: UpdateEventPlaceArgs,
+): Parameters<CyberValleyEventManager["updateEventPlace"]> => {
+  return [
+    args.eventPlaceId,
+    args.maxTickets,
+    args.minTickets,
+    args.minPrice,
+    args.minDays,
+  ];
 };
