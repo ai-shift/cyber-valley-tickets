@@ -183,7 +183,6 @@ describe("CyberValleyEventManager", () => {
             {},
           );
           await createEventTx;
-
           await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
           await ERC20.connect(creator).approve(
             await eventManager.getAddress(),
@@ -251,15 +250,15 @@ describe("CyberValleyEventManager", () => {
         eventRequestSubmitionPrice,
       );
       await createEventPlace(eventManager, master);
-      const { request, tx, eventId } = await submitEventRequest(
+      const { request, tx, getEventId } = await submitEventRequest(
         eventManager,
         creator,
         {},
       );
-      const id = await eventId;
-      await expect(await eventManager.connect(master).declineEvent(id))
+      const eventId = await getEventId();
+      await expect(await eventManager.connect(master).declineEvent(eventId))
         .to.emit(eventManager, "EventDeclined")
-        .withArgs(id);
+        .withArgs(eventId);
     });
 
     it("reverts on unexisting event request", async () => {
@@ -280,20 +279,21 @@ describe("CyberValleyEventManager", () => {
         eventRequestSubmitionPrice,
       );
       await createEventPlace(eventManager, master);
-      const { request, tx, eventId } = await submitEventRequest(
+      const { request, tx, getEventId } = await submitEventRequest(
         eventManager,
         creator,
         {},
       );
       await tx;
       await expect(
-        await eventManager.connect(master).declineEvent(await eventId),
+        await eventManager.connect(master).declineEvent(await getEventId()),
       ).to.changeTokenBalances(
         ERC20,
         [await eventManager.getAddress(), await creator.getAddress()],
         [-eventRequestSubmitionPrice, eventRequestSubmitionPrice],
       );
     });
+
   });
 
   describe("updateEvent", () => {
@@ -374,4 +374,5 @@ describe("CyberValleyEventManager", () => {
       assert(false);
     });
   });
+
 });

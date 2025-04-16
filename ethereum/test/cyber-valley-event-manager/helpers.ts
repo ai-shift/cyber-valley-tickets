@@ -151,13 +151,13 @@ export async function createEvent(
   );
 
   // Submit request
-  const { tx: submitEventRequestTx, request, eventId: futureEventId } = await submitEventRequest(
+  const { tx: submitEventRequestTx, request, getEventId } = await submitEventRequest(
     eventManager,
     creator,
     submitEventPatch,
   );
 
-  const eventId = await futureEventId;
+  const eventId =  await getEventId();
 
   // Approve
   const tx = eventManager.connect(master).approveEvent(
@@ -176,7 +176,7 @@ export async function submitEventRequest(
 ): Promise<{
   request: SubmitEventRequestArgs;
   tx: Promise<ContractTransactionResponse>;
-  eventId: Promise<BigNumberish>
+  getEventId: () => Promise<BigNumberish>
 }> {
   const request = {
     ...defaultSubmitEventRequest,
@@ -189,15 +189,13 @@ export async function submitEventRequest(
   return {
     request,
     tx,
-    eventId: new Promise((resolve) => {
-      tx.then(async (tx) => {
+    getEventId: async () => {
         const { id } = extractEvent<NewEventRequestEvent>(
-          await tx.wait(),
+          await (await tx).wait(),
           "NewEventRequestEvent"
         );
-        resolve(id);
-      })
-    })
+        return id;
+      }
   };
 }
 
