@@ -19,11 +19,11 @@ import {
   eventRequestSubmitionPrice,
 } from "./data";
 import type {
+  ApproveEventRequest,
   CreateEventPlaceRequest,
   EventPlaceCreated,
   EventRequest,
   UpdateEventPlaceRequest,
-  ApproveEventRequest,
 } from "./types";
 
 export type ContractsFixture = {
@@ -66,8 +66,10 @@ export function eventRequestAsArguments(
   ];
 }
 
-export function approveEventRequestAsArguments(req: ApproveEventRequest): Parameters<CyberValleyEventManager["approveEvent"]> {
-  return [ req.id ];
+export function approveEventRequestAsArguments(
+  req: ApproveEventRequest,
+): Parameters<CyberValleyEventManager["approveEvent"]> {
+  return [req.id];
 }
 
 export async function deployContract(): Promise<ContractsFixture> {
@@ -153,7 +155,7 @@ export async function createEvent(
   creator: Signer,
   eventPlacePatch: Partial<CreateEventPlaceRequest>,
   submitEventPatch: Partial<EventRequest>,
-  approveEventPatch: Partial<ApproveEventRequest>
+  approveEventPatch: Partial<ApproveEventRequest>,
 ): Promise<{
   request: EventRequest;
   tx: Promise<ContractTransactionResponse>;
@@ -181,7 +183,14 @@ export async function createEvent(
   await submitEventRequestTx;
 
   // Approve
-  const tx = eventManager.connect(master).approveEvent(...approveEventRequestAsArguments({id: request.id, ...approveEventPatch}));
+  const tx = eventManager
+    .connect(master)
+    .approveEvent(
+      ...approveEventRequestAsArguments({
+        id: request.id,
+        ...approveEventPatch,
+      }),
+    );
   return { request, tx };
 }
 

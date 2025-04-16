@@ -1,5 +1,5 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { expect, assert } from "chai";
+import { assert, expect } from "chai";
 import {
   createAndUpdateEventPlace,
   createEvent,
@@ -89,7 +89,7 @@ describe("CyberValleyEventManager", () => {
   describe("submitEventRequest", () => {
     it("emits NewEventRequest", async () => {
       const { eventManager, ERC20, master, creator } =
-            await loadFixture(deployContract);
+        await loadFixture(deployContract);
       await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
@@ -109,7 +109,7 @@ describe("CyberValleyEventManager", () => {
 
     it("transfers ERC20 token", async () => {
       const { eventManager, ERC20, master, creator } =
-            await loadFixture(deployContract);
+        await loadFixture(deployContract);
       await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
       await expect(
         await ERC20.balanceOf(await eventManager.getAddress()),
@@ -134,7 +134,7 @@ describe("CyberValleyEventManager", () => {
 
     it("reverts on insufficient funds", async () => {
       const { eventManager, master, creator } =
-            await loadFixture(deployContract);
+        await loadFixture(deployContract);
       const { eventPlaceId } = await createEventPlace(eventManager, master, {
         ...defaultCreateEventPlaceRequest,
       });
@@ -148,7 +148,7 @@ describe("CyberValleyEventManager", () => {
       ({ eventPlacePatch, eventRequestPatch, revertsWith }, idx) =>
         it(`reverts on incompatibale data eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
           const { eventManager, master, creator } =
-                await loadFixture(deployContract);
+            await loadFixture(deployContract);
           const { eventPlaceId } = await createEventPlace(
             eventManager,
             master,
@@ -166,7 +166,7 @@ describe("CyberValleyEventManager", () => {
       ({ approvedEventPatch, submittedEventPatch }, idx) =>
         it(`reverts on overlap: Case ${idx} approved: ${stringify(approvedEventPatch)}, submitted: ${stringify(submittedEventPatch)}`, async () => {
           const { eventManager, ERC20, master, creator } =
-                await loadFixture(deployContract);
+            await loadFixture(deployContract);
           const { tx: createEventTx } = await createEvent(
             eventManager,
             ERC20,
@@ -174,7 +174,7 @@ describe("CyberValleyEventManager", () => {
             creator,
             {},
             approvedEventPatch,
-            {}
+            {},
           );
           await createEventTx;
 
@@ -200,7 +200,7 @@ describe("CyberValleyEventManager", () => {
 
     it("emits EventApproved event", async () => {
       const { eventManager, ERC20, master, creator } =
-            await loadFixture(deployContract);
+        await loadFixture(deployContract);
       const { request, tx } = await createEvent(
         eventManager,
         ERC20,
@@ -208,17 +208,16 @@ describe("CyberValleyEventManager", () => {
         creator,
         {},
         {},
-        {}
+        {},
       );
-      await expect(tx).to.emit(eventManager, "EventApproved")
-        .withArgs(
-          request.id
-        );
+      await expect(tx)
+        .to.emit(eventManager, "EventApproved")
+        .withArgs(request.id);
     });
 
     it("reverts on unexisting event request", async () => {
       const { eventManager, ERC20, master, creator } =
-            await loadFixture(deployContract);
+        await loadFixture(deployContract);
       const { tx } = await createEvent(
         eventManager,
         ERC20,
@@ -226,9 +225,11 @@ describe("CyberValleyEventManager", () => {
         creator,
         {},
         {},
-        {id: BigInt(1000 + Math.floor(Math.random() * 1000))},
+        { id: BigInt(1000 + Math.floor(Math.random() * 1000)) },
       );
-      await expect(tx).to.be.revertedWith("Event request with given id does not exist")
+      await expect(tx).to.be.revertedWith(
+        "Event request with given id does not exist",
+      );
     });
   });
 
@@ -237,21 +238,21 @@ describe("CyberValleyEventManager", () => {
 
     it("emit EventDeclined event", async () => {
       const { eventManager, ERC20, master, creator } =
-            await loadFixture(deployContract);
+        await loadFixture(deployContract);
       await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
         eventRequestSubmitionPrice,
       );
+      await createEventPlace(eventManager, master);
       const { request, tx } = await submitEventRequest(
         eventManager,
         creator,
         {},
       );
-      await expect(tx).to.emit(eventManager, "EventDeclined")
-        .withArgs(
-          request.id
-        );
+      await expect(await eventManager.connect(master).declineEvent(request.id))
+        .to.emit(eventManager, "EventDeclined")
+        .withArgs(request.id);
     });
 
     it("reverts on unexisting event request", async () => {

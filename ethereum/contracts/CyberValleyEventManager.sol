@@ -62,6 +62,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 daysAmount
     );
     event EventApproved(uint256 eventRequestId);
+    event EventDeclined(uint256 eventRequestId);
 
     IERC20 public usdtTokenContract;
 
@@ -273,5 +274,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         emit EventApproved(eventRequestId);
     }
 
-    function declineEvent(uint256 eventRequestId) external onlyMaster {}
+    function declineEvent(uint256 eventRequestId) external onlyMaster {
+        emit EventDeclined(eventRequestId);
+    }
 }

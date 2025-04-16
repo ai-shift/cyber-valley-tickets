@@ -30,5 +30,5 @@ export type EventRequest = {
 };
 
 export type ApproveEventRequest = {
-  id: BigNumberish
-}
+  id: BigNumberish;
+};
