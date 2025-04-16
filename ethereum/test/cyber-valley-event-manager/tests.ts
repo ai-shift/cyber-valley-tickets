@@ -1,5 +1,5 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { assert, expect } from "chai";
+import { expect } from "chai";
 import {
   createAndUpdateEventPlace,
   createEvent,
@@ -256,10 +256,12 @@ describe("CyberValleyEventManager", () => {
     });
 
     it("reverts on unexisting event request", async () => {
-      const { eventManager, master } =
-        await loadFixture(deployContract);
-      await expect(await eventManager.connect(master).declineEvent(Math.floor(Math.random() * 1000)))
-        .to.be.revertedWith("Event request does not exist");
+      const { eventManager, master } = await loadFixture(deployContract);
+      await expect(
+        eventManager
+          .connect(master)
+          .declineEvent(Math.floor(Math.random() * 1000)),
+      ).to.be.revertedWith("Event request with given id does not exist");
     });
 
     it("refunds tokens to creator", async () => {
@@ -276,7 +278,10 @@ describe("CyberValleyEventManager", () => {
         creator,
         {},
       );
-      await expect(await eventManager.connect(master).declineEvent(request.id)).to.changeTokenBalances(
+      await tx;
+      await expect(
+        await eventManager.connect(master).declineEvent(request.id),
+      ).to.changeTokenBalances(
         ERC20,
         [await eventManager.getAddress(), await creator.getAddress()],
         [-eventRequestSubmitionPrice, eventRequestSubmitionPrice],

@@ -183,14 +183,12 @@ export async function createEvent(
   await submitEventRequestTx;
 
   // Approve
-  const tx = eventManager
-    .connect(master)
-    .approveEvent(
-      ...approveEventRequestAsArguments({
-        id: request.id,
-        ...approveEventPatch,
-      }),
-    );
+  const tx = eventManager.connect(master).approveEvent(
+    ...approveEventRequestAsArguments({
+      id: request.id,
+      ...approveEventPatch,
+    }),
+  );
   return { request, tx };
 }
 

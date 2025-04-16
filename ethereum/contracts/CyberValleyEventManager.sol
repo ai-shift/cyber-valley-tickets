@@ -275,6 +275,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     }
 
     function declineEvent(uint256 eventRequestId) external onlyMaster {
+        EventRequest storage request = eventRequests[eventRequestId];
+        require(
+            request.creator != address(0),
+            "Event request with given id does not exist"
+        );
+        require(
+            usdtTokenContract.transfer(request.creator, eventRequestPrice),
+            "Failed to refund event request"
+        );
+        delete eventRequests[eventRequestId];
         emit EventDeclined(eventRequestId);
     }
 }
