@@ -288,4 +288,82 @@ describe("CyberValleyEventManager", () => {
       );
     });
   });
+
+  describe("updateEvent", () => {
+    itExpectsOnlyMaster("updateEvent", [BigInt(0)]);
+
+    it("emits EventUpdated", async () => {
+      assert(false);
+    });
+
+    it("reverts on unexisting event", async () => {
+      assert(false);
+    });
+
+    it("checks date ranges overlap", async () => {
+      assert(false);
+    });
+
+    it("changes all fields", async () => {
+      assert(false);
+    });
+  });
+
+  describe("buyTicket", () => {
+    it("emits TicketBought", async () => {
+      assert(false);
+    });
+
+    it("reverts on sold out", async () => {
+      assert(false);
+    });
+
+    it("transfers required amount of tokens", async () => {
+      assert(false);
+    });
+
+    it("mints NFT with proper metadata", async () => {
+      assert(false);
+    });
+  });
+
+  describe("verifyTicket", () => {
+    itExpectsStaffOrMaster("verifyTicket", [BigInt(0)]);
+
+    it("works only once for each ticket", async () => {
+      assert(false);
+    });
+  });
+
+  describe("closeEvent", () => {
+    itExpectsOnlyMaster("closeEvent", [BigInt(0)]);
+
+    it("emits EventClosed", async () => {
+      assert(false);
+    });
+
+    it("reverts on unexisting event", async () => {
+      assert(false);
+    });
+
+    it("proportionally spreads funds", async () => {
+      assert(false);
+    });
+
+    it("marks events closed", async () => {
+      assert(false);
+    });
+  });
+
+  describe("cancelEvent", () => {
+    itExpectsOnlyMaster("cancelEvent", [BigInt(0)]);
+
+    it("emits EventCancelled", async () => {
+      assert(false);
+    });
+
+    it("refunds tokens to customers and creator", async () => {
+      assert(false);
+    });
+  });
 });
