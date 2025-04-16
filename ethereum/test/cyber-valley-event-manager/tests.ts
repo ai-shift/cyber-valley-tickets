@@ -256,11 +256,31 @@ describe("CyberValleyEventManager", () => {
     });
 
     it("reverts on unexisting event request", async () => {
-      assert(false);
+      const { eventManager, master } =
+        await loadFixture(deployContract);
+      await expect(await eventManager.connect(master).declineEvent(Math.floor(Math.random() * 1000)))
+        .to.be.revertedWith("Event request does not exist");
     });
 
     it("refunds tokens to creator", async () => {
-      assert(false);
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      await createEventPlace(eventManager, master);
+      const { request, tx } = await submitEventRequest(
+        eventManager,
+        creator,
+        {},
+      );
+      await expect(await eventManager.connect(master).declineEvent(request.id)).to.changeTokenBalances(
+        ERC20,
+        [await eventManager.getAddress(), await creator.getAddress()],
+        [-eventRequestSubmitionPrice, eventRequestSubmitionPrice],
+      );
     });
   });
 });
