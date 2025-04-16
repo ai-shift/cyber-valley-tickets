@@ -216,7 +216,7 @@ describe("CyberValleyEventManager", () => {
   describe("approveEvent", () => {
     itExpectsOnlyMaster("approveEvent", [BigInt(0)]);
 
-    it("emits EventApproved event", async () => {
+    it("emits EventStatusChanged", async () => {
       const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
       const { request, tx, eventId } = await createEvent(
@@ -228,7 +228,9 @@ describe("CyberValleyEventManager", () => {
         {},
         {},
       );
-      await expect(tx).to.emit(eventManager, "EventApproved").withArgs(eventId);
+      await expect(tx)
+        .to.emit(eventManager, "EventStatusChanged")
+        .withArgs(eventId, 1);
     });
 
     it("reverts on unexisting event request", async () => {
@@ -250,7 +252,7 @@ describe("CyberValleyEventManager", () => {
   describe("declineEvent", () => {
     itExpectsOnlyMaster("declineEvent", [BigInt(0)]);
 
-    it("emit EventDeclined event", async () => {
+    it("emits EventStatusChanged", async () => {
       const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
       await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
@@ -266,8 +268,8 @@ describe("CyberValleyEventManager", () => {
       );
       const eventId = await getEventId();
       await expect(await eventManager.connect(master).declineEvent(eventId))
-        .to.emit(eventManager, "EventDeclined")
-        .withArgs(eventId);
+        .to.emit(eventManager, "EventStatusChanged")
+        .withArgs(eventId, 2);
     });
 
     it("reverts on unexisting event request", async () => {
@@ -358,7 +360,7 @@ describe("CyberValleyEventManager", () => {
   describe("closeEvent", () => {
     itExpectsOnlyMaster("closeEvent", [BigInt(0)]);
 
-    it("emits EventClosed", async () => {
+    it("emits EventStatusChanged", async () => {
       const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
       const { tx, request } = await createAndCloseEvent(
@@ -369,8 +371,8 @@ describe("CyberValleyEventManager", () => {
         {},
       );
       await expect(tx)
-        .to.emit(eventManager, "EventClosed")
-        .withArgs(request.eventId);
+        .to.emit(eventManager, "EventStatusChanged")
+        .withArgs(request.eventId, 4);
     });
 
     it("reverts on unexisting event", async () => {
@@ -434,7 +436,7 @@ describe("CyberValleyEventManager", () => {
   describe("cancelEvent", () => {
     itExpectsOnlyMaster("cancelEvent", [BigInt(0)]);
 
-    it("emits EventCancelled", async () => {
+    it("emits EventStatusChanged", async () => {
       const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
       const { tx, request } = await createAndCancelEvent(
@@ -445,8 +447,8 @@ describe("CyberValleyEventManager", () => {
         {},
       );
       await expect(tx)
-        .to.emit(eventManager, "EventCancelled")
-        .withArgs(request.eventId);
+        .to.emit(eventManager, "EventStatusChanged")
+        .withArgs(request.eventId, 3);
     });
 
     it("refunds tokens to customers and creator", async () => {

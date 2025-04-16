@@ -61,8 +61,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 startDate,
         uint16 daysAmount
     );
-    event EventApproved(uint256 eventId);
-    event EventDeclined(uint256 eventId);
+    event EventStatusChanged(uint256 eventId, EventStatus status);
     event EventUpdated(
         uint256 id,
         uint256 eventPlaceId,
@@ -71,8 +70,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 startDate,
         uint16 daysAmount
     );
-    event EventClosed(uint256 eventId);
-    event EventCancelled(uint256 envtId);
 
     IERC20 public usdtTokenContract;
 
@@ -245,7 +242,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.startDate + evt.daysAmount * SECONDS_IN_DAY
         );
         evt.status = EventStatus.Approved;
-        emit EventApproved(eventId);
+        emit EventStatusChanged(eventId, evt.status);
     }
 
     function declineEvent(
@@ -261,7 +258,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Failed to refund event request"
         );
         evt.status = EventStatus.Declined;
-        emit EventDeclined(eventId);
+        emit EventStatusChanged(eventId, evt.status);
     }
 
     function updateEvent(
@@ -343,7 +340,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             block.timestamp >= evt.startDate + evt.daysAmount * SECONDS_IN_DAY,
             "Event has not been finished yet"
         );
-        uint256 networth = evt.ticketPrice * evt.customers.length + eventRequestPrice;
+        uint256 networth = evt.ticketPrice *
+            evt.customers.length +
+            eventRequestPrice;
         uint256 masterShare = (networth * masterPercentage) / 100;
         uint256 devTeamShare = (networth * devTeamPercentage) / 100;
         require(
@@ -362,7 +361,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Failed to transfer creator's share"
         );
         evt.status = EventStatus.Closed;
-        emit EventClosed(eventId);
+        emit EventStatusChanged(eventId, evt.status);
     }
 
     function cancelEvent(
@@ -388,6 +387,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             usdtTokenContract.transfer(evt.creator, eventRequestPrice),
             "Failed to transfer tokens to creator"
         );
-        emit EventCancelled(eventId);
+        emit EventStatusChanged(eventId, evt.status);
     }
 }
