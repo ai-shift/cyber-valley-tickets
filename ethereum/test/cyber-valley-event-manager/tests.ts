@@ -1,6 +1,7 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, expect } from "chai";
 import {
+cancelEvent,
   closeEvent,
   createAndCancelEvent,
   createAndCloseEvent,
@@ -396,7 +397,7 @@ describe("CyberValleyEventManager", () => {
       await tx;
       await expect(
         await closeEvent(eventManager, master, request),
-      ).to.be.revertedWith("Only event in approved state could be closed");
+      ).to.be.revertedWith("Only event in approved state can be closed");
     });
 
     it("reverts to close closed event", async () => {
@@ -412,7 +413,7 @@ describe("CyberValleyEventManager", () => {
       await tx;
       await expect(
         await closeEvent(eventManager, master, request),
-      ).to.be.revertedWith("Only event in approved state could be closed");
+      ).to.be.revertedWith("Only event in approved state can be closed");
     });
 
     it("reverts to close submitted event", async () => {
@@ -434,7 +435,7 @@ describe("CyberValleyEventManager", () => {
       await tx;
       await expect(
         await closeEvent(eventManager, master, { eventId: await getEventId() }),
-      ).to.be.revertedWith("Only event in approved state could be closed");
+      ).to.be.revertedWith("Only event in approved state can be closed");
     });
 
     it("reverts to close declined event", async () => {
@@ -454,7 +455,7 @@ describe("CyberValleyEventManager", () => {
       const eventId = await getEventId();
       await expect(
         await closeEvent(eventManager, master, { eventId }),
-      ).to.be.revertedWith("Only event in approved state could be closed");
+      ).to.be.revertedWith("Only event in approved state can be closed");
     });
 
     it("reverts if event was not finished", async () => {
@@ -518,6 +519,80 @@ describe("CyberValleyEventManager", () => {
       await expect(tx)
         .to.emit(eventManager, "EventStatusChanged")
         .withArgs(request.eventId, 3);
+    });
+
+   it("reverts to cancel cancelled event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { tx, request } = await createAndCancelEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await tx;
+      await expect(
+        await cancelEvent(eventManager, master, request),
+      ).to.be.revertedWith("Only event in approved state can be cancelled");
+    });
+
+    it("reverts to cancel closed event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { tx, request } = await createAndCancelEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await tx;
+      await expect(
+        await cancelEvent(eventManager, master, request),
+      ).to.be.revertedWith("Only event in approved state can be cancelled");
+    });
+
+    it("reverts to cancel submitted event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { eventPlaceId } = await createEventPlace(eventManager, master);
+      const { request, tx, getEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        {
+          eventPlaceId,
+        },
+      );
+      await tx;
+      await expect(
+        await cancelEvent(eventManager, master, { eventId: await getEventId() }),
+      ).to.be.revertedWith("Only event in approved state can be cancelled");
+    });
+
+    it("reverts to cancel declined event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      await createEventPlace(eventManager, master);
+      const { request, tx, getEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        {},
+      );
+      const eventId = await getEventId();
+      await expect(
+        await cancelEvent(eventManager, master, { eventId }),
+      ).to.be.revertedWith("Only event in approved state can be cancelled");
     });
 
     it("refunds tokens to customers and creator", async () => {

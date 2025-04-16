@@ -334,7 +334,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         Event storage evt = events[eventId];
         require(
             evt.status == EventStatus.Approved,
-            "Only event in approved state could be closed"
+            "Only event in approved state can be closed"
         );
         require(
             block.timestamp >= evt.startDate + evt.daysAmount * SECONDS_IN_DAY,
@@ -370,7 +370,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         Event storage evt = events[eventId];
         require(
             evt.status == EventStatus.Approved,
-            "Only event in approved state could be closed"
+            "Only event in approved state can be cancelled"
         );
         require(
             block.timestamp >= evt.cancelDate,
