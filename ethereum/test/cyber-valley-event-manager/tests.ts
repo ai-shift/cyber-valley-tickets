@@ -1,6 +1,8 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, expect } from "chai";
 import {
+closeEvent,
+  createAndCloseEvent,
   createAndUpdateEventPlace,
   createEvent,
   createEventPlace,
@@ -240,9 +242,7 @@ describe("CyberValleyEventManager", () => {
         {},
         { eventId: BigInt(1000 + Math.floor(Math.random() * 1000)) },
       );
-      await expect(tx).to.be.revertedWith(
-        "Event with given id does not exist",
-      );
+      await expect(tx).to.be.revertedWith("Event with given id does not exist");
     });
   });
 
@@ -353,23 +353,80 @@ describe("CyberValleyEventManager", () => {
     });
   });
 
+  // TODO: Should it be possible to close event if no any tickets were bought?
   describe("closeEvent", () => {
     itExpectsOnlyMaster("closeEvent", [BigInt(0)]);
 
     it("emits EventClosed", async () => {
-      assert(false);
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { tx, request } = await createAndCloseEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await expect(tx)
+        .to.emit(eventManager, "EventClosed")
+        .withArgs(request.eventId);
     });
 
     it("reverts on unexisting event", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      const { tx } = await closeEvent(eventManager, master, {
+        eventId: Math.floor(Math.random() * 1000),
+      });
+      await expect(tx).to.be.revertedWith("Event with given id does not exist");
+    });
+
+    // FIXME: I'm to lazy to implement it rn
+    it("accepts only approved event", async () => {
       assert(false);
+    });
+
+    it("reverts if event was not finished", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { tx: createEventTx, eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+        {},
+        {},
+      );
+      await createEventTx;
+      const { tx } = await closeEvent(eventManager, master, { eventId });
+      await expect(tx).to.be.revertedWith("Event has not been finished yet");
     });
 
     it("proportionally spreads funds", async () => {
-      assert(false);
-    });
-
-    it("marks events closed", async () => {
-      assert(false);
+      const { eventManager, ERC20, master, creator, devTeam } =
+        await loadFixture(deployContract);
+      const { tx } = await createAndCloseEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await expect(tx).to.changeTokenBalances(
+        ERC20,
+        [
+          await master.getAddress(),
+          await creator.getAddress(),
+          await devTeam.getAddress(),
+          await eventManager.getAddress(),
+        ],
+        [
+          Number(eventRequestSubmitionPrice) * 50 / 100,
+          Number(eventRequestSubmitionPrice) * 40 / 100,
+          Number(eventRequestSubmitionPrice) * 10 / 100,
+          -eventRequestSubmitionPrice
+        ],
+      );
     });
   });
 
@@ -380,6 +437,7 @@ describe("CyberValleyEventManager", () => {
       assert(false);
     });
 
+    // TODO: Requires verifyTicket implementation
     it("refunds tokens to customers and creator", async () => {
       assert(false);
     });

@@ -1,4 +1,4 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
+import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, expect } from "chai";
 import type {
   BaseContract,
@@ -14,6 +14,7 @@ import type {
   SimpleERC20Xylose,
 } from "../../typechain-types";
 import {
+  defaultCloseEventArgs,
   defaultCreateEventPlaceRequest,
   defaultSubmitEventRequest,
   defaultUpdateEventPlaceRequest,
@@ -21,6 +22,7 @@ import {
 } from "./data";
 import type {
   ApproveEventArgs,
+  CloseEventArgs,
   CreateEventPlaceArgs,
   Event,
   NewEventRequestEvent,
@@ -30,6 +32,7 @@ import type {
 
 import {
   approveEventArgsToArray,
+  closeEventArgsToArray,
   createEventPlaceArgsToArray,
   submitEventRequestArgsToArray,
   updateEventPlaceArgsToArray,
@@ -192,6 +195,45 @@ export async function submitEventRequest(
       return id;
     },
   };
+}
+
+export async function closeEvent(
+  eventManager: CyberValleyEventManager,
+  master: Signer,
+  patch: Partial<CloseEventArgs>,
+): Promise<{
+  request: CloseEventArgs;
+  tx: Promise<ContractTransactionResponse>;
+}> {
+  const request = {
+    ...defaultCloseEventArgs,
+    ...patch,
+  };
+  const tx = eventManager
+    .connect(master)
+    .closeEvent(...closeEventArgsToArray(request));
+  return { request, tx };
+}
+
+export async function createAndCloseEvent(
+  eventManager: CyberValleyEventManager,
+  ERC20: SimpleERC20Xylose,
+  master: Signer,
+  creator: Signer,
+  patch: Partial<CloseEventArgs>,
+): ReturnType<typeof closeEvent> {
+  const { tx: createEventTx, eventId } = await createEvent(
+    eventManager,
+    ERC20,
+    master,
+    creator,
+    {},
+    {},
+    {},
+  );
+  await createEventTx;
+  await time.increase(100_000_000);
+  return await closeEvent(eventManager, master, { eventId, ...patch });
 }
 
 export function extractEvent<T>(

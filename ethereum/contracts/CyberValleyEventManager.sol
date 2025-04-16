@@ -35,6 +35,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 startDate;
         uint16 daysAmount;
         EventStatus status;
+        address[] customers;
     }
 
     event NewEventPlaceAvailable(
@@ -70,12 +71,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 startDate,
         uint16 daysAmount
     );
+    event EventClosed(uint256 eventId);
+    event EventCancelld(uint256 envtId);
 
     IERC20 public usdtTokenContract;
 
     uint256 public devTeamPercentage;
     address public devTeam;
     uint256 public masterPercentage;
+    address public master;
+    // TODO: Make it changeable & add to Event struct
     uint256 public eventRequestPrice;
 
     EventPlace[] public eventPlaces;
@@ -93,7 +98,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     constructor(
         address _usdtTokenContract,
-        address master,
+        address _master,
         uint256 _masterPercentage,
         address _devTeam,
         uint256 _devTeamPercentage,
@@ -109,10 +114,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         devTeamPercentage = _devTeamPercentage;
         devTeam = _devTeam;
         masterPercentage = _masterPercentage;
+        master = _master;
         eventRequestPrice = _eventRequestPrice;
 
-        _grantRole(DEFAULT_ADMIN_ROLE, master);
-        _grantRole(MASTER_ROLE, master);
+        _grantRole(DEFAULT_ADMIN_ROLE, _master);
+        _grantRole(MASTER_ROLE, _master);
     }
 
     function createEventPlace(
@@ -209,7 +215,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 cancelDate: cancelDate,
                 startDate: startDate,
                 daysAmount: daysAmount,
-                status: EventStatus.Submitted
+                status: EventStatus.Submitted,
+                customers: new address[](0)
             })
         );
         validateEvent(events[events.length - 1]);
@@ -324,7 +331,39 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function verifyTicket(uint256 ticketId) external view {}
 
-    function closeEvent(uint256 eventId) external onlyMaster onlyExistingEvent(eventId) {}
+    function closeEvent(
+        uint256 eventId
+    ) external onlyMaster onlyExistingEvent(eventId) {
+        Event storage evt = events[eventId];
+        require(
+            evt.status == EventStatus.Approved,
+            "Only event in approved state could be closed"
+        );
+        require(
+            block.timestamp >= evt.startDate + evt.daysAmount * SECONDS_IN_DAY,
+            "Event has not been finished yet"
+        );
+        uint256 networth = evt.ticketPrice * evt.customers.length + eventRequestPrice;
+        uint256 masterShare = (networth * masterPercentage) / 100;
+        uint256 devTeamShare = (networth * devTeamPercentage) / 100;
+        require(
+            usdtTokenContract.transfer(master, masterShare),
+            "Failed to transfer master's share"
+        );
+        require(
+            usdtTokenContract.transfer(devTeam, devTeamShare),
+            "Failed to transfer devTeam's share"
+        );
+        require(
+            usdtTokenContract.transfer(
+                evt.creator,
+                networth - masterShare - devTeamShare
+            ),
+            "Failed to transfer creator's share"
+        );
+        evt.status = EventStatus.Closed;
+        emit EventClosed(eventId);
+    }
 
     function cancelEvent(uint256 eventId) external onlyMaster onlyExistingEvent(eventId) {}
 }

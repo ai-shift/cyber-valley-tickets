@@ -109,6 +109,10 @@ export type UpdateEventPlaceArgs = {
   minDays: BigNumberish;
 };
 
+export type CloseEventArgs = {
+  eventId: BigNumberish;
+};
+
 // Conversion functions
 
 export const approveEventArgsToArray = (
@@ -164,4 +168,10 @@ export const updateEventPlaceArgsToArray = (
     args.minPrice,
     args.minDays,
   ];
+};
+
+export const closeEventArgsToArray = (
+  args: CloseEventArgs,
+): Parameters<CyberValleyEventManager["closeEvent"]> => {
+  return [args.eventId];
 };
