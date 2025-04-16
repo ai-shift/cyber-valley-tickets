@@ -1,5 +1,6 @@
 import { timestamp } from "./helpers";
 import type {
+  CancelEventArgs,
   CloseEventArgs,
   CreateEventPlaceArgs,
   SubmitEventRequestArgs,
@@ -33,5 +34,9 @@ export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
 };
 
 export const defaultCloseEventArgs: CloseEventArgs = {
+  eventId: 0,
+};
+
+export const defaultCancelEventArgs: CancelEventArgs = {
   eventId: 0,
 };

@@ -72,7 +72,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 daysAmount
     );
     event EventClosed(uint256 eventId);
-    event EventCancelld(uint256 envtId);
+    event EventCancelled(uint256 envtId);
 
     IERC20 public usdtTokenContract;
 
@@ -365,5 +365,29 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         emit EventClosed(eventId);
     }
 
-    function cancelEvent(uint256 eventId) external onlyMaster onlyExistingEvent(eventId) {}
+    function cancelEvent(
+        uint256 eventId
+    ) external onlyMaster onlyExistingEvent(eventId) {
+        Event storage evt = events[eventId];
+        require(
+            evt.status == EventStatus.Approved,
+            "Only event in approved state could be closed"
+        );
+        require(
+            block.timestamp >= evt.cancelDate,
+            "Event can not be cancelled before setted date"
+        );
+        evt.status = EventStatus.Cancelled;
+        for (uint256 idx = 0; idx < evt.customers.length; idx++) {
+            require(
+                usdtTokenContract.transfer(evt.customers[idx], evt.ticketPrice),
+                "Failed to transfer tokens to customer"
+            );
+        }
+        require(
+            usdtTokenContract.transfer(evt.creator, eventRequestPrice),
+            "Failed to transfer tokens to creator"
+        );
+        emit EventCancelled(eventId);
+    }
 }

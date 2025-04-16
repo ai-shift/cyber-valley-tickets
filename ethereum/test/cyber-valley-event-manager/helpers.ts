@@ -14,6 +14,7 @@ import type {
   SimpleERC20Xylose,
 } from "../../typechain-types";
 import {
+  defaultCancelEventArgs,
   defaultCloseEventArgs,
   defaultCreateEventPlaceRequest,
   defaultSubmitEventRequest,
@@ -22,6 +23,7 @@ import {
 } from "./data";
 import type {
   ApproveEventArgs,
+  CancelEventArgs,
   CloseEventArgs,
   CreateEventPlaceArgs,
   Event,
@@ -32,6 +34,7 @@ import type {
 
 import {
   approveEventArgsToArray,
+  cancelEventArgsToArray,
   closeEventArgsToArray,
   createEventPlaceArgsToArray,
   submitEventRequestArgsToArray,
@@ -234,6 +237,45 @@ export async function createAndCloseEvent(
   await createEventTx;
   await time.increase(100_000_000);
   return await closeEvent(eventManager, master, { eventId, ...patch });
+}
+
+export async function cancelEvent(
+  eventManager: CyberValleyEventManager,
+  master: Signer,
+  patch: Partial<CancelEventArgs>,
+): Promise<{
+  request: CancelEventArgs;
+  tx: Promise<ContractTransactionResponse>;
+}> {
+  const request = {
+    ...defaultCancelEventArgs,
+    ...patch,
+  };
+  const tx = eventManager
+    .connect(master)
+    .cancelEvent(...cancelEventArgsToArray(request));
+  return { request, tx };
+}
+
+export async function createAndCancelEvent(
+  eventManager: CyberValleyEventManager,
+  ERC20: SimpleERC20Xylose,
+  master: Signer,
+  creator: Signer,
+  patch: Partial<CancelEventArgs>,
+): ReturnType<typeof cancelEvent> {
+  const { tx: createEventTx, eventId } = await createEvent(
+    eventManager,
+    ERC20,
+    master,
+    creator,
+    {},
+    {},
+    {},
+  );
+  await createEventTx;
+  await time.increase(100_000_000);
+  return await cancelEvent(eventManager, master, { eventId, ...patch });
 }
 
 export function extractEvent<T>(

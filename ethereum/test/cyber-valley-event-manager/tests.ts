@@ -1,7 +1,8 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, expect } from "chai";
 import {
-closeEvent,
+  closeEvent,
+  createAndCancelEvent,
   createAndCloseEvent,
   createAndUpdateEventPlace,
   createEvent,
@@ -421,10 +422,10 @@ describe("CyberValleyEventManager", () => {
           await eventManager.getAddress(),
         ],
         [
-          Number(eventRequestSubmitionPrice) * 50 / 100,
-          Number(eventRequestSubmitionPrice) * 40 / 100,
-          Number(eventRequestSubmitionPrice) * 10 / 100,
-          -eventRequestSubmitionPrice
+          (Number(eventRequestSubmitionPrice) * 50) / 100,
+          (Number(eventRequestSubmitionPrice) * 40) / 100,
+          (Number(eventRequestSubmitionPrice) * 10) / 100,
+          -eventRequestSubmitionPrice,
         ],
       );
     });
@@ -434,12 +435,36 @@ describe("CyberValleyEventManager", () => {
     itExpectsOnlyMaster("cancelEvent", [BigInt(0)]);
 
     it("emits EventCancelled", async () => {
-      assert(false);
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { tx, request } = await createAndCancelEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await expect(tx)
+        .to.emit(eventManager, "EventCancelled")
+        .withArgs(request.eventId);
     });
 
-    // TODO: Requires verifyTicket implementation
     it("refunds tokens to customers and creator", async () => {
-      assert(false);
+      const { eventManager, ERC20, master, creator, devTeam } =
+        await loadFixture(deployContract);
+      const { tx } = await createAndCancelEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await expect(tx).to.changeTokenBalances(
+        ERC20,
+        [await creator.getAddress(), await eventManager.getAddress()],
+        [eventRequestSubmitionPrice, -eventRequestSubmitionPrice],
+      );
+      assert(false, "Requires `verifyTicket` implementation");
     });
   });
 });

@@ -113,6 +113,10 @@ export type CloseEventArgs = {
   eventId: BigNumberish;
 };
 
+export type CancelEventArgs = {
+  eventId: BigNumberish;
+};
+
 // Conversion functions
 
 export const approveEventArgsToArray = (
@@ -173,5 +177,11 @@ export const updateEventPlaceArgsToArray = (
 export const closeEventArgsToArray = (
   args: CloseEventArgs,
 ): Parameters<CyberValleyEventManager["closeEvent"]> => {
+  return [args.eventId];
+};
+
+export const cancelEventArgsToArray = (
+  args: CancelEventArgs,
+): Parameters<CyberValleyEventManager["cancelEvent"]> => {
   return [args.eventId];
 };
