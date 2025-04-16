@@ -102,12 +102,13 @@ describe("CyberValleyEventManager", () => {
         eventRequestSubmitionPrice,
       );
       const { eventPlaceId } = await createEventPlace(eventManager, master);
-      const { request, tx } = await submitEventRequest(eventManager, creator, {
+      const { request, tx, getEventId } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
       });
       await expect(tx)
         .to.emit(eventManager, "NewEventRequest")
         .withArgs(
+          await getEventId(),
           await creator.getAddress(),
           ...submitEventRequestArgsToArray(request),
         );

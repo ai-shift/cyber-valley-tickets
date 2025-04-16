@@ -192,7 +192,7 @@ export async function submitEventRequest(
     getEventId: async () => {
         const { id } = extractEvent<NewEventRequestEvent>(
           await (await tx).wait(),
-          "NewEventRequestEvent"
+          "NewEventRequest"
         );
         return id;
       }
