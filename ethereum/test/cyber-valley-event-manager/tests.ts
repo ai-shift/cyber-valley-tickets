@@ -383,9 +383,78 @@ describe("CyberValleyEventManager", () => {
       await expect(tx).to.be.revertedWith("Event with given id does not exist");
     });
 
-    // FIXME: I'm to lazy to implement it rn
-    it("accepts only approved event", async () => {
-      assert(false);
+    it("reverts to close cancelled event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { tx, request } = await createAndCancelEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await tx;
+      await expect(
+        await closeEvent(eventManager, master, request),
+      ).to.be.revertedWith("Only event in approved state could be closed");
+    });
+
+    it("reverts to close closed event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { tx, request } = await createAndCloseEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+      );
+      await tx;
+      await expect(
+        await closeEvent(eventManager, master, request),
+      ).to.be.revertedWith("Only event in approved state could be closed");
+    });
+
+    it("reverts to close submitted event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { eventPlaceId } = await createEventPlace(eventManager, master);
+      const { request, tx, getEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        {
+          eventPlaceId,
+        },
+      );
+      await tx;
+      await expect(
+        await closeEvent(eventManager, master, { eventId: await getEventId() }),
+      ).to.be.revertedWith("Only event in approved state could be closed");
+    });
+
+    it("reverts to close declined event", async () => {
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      await createEventPlace(eventManager, master);
+      const { request, tx, getEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        {},
+      );
+      const eventId = await getEventId();
+      await expect(
+        await closeEvent(eventManager, master, { eventId }),
+      ).to.be.revertedWith("Only event in approved state could be closed");
     });
 
     it("reverts if event was not finished", async () => {
