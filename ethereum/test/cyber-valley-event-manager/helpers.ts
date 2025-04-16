@@ -220,13 +220,10 @@ export function itExpectsOnlyMaster<K extends keyof CyberValleyEventManager>(
   request: Parameters<CyberValleyEventManager[K]>,
 ) {
   it(`${String(methodName)} allowed only to master`, async () => {
-    const { eventManager, master } = await loadFixture(deployContract);
+    const { eventManager } = await loadFixture(deployContract);
     const method = eventManager[methodName];
     assert(method != null);
-    await expect(await method.apply(eventManager, request)).to.be.revertedWith(
-      "Must have master role",
-    );
-    await expect(await method.apply(eventManager, request).connect(master)).to.be.revertedWith(
+    await expect(method.apply(eventManager, request)).to.be.revertedWith(
       "Must have master role",
     );
   });
@@ -236,14 +233,11 @@ export function itExpectsOnlyStaff<K extends keyof CyberValleyEventManager>(
   methodName: K,
   request: Parameters<CyberValleyEventManager[K]>,
 ) {
-  it(`${String(methodName)} allowed only to master`, async () => {
-    const { eventManager, staff } = await loadFixture(deployContract);
+  it(`${String(methodName)} allowed only to staff`, async () => {
+    const { eventManager } = await loadFixture(deployContract);
     const method = eventManager[methodName];
     assert(method != null);
-    await expect(await method.apply(eventManager, request)).to.be.revertedWith(
-      "Must have staff role",
-    );
-    await expect(await method.apply(eventManager, request).connect(staff)).to.be.revertedWith(
+    await expect(method.apply(eventManager, request)).to.be.revertedWith(
       "Must have staff role",
     );
   });
