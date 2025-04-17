@@ -9,6 +9,7 @@ import "./CyberValleyEventTicket.sol";
 import "./DateOverlapChecker.sol";
 import "./CyberValley.sol";
 
+// TODO: Pad layout after general work finish
 contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     using CyberValley for CyberValley.Multihash;
 

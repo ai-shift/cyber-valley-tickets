@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./CyberValley.sol";
 
+// TODO: Pad layout after general work finish
 contract CyberValleyEventTicket is ERC721, Ownable {
     using CyberValley for CyberValley.Multihash;
 
