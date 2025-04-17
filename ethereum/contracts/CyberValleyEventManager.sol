@@ -31,6 +31,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         Closed
     }
 
+    // TODO: Add IPFS multihash
     struct Event {
         address creator;
         uint256 eventPlaceId;
