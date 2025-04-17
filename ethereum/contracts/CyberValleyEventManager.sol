@@ -7,8 +7,11 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./CyberValleyEventTicket.sol";
 import "./DateOverlapChecker.sol";
+import "./CyberValley.sol";
 
 contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
+    using CyberValley for CyberValley.Multihash;
+
     bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
     bytes32 public constant STAFF_ROLE = keccak256("STAFF_ROLE");
 
@@ -70,8 +73,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 startDate,
         uint16 daysAmount
     );
+    event EventTicketVerified(uint256 tokenId);
 
     IERC20 public usdtTokenContract;
+    CyberValleyEventTicket public eventTicketContract;
 
     uint256 public devTeamPercentage;
     address public devTeam;
@@ -88,6 +93,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _;
     }
 
+    modifier onlyStaff() {
+        require(hasRole(STAFF_ROLE, msg.sender), "Must have staff role");
+        _;
+    }
+
     modifier onlyExistingEvent(uint256 eventId) {
         require(eventId < events.length, "Event with given id does not exist");
         _;
@@ -95,6 +105,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     constructor(
         address _usdtTokenContract,
+        address _eventTicketContract,
         address _master,
         uint256 _masterPercentage,
         address _devTeam,
@@ -108,6 +119,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
 
         usdtTokenContract = IERC20(_usdtTokenContract);
+        eventTicketContract = CyberValleyEventTicket(_eventTicketContract);
         devTeamPercentage = _devTeamPercentage;
         devTeam = _devTeam;
         masterPercentage = _masterPercentage;
@@ -116,6 +128,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
+        _grantRole(STAFF_ROLE, _master);
     }
 
     function createEventPlace(
@@ -326,7 +339,40 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
     }
 
-    function verifyTicket(uint256 ticketId) external view {}
+    // TODO: Move to CyberValleyEventTicket to decrease gas cost
+    function verifyTicket(uint256 tokenId) external onlyStaff {
+        eventTicketContract.ownerOf(tokenId);
+        emit EventTicketVerified(tokenId);
+    }
+
+    function mintTicket(
+        uint256 eventId,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
+    ) external onlyExistingEvent(eventId) {
+        Event storage evt = events[eventId];
+        require(
+            evt.customers.length < eventPlaces[evt.eventPlaceId].maxTickets,
+            "Sold out"
+        );
+        require(
+            usdtTokenContract.transferFrom(
+                msg.sender,
+                address(this),
+                evt.ticketPrice
+            ),
+            "Failed to transfer tokens"
+        );
+        eventTicketContract.mint(
+            msg.sender,
+            eventId,
+            digest,
+            hashFunction,
+            size
+        );
+        evt.customers.push(msg.sender);
+    }
 
     function closeEvent(
         uint256 eventId

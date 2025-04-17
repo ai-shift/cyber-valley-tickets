@@ -325,9 +325,6 @@ describe("CyberValleyEventManager", () => {
       assert(false);
     });
 
-    it("changes all fields", async () => {
-      assert(false);
-    });
   });
 
   describe("buyTicket", () => {
