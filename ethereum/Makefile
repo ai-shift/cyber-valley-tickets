@@ -17,3 +17,6 @@ check:
 # Prettier solidity plugin is piece of shit. It yells with huge stack traces without any clues about error place
 format-solidity:
 	pnpm exec prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'
+
+lint-solidity:
+	pnpm exec solhint 'contracts/**/*.sol'
