@@ -16,6 +16,7 @@ import {
   submitEventRequest,
 } from "./helpers";
 
+
 import {
   createEventPlaceArgsToArray,
   submitEventRequestArgsToArray,
@@ -354,7 +355,6 @@ describe("CyberValleyEventManager", () => {
     });
   });
 
-  // TODO: Should it be possible to close event if no any tickets were bought?
   describe("closeEvent", () => {
     itExpectsOnlyMaster("closeEvent", [BigInt(0)]);
 

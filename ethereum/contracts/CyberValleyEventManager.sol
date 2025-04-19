@@ -341,8 +341,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
     }
 
-    // TODO: Move to CyberValleyEventTicket to decrease gas cost
-    function verifyTicket(uint256 tokenId) external onlyStaff {
+    // TODO: Move to CyberValleyEventTicket to decrease gas cost & mark NFT as redeemed
+    function redeemTicket(uint256 tokenId) external onlyStaff {
         eventTicketContract.ownerOf(tokenId);
         emit EventTicketVerified(tokenId);
     }
