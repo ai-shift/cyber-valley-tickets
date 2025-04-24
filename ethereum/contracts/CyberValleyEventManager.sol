@@ -14,7 +14,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     using CyberValley for CyberValley.Multihash;
 
     bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
-    bytes32 public constant STAFF_ROLE = keccak256("STAFF_ROLE");
 
     struct EventPlace {
         uint16 maxTickets;
@@ -95,11 +94,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _;
     }
 
-    modifier onlyStaff() {
-        require(hasRole(STAFF_ROLE, msg.sender), "Must have staff role");
-        _;
-    }
-
     modifier onlyExistingEvent(uint256 eventId) {
         require(eventId < events.length, "Event with given id does not exist");
         _;
@@ -130,7 +124,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
-        _grantRole(STAFF_ROLE, _master);
     }
 
     function createEventPlace(
@@ -339,12 +332,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             ),
             "Requested event overlaps with existing"
         );
-    }
-
-    // TODO: Move to CyberValleyEventTicket to decrease gas cost & mark NFT as redeemed
-    function redeemTicket(uint256 tokenId) external onlyStaff {
-        eventTicketContract.ownerOf(tokenId);
-        emit EventTicketVerified(tokenId);
     }
 
     function mintTicket(

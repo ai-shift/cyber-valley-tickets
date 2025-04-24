@@ -2,12 +2,16 @@
 pragma solidity 0.8.28;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./CyberValley.sol";
 
 // TODO: Pad layout after general work finish
-contract CyberValleyEventTicket is ERC721, Ownable {
+contract CyberValleyEventTicket is ERC721, AccessControl {
     using CyberValley for CyberValley.Multihash;
+
+    bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
+    bytes32 public constant STAFF_ROLE = keccak256("STAFF_ROLE");
+    bytes32 public constant EVENT_MANAGER_ROLE = keccak256("EVENT_MANAGER_ROLE");
 
     uint256 private lastTokenId;
     mapping(uint256 => CyberValley.Multihash) public ticketsMeta;
@@ -25,20 +29,32 @@ contract CyberValleyEventTicket is ERC721, Ownable {
 
     constructor(
         string memory name,
-        string memory symbol
-    ) ERC721(name, symbol) Ownable(msg.sender) {}
+        string memory symbol,
+        address _master
+    ) ERC721(name, symbol) {
+        _grantRole(DEFAULT_ADMIN_ROLE, _master);
+        _grantRole(MASTER_ROLE, _master);
+        _grantRole(STAFF_ROLE, _master);
+    }
 
     modifier onlyEventManager() {
-        require(
-            msg.sender == eventManagerAddress,
-            "Only event manager can call this function"
-        );
+        require(hasRole(EVENT_MANAGER_ROLE, msg.sender), "Must have event manager role");
+        _;
+    }
+
+    modifier onlyMaster() {
+        require(hasRole(MASTER_ROLE, msg.sender), "Must have master role");
+        _;
+    }
+
+    modifier onlyStaff() {
+        require(hasRole(STAFF_ROLE, msg.sender), "Must have staff role");
         _;
     }
 
     function setEventManagerAddress(
         address _eventManagerAddress
-    ) external onlyOwner {
+    ) external onlyMaster {
         require(
             _eventManagerAddress != address(0),
             "Event manager address cannot be zero"
@@ -47,7 +63,7 @@ contract CyberValleyEventTicket is ERC721, Ownable {
             eventManagerAddress == address(0),
             "Event manager was already saved"
         );
-        eventManagerAddress = _eventManagerAddress;
+        _grantRole(EVENT_MANAGER_ROLE, _eventManagerAddress);
     }
 
     function mint(
@@ -83,5 +99,9 @@ contract CyberValleyEventTicket is ERC721, Ownable {
     ) public virtual override {
         require(from == address(0), "Token transfer is disabled");
         super.transferFrom(from, to, tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }
