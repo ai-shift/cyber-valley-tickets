@@ -11,11 +11,9 @@ import {
   createValidEventPlace,
   deployContract,
   itExpectsOnlyMaster,
-  itExpectsOnlyStaff,
   stringify,
   submitEventRequest,
 } from "./helpers";
-
 
 import {
   createEventPlaceArgsToArray,
@@ -325,7 +323,6 @@ describe("CyberValleyEventManager", () => {
     it("checks date ranges overlap", async () => {
       assert(false);
     });
-
   });
 
   describe("buyTicket", () => {
@@ -383,10 +380,14 @@ describe("CyberValleyEventManager", () => {
         {},
       );
       await tx;
-      const { tx: closeEventTx } = await closeEvent(eventManager, master, request);
-      await expect(
-        closeEventTx,
-      ).to.be.revertedWith("Only event in approved state can be closed");
+      const { tx: closeEventTx } = await closeEvent(
+        eventManager,
+        master,
+        request,
+      );
+      await expect(closeEventTx).to.be.revertedWith(
+        "Only event in approved state can be closed",
+      );
     });
 
     it("reverts to close closed event", async () => {
@@ -400,10 +401,14 @@ describe("CyberValleyEventManager", () => {
         {},
       );
       await tx;
-      const { tx: closeEventTx } = await closeEvent(eventManager, master, request);
-      await expect(
-        closeEventTx,
-      ).to.be.revertedWith("Only event in approved state can be closed");
+      const { tx: closeEventTx } = await closeEvent(
+        eventManager,
+        master,
+        request,
+      );
+      await expect(closeEventTx).to.be.revertedWith(
+        "Only event in approved state can be closed",
+      );
     });
 
     it("reverts to close submitted event", async () => {
@@ -423,10 +428,12 @@ describe("CyberValleyEventManager", () => {
         },
       );
       await tx;
-      const { tx: closeEventTx } = await closeEvent(eventManager, master, { eventId: await getEventId() });
-      await expect(
-        closeEventTx,
-      ).to.be.revertedWith("Only event in approved state can be closed");
+      const { tx: closeEventTx } = await closeEvent(eventManager, master, {
+        eventId: await getEventId(),
+      });
+      await expect(closeEventTx).to.be.revertedWith(
+        "Only event in approved state can be closed",
+      );
     });
 
     it("reverts to close declined event", async () => {
@@ -444,10 +451,12 @@ describe("CyberValleyEventManager", () => {
         {},
       );
       const eventId = await getEventId();
-      const { tx: closeEventTx } = await closeEvent(eventManager, master, { eventId });
-      await expect(
-        closeEventTx,
-      ).to.be.revertedWith("Only event in approved state can be closed");
+      const { tx: closeEventTx } = await closeEvent(eventManager, master, {
+        eventId,
+      });
+      await expect(closeEventTx).to.be.revertedWith(
+        "Only event in approved state can be closed",
+      );
     });
 
     it("reverts if event was not finished", async () => {
