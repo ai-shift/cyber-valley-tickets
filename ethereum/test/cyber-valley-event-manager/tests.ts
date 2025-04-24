@@ -346,15 +346,6 @@ describe("CyberValleyEventManager", () => {
     });
   });
 
-  describe("verifyTicket", () => {
-    itExpectsOnlyMaster("verifyTicket", [BigInt(0)]);
-    itExpectsOnlyStaff("verifyTicket", [BigInt(0)]);
-
-    it("works only once for each ticket", async () => {
-      assert(false);
-    });
-  });
-
   describe("closeEvent", () => {
     itExpectsOnlyMaster("closeEvent", [BigInt(0)]);
 

@@ -25,15 +25,8 @@ contract CyberValleyEventTicket is ERC721, Ownable {
 
     constructor(
         string memory name,
-        string memory symbol,
-        address _eventManagerAddress
-    ) ERC721(name, symbol) Ownable(msg.sender) {
-        require(
-            _eventManagerAddress != address(0),
-            "Event manager address cannot be zero"
-        );
-        eventManagerAddress = _eventManagerAddress;
-    }
+        string memory symbol
+    ) ERC721(name, symbol) Ownable(msg.sender) {}
 
     modifier onlyEventManager() {
         require(
