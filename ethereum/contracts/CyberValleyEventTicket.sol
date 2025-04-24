@@ -11,10 +11,12 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
 
     bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
     bytes32 public constant STAFF_ROLE = keccak256("STAFF_ROLE");
-    bytes32 public constant EVENT_MANAGER_ROLE = keccak256("EVENT_MANAGER_ROLE");
+    bytes32 public constant EVENT_MANAGER_ROLE =
+        keccak256("EVENT_MANAGER_ROLE");
 
     uint256 private lastTokenId;
     mapping(uint256 => CyberValley.Multihash) public ticketsMeta;
+    mapping(uint256 => bool) public isRedeemed;
 
     address public eventManagerAddress;
 
@@ -27,6 +29,8 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         uint8 size
     );
 
+    event TicketRedeemed(uint256 ticketId);
+
     constructor(
         string memory name,
         string memory symbol,
@@ -38,7 +42,10 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
     }
 
     modifier onlyEventManager() {
-        require(hasRole(EVENT_MANAGER_ROLE, msg.sender), "Must have event manager role");
+        require(
+            hasRole(EVENT_MANAGER_ROLE, msg.sender),
+            "Must have event manager role"
+        );
         _;
     }
 
@@ -101,7 +108,15 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         super.transferFrom(from, to, tokenId);
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
+    function redeemTicket(uint256 tokenId) external onlyStaff {
+        require(!isRedeemed[tokenId], "Token was redeemed already");
+        isRedeemed[tokenId] = true;
+        emit TicketRedeemed(tokenId);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC721, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }
