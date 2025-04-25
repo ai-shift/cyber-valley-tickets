@@ -30,6 +30,11 @@
     - [[#general-overview][General overview]]
     - [[#smart-contract][Smart contract]]
     - [[#backend][Backend]]
+  - [[#pages-description][Pages description]]
+    - [[#main][Main]]
+    - [[#event][Event]]
+    - [[#create-event][Create event]]
+    - [[#account][Account]]
 - [[#questions][Questions]]
   - [[#both-desktop-and-mobile-are-required][Both desktop and mobile are required?]]
   - [[#is-it-required-to-verify-tickets-without-internet-connection][Is it required to verify tickets without internet connection?]]
@@ -821,6 +826,84 @@ class VerifySignatureModel {
 #+RESULTS:
 [[file:./img/verify-signature-model.png]]
 
+** Pages description
+
+*** Main
+
+**** Menu component:
+
+- Create event
+- Account
+
+**** if master
+
+- Edit event places.
+- Edit staft
+- Pending requests
+
+**** Events list. Each containing:
+
+- Cover.
+- Title
+- Place
+- Time range
+
+**** Notifications
+
+*** Event
+
+**** Event card data
+
+**** Description
+
+**** Tickets sold / total
+
+**** Price
+
+**** Attend
+
+**** if creator
+
+- if can be cancelled.
+  - cancel date
+  - required N tickets
+- it pending
+  - Edit
+  - more → create vent form
+  - Request event edit
+
+**** if anttendee
+
+- Attend changed to show ticket
+
+**** if redeemed
+
+- Attend changed to redeemed
+
+**** it staff
+
+- Redeem ticket
+- Attend event
+  - Input socials
+  - Pay
+
+*** Create event
+
+**** Submition form (text, number, date range, select from list, img upload,
+
+**** Payment button
+
+*** Account
+
+**** My events
+
+- Pending requests
+- Approved events
+- Bought tickets
+
+**** Logout
+
+**** Income
 * Questions
 
 ** Both desktop and mobile are required?
