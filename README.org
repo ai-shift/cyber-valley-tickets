@@ -653,14 +653,14 @@ class Ticket {
 }
 
 interface IERC721 {
-    function balanceOf(address owner) external view returns (int balance);
-    function ownerOf(int tokenId) external view returns (address owner);
+  function balanceOf(address owner) external view returns (int balance);
+  function ownerOf(int tokenId) external view returns (address owner);
 }
 
 interface IERC721Metadata {
-    function name() external view returns (string memory);
-    function symbol() external view returns (string memory);
-    function tokenURI(int tokenId) external view returns (string memory);
+  function name() external view returns (string memory);
+  function symbol() external view returns (string memory);
+  function tokenURI(int tokenId) external view returns (string memory);
 }
 
 EventTicket --> Ticket
