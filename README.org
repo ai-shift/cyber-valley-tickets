@@ -86,10 +86,10 @@ Has all customer's, staff's and creator's authorities and:
 
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlace {
-  minTickets: uint16
-  maxTickets: uint16
-  minPrice: uint16
-  minDays: uint8
+  minTickets: int
+  maxTickets: int
+  minPrice: int
+  minDays: int
 }
 #+end_src
 
@@ -165,11 +165,12 @@ Backend -> Database: Persis used socials
 
 #+begin_src plantuml :file ./img/event-request.png
 class EventRequest {
-  eventPlaceId: uint16
-  ticketPrice: uint16
-  startDate: uint256
-  cancelDate: uint256
-  daysAmount: uint8
+  title: string
+  description: string
+  eventPlaceId: int
+  ticketPrice: int
+  startDate: int
+  daysAmount: int
 }
 #+end_src
 
@@ -199,7 +200,7 @@ TicketsApp -> Master: New event added to the pending requets list
 
 #+begin_src plantuml :file ./img/event-approve.png
 class EventApprove {
-  eventId: uint256
+  eventId: int
   eventMetadataMultihash: Multihash
 }
 #+end_src
@@ -476,13 +477,13 @@ Backend -- Database : Stores unapproved event requests
 
 #+begin_src plantuml :file ./img/event-manager.png
 class CyberValleyEventManager {
-  - event[uint256 => Event]
-  - eventPlace[uint256 => EventPlace]
-  - eventRequest[uint256 => EventRequest]
+  - event[int => Event]
+  - eventPlace[int => EventPlace]
+  - eventRequest[int => EventRequest]
   - usdtTokenContract: address
   - cyberValleyTicketContract: address
-  - devTeamPercentage: uint256
-  - masterPercentage: uint256
+  - devTeamPercentage: int
+  - masterPercentage: int
 
   - {static} MASTER_ROLE: bytes32
   - {static} STAFF_ROLE: bytes32
@@ -490,29 +491,29 @@ class CyberValleyEventManager {
 
 class EventRequest {
   - creator: address
-  - eventPlaceId: uint256
-  - startTimestamp: uint256
+  - eventPlaceId: int
+  - startTimestamp: int
 }
 
 class EventPlace {
-  - maxTickets: uint16
-  - minTickets: uint16
-  - minPrice: uint16
-  - minDays: uint8
+  - maxTickets: int
+  - minTickets: int
+  - minPrice: int
+  - minDays: int
 }
 
 class Event {
   - creator: address
   - eventDataCID: Multihash
-  - balance: uint256
+  - balance: int
   - cancelled: bool
   - closed: bool
 }
 
 class Multihash {
   - digest: bytes32
-  - hashFunction: uint8
-  - size: uint8
+  - hashFunction: int
+  - size: int
 }
 
 abstract class AccessControl {
@@ -522,8 +523,8 @@ abstract class AccessControl {
 }
 
 class TetherToken {
-  + transferFrom(address sender, address recipient, uint256 amount)
-  + transfer(address recipient, uint256 amount)
+  + transferFrom(address sender, address recipient, int amount)
+  + transfer(address recipient, int amount)
   + balanceOf(address account)
 }
 
@@ -642,24 +643,24 @@ class EventTicket {
   - name: string
   - symbol: string
   - eventManagerAddress: address
-  - tickets[uint256, Ticket]
+  - tickets[int, Ticket]
 }
 
 class Ticket {
-  eventId: uint256
-  days: uint8
+  eventId: int
+  days: int
   isUsed: bool
 }
 
 interface IERC721 {
-    function balanceOf(address owner) external view returns (uint256 balance);
-    function ownerOf(uint256 tokenId) external view returns (address owner);
+    function balanceOf(address owner) external view returns (int balance);
+    function ownerOf(int tokenId) external view returns (address owner);
 }
 
 interface IERC721Metadata {
     function name() external view returns (string memory);
     function symbol() external view returns (string memory);
-    function tokenURI(uint256 tokenId) external view returns (string memory);
+    function tokenURI(int tokenId) external view returns (string memory);
 }
 
 EventTicket --> Ticket
