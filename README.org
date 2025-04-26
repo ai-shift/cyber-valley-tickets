@@ -14,16 +14,14 @@
     - [[#create-event-place][Create event place]]
     - [[#update-event-place][Update event place]]
     - [[#save-socials][Save socials]]
-    - [[#submit-event-request][Submit event request]]
     - [[#approve-event-request][Approve event request]]
     - [[#decline-event-request][Decline event request]]
-    - [[#edit-event-request][Edit event request]]
+    - [[#edit-event][Edit event]]
     - [[#list-events][List events]]
     - [[#buy-ticket][Buy ticket]]
-    - [[#assign-events-staff][Assign event's staff]]
+    - [[#add--remove-staff][Add / remove staff]]
     - [[#show-ticket][Show ticket]]
     - [[#verify-bought-ticket][Verify bought ticket]]
-    - [[#cancel-event][Cancel Event]]
     - [[#close-event][Close event]]
   - [[#tech-stack][Tech stack]]
   - [[#excluded-features-from-the-first-stage][Excluded features from the first stage]]
@@ -61,9 +59,9 @@ Public role which has the following authorities:
 
 *** Staff
 
-Assigned to each event by the master role. Has all customer's authorities and:
+Assigned by the master role. Has all customer's authorities and:
 
-- Verify tickets for the assigned event
+- Verify tickets for any event
 
 *** Creator
 
@@ -71,12 +69,13 @@ A.k.a shaman has all customer's authorities and:
 
 - Send event request
 - Edit own event requests
+- See pending own event requests
 
 *** Master
 
 Has all customer's, staff's and creator's authorities and:
 
-- Create event space
+- Create event place
 - Approve event requests
 - Edit event requests
 - Cancel event
@@ -199,7 +198,7 @@ Backend -> Database: Persis used socials
 #+RESULTS:
 [[file:./img/v2-save-socials.png]]
 
-*** Submit event request
+*** COMMENT Submit event request
 
 #+begin_src plantuml :file ./img/event-request.png
 class EventRequest {
@@ -219,19 +218,20 @@ title Submit event request
 
 actor Creator
 participant TicketsApp
-participant SmartContract
+participant EventManager
 participant Backend
+actor ERC20Contract
 actor Master
 
 Creator -> TicketsApp: Fill event request form
 TicketsApp -> Backend: Store metadata
-TicketsApp -> SmartContract: submitEventRequest(eventPlaceId, ticketPrice, cancelDate, startDate, daysAmount)
-activate SmartContract
-SmartContract -> SmartContract: usdtTokenContract.transferFrom(msg.sender, address(this), eventRequestPrice)
-SmartContract -> SmartContract: validateEvent(events[events.length - 1])
-SmartContract -->> TicketsApp: Emits NewEventRequest
-deactivate SmartContract
-TicketsApp -> Master: New event added to the pending requests list
+TicketsApp -> EventManager: Submit event request
+activate EventManager
+EventManager -> ERC20Contract: Transfer request fee
+EventManager -->> Backend: Emits NewEventRequest
+deactivate EventManager
+TicketsApp -> Creator: Event successfully requested
+TicketsApp -> Master: New event request
 #+end_src
 
 #+RESULTS:
@@ -244,15 +244,14 @@ title Approve event request
 
 actor Master
 participant TicketsApp
-participant SmartContract
-participant DateOverlapChecker
+participant EventManager
+participant Backend
 
 Master -> TicketsApp: Approve event
-TicketsApp -> SmartContract: approveEvent(eventId)
-activate SmartContract
-SmartContract -> DateOverlapChecker: allocateDateRange(evt.eventPlaceId, evt.startDate, evt.startDate + evt.daysAmount * SECONDS_IN_DAY)
-SmartContract -->> TicketsApp: Emits EventStatusChanged
-deactivate SmartContract
+TicketsApp -> EventManager: Approve event
+activate EventManager
+EventManager -->> Backend: Emits EventStatusChanged
+deactivate EventManager
 #+end_src
 
 #+RESULTS:
@@ -265,34 +264,43 @@ title Decline event request
 
 actor Master
 participant TicketsApp
-participant SmartContract
+participant EventManager
+participant Backend
+actor ERC20Contract
 
 Master -> TicketsApp: Decline event
-TicketsApp -> SmartContract: declineEvent(eventId)
-activate SmartContract
-SmartContract -> SmartContract: usdtTokenContract.transfer(evt.creator, eventRequestPrice)
-SmartContract -->> TicketsApp: Emits EventStatusChanged
-deactivate SmartContract
+TicketsApp -> EventManager: Decline event
+activate EventManager
+EventManager -> ERC20Contract: Refund request fee
+EventManager -->> Backend: Emits EventStatusChanged
+deactivate EventManager
 #+end_src
 
 #+RESULTS:
 [[file:./img/decline-event-request.png]]
 
-*** Edit event request
+*** Edit event
 
 #+begin_src plantuml :file ./img/edit-event-request.png
 title Edit event request
 
-actor Master
+actor Creator
 participant TicketsApp
-participant SmartContract
+participant EventManager
+participant Backend
 
-Master -> TicketsApp: Edit event
-TicketsApp -> SmartContract: updateEvent(eventId, eventPlaceId, ticketPrice, cancelDate, startDate, daysAmount)
-activate SmartContract
-SmartContract -> SmartContract: validateEvent(evt)
-SmartContract -->> TicketsApp: Emits EventUpdated
-deactivate SmartContract
+Creator -> TicketsApp: Edit event request
+activate EventManager
+alt Event request is pending
+  TicketsApp -> EventManager: Update event data
+  EventManager -->> TicketsApp: Emits EventUpdated
+  TicketsApp -> Creator: Event request updated
+else Event approved
+  TicketsApp -> EventManager: Add event edit
+  EventManager -->> TicketsApp: Emits EventEditRequested
+  TicketsApp -> Master: Requested edition of approved event
+end
+deactivate EventManager
 #+end_src
 
 #+RESULTS:
@@ -305,10 +313,10 @@ title List events
 
 actor Customer
 participant TicketsApp
-participant SmartContract
+participant Backend
 
 Customer -> TicketsApp: List events
-TicketsApp -> SmartContract: View events
+TicketsApp -> Backend: View events
 loop for each event
   TicketsApp -> Customer: Show event
 end
@@ -325,64 +333,34 @@ title Buy ticket
 
 actor Customer
 participant TicketsApp
-participant SmartContract
-participant CyberValleyEventTicket
+participant EventManager
+participant ERC20Contract
+participant EventTicket
 
-Customer -> TicketsApp: Buy a ticket for the selected event
-TicketsApp -> SmartContract: mintTicket(eventId, digest, hashFunction, size)
-activate SmartContract
-SmartContract -> SmartContract: usdtTokenContract.transferFrom(msg.sender, address(this), evt.ticketPrice)
-SmartContract -> CyberValleyEventTicket: eventTicketContract.mint(msg.sender, eventId, digest, hashFunction, size)
-SmartContract -->> TicketsApp: Emits EventTicketVerified
-deactivate SmartContract
+Customer -> TicketsApp: Attend to event
+TicketsApp -> EventManager: Buy ticket
+activate EventManager
+EventManager -> ERC20Contract: Transfer tokens from customer
+EventManager -> EventTicket: Mint ticket
+EventTicket -->> TicketsApp: Emits EventTicketVerified
+deactivate EventManager
 TicketsApp -> Customer: Congratulation, here is your ticket
 #+end_src
 
 #+RESULTS:
 [[file:./img/v1-buy-ticket.png]]
 
-**** V2
-#+begin_src plantuml :file ./img/v2-buy-ticket.png
-title Buy ticket
-
-actor Customer
-participant TicketsApp
-participant SmartContract
-participant CyberValleyEventTicket
-
-Customer -> TicketsApp: Buy a ticket for the selected event
-TicketsApp -> SmartContract: mintTicket(eventId, digest, hashFunction, size)
-activate SmartContract
-SmartContract -> SmartContract: usdtTokenContract.transferFrom(msg.sender, address(this), evt.ticketPrice)
-alt Customer does not have enough USDT
-  TicketsApp -> Customer: Offer to swap the biggest asset to USDT
-end
-SmartContract -> CyberValleyEventTicket: eventTicketContract.mint(msg.sender, eventId, digest, hashFunction, size)
-SmartContract -->> TicketsApp: Emits EventTicketVerified
-deactivate SmartContract
-TicketsApp -> Customer: Congratulation, here is your ticket
-#+end_src
-
-#+RESULTS:
-[[file:./img/v2-buy-ticket.png]]
-
-*** Assign event's staff
-
-This could be changed to the array of staff independent from the event which can be edited by the master.
-
-Also given approach makes it difficult to list events for the given staff's address and requires GAS for each edit.
-
-As and alternative we can store staff addresses in the IPFS, but it'll introduce some latency in exchange of less GAS cost.
+*** Add / remove staff
 
 #+begin_src plantuml :file ./img/assign-event-staff.png
-title Assign event staff
+title Add / remove staff
 
 actor Master
 participant TicketsApp
-participant CyberValleyEventTicket
+participant EventManager
 
-Master -> TicketsApp: Assign given EOA as staff for the event
-TicketsApp -> CyberValleyEventTicket: setEventManagerAddress(_eventManagerAddress)
+Master -> TicketsApp: Make EOA staff
+TicketsApp -> EventManager: Grant / revoke staff role
 #+end_src
 
 #+RESULTS:
@@ -412,60 +390,32 @@ title Verify bought ticket
 actor Customer
 actor Staff
 participant TicketsApp
-participant SmartContract
+participant EventTicket
 
 Customer -> TicketsApp: Display QR
 Customer -> Staff: Show QR
 Staff -> TicketsApp: Verify QR
-TicketsApp -> SmartContract: Verify authority and NFT correctness
+TicketsApp -> EventTicket: Redeem ticket
 #+end_src
 
 #+RESULTS:
 [[file:./img/verify-bought-ticket.png]]
-
-*** Cancel Event
-
-#+begin_src plantuml :file ./img/cancel-event.png
-title Cancel event
-
-participant Backend
-actor Master
-actor Customer
-participant SmartContract
-
-Master -> Backend: Cancel event
-Backend -> SmartContract: cancelEvent(eventId)
-activate SmartContract
-SmartContract -> SmartContract: usdtTokenContract.transfer(evt.customers[idx], evt.ticketPrice)
-SmartContract -> SmartContract: usdtTokenContract.transfer(evt.creator, eventRequestPrice)
-deactivate SmartContract
-loop for each customer with a ticket
-  SmartContract -> Customer: Send refund
-end
-#+end_src
-
-#+RESULTS:
-[[file:./img/cancel-event.png]]
 
 *** Close event
 
 #+begin_src plantuml :file ./img/close-event.png
 actor Master
 participant TicketsApp
-participant SmartContract
-actor Creator
-actor DevTeam
+participant EventManager
+actor ERC20Contract
+participant Backend
 
 Master -> TicketsApp: Close event
-TicketsApp -> SmartContract: closeEvent(eventId)
-activate SmartContract
-SmartContract -> SmartContract: usdtTokenContract.transfer(master, masterShare)
-SmartContract -> SmartContract: usdtTokenContract.transfer(devTeam, devTeamShare)
-SmartContract -> SmartContract: usdtTokenContract.transfer(evt.creator, networth - masterShare - devTeamShare)
-deactivate SmartContract
-SmartContract -> Master: Send funds
-SmartContract -> Creator: Send funds
-SmartContract -> DevTeam: Send funds
+TicketsApp -> EventManager: Close event
+activate EventManager
+  EventManager -> ERC20Contract: Spread shares between master, creator and devTeam
+  EventManager --> Backend: Emit EventStatusChanged
+deactivate EventManager
 #+end_src
 
 #+RESULTS:
