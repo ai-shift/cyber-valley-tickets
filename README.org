@@ -12,9 +12,11 @@
     - [[#master][Master]]
   - [[#use-cases][Use cases]]
     - [[#create-event-place][Create event place]]
+    - [[#update-event-place][Update event place]]
     - [[#save-socials][Save socials]]
     - [[#submit-event-request][Submit event request]]
     - [[#approve-event-request][Approve event request]]
+    - [[#decline-event-request][Decline event request]]
     - [[#edit-event-request][Edit event request]]
     - [[#list-events][List events]]
     - [[#buy-ticket][Buy ticket]]
@@ -76,7 +78,7 @@ Has all customer's, staff's and creator's authorities and:
 
 - Create event space
 - Approve event requests
-- Approve event changes
+- Edit event requests
 - Cancel event
 - Close events
 
@@ -84,12 +86,18 @@ Has all customer's, staff's and creator's authorities and:
 
 *** Create event place
 
+*Accessible only by master*
+
+Adds a new event place
+
+*Emits* ~NewEventPlaceAvailable~
+
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlace {
-  minTickets: int
-  maxTickets: int
-  minPrice: int
-  minDays: int
+  minTickets: uint16
+  maxTickets: uint16
+  minPrice: uint16
+  minDays: uint8
 }
 #+end_src
 
@@ -101,16 +109,46 @@ title Create event place
 
 actor Master
 participant TicketsApp
-actor IPFS
 participant SmartContract
 
 Master -> TicketsApp: New event place data
-TicketsApp -> IPFS: Upload event place meta info
-TicketsApp -> SmartContract: Store new event place
+TicketsApp -> SmartContract: createEventPlace(maxTickets, minTickets, minPrice, minDays)
+activate SmartContract
+SmartContract -> SmartContract: _validateEventPlace(place)
+SmartContract -->> TicketsApp: Emits NewEventPlaceAvailable
+deactivate SmartContract
 #+end_src
 
 #+RESULTS:
 [[file:./img/create-event-place.png]]
+
+*** Update event place
+
+*Accessible only by master*
+
+Updates existing event place by it's id
+
+@@warning:Event place can't be changed if there is another event@@
+
+*Emits* ~EventPlaceUpdated~
+
+#+begin_src plantuml :file ./img/update-event-place.png
+title Update event place
+
+actor Master
+participant TicketsApp
+participant SmartContract
+
+Master -> TicketsApp: Updated event place data
+TicketsApp -> SmartContract: updateEventPlace(eventPlaceId, maxTickets, minTickets, minPrice, minDays)
+activate SmartContract
+SmartContract -> SmartContract: _validateEventPlace(place)
+SmartContract -->> TicketsApp: Emits EventPlaceUpdated
+deactivate SmartContract
+#+end_src
+
+#+RESULTS:
+[[file:./img/update-event-place.png]]
 
 *** Save socials
 
@@ -165,12 +203,11 @@ Backend -> Database: Persis used socials
 
 #+begin_src plantuml :file ./img/event-request.png
 class EventRequest {
-  title: string
-  description: string
-  eventPlaceId: int
-  ticketPrice: int
-  startDate: int
-  daysAmount: int
+  eventPlaceId: uint256
+  ticketPrice: uint16
+  cancelDate: uint256
+  startDate: uint256
+  daysAmount: uint16
 }
 #+end_src
 
@@ -188,9 +225,13 @@ actor Master
 
 Creator -> TicketsApp: Fill event request form
 TicketsApp -> Backend: Store metadata
-TicketsApp -> Creator: Send bid
-Creator -> SmartContract: Send required funds
-TicketsApp -> Master: New event added to the pending requets list
+TicketsApp -> SmartContract: submitEventRequest(eventPlaceId, ticketPrice, cancelDate, startDate, daysAmount)
+activate SmartContract
+SmartContract -> SmartContract: usdtTokenContract.transferFrom(msg.sender, address(this), eventRequestPrice)
+SmartContract -> SmartContract: validateEvent(events[events.length - 1])
+SmartContract -->> TicketsApp: Emits NewEventRequest
+deactivate SmartContract
+TicketsApp -> Master: New event added to the pending requests list
 #+end_src
 
 #+RESULTS:
@@ -198,53 +239,60 @@ TicketsApp -> Master: New event added to the pending requets list
 
 *** Approve event request
 
-#+begin_src plantuml :file ./img/event-approve.png
-class EventApprove {
-  eventId: int
-  eventMetadataMultihash: Multihash
-}
-#+end_src
-
-#+RESULTS:
-[[file:./img/event-approve.png]]
-
 #+begin_src plantuml :file ./img/approve-event-request.png
 title Approve event request
 
 actor Master
 participant TicketsApp
-participant Backend
-actor IPFS
 participant SmartContract
+participant DateOverlapChecker
 
 Master -> TicketsApp: Approve event
-TicketsApp -> Backend: Get event request metadata
-TicketsApp -> IPFS: Upload event metadata
-TicketsApp -> SmartContract: Approve event
+TicketsApp -> SmartContract: approveEvent(eventId)
+activate SmartContract
+SmartContract -> DateOverlapChecker: allocateDateRange(evt.eventPlaceId, evt.startDate, evt.startDate + evt.daysAmount * SECONDS_IN_DAY)
+SmartContract -->> TicketsApp: Emits EventStatusChanged
+deactivate SmartContract
 #+end_src
 
 #+RESULTS:
 [[file:./img/approve-event-request.png]]
+
+*** Decline event request
+
+#+begin_src plantuml :file ./img/decline-event-request.png
+title Decline event request
+
+actor Master
+participant TicketsApp
+participant SmartContract
+
+Master -> TicketsApp: Decline event
+TicketsApp -> SmartContract: declineEvent(eventId)
+activate SmartContract
+SmartContract -> SmartContract: usdtTokenContract.transfer(evt.creator, eventRequestPrice)
+SmartContract -->> TicketsApp: Emits EventStatusChanged
+deactivate SmartContract
+#+end_src
+
+#+RESULTS:
+[[file:./img/decline-event-request.png]]
 
 *** Edit event request
 
 #+begin_src plantuml :file ./img/edit-event-request.png
 title Edit event request
 
-actor Creator
+actor Master
 participant TicketsApp
 participant SmartContract
-participant Backend
-actor Master
 
-alt event approved
-  Master -> TicketsApp: Edit event
-  TicketsApp -> IPFS: Update value
-  TicketsApp -> SmartContract: Save changes
-else
-  Creator -> TicketsApp: Update event metadata
-  TicketsApp -> Backend: Update value
-end
+Master -> TicketsApp: Edit event
+TicketsApp -> SmartContract: updateEvent(eventId, eventPlaceId, ticketPrice, cancelDate, startDate, daysAmount)
+activate SmartContract
+SmartContract -> SmartContract: validateEvent(evt)
+SmartContract -->> TicketsApp: Emits EventUpdated
+deactivate SmartContract
 #+end_src
 
 #+RESULTS:
@@ -258,12 +306,10 @@ title List events
 actor Customer
 participant TicketsApp
 participant SmartContract
-actor IPFS
 
 Customer -> TicketsApp: List events
 TicketsApp -> SmartContract: View events
 loop for each event
-  TicketsApp -> IPFS: Fetch meta data
   TicketsApp -> Customer: Show event
 end
 #+end_src
@@ -279,16 +325,17 @@ title Buy ticket
 
 actor Customer
 participant TicketsApp
-actor IPFS
 participant SmartContract
+participant CyberValleyEventTicket
 
 Customer -> TicketsApp: Buy a ticket for the selected event
-TicketsApp -> Customer: Request socials
-TicketsApp -> IPFS: Store socials
-TicketsApp -> Customer: Send bid
-Customer -> SmartContract: Transfer USDT
-SmartContract -> TicketsApp: Emits the success event
-TicketsApp -> Customer: Congratualition here is your ticket
+TicketsApp -> SmartContract: mintTicket(eventId, digest, hashFunction, size)
+activate SmartContract
+SmartContract -> SmartContract: usdtTokenContract.transferFrom(msg.sender, address(this), evt.ticketPrice)
+SmartContract -> CyberValleyEventTicket: eventTicketContract.mint(msg.sender, eventId, digest, hashFunction, size)
+SmartContract -->> TicketsApp: Emits EventTicketVerified
+deactivate SmartContract
+TicketsApp -> Customer: Congratulation, here is your ticket
 #+end_src
 
 #+RESULTS:
@@ -300,19 +347,20 @@ title Buy ticket
 
 actor Customer
 participant TicketsApp
-actor IPFS
 participant SmartContract
+participant CyberValleyEventTicket
 
 Customer -> TicketsApp: Buy a ticket for the selected event
-TicketsApp -> Customer: Request socials
-TicketsApp -> IPFS: Store socials
-TicketsApp -> Customer: Send bid
+TicketsApp -> SmartContract: mintTicket(eventId, digest, hashFunction, size)
+activate SmartContract
+SmartContract -> SmartContract: usdtTokenContract.transferFrom(msg.sender, address(this), evt.ticketPrice)
 alt Customer does not have enough USDT
   TicketsApp -> Customer: Offer to swap the biggest asset to USDT
 end
-Customer -> SmartContract: Transfer USDT
-SmartContract -> TicketsApp: Emits the success event
-TicketsApp -> Customer: Congratualition here is your ticket
+SmartContract -> CyberValleyEventTicket: eventTicketContract.mint(msg.sender, eventId, digest, hashFunction, size)
+SmartContract -->> TicketsApp: Emits EventTicketVerified
+deactivate SmartContract
+TicketsApp -> Customer: Congratulation, here is your ticket
 #+end_src
 
 #+RESULTS:
@@ -331,10 +379,10 @@ title Assign event staff
 
 actor Master
 participant TicketsApp
-participant SmartContract
+participant CyberValleyEventTicket
 
 Master -> TicketsApp: Assign given EOA as staff for the event
-TicketsApp -> SmartContract: Store EOA as staff
+TicketsApp -> CyberValleyEventTicket: setEventManagerAddress(_eventManagerAddress)
 #+end_src
 
 #+RESULTS:
@@ -346,11 +394,10 @@ TicketsApp -> SmartContract: Store EOA as staff
 actor Customer
 participant TicketsApp
 participant SmartContract
-actor IPFS
+participant CyberValleyEventTicket
 
 Customer -> TicketsApp: Show ticket for the given event
-TicketsApp -> IPFS: Fetch ticket socials
-TicketsApp -> SmartContract: View bought ticket
+TicketsApp -> CyberValleyEventTicket: ticketMeta(tokenId)
 TicketsApp -> Customer: Show ticket QR
 #+end_src
 
@@ -382,12 +429,16 @@ TicketsApp -> SmartContract: Verify authority and NFT correctness
 title Cancel event
 
 participant Backend
-actor Creator
+actor Master
 actor Customer
 participant SmartContract
 
-Backend -> SmartContract: Cancel event
-SmartContract -> Creator: Send refund
+Master -> Backend: Cancel event
+Backend -> SmartContract: cancelEvent(eventId)
+activate SmartContract
+SmartContract -> SmartContract: usdtTokenContract.transfer(evt.customers[idx], evt.ticketPrice)
+SmartContract -> SmartContract: usdtTokenContract.transfer(evt.creator, eventRequestPrice)
+deactivate SmartContract
 loop for each customer with a ticket
   SmartContract -> Customer: Send refund
 end
@@ -406,7 +457,12 @@ actor Creator
 actor DevTeam
 
 Master -> TicketsApp: Close event
-TicketsApp -> SmartContract: Close event
+TicketsApp -> SmartContract: closeEvent(eventId)
+activate SmartContract
+SmartContract -> SmartContract: usdtTokenContract.transfer(master, masterShare)
+SmartContract -> SmartContract: usdtTokenContract.transfer(devTeam, devTeamShare)
+SmartContract -> SmartContract: usdtTokenContract.transfer(evt.creator, networth - masterShare - devTeamShare)
+deactivate SmartContract
 SmartContract -> Master: Send funds
 SmartContract -> Creator: Send funds
 SmartContract -> DevTeam: Send funds
@@ -417,7 +473,7 @@ SmartContract -> DevTeam: Send funds
 
 ** Tech stack
 
-Solidity, OpenZeppelin, React, TypeScript, Tailwind, ethers.js, IPFS
+Solidity, OpenZeppelin (=@openzeppelin/contracts@4.9.3=), React, TypeScript, Tailwind, ethers.js, IPFS
 
 Also a thin backend over database is required to provide free of charge ability to change event request data before it's approve, so it'll be implemented with Python, Valkey and Litestar
 
@@ -448,8 +504,9 @@ component TicketsApp {
 }
 
 component SmartContracts {
-  [EventManager.sol]
-  [EventTicket.sol]
+  [CyberValleyEventManager.sol]
+  [CyberValleyEventTicket.sol]
+  [DateOverlapChecker.sol]
 }
 
 database Backend {
@@ -465,7 +522,8 @@ TicketsApp -- IPFS : Stores/Fetches Metadata
 TicketsApp -- Backend : Interacts with
 Backend -- Database : Stores unapproved event requests
 
-[EventManager.sol] -- [EventTicket.sol] : Mints Tickets
+[CyberValleyEventManager.sol] -- [CyberValleyEventTicket.sol] : Mints Tickets
+[CyberValleyEventManager.sol] -- [DateOverlapChecker.sol] : Checks Date Overlaps
 #+end_src
 
 #+RESULTS:
@@ -477,67 +535,78 @@ Backend -- Database : Stores unapproved event requests
 
 #+begin_src plantuml :file ./img/event-manager.png
 class CyberValleyEventManager {
-  - event[int => Event]
-  - eventPlace[int => EventPlace]
-  - eventRequest[int => EventRequest]
-  - usdtTokenContract: address
-  - cyberValleyTicketContract: address
-  - devTeamPercentage: int
-  - masterPercentage: int
+  - events: Event[]
+  - eventPlaces: EventPlace[]
+  - usdtTokenContract: IERC20
+  - eventTicketContract: CyberValleyEventTicket
+  - devTeamPercentage: uint256
+  - devTeam: address
+  - masterPercentage: uint256
+  - master: address
+  - eventRequestPrice: uint256
 
   - {static} MASTER_ROLE: bytes32
-  - {static} STAFF_ROLE: bytes32
-}
 
-class EventRequest {
-  - creator: address
-  - eventPlaceId: int
-  - startTimestamp: int
-}
-
-class EventPlace {
-  - maxTickets: int
-  - minTickets: int
-  - minPrice: int
-  - minDays: int
+  + createEventPlace(maxTickets: uint16, minTickets: uint16, minPrice: uint16, minDays: uint8)
+  + updateEventPlace(eventPlaceId: uint256, maxTickets: uint16, minTickets: uint16, minPrice: uint16, minDays: uint8)
+  + submitEventRequest(eventPlaceId: uint256, ticketPrice: uint16, cancelDate: uint256, startDate: uint256, daysAmount: uint16)
+  + approveEvent(eventId: uint256)
+  + declineEvent(eventId: uint256)
+  + updateEvent(eventId: uint256, eventPlaceId: uint256, ticketPrice: uint16, cancelDate: uint256, startDate: uint256, daysAmount: uint16)
+  + cancelEvent(eventId: uint256)
+  + closeEvent(eventId: uint256)
+  + mintTicket(eventId: uint256, digest: bytes32, hashFunction: uint8, size: uint8)
 }
 
 class Event {
   - creator: address
-  - eventDataCID: Multihash
-  - balance: int
-  - cancelled: bool
-  - closed: bool
+  - eventPlaceId: uint256
+  - ticketPrice: uint16
+  - cancelDate: uint256
+  - startDate: uint256
+  - daysAmount: uint16
+  - status: EventStatus
+  - customers: address[]
 }
 
-class Multihash {
-  - digest: bytes32
-  - hashFunction: int
-  - size: int
+enum EventStatus {
+  Submitted,
+  Approved,
+  Declined,
+  Cancelled,
+  Closed
+}
+
+class EventPlace {
+  - maxTickets: uint16
+  - minTickets: uint16
+  - minPrice: uint16
+  - minDays: uint8
+}
+
+interface IERC20 {
+  + transferFrom(address sender, address recipient, uint256 amount)
+  + transfer(address recipient, uint256 amount)
+  + balanceOf(address account): uint256
+  + allowance(address owner, address spender): uint256
+}
+
+class CyberValleyEventTicket {
+  + mint(address to, uint256 eventId, bytes32 digest, uint8 hashFunction, uint8 size)
 }
 
 abstract class AccessControl {
   + grantRole(bytes32 role, address account)
   + revokeRole(bytes32 role, address account)
-  + onlyRole(bytes32 role)
+  + hasRole(bytes32 role, address account): bool
 }
-
-class TetherToken {
-  + transferFrom(address sender, address recipient, int amount)
-  + transfer(address recipient, int amount)
-  + balanceOf(address account)
-}
-
-interface IERC20 {}
 
 CyberValleyEventManager --|> AccessControl
-CyberValleyEventManager --> EventRequest
-CyberValleyEventManager --> EventPlace
+CyberValleyEventManager --o IERC20
+CyberValleyEventManager --o CyberValleyEventTicket
 CyberValleyEventManager --> Event
-CyberValleyEventManager --> Multihash
-CyberValleyEventManager --o TetherToken
-TetherToken ..|> IERC20
-Event --> Multihash
+CyberValleyEventManager --> EventPlace
+Event --> EventStatus
 #+end_src
 
 #+RESULTS:
@@ -551,6 +620,10 @@ Adds a new event place
 
 *Emits* ~NewEventPlaceAvailable~
 
+Validations:
+-   =eventPlace.maxTickets >= eventPlace.minTickets=, "Max tickets must be greater or equal min tickets"
+-   =eventPlace.maxTickets > 0 && eventPlace.minTickets > 0 && eventPlace.minPrice > 0 && eventPlace.minDays > 0=, "Values must be greater than zero"
+
 ***** Update event place
 
 *Accessible only by master*
@@ -561,46 +634,65 @@ Updates existing event place by it's id
 
 *Emits* ~EventPlaceUpdated~
 
+Validations:
+-   =eventPlaceId < eventPlaces.length=, "eventPlaceId should exist"
+-   =eventPlace.maxTickets >= eventPlace.minTickets=, "Max tickets must be greater or equal min tickets"
+-   =eventPlace.maxTickets > 0 && eventPlace.minTickets > 0 && eventPlace.minPrice > 0 && eventPlace.minDays > 0=, "Values must be greater than zero"
+
 ***** Submit event request
 
 *Public*
 
-- Checks that chosen place is free for the requested period of time
-- Checks if requested amount of tickets can fit in the chosen place
+Creates new event request.
 
-Creates new event request, stores it in centralized DB and sends telegram notification to the master
+Validations:
+-   =usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice=, "Not enough tokens"
+-   =usdtTokenContract.allowance(msg.sender, address(this)) >= eventRequestPrice=, "Required amount was not allowed"
 
-***** Approve event request
+***** Approve event
 
 *Accessible only by master*
 
 Transforms event request into the proper event which is visible to others
 
-*Emits* ~NewEventAvailable~
+*Emits* ~EventStatusChanged~
 
-***** Decline event request
+Validations:
+
+-   =evt.status == EventStatus.Submitted=, "Event status differs from submitted"
+
+***** Decline event
 
 *Accessible only by master*
 
 Removes event request from the queue and refunds means to the creator
 
+*Emits* ~EventStatusChanged~
+
+Validations:
+
+-   =evt.status == EventStatus.Submitted=, "Event status differs from submitted"
+
 ***** Update event
 
 *Accessible only by master*
 
-Allows to change the event data and update it's metadata
+Allows to change the event data.
 
-*Emits* ~EventWasUpdated~
+*Emits* ~EventUpdated~
 
 ***** Cancel event
-
-TODO: Autocancel event on specified cancelDate
 
 *Accessible only by master*
 
 Cancels given event and refunds all means between creator and customers who bought a ticket
 
-*Emits* ~EventCancelled~
+*Emits* ~EventStatusChanged~
+
+Validations:
+
+-   =evt.status == EventStatus.Approved=, "Only event in approved state can be cancelled"
+-   =block.timestamp >= evt.cancelDate=, "Event can not be cancelled before setted date"
 
 ***** Close event
 
@@ -608,58 +700,72 @@ Cancels given event and refunds all means between creator and customers who boug
 
 Closes given event and sends means to the master, creator and dev team according to their shares
 
-*Emits* ~EventClosed~
+*Emits* ~EventStatusChanged~
 
-***** Verify ticket
+Validations:
 
-*Accessible by master or staff*
+-   =evt.status == EventStatus.Approved=, "Only event in approved state can be closed"
+-   =block.timestamp >= evt.startDate + evt.daysAmount * SECONDS_IN_DAY=, "Event has not been finished yet"
+
+***** Mint ticket
+
+*Accessible by event manager*
 
 Checks if provided NFT was minted by the =EventManager= contract and connected to the given event.
 
 @@warning:Marks the ticket as used for the current day and makes it impossible to reenter the event@@
 
-***** Buy ticket
+Validations:
 
-*Public*
-
-- Checks if the event is available
-- Checks if there is available seats for the requested amount of tickets
-
-Sends newly minted asked amount of NFT tickets for the given event in exchange of USDT.
-
-@@warning:Refund is possible only if the event will be canceled@@
-
+-   =evt.customers.length < eventPlaces[evt.eventPlaceId].maxTickets=, "Sold out"
 
 **** Event ticket
 
 #+begin_src plantuml :file ./img/event-ticket.png
-class EventTicket {
+class CyberValleyEventTicket {
   - name: string
   - symbol: string
   - eventManagerAddress: address
-  - tickets[int, Ticket]
+  - ticketsMeta: mapping(uint256 => Multihash)
+  - isRedeemed: mapping(uint256 => bool)
+
+  - {static} MASTER_ROLE: bytes32
+  - {static} STAFF_ROLE: bytes32
+  - {static} EVENT_MANAGER_ROLE: bytes32
+
+  + setEventManagerAddress(_eventManagerAddress: address)
+  + mint(address to: address, eventId: uint256, digest: bytes32, hashFunction: uint8, size: uint8)
+  + ticketMeta(tokenId: uint256): (bytes32 digest, uint8 hashFunction, uint8 size)
+  + redeemTicket(tokenId: uint256)
 }
 
-class Ticket {
-  eventId: int
-  days: int
-  isUsed: bool
+class Multihash {
+  - digest: bytes32
+  - hashFunction: uint8
+  - size: uint8
 }
 
 interface IERC721 {
-    function balanceOf(address owner) external view returns (int balance);
-    function ownerOf(int tokenId) external view returns (address owner);
+    function balanceOf(address owner) external view returns (uint256 balance);
+    function ownerOf(uint256 tokenId) external view returns (address owner);
 }
 
 interface IERC721Metadata {
     function name() external view returns (string memory);
     function symbol() external view returns (string memory);
-    function tokenURI(int tokenId) external view returns (string memory);
+    function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
-EventTicket --> Ticket
-EventTicket --|> IERC721
-EventTicket --|> IERC721Metadata
+abstract class AccessControl {
+  + grantRole(bytes32 role, address account)
+  + revokeRole(bytes32 role, address account)
+  + hasRole(bytes32 role, address account): bool
+}
+
+CyberValleyEventTicket --> Multihash
+CyberValleyEventTicket --|> IERC721
+CyberValleyEventTicket --|> IERC721Metadata
+CyberValleyEventTicket --|> AccessControl
 #+end_src
 
 #+RESULTS:
