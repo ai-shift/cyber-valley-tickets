@@ -834,16 +834,16 @@ class VerifySignatureModel {
 
 - Create event
 - Account
+- if master
+  - Edit event places
+  - Edit staff
+  - Pending requests
 
-**** if master
+**** Events list
 
-- Edit event places.
-- Edit staft
-- Pending requests
+Each containing:
 
-**** Events list. Each containing:
-
-- Cover.
+- Cover
 - Title
 - Place
 - Time range
@@ -852,58 +852,43 @@ class VerifySignatureModel {
 
 *** Event
 
-**** Event card data
+- Event card data
+- Description
+- Tickets sold / total
+- Price
+- Attend
 
-**** Description
-
-**** Tickets sold / total
-
-**** Price
-
-**** Attend
-
-**** if creator
-
-- if can be cancelled.
-  - cancel date
-  - required N tickets
-- it pending
-  - Edit
-  - more → create vent form
-  - Request event edit
-
-**** if anttendee
-
-- Attend changed to show ticket
-
-**** if redeemed
-
-- Attend changed to redeemed
-
-**** it staff
-
-- Redeem ticket
-- Attend event
-  - Input socials
-  - Pay
+- if creator
+  - if can be cancelled.
+    - cancel date
+    - required N tickets
+  - if pending
+    - Edit
+    - Request event edit
+- if attendee
+  - Attend changed to show ticket
+- if redeemed
+  - Attend changed to redeemed
+- it staff
+  - Redeem ticket
+  - Attend event
+    - Input socials
+    - Pay
 
 *** Create event
 
-**** Submition form (text, number, date range, select from list, img upload,
-
-**** Payment button
+- Submition form (text, number, date range, select from list, img upload,
+- Payment button
 
 *** Account
 
-**** My events
+- My events
+  - Pending requests
+  - Approved events
+  - Bought tickets
+- Logout
+- Income
 
-- Pending requests
-- Approved events
-- Bought tickets
-
-**** Logout
-
-**** Income
 * Questions
 
 ** Both desktop and mobile are required?
