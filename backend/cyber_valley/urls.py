@@ -23,6 +23,7 @@ from .events import views
 
 router = routers.DefaultRouter()
 router.register(r"places", views.EventPlaceViewSet)
+router.register(r"events", views.EventViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

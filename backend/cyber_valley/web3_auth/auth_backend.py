@@ -1,14 +1,19 @@
-from typing import Any
+import os
+from typing import Final
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.backends import BaseBackend
-from django.http import HttpRequest
 from eth_account import Account
 from eth_account.messages import encode_defunct
 from pydantic import BaseModel, Field
+from rest_framework import authentication, exceptions
+from rest_framework.request import Request
 from web3 import Web3
 
 from .models import User as UserType
+
+MOCK_WEB3_AUTH: Final = bool(os.getenv("MOCK_WEB3_AUTH"))
+if MOCK_WEB3_AUTH:
+    print("!!! USING MOCKED AUTH MODULE")
 
 User = get_user_model()
 
@@ -23,27 +28,20 @@ class Web3LoginModel(BaseModel):
     message: str = Field(description="Message that is signed")
 
 
-class Web3AuthBackend(BaseBackend):
-    def authenticate(
-        self, request: None | HttpRequest, **_kwargs: Any
-    ) -> None | UserType:
-        if request is None:
-            return None
+class Web3AuthBackend(authentication.BaseAuthentication):
+    www_authenticate_realm = "api"
+    media_type = "application/json"
+
+    def authenticate(self, request: Request) -> None | tuple[UserType, None]:
         data = Web3LoginModel.model_validate(request.POST)
-        if not verify_signature(data):
-            return None
+        if not (MOCK_WEB3_AUTH or verify_signature(data)):
+            raise exceptions.AuthenticationFailed
         try:
             user = User.objects.get(address=data.address)
         except User.DoesNotExist:
             user = User(address=data.address)
             user.save()
-        return user
-
-    def get_user(self, user_id: str) -> UserType | None:
-        try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            return None
+        return user, None
 
 
 def verify_signature(data: Web3LoginModel) -> bool:

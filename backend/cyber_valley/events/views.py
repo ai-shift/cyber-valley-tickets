@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets
 
-from .models import EventPlace
-from .serializers import EventPlaceSerializer
+from .models import Event, EventPlace
+from .serializers import EventPlaceSerializer, EventSerializer
 
 
 class EventPlaceViewSet(viewsets.ModelViewSet[EventPlace]):
@@ -11,4 +11,10 @@ class EventPlaceViewSet(viewsets.ModelViewSet[EventPlace]):
 
     queryset = EventPlace.objects.all()
     serializer_class = EventPlaceSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
+
+
+class EventViewSet(viewsets.ModelViewSet[Event]):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = (permissions.AllowAny,)
