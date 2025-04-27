@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "cyber_valley.events",
+    "cyber_valley.web3_auth",
 ]
 
 MIDDLEWARE = [
