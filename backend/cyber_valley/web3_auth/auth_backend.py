@@ -33,9 +33,9 @@ class Web3AuthBackend(BaseBackend):
         if not verify_signature(data):
             return None
         try:
-            user = User.objects.get(username=data.address)
+            user = User.objects.get(address=data.address)
         except User.DoesNotExist:
-            user = User(username=data.address)
+            user = User(address=data.address)
             user.save()
         return user
 

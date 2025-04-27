@@ -55,7 +55,7 @@ class Ticket(models.Model):
     is_redeemed = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return f"Ticket for {self.event.title} owned by {self.owner.username}"
+        return f"Ticket for {self.event.title} owned by {self.owner.address}"
 
     class Meta:
         unique_together = ("event", "owner")

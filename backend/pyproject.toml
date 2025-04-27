@@ -78,6 +78,7 @@ ignore = [
   "A005", # Module shadows a Python standard-library module
   "PT013", # pytest import consistency
 ]
+exclude = ["**/migrations/*.py"]
 
 external = [ "WPS" ]
 allowed-confusables = ["а", "А", "б", "Б", "в", "В", "г", "Г", "е", "Е", "з", "З", "и", "И", "к", "К", "м", "М", "н", "Н", "о", "О", "р", "Р", "с", "С", "у", "У", "ф", "Ф", "х", "Х"]

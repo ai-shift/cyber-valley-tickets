@@ -1,6 +1,11 @@
+from typing import ClassVar
+
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 
 
-class User(models.Model):
-    username = models.CharField(max_length=50)
-    public_key = models.CharField(max_length=200)
+class User(AbstractBaseUser):
+    address = models.CharField(max_length=200)
+
+    REQUIRED_FIELDS: ClassVar[list[str]] = []
+    USERNAME_FIELD = "address"
