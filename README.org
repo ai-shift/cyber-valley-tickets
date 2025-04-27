@@ -730,125 +730,98 @@ It's required for the two general purposes:
 
 Both of this solutions provide the most minimal off-chain reading pricing (probably even fit into free tier) and allow to publicly expose them without difficult caching system. Also all data will be stored locally, so it could be processed or aggregated in many wanted ways.
 
-**** Temporal event request storage
-***** POST /events/requests
-
-*Auth* public
-
-Saves event request before the payment and storing in the blockchain. Customer who had sent event request becomes creator and can list his submissions.
-
-Because this endpoint is publicly available for the V1 the request pool is introduced of big enough size (100_000 or even more). Requests from it will be translated to the persistent memory only after getting event from the =EventManager= about approved payment. This will make it harder to spam requests and make it harder to block the system in general.
-
-*Returns* Saved event request id
-
-#+begin_src plantuml :file ./img/event-request-model.png
-class EventRequestModel {
-  creator: string
-  eventPlaceId: int
-  ticketPrice: int
-  startDate: datetime
-  cancelDate: datetime
-  daysAmount: int
-}
-#+end_src
-
-#+RESULTS:
-[[file:./img/event-request-model.png]]
-
-***** GET /events/requests
-
-*Auth* master or creator
-
-*Returns* List of all pending =EventRequestModel= for the master and only owned for creator
-
-***** POST /events
-
-*Auth* master
-
-Converts given event request by it's id into event and stores it in IPFS
-Deletes event request from the storage
-
-*Returns* =404= if event request wasn't found
-
-#+begin_src plantuml :file ./img/new-event-model.png
-class NewEventModel {
-  eventId: int
-}
-#+end_src
-
-#+RESULTS:
-[[file:./img/new-event-model.png]]
-
 **** Indexer
+
+Listens to logs of ~EventManager~ and ~EventTicket~ via WebSocket and store all events in the database. Catches up on possible downtime via using `getLogs`, starting from last event block number.
+
+**** Sign-in with Ethereum
+
+Because of requirement to allow posting and fetching event requests for the master some authentication process should be made. It could be made with JWT and [[https://docs.metamask.io/wallet/how-to/sign-data/#use-personal_sign][Infura's ~personal_sign~ method]]
+
+**** API
+
 ***** GET /events
 
-Allows to effectively fetch all events (finished and pending)
+*Authority* ~PUBLIC~
 
-*Returns* List of =EventModel=
+*Returns* All available events in the system.
+
+For ~EVENT:READ_SENSITIVE~ or event's creator receive ~EventSensitiveModel~.
 
 #+begin_src plantuml :file ./img/event-model.png
 class EventModel {
-  + name: string
-  + creator: CreatorModel
-  + description: DescriptionModel
-  + startsAt: datetime
-  + daysAmount: int
-  + place: EventPlaceModel
-  + availableSeats: int
-  + ticketPrice: int
+  title: string
+  description: string
+  imageUrl: string
+  place: EventPlaceModel
+  ticketPrice: int
+  startDate: int
+  durationDays: int
+  attended: bool
 }
 
-class CreatorModel {
-  + name: string
-  + contact: SocialContactModel
+class EventSensitiveModel {
+  status: EventStatus
+  ticketsBought: int
+  cancelDate: int
 }
 
-class DescriptionModel {
-  + text: string
-  + links: string[]
-  + pictureUrl: string
-}
-
-class EventPlaceModel {
-  + name: string
-  + totalSeats: int
-}
-
-class SocialContactModel {
-  + value: Telegram | Discord | WhatsApp | Instagram
-}
-
-EventModel --> CreatorModel
-EventModel --> DescriptionModel
-EventModel --> EventPlaceModel
-CreatorModel --> SocialContactModel
+EventSensitiveModel -> EventModel
 #+end_src
 
 #+RESULTS:
 [[file:./img/event-model.png]]
 
-***** GET /event/{event-id}/ticket/{ticket-id}
+***** GET /events/<int:event-id>/tickets/<str:ticket-id>
 
-*Auth* Master & staff
+*Authority* ~EVENT:CREATE~, ~TICKET:UPDATE~ or ticket's owner
 
 *Returns* Ticket metadata for the given event
 
 #+begin_src plantuml :file ./img/event-ticket-model.png
 class EventTicketModel {
-  eventId: string
-  owner: string
   socials: Socials
-  days: int
-  usage: int
 }
 #+end_src
 
 #+RESULTS:
 [[file:./img/event-ticket-model.png]]
 
-**** Sign-in with Ethereum
+***** GET /places
 
-Because of requirement to allow posting and fetching event requests for the master some authentication process should be made. It could be made with JWT and [[https://docs.metamask.io/wallet/how-to/sign-data/#use-personal_sign][Infura's ~personal_sign~ method]]
+*Authority* ~PUBLIC~
+
+*Returns* List of available places
+
+#+begin_src plantuml :file ./img/event-place.png
+class EventPlaceModel {
+  maxTickets: int
+  minTickets: int
+  minPrice: int
+  minDays: int
+  available: boolean
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-place.png]]
+
+***** GET /notifications
+
+*Authority* ~PUBLIC~
+
+*Return* List of notifications for the current user
+
+#+begin_src plantuml :file ./img/notification-model.png
+class NotificationModel {
+  title: string
+  body: string
+  seenAt: int
+}
+#+end_src
+
+#+RESULTS:
+[[file:./img/notification-model.png]]
 
 ***** POST /auth/generate-nonce/{public-address}
 
