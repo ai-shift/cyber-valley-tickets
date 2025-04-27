@@ -15,11 +15,11 @@
     "@tanstack/react-query-devtools": "^5.74.6",
     "react": "0.0.0-experimental-143d3e1b-20250425",
     "react-dom": "0.0.0-experimental-143d3e1b-20250425",
-    "react-router": "^7.5.2",
     "tailwindcss": "^4.1.4"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@types/node": "^22.15.2",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
