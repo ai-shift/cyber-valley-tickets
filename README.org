@@ -728,7 +728,7 @@ It's required for the two general purposes:
 - Temporal storage for the event requests
 - Indexing of smart contract state
 
-Both of this solutions provide the most minimal off-chain reading pricing (probably even fit into free tier) and allow to publicly expose them without difficult caching system
+Both of this solutions provide the most minimal off-chain reading pricing (probably even fit into free tier) and allow to publicly expose them without difficult caching system. Also all data will be stored locally, so it could be processed or aggregated in many wanted ways.
 
 **** Temporal event request storage
 ***** POST /events/requests
