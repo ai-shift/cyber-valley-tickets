@@ -84,6 +84,8 @@ DATABASES = {
 
 AUTH_USER_MODEL = "web3_auth.User"
 
+AUTHENTICATION_BACKENDS = ['web3_auth.authentication_backend.Web3AuthBackend']
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
