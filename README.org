@@ -30,11 +30,7 @@
     - [[#general-overview][General overview]]
     - [[#smart-contract][Smart contract]]
     - [[#backend][Backend]]
-  - [[#pages-description][Pages description]]
-    - [[#main][Main]]
-    - [[#event][Event]]
-    - [[#create-event][Create event]]
-    - [[#account][Account]]
+    - [[#frontend][Frontend]]
 - [[#questions][Questions]]
   - [[#both-desktop-and-mobile-are-required][Both desktop and mobile are required?]]
   - [[#is-it-required-to-verify-tickets-without-internet-connection][Is it required to verify tickets without internet connection?]]
@@ -485,7 +481,6 @@ Backend -- Database : Stores unapproved event requests
 [[file:./img/component-design.png]]
 
 *** Smart contract
-
 **** Event manager
 
 #+begin_src plantuml :file ./img/event-manager.png
@@ -876,11 +871,10 @@ class VerifySignatureModel {
 #+RESULTS:
 [[file:./img/verify-signature-model.png]]
 
-** Pages description
+*** Frontend
+**** Main
 
-*** Main
-
-**** Menu component:
+***** Menu component:
 
 - Create event
 - Account
@@ -889,7 +883,7 @@ class VerifySignatureModel {
   - Edit staff
   - Pending requests
 
-**** Events list
+***** Events list
 
 Each containing:
 
@@ -898,9 +892,9 @@ Each containing:
 - Place
 - Time range
 
-**** Notifications
+***** Notifications
 
-*** Event
+**** Event
 
 - Event card data
 - Description
@@ -925,12 +919,12 @@ Each containing:
     - Input socials
     - Pay
 
-*** Create event
+**** Create event
 
 - Submition form (text, number, date range, select from list, img upload,
 - Payment button
 
-*** Account
+**** Account
 
 - My events
   - Pending requests
@@ -938,6 +932,7 @@ Each containing:
   - Bought tickets
 - Logout
 - Income
+
 
 * Questions
 
