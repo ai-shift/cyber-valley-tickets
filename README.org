@@ -428,9 +428,9 @@ deactivate EventManager
 
 ** Tech stack
 
-Solidity, OpenZeppelin (=@openzeppelin/contracts@4.9.3=), React, TypeScript, Tailwind, ethers.js, IPFS
+Solidity, OpenZeppelin, React, TypeScript, Tailwind, ethers.js, IPFS
 
-Also a thin backend over database is required to provide free of charge ability to change event request data before it's approve, so it'll be implemented with Python, Valkey and Litestar
+Also a thin backend over database is required to provide free of charge ability to change event request data before it's approve, so it'll be implemented with Python, PostgreSQL and Django.
 
 ** Excluded features from the first stage
 
