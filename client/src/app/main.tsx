@@ -8,7 +8,7 @@ if (root) {
   createRoot(root).render(
     <StrictMode>
       <App />
-    </StrictMode>
+    </StrictMode>,
   );
 } else {
   console.log("No root element found");
