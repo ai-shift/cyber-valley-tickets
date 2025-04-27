@@ -41,6 +41,8 @@ class Event(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     image_url = models.URLField(null=True)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
 
     def __str__(self) -> str:
         return self.title

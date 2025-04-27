@@ -4,11 +4,14 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "django-rest-framework>=0.1.0",
+]
 
 [dependency-groups]
 dev = [
     "django-stubs[compatible-mypy]>=5.2.0",
+    "djangorestframework-stubs[compatible-mypy]>=3.16.0",
     "mypy>=1.15.0",
     "ruff>=0.11.7",
 ]
@@ -82,7 +85,7 @@ allow_redefinition = true
 strict = true
 local_partial_types = true
 warn_unreachable = true
-plugins = ["mypy_django_plugin.main"]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 
 
 enable_error_code = [
