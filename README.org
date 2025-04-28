@@ -40,6 +40,7 @@
   - [[#will-tickets-have-some-metainfo-about-the-owner-name-number-etc][Will tickets have some metainfo about the owner (name, number etc)]]
   - [[#is-it-applicable-to-show-available-seats-count-for-all-so-the-creator-and-master-can-see-it-as-well-without-additional-screen][Is it applicable to show available seats count for all (so the creator and master can see it as well without additional screen)?]]
   - [[#ui-design-references][UI design references]]
+  - [[#do-socials-really-should-be-saved-in-ipfs-or-can-be-stored-on-the-back-end][Do socials really should be saved in IPFS or can be stored on the back-end?]]
 
 * Problem
 
@@ -930,7 +931,7 @@ Accepts ~eventId~ from URL parameters.
 - Description
 - Ticket price
 - Ticket status
-  - *buy* - Attend button
+  - *buy* - Attend button. Navigates to [[*Attend event][Attend event page]]
   - *show* - Show ticket button
   - *redeemed* - Ticket redeemed
 - *if creator*
@@ -947,6 +948,21 @@ Currently event model is pretty small, so it could be extracted from ~TanStack Q
 
 [[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
+**** Attend event
+
+Requests a user to input his socials, which are describe in [[*Save socials][Save socials]] section and redirects to the [[*Payment][Payment page]]. Consists of select box and input text field without any validation.
+
+After payment redirects to [[*Operation status][Operation status page]] and shows:
+
+- *On success* ticket QR code
+- *On failure* failure details
+
+[[https://excalidraw.com/?element=LlyKYIWZ3fWJ0lp0pX9po#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+
+***** Questions
+
+- [[*Do socials really should be saved in IPFS or can be stored on the back-end?][Do socials really should be saved in IPFS or can be stored on the back-end?]]
+
 **** Create event
 
 - Submition form (text, number, date range, select from list, img upload,
@@ -962,6 +978,14 @@ Currently event model is pretty small, so it could be extracted from ~TanStack Q
 - Income
 
 **** Manage
+
+TBD
+
+**** Payment
+
+TBD
+
+**** Operation status
 
 TBD
 
@@ -1016,3 +1040,7 @@ Yes
 #+begin_quote
 https://dribbble.com/shots/23082238-Earthquake-Warning-App-Cyberpunk-Design-Style
 #+end_quote
+
+** Do socials really should be saved in IPFS or can be stored on the back-end?
+
+TBD
