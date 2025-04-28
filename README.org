@@ -1029,6 +1029,12 @@ Other invariants should be checked in accordance to [[*Event data][Event data]] 
 
 [[https://excalidraw.com/?element=884G2lWaGUN9FsHkarxxG#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
+**** Edit event
+
+Works the same as [[*Create event][Create event page]], but instead of payment invokes ~updateEvent~ method of ~EventManager~ contract
+
+[[https://excalidraw.com/?element=ECGnLzjTF3oespczMEN3K#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+
 **** Account
 
 - My events
