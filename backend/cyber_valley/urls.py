@@ -17,6 +17,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView
+)
 from rest_framework import routers
 
 from .events import views
@@ -28,4 +32,6 @@ router.register(r"events", views.EventViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("admin/", admin.site.urls),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("schema/redoc", SpectacularRedocView.as_view(), name="redoc"),
 ]
