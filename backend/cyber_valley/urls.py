@@ -19,8 +19,12 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
 from rest_framework import routers
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 
 from .events import views
+from .web3_auth.views import login
 
 router = routers.DefaultRouter()
 router.register(r"places", views.EventPlaceViewSet)
@@ -31,4 +35,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path("schema/redoc", SpectacularRedocView.as_view(), name="redoc"),
+    path("auth/web3/login/", login, name="web3_login"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

@@ -4,6 +4,7 @@ from drf_spectacular.utils import (
     extend_schema_view,
 )
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Event, EventPlace
 from .serializers import EventPlaceSerializer, EventSerializer, StaffEventSerializer
@@ -32,6 +33,7 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
     queryset = Event.objects.all()
     serializer_class = StaffEventSerializer
     http_method_names = ("get",)
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> type[EventSerializer]:
         if self.request.user.is_staff:
