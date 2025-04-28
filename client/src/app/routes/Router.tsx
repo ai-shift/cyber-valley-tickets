@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import { Home } from "@/pages";
+import { EventsList, Home } from "@/pages";
 
 export const Router = () => {
   return (
@@ -9,7 +9,7 @@ export const Router = () => {
         <Route path="/" index element={<Home />} />
 
         <Route path="/events">
-          <Route index />
+          <Route index element={<EventsList />} />
           <Route path="/events/:eventId" />
           <Route path="/events/create" />
         </Route>

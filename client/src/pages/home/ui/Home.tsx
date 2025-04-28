@@ -2,11 +2,11 @@ import { Nav } from "@/shared/widgets/navigation";
 
 import { Link } from "react-router";
 
-import { BaseEventList } from "@/widgets/BaseEventsList/ui/BaseEventList";
+import { BaseEventList } from "@/features/BaseEventsList/ui/BaseEventList";
 
 import { events } from "../mock";
 
-export const Home = () => {
+export const Home: React.FC = () => {
   return (
     <div>
       <Nav />
