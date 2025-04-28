@@ -8,11 +8,12 @@ User = get_user_model()
 
 class EventPlace(models.Model):
     id = models.IntegerField(primary_key=True)
-    max_tickets = models.PositiveSmallIntegerField()
-    min_tickets = models.PositiveSmallIntegerField()
-    min_price = models.PositiveSmallIntegerField()
-    min_days = models.PositiveSmallIntegerField()
-    available = models.BooleanField(default=True)
+    max_tickets = models.PositiveSmallIntegerField(null=False)
+    min_tickets = models.PositiveSmallIntegerField(null=False)
+    min_price = models.PositiveSmallIntegerField(null=False)
+    min_days = models.PositiveSmallIntegerField(null=False)
+    days_before_cancel = models.PositiveSmallIntegerField(null=False)
+    available = models.BooleanField(null=False, default=True)
 
     def __str__(self) -> str:
         return (
@@ -30,30 +31,33 @@ class Event(models.Model):
     }
 
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
-    event_place = models.ForeignKey(EventPlace, on_delete=models.CASCADE)
-    ticket_price = models.PositiveSmallIntegerField()
-    tickets_bought = models.PositiveSmallIntegerField()
-    cancel_date = models.DateTimeField()
-    start_date = models.DateTimeField()
-    days_amount = models.PositiveSmallIntegerField()
+    place = models.ForeignKey(EventPlace, on_delete=models.CASCADE, null=False)
+    ticket_price = models.PositiveSmallIntegerField(null=False)
+    tickets_bought = models.PositiveSmallIntegerField(null=False)
+    start_date = models.DateTimeField(null=False)
+    days_amount = models.PositiveSmallIntegerField(null=False)
     status = models.CharField(
-        max_length=10, choices=STATUS_CHOICES, default="submitted"
+        max_length=10, choices=STATUS_CHOICES, default="submitted", null=False
     )
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    title = models.CharField(max_length=200, null=False)
+    description = models.TextField(null=False)
     image_url = models.URLField(null=True)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(null=False)
+    updated_at = models.DateTimeField(null=False)
 
     def __str__(self) -> str:
         return self.title
 
 
 class Ticket(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="tickets")
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets")
-    ticket_id = models.CharField(max_length=255, unique=True)
-    is_redeemed = models.BooleanField(default=False)
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name="tickets", null=False
+    )
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="tickets", null=False
+    )
+    ticket_id = models.CharField(max_length=255, unique=True, null=False)
+    is_redeemed = models.BooleanField(default=False, null=False)
 
     def __str__(self) -> str:
         return f"Ticket for {self.event.title} owned by {self.owner.address}"

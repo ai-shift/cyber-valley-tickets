@@ -7,7 +7,12 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Event, EventPlace
-from .serializers import EventPlaceSerializer, EventSerializer, StaffEventSerializer
+from .serializers import (
+    CreatorEventSerializer,
+    EventPlaceSerializer,
+    EventSerializer,
+    StaffEventSerializer,
+)
 
 
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
@@ -17,6 +22,7 @@ class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
 
     queryset = EventPlace.objects.all()
     serializer_class = EventPlaceSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 @extend_schema_view(
@@ -24,7 +30,7 @@ class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
         description="Available events in the syste",
         responses=PolymorphicProxySerializer(
             component_name="RoleBasedEvent",
-            serializers=[EventSerializer, StaffEventSerializer],
+            serializers=[CreatorEventSerializer, StaffEventSerializer],
             resource_type_field_name=None,
         ),
     )
@@ -32,11 +38,10 @@ class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
 class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
     queryset = Event.objects.all()
     serializer_class = StaffEventSerializer
-    http_method_names = ("get",)
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> type[EventSerializer]:
         if self.request.user.is_staff:
             return StaffEventSerializer
 
-        return EventSerializer
+        return CreatorEventSerializer
