@@ -1,45 +1,35 @@
-export type Role = "MASTER" | "STAFF" | "CREATOR" | "USER";
+export type Role = "master" | "staff" | "creator" | "user";
+export type Resource = "*" | "event" | "place" | "ticket";
+export type Action = "*" | "create" | "read" | "edit" | "delete";
+
+type PartialRecord<K extends string | number | symbol, T> = { [P in K]?: T };
+type ResourceActions = PartialRecord<Resource, Action[]>;
 
 export type RoleControl = {
-  [key in Role]: {
-    views: PagePermission[];
-    actions: ResourcePermission[];
-  };
+  [key in Role]: ResourceActions;
 };
-
-export type PermissionCategory = keyof RoleControl[Role];
-type Page = "HOME" | "ACCOUNT";
-type Resource = "EVENT";
-type Method = "GET" | "ADD" | "EDIT" | "REMOVE";
-
-export type PagePermission = `${Page}:VIEW`;
-export type ResourcePermission = `${Resource}:${Method}`;
 
 export const RBAC_ROLES: RoleControl = {
-  USER: {
-    views: ["HOME:VIEW", "ACCOUNT:VIEW"],
-    actions: ["EVENT:GET"],
+  master: {
+    "*": ["*"],
   },
-  CREATOR: {
-    views: ["HOME:VIEW", "ACCOUNT:VIEW"],
-    actions: ["EVENT:GET"],
+  staff: {
+    event: [],
   },
-  MASTER: {
-    views: ["HOME:VIEW", "ACCOUNT:VIEW"],
-    actions: ["EVENT:GET"],
-  },
-  STAFF: {
-    views: ["HOME:VIEW", "ACCOUNT:VIEW"],
-    actions: ["EVENT:GET"],
-  },
+  creator: {},
+  user: {},
 };
 
-export function checkPermission<T extends PermissionCategory>(
-  role: Role,
-  permissionType: T,
-  permission: T extends "views" ? PagePermission : ResourcePermission,
-): boolean {
-  return (
-    RBAC_ROLES[role][permissionType] as (PagePermission | ResourcePermission)[]
-  ).includes(permission);
+export type Permissions = `${Resource}:${Action}`;
+
+export function checkPermission(role: Role, permission: Permissions) {
+  const [source, action] = permission.split(":") as [Resource, Action];
+
+  const rolePermissions = RBAC_ROLES[role];
+  if (!rolePermissions) return false;
+
+  const permittedActions = rolePermissions["*"] || rolePermissions[source];
+  if (!permittedActions) return false;
+
+  return permittedActions.includes("*") || permittedActions.includes(action);
 }
