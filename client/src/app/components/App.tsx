@@ -1,9 +1,10 @@
 import AppContainer from "@/shared/ui/AppContainer";
+import { Router } from "../routes/Router";
 
 const App = () => {
   return (
     <AppContainer>
-      <div>Hello world</div>
+      <Router />
     </AppContainer>
   );
 };
