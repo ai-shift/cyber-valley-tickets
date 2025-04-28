@@ -4,17 +4,16 @@ from .models import Event, EventPlace
 from .serializers import EventPlaceSerializer, EventSerializer
 
 
-class EventPlaceViewSet(viewsets.ModelViewSet[EventPlace]):
+class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
     """
     API endpoint that allows event places to be viewed
     """
 
     queryset = EventPlace.objects.all()
     serializer_class = EventPlaceSerializer
-    permission_classes = (permissions.AllowAny,)
 
 
-class EventViewSet(viewsets.ModelViewSet[Event]):
+class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = (permissions.AllowAny,)
+    http_method_names = ['get']
