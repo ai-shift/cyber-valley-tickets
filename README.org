@@ -757,13 +757,21 @@ class EventModel {
   ticketPrice: int
   startDate: int
   durationDays: int
-  attended: bool
+  ticketStatus: TicketStatus
 }
 
 class EventSensitiveModel {
   status: EventStatus
   ticketsBought: int
   cancelDate: int
+  canBeCanceled: bool
+  ticketsRequiredBeforeCancel: int
+}
+
+enum TicketStatus {
+  buy
+  show
+  redeemed
 }
 
 EventSensitiveModel -> EventModel
@@ -909,29 +917,33 @@ On click event card redirects to the [[*Event][Event page]]
 
 **** Event
 
-Renders
+Works with the model from [[*GET /events][GET /events]] endpoint
 
-- Event card data
+Accepts ~eventId~ from URL parameters.
+
+@@warning:*If creator* handled by the back-end, so simple conditional rendering is needed. Only check for ~TICKET:REDEEM~ is required@@
+
+- Cover image
+- Title
+- Place title
+- Start date
 - Description
-- Tickets sold / total
-- Price
-- Attend
+- Ticket price
+- Ticket status
+  - *buy* - Attend button
+  - *show* - Show ticket button
+  - *redeemed* - Ticket redeemed
 - *if creator*
-  - if can be cancelled.
+  - Edit
+  - if ~canBeCanceled~
     - cancel date
     - required N tickets
-  - if pending
-    - Edit
-    - Request event edit
-- *if attendee*
-  - Attend changed to show ticket
-- *if redeemed*
-  - Attend changed to redeemed
-- *if staff*
+- *if ~TICKET:REDEEM~*
   - Redeem ticket
-  - Attend event
-    - Input socials
-    - Pay
+
+#+begin_quote
+Currently event model is pretty small, so it could be extracted from ~TanStack Query~ cache via [[https://tanstack.com/query/latest/docs/reference/QueryClient/#queryclientensurequerydata][ensureQueryData]].
+#+end_quote
 
 [[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
