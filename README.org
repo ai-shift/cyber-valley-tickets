@@ -1037,24 +1037,25 @@ Works the same as [[*Create event][Create event page]], but instead of payment i
 
 **** Account
 
-- My events
-  - Pending requests
-  - Approved events
-  - Bought tickets
-- Logout
-- Income
+Provides personal info to the user:
+
+- *Events* - any relative i.e. attented or created. Master should see only ~pending~
+- *Logout* - allows to logout from the app
 
 **** Manage
 
-TBD
+Provides administration features for the existing entities:
+
+- *Event place* - only places without approved events can be edited
+- *Staff* - add or remove staff by EOA address
 
 **** Payment
 
-TBD
+Generic page for the payment
 
 **** Operation status
 
-TBD
+Shows result of the made transaction
 
 * Questions
 
