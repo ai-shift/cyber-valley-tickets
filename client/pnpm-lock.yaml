@@ -23,6 +23,9 @@ importers:
       react-dom:
         specifier: 0.0.0-experimental-143d3e1b-20250425
         version: 0.0.0-experimental-143d3e1b-20250425(react@0.0.0-experimental-143d3e1b-20250425)
+      react-router:
+        specifier: ^7.5.2
+        version: 7.5.2(react-dom@0.0.0-experimental-143d3e1b-20250425(react@0.0.0-experimental-143d3e1b-20250425))(react@0.0.0-experimental-143d3e1b-20250425)
       tailwindcss:
         specifier: ^4.1.4
         version: 4.1.4
@@ -785,6 +788,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -1178,6 +1185,16 @@ packages:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
 
+  react-router@7.5.2:
+    resolution: {integrity: sha512-9Rw8r199klMnlGZ8VAsV/I8WrIF6IyJ90JQUdboupx1cdkgYqwnrYjH+I/nY/7cA1X5zia4mDJqH36npP7sxGQ==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+
   react@0.0.0-experimental-143d3e1b-20250425:
     resolution: {integrity: sha512-C7nQgqPiGAxjTki0A4gIKOHHlQXA6c1HV9Rw5TztQzqUxNxug3edcFRHvDr56047+xrmCu5iCGXKd6Uwi5j5Eg==}
     engines: {node: '>=0.10.0'}
@@ -1209,6 +1226,9 @@ packages:
     resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
     engines: {node: '>=10'}
     hasBin: true
+
+  set-cookie-parser@2.7.1:
+    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -1250,6 +1270,9 @@ packages:
     engines: {node: '>=18.12'}
     peerDependencies:
       typescript: '>=4.8.4'
+
+  turbo-stream@2.4.0:
+    resolution: {integrity: sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -1991,6 +2014,8 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
+  cookie@1.0.2: {}
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -2356,6 +2381,15 @@ snapshots:
 
   react-refresh@0.17.0: {}
 
+  react-router@7.5.2(react-dom@0.0.0-experimental-143d3e1b-20250425(react@0.0.0-experimental-143d3e1b-20250425))(react@0.0.0-experimental-143d3e1b-20250425):
+    dependencies:
+      cookie: 1.0.2
+      react: 0.0.0-experimental-143d3e1b-20250425
+      set-cookie-parser: 2.7.1
+      turbo-stream: 2.4.0
+    optionalDependencies:
+      react-dom: 0.0.0-experimental-143d3e1b-20250425(react@0.0.0-experimental-143d3e1b-20250425)
+
   react@0.0.0-experimental-143d3e1b-20250425: {}
 
   resolve-from@4.0.0: {}
@@ -2398,6 +2432,8 @@ snapshots:
 
   semver@7.7.1: {}
 
+  set-cookie-parser@2.7.1: {}
+
   shebang-command@2.0.0:
     dependencies:
       shebang-regex: 3.0.0
@@ -2428,6 +2464,8 @@ snapshots:
   ts-api-utils@2.1.0(typescript@5.7.3):
     dependencies:
       typescript: 5.7.3
+
+  turbo-stream@2.4.0: {}
 
   type-check@0.4.0:
     dependencies:
