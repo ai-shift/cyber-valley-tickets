@@ -889,6 +889,10 @@ class NotificationModel {
 #+RESULTS:
 [[file:./img/notification-model.png]]
 
+***** PUT /ipfs
+
+Accepts provided data (file or text), stores it in IPFS and returns [[https://docs.ipfs.tech/how-to/address-ipfs-on-web/#path-gateway][CID]]
+
 ***** POST /auth/generate-nonce/{public-address}
 
 Generates session and checks if the given ~public-address~ is allowed to sign-in
@@ -1023,6 +1027,10 @@ After payment redirects to [[*Operation status][Operation status page]] and show
 **** Create event
 
 Requests a user to provide [[*Event data][Event data]] and =Confirm= button which redirects to [[*Payment][Payment page]]
+
+- *imageUrl* - Image file or pasting should be accepted in the form, then it should be sent with [[*PUT /ipfs][PUT /ipfs]] to get a CID for the further processing
+
+Other invariants should be checked in accordance to [[*Event data][Event data]] specification
 
 [[https://excalidraw.com/?element=884G2lWaGUN9FsHkarxxG#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
