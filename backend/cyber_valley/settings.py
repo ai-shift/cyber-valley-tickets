@@ -102,7 +102,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "web3_auth.User"
+AUTH_USER_MODEL = "users.CyberValleyUser"
 
 SIMPLE_JWT = {
     "USER_ID_FIELD": "address",
