@@ -845,9 +845,32 @@ class VerifySignatureModel {
 [[file:./img/verify-signature-model.png]]
 
 *** Frontend
-**** Main
 
-***** Menu component:
+**** Page structure
+
+#+begin_src plantuml :file ./img/page-structure.png
+@startsalt
+{
+{T!
+  + Page | authority
+  + Main | APP:ACCESS
+  ++ Event list | APP:ACCESS
+  +++ Event | APP:ACCESS
+  ++++ Attend | APP:ACCESS
+  ++++ Edit | EVENT:CREATE
+  ++ Account | APP:ACCESS
+  ++ Notifications | APP:ACCESS
+  ++ Create event | APP:ACCESS
+  ++ Manage | MANAGE:ACCESS
+}
+}
+@endsalt
+#+end_src
+
+#+RESULTS:
+[[file:./img/page-structure.png]]
+
+**** Main
 
 - Create event
 - Account
