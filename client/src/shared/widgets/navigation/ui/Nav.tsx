@@ -1,5 +1,5 @@
 import { routes } from "../model/routes";
-import NavLink from "./NavLink";
+import { NavLink } from "./NavLink";
 
 export const Nav = () => {
   //TODO: Import from the auth store
