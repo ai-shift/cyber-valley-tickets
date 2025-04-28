@@ -921,7 +921,7 @@ Works with the model from [[*GET /events][GET /events]] endpoint
 
 Accepts ~eventId~ from URL parameters.
 
-@@warning:*If creator* handled by the back-end, so simple conditional rendering is needed. Only check for ~TICKET:REDEEM~ is required@@
+*If creator* handled by the back-end, so simple conditional rendering is needed. Only check for ~TICKET:REDEEM~ is required
 
 - Cover image
 - Title
