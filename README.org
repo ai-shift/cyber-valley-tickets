@@ -870,50 +870,70 @@ class VerifySignatureModel {
 #+RESULTS:
 [[file:./img/page-structure.png]]
 
-**** Main
+**** Main Page
 
-- Create event
-- Account
-- if master
-  - Edit event places
-  - Edit staff
-  - Pending requests
+Only authorized users (via [[https://docs.login.xyz/][sign-in with Ethereum]]) can have access to this page.
 
-***** Events list
+It provides the following components:
 
-Each containing:
+- *Notifications* - Amount of unread notifications with link to the [[*Notifications][Notifications page]]
+- *Event list* - Top ~N~ upcoming events and link to the [[*Events list][Events list page]]
+- *Navigation* - List of available base pages for the current user
+  - _Create event_ - Redirects to [[*Create event][Create event page]]
+  - _Manage_ - Shown to ~MANAGE:ACCESS~ authority and redirects to the system [[*Manage][Manage page]]
+  - _Home_ - Redirects to the [[*Main Page][Main page]]
+  - _Account_ - Redirects to the [[*Account][Account page]]
 
-- Cover
+[[https://excalidraw.com/?element=IGeC3qEnw6SEahcF-W6_G#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+
+**** Notifications
+
+Page renders a list of models returned by [[*GET /notifications][GET /notifications]] endpoint
+
+Each notification can be opened to get description and mark it as ~seen~
+
+**** Events list
+
+Page renders a list of models returned by [[*GET /events][GET /events]] endpoint
+
+Each event card contains the following fields:
+
+- Cover image
 - Title
-- Place
-- Time range
+- Place title
+- Start date
 
-***** Notifications
+On click event card redirects to the [[*Event][Event page]]
+
+[[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
 **** Event
+
+Renders
 
 - Event card data
 - Description
 - Tickets sold / total
 - Price
 - Attend
-
-- if creator
+- *if creator*
   - if can be cancelled.
     - cancel date
     - required N tickets
   - if pending
     - Edit
     - Request event edit
-- if attendee
+- *if attendee*
   - Attend changed to show ticket
-- if redeemed
+- *if redeemed*
   - Attend changed to redeemed
-- it staff
+- *if staff*
   - Redeem ticket
   - Attend event
     - Input socials
     - Pay
+
+[[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
 **** Create event
 
@@ -929,6 +949,9 @@ Each containing:
 - Logout
 - Income
 
+**** Manage
+
+**** Notifications
 
 * Questions
 
