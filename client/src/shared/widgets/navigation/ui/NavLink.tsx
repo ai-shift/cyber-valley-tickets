@@ -8,7 +8,7 @@ type NavLinkProps = {
   role: Role;
 };
 
-const NavLink = ({ route, role }: NavLinkProps) => {
+export const NavLink: React.FC<NavLinkProps> = ({ route, role }) => {
   const { path, title, restrictedTo } = route;
 
   const canDisplay = !restrictedTo || restrictedTo.includes(role);
@@ -21,5 +21,3 @@ const NavLink = ({ route, role }: NavLinkProps) => {
     )
   );
 };
-
-export default NavLink;

@@ -6,13 +6,13 @@ export const routes: Route[] = [
     title: "Home",
   },
   {
-    path: "/events",
-    title: "/events",
+    path: "/manage",
+    title: "Manage",
+    restrictedTo: ["master"],
   },
   {
     path: "/profile",
     title: "Profile",
-    restrictedTo: ["master", "creator", "staff"],
   },
   {
     path: "/events/create",
