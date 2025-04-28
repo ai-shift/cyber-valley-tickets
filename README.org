@@ -151,6 +151,7 @@ Adds a new event place
 
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlace {
+  title: string
   minTickets: int
   maxTickets: int
   minPrice: int
@@ -584,13 +585,6 @@ enum EventStatus {
   Closed
 }
 
-class EventPlace {
-  - maxTickets: int
-  - minTickets: int
-  - minPrice: int
-  - minDays: int
-}
-
 interface IERC20 {
   + transferFrom(address sender, address recipient, uint256 amount)
   + transfer(address recipient, uint256 amount)
@@ -861,6 +855,7 @@ class EventTicketModel {
 
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlaceModel {
+  title: string
   maxTickets: int
   minTickets: int
   minPrice: int
