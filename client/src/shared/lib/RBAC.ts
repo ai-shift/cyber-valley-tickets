@@ -20,7 +20,7 @@ export const RBAC_ROLES: RoleControl = {
   user: {},
 };
 
-export type Permissions = `${Resource}:${Action}`;
+export type Permissions = `${Exclude<Resource, "*">}:${Exclude<Action, "*">}`;
 
 export function checkPermission(role: Role, permission: Permissions) {
   const [source, action] = permission.split(":") as [Resource, Action];
