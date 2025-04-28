@@ -24,6 +24,8 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     class Meta:
         model = Event
         fields = (
+            "id",
+            "status",
             "title",
             "description",
             "event_place",
@@ -42,7 +44,6 @@ class StaffEventSerializer(EventSerializer):
         model = EventSerializer.Meta.model
         fields = (
             *EventSerializer.Meta.fields,
-            "status",
             "tickets_bought",
             "cancel_date",
         )
