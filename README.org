@@ -5,11 +5,9 @@
 * Table of contents                                          :toc_3:noexport:
 - [[#problem][Problem]]
 - [[#solution][Solution]]
-  - [[#roles][Roles]]
-    - [[#customer][Customer]]
-    - [[#staff][Staff]]
-    - [[#creator][Creator]]
-    - [[#master][Master]]
+  - [[#domain][Domain]]
+    - [[#roles][Roles]]
+    - [[#event-data][Event data]]
   - [[#use-cases][Use cases]]
     - [[#create-event-place][Create event place]]
     - [[#update-event-place][Update event place]]
@@ -50,22 +48,23 @@ Cyber Valley wants to host events and needs a convenient way to accept events of
 
 Create Web3 mobile first web app based on Ethereum network which covers main needs
 
-** Roles
+** Domain
+*** Roles
 
-*** Customer
+**** Customer
 
 Public role which has the following authorities:
 
 - List events
 - Buy ticket to event
 
-*** Staff
+**** Staff
 
 Assigned by the master role. Has all customer's authorities and:
 
 - Verify tickets for any event
 
-*** Creator
+**** Creator
 
 A.k.a shaman has all customer's authorities and:
 
@@ -73,7 +72,7 @@ A.k.a shaman has all customer's authorities and:
 - Edit own event requests
 - See pending own event requests
 
-*** Master
+**** Master
 
 Has all customer's, staff's and creator's authorities and:
 
@@ -82,6 +81,63 @@ Has all customer's, staff's and creator's authorities and:
 - Edit event requests
 - Cancel event
 - Close events
+
+*** Event data
+
+Abstraction over some entertainment in the specific place during some amount of days.
+
+#+begin_src plantuml :file ./img/event-model.png
+class EventModel {
+  title: string
+  description: string
+  imageUrl: string
+  place: EventPlaceModel
+  ticketPrice: int
+  ticketsBought: int
+  cancelDate: int
+  startDate: int
+  durationDays: int
+}
+
+note right of EventModel::title
+  Any string of length 100 chars
+end note
+
+note right of EventModel::description
+  Any string of length 300 chars
+end note
+
+note right of EventModel::imageUrl
+  Link to the cover image
+end note
+
+note right of EventModel::place
+  One of the available places that add boundaries for the event
+end note
+
+note right of EventModel::ticketPrice
+  Bounded by selected event place
+end note
+
+note right of EventModel::ticketsBought
+  Amount of tickets that were bought
+end note
+
+note right of EventModel::cancelDate
+  Date when event will be canceled if there will not be enought bought tickets
+end note
+
+note right of EventModel::startDate
+  The day when the event starts, should not overlap with existing events in the selected place
+end note
+
+note right of EventModel::durationDays
+  Duration of the event
+end note
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-model.png]]
 
 ** Use cases
 
@@ -749,8 +805,8 @@ Because of requirement to allow posting and fetching event requests for the mast
 
 For ~EVENT:READ_SENSITIVE~ or event's creator receive ~EventSensitiveModel~.
 
-#+begin_src plantuml :file ./img/event-model.png
-class EventModel {
+#+begin_src plantuml :file ./img/events-view.png
+class PublicEventModel {
   title: string
   description: string
   imageUrl: string
@@ -775,11 +831,12 @@ enum TicketStatus {
   redeemed
 }
 
-EventSensitiveModel -> EventModel
+EventSensitiveModel -> PublicEventModel
+PublicEventModel -> TicketStatus
 #+end_src
 
 #+RESULTS:
-[[file:./img/event-model.png]]
+[[file:./img/events-view.png]]
 
 ***** GET /events/<int:event-id>/tickets/<str:ticket-id>
 
@@ -965,8 +1022,9 @@ After payment redirects to [[*Operation status][Operation status page]] and show
 
 **** Create event
 
-- Submition form (text, number, date range, select from list, img upload,
-- Payment button
+Requests a user to provide [[*Event data][Event data]] and =Confirm= button which redirects to [[*Payment][Payment page]]
+
+[[https://excalidraw.com/?element=884G2lWaGUN9FsHkarxxG#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
 **** Account
 
