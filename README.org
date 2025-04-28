@@ -950,7 +950,7 @@ Currently event model is pretty small, so it could be extracted from ~TanStack Q
 
 **** Attend event
 
-Requests a user to input his socials, which are describe in [[*Save socials][Save socials]] section and redirects to the [[*Payment][Payment page]]. Consists of select box and input text field without any validation.
+Requests a user to input his socials from [[*Save socials][Save socials]] section and redirects to the [[*Payment][Payment page]]. Consists of select box and input text field without any validation.
 
 After payment redirects to [[*Operation status][Operation status page]] and shows:
 
