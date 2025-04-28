@@ -45,6 +45,12 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "cyber_valley.web3_auth.auth_backend.Web3AuthBackend",
+    ),
 }
 
 MIDDLEWARE = [
@@ -88,8 +94,6 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "web3_auth.User"
-
-AUTHENTICATION_BACKENDS = ["web3_auth.authentication_backend.Web3AuthBackend"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
