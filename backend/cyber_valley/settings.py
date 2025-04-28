@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "cyber_valley.events",
     "cyber_valley.web3_auth",
+    "cyber_valley.users",
 ]
 
 REST_FRAMEWORK = {
