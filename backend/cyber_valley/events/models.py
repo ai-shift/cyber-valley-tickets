@@ -32,6 +32,7 @@ class Event(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
     event_place = models.ForeignKey(EventPlace, on_delete=models.CASCADE)
     ticket_price = models.PositiveSmallIntegerField()
+    tickets_bought = models.PositiveSmallIntegerField()
     cancel_date = models.DateTimeField()
     start_date = models.DateTimeField()
     days_amount = models.PositiveSmallIntegerField()
