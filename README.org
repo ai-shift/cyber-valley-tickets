@@ -88,6 +88,7 @@ Abstraction over some entertainment in the specific place during some amount of 
 
 #+begin_src plantuml :file ./img/event-model.png
 class EventModel {
+  id: int
   title: string
   description: string
   imageUrl: string
@@ -855,6 +856,7 @@ class EventTicketModel {
 
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlaceModel {
+  id: int
   title: string
   maxTickets: int
   minTickets: int
