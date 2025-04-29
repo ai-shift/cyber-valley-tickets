@@ -1,13 +1,10 @@
 import os
 from typing import Final
 
-from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.http import HttpRequest, HttpResponse
 from django.middleware import csrf
 from django.shortcuts import render
-from django.views import View
 from eth_account import Account
 from eth_account.messages import encode_defunct
 from pydantic import BaseModel, Field, ValidationError
@@ -35,16 +32,11 @@ class Web3LoginModel(BaseModel):
     message: str = Field(description="Message that is signed")
 
 
-class EthereumLoginView(View):
-    template_name = "login_ethereum.html"
-
-    def get(self, request: HttpRequest) -> HttpResponse:
-        return render(request, self.template_name)
-
-
 # FIXME: Add request / response OpenAPI schema
-@api_view(["POST"])
+@api_view(["POST", "GET"])
 def login(request: Request) -> Response:
+    if request.method == "GET":
+        return render(request, "login_ethereum.html")
     try:
         data = Web3LoginModel.model_validate(request.data)
     except ValidationError as e:
