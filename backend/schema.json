@@ -1,0 +1,557 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Cyber Valley Tickets API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/auth/web3/login/": {
+            "post": {
+                "operationId": "api_auth_web3_login_create",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/events/": {
+            "get": {
+                "operationId": "api_events_list",
+                "description": "Available events in the syste",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RoleBasedEvent"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/events/{id}/": {
+            "get": {
+                "operationId": "api_events_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this event.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreatorEvent"
+                                },
+                                "examples": {
+                                    "Default": {}
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/notifications/": {
+            "get": {
+                "operationId": "api_notifications_list",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Notification"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/notifications/{id}/": {
+            "get": {
+                "operationId": "api_notifications_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Notification"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/places/": {
+            "get": {
+                "operationId": "api_places_list",
+                "description": "API endpoint that allows event places to be viewed",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EventPlace"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/places/{id}/": {
+            "get": {
+                "operationId": "api_places_retrieve",
+                "description": "API endpoint that allows event places to be viewed",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 9223372036854775807,
+                            "minimum": -9223372036854775808,
+                            "format": "int64"
+                        },
+                        "description": "A unique value identifying this event place.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EventPlace"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/token/refresh/": {
+            "post": {
+                "operationId": "api_token_refresh_create",
+                "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+                "tags": [
+                    "api"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenRefresh"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenRefresh"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenRefresh"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenRefresh"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Creator": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "maxLength": 42
+                    }
+                },
+                "required": [
+                    "address"
+                ]
+            },
+            "CreatorEvent": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Creator"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "place": {
+                        "$ref": "#/components/schemas/EventPlace"
+                    },
+                    "ticketPrice": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "startDate": {
+                        "type": "integer"
+                    },
+                    "daysAmount": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "imageUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "ticketsBought": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "cancelDate": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "ticketsRequiredUntilCancel": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "cancelDate",
+                    "creator",
+                    "daysAmount",
+                    "description",
+                    "id",
+                    "place",
+                    "startDate",
+                    "ticketPrice",
+                    "ticketsBought",
+                    "ticketsRequiredUntilCancel",
+                    "title"
+                ]
+            },
+            "EventPlace": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "maxTickets": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "minTickets": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "minPrice": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "minDays": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "daysBeforeCancel": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    },
+                    "isUsed": {
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "daysBeforeCancel",
+                    "id",
+                    "isUsed",
+                    "maxTickets",
+                    "minDays",
+                    "minPrice",
+                    "minTickets",
+                    "title"
+                ]
+            },
+            "Notification": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "seenAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "body",
+                    "title"
+                ]
+            },
+            "RoleBasedEvent": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/CreatorEvent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/StaffEvent"
+                    }
+                ]
+            },
+            "StaffEvent": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Creator"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "place": {
+                        "$ref": "#/components/schemas/EventPlace"
+                    },
+                    "ticketPrice": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "startDate": {
+                        "type": "integer"
+                    },
+                    "daysAmount": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "imageUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "ticketsBought": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
+                    },
+                    "cancelDate": {
+                        "type": "integer"
+                    },
+                    "ticketsRequiredUntilCancel": {
+                        "type": "integer",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "cancelDate",
+                    "creator",
+                    "daysAmount",
+                    "description",
+                    "id",
+                    "place",
+                    "startDate",
+                    "ticketPrice",
+                    "ticketsBought",
+                    "ticketsRequiredUntilCancel",
+                    "title"
+                ]
+            },
+            "StatusEnum": {
+                "enum": [
+                    "submitted",
+                    "approved",
+                    "declined",
+                    "cancelled",
+                    "closed"
+                ],
+                "type": "string",
+                "description": "* `submitted` - Submitted\n* `approved` - Approved\n* `declined` - Declined\n* `cancelled` - Cancelled\n* `closed` - Closed"
+            },
+            "TokenRefresh": {
+                "type": "object",
+                "properties": {
+                    "access": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "refresh": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "required": [
+                    "access",
+                    "refresh"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "jwtAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
