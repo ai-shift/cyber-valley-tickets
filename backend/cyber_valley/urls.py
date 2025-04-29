@@ -23,12 +23,14 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from .events import views
+from .events.views import EventPlaceViewSet, EventViewSet
+from .notifications.views import NotificationViewSet
 from .web3_auth.views import login
 
 router = routers.DefaultRouter()
-router.register(r"places", views.EventPlaceViewSet)
-router.register(r"events", views.EventViewSet)
+router.register(r"places", EventPlaceViewSet)
+router.register(r"events", EventViewSet)
+router.register(r"notifications", NotificationViewSet, basename="Notification")
 
 urlpatterns = [
     path("", SpectacularRedocView.as_view(), name="redoc"),
