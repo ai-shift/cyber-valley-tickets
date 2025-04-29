@@ -9,7 +9,8 @@ from eth_account import Account
 from eth_account.messages import encode_defunct
 from pydantic import BaseModel, Field, ValidationError
 from rest_framework import exceptions
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -34,6 +35,7 @@ class Web3LoginModel(BaseModel):
 
 # FIXME: Add request / response OpenAPI schema
 @api_view(["POST", "GET"])
+@renderer_classes([TemplateHTMLRenderer])
 def login(request: Request) -> Response:
     if request.method == "GET":
         return Response(template_name="login_ethereum.html")
