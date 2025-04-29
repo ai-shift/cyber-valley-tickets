@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
+from typing import Final, Literal, TypedDict
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -121,16 +122,27 @@ DATABASES = {
 
 AUTH_USER_MODEL = "users.CyberValleyUser"
 
-SIMPLE_JWT = {
+
+class SimpleJWTSettingsDict(TypedDict):
+    USER_ID_FIELD: str
+    ACCESS_TOKEN_LIFETIME: timedelta
+    AUTH_COOKIE: str
+    AUTH_COOKIE_DOMAIN: str | None
+    AUTH_COOKIE_SECURE: bool
+    AUTH_COOKIE_HTTP_ONLY: bool
+    AUTH_COOKIE_PATH: str
+    AUTH_COOKIE_SAMESITE: Literal["Lax", "Strict", "None", False] | None
+
+
+SIMPLE_JWT: Final[SimpleJWTSettingsDict] = {
     "USER_ID_FIELD": "address",
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=5),
-    "AUTH_COOKIE": "access_token",  # Cookie name. Enables cookies if value is set.
-    "AUTH_COOKIE_DOMAIN": None,  # A string like "example.com", or None for standard domain cookie.
-    "AUTH_COOKIE_SECURE": False,  # Whether the auth cookies should be secure (https:// only).
-    "AUTH_COOKIE_HTTP_ONLY": True,  # Http only cookie flag.It's not fetch by javascript.
-    "AUTH_COOKIE_PATH": "/",  # The path of the auth cookie.
-    "AUTH_COOKIE_SAMESITE": "Lax",  # Whether to set the flag restricting cookie leaks on cross-site requests.
-    # This can be 'Lax', 'Strict', or None to disable the flag.
+    "AUTH_COOKIE": "access_token",
+    "AUTH_COOKIE_DOMAIN": None,
+    "AUTH_COOKIE_SECURE": False,
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_PATH": "/",
+    "AUTH_COOKIE_SAMESITE": "Lax",
 }
 
 # Password validation
