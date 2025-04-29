@@ -5,49 +5,10 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/token/refresh/": {
+    "/api/auth/web3/login/": {
       "post": {
-        "operationId": "api_token_refresh_create",
-        "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+        "operationId": "api_auth_web3_login_create",
         "tags": ["api"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRefresh"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRefresh"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRefresh"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TokenRefresh"
-                }
-              }
-            },
-            "description": ""
-          }
-        }
-      }
-    },
-    "/auth/web3/login/": {
-      "post": {
-        "operationId": "auth_web3_login_create",
-        "tags": ["auth"],
         "security": [
           {
             "jwtAuth": []
@@ -61,11 +22,11 @@
         }
       }
     },
-    "/events/": {
+    "/api/events/": {
       "get": {
-        "operationId": "events_list",
+        "operationId": "api_events_list",
         "description": "Available events in the syste",
-        "tags": ["events"],
+        "tags": ["api"],
         "security": [
           {
             "jwtAuth": []
@@ -88,9 +49,9 @@
         }
       }
     },
-    "/events/{id}/": {
+    "/api/events/{id}/": {
       "get": {
-        "operationId": "events_retrieve",
+        "operationId": "api_events_retrieve",
         "parameters": [
           {
             "in": "path",
@@ -102,7 +63,7 @@
             "required": true
           }
         ],
-        "tags": ["events"],
+        "tags": ["api"],
         "security": [
           {
             "jwtAuth": []
@@ -114,6 +75,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreatorEvent"
+                },
+                "examples": {
+                  "Default": {}
                 }
               }
             },
@@ -122,11 +86,70 @@
         }
       }
     },
-    "/places/": {
+    "/api/notifications/": {
       "get": {
-        "operationId": "places_list",
+        "operationId": "api_notifications_list",
+        "tags": ["api"],
+        "security": [
+          {
+            "jwtAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Notification"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/notifications/{id}/": {
+      "get": {
+        "operationId": "api_notifications_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": ["api"],
+        "security": [
+          {
+            "jwtAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notification"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/places/": {
+      "get": {
+        "operationId": "api_places_list",
         "description": "API endpoint that allows event places to be viewed",
-        "tags": ["places"],
+        "tags": ["api"],
         "security": [
           {
             "jwtAuth": []
@@ -149,9 +172,9 @@
         }
       }
     },
-    "/places/{id}/": {
+    "/api/places/{id}/": {
       "get": {
-        "operationId": "places_retrieve",
+        "operationId": "api_places_retrieve",
         "description": "API endpoint that allows event places to be viewed",
         "parameters": [
           {
@@ -167,7 +190,7 @@
             "required": true
           }
         ],
-        "tags": ["places"],
+        "tags": ["api"],
         "security": [
           {
             "jwtAuth": []
@@ -179,6 +202,45 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EventPlace"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/token/refresh/": {
+      "post": {
+        "operationId": "api_token_refresh_create",
+        "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+        "tags": ["api"],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRefresh"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRefresh"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRefresh"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenRefresh"
                 }
               }
             },
@@ -220,58 +282,59 @@
           "description": {
             "type": "string"
           },
-          "event_place": {
-            "$ref": "#/components/schemas/EventPlace"
+          "place": {
+            "type": "integer",
+            "maximum": 9223372036854775807,
+            "minimum": -9223372036854775808,
+            "format": "int64"
           },
-          "ticket_price": {
+          "ticketPrice": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "start_date": {
-            "type": "string",
-            "format": "date-time"
+          "startDate": {
+            "type": "integer"
           },
-          "days_amount": {
+          "daysAmount": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "image_url": {
+          "imageUrl": {
             "type": "string",
             "format": "uri",
             "nullable": true,
             "maxLength": 200
           },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
+          "ticketsBought": {
+            "type": "integer",
+            "nullable": true
           },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
+          "cancelDate": {
+            "type": "integer",
+            "nullable": true
           },
-          "tickets_bought": {
-            "type": "integer"
-          },
-          "cancel_date": {
-            "type": "string",
-            "format": "date-time"
+          "ticketsRequiredUntilCancel": {
+            "type": "integer",
+            "readOnly": true,
+            "nullable": true
           }
         },
         "required": [
-          "created_at",
+          "cancelDate",
           "creator",
-          "days_amount",
+          "daysAmount",
           "description",
-          "event_place",
           "id",
-          "start_date",
-          "ticket_price",
-          "title",
-          "updated_at"
+          "place",
+          "startDate",
+          "ticketPrice",
+          "ticketsBought",
+          "ticketsRequiredUntilCancel",
+          "title"
         ]
       },
       "EventPlace": {
@@ -283,31 +346,35 @@
             "minimum": -9223372036854775808,
             "format": "int64"
           },
-          "max_tickets": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "maxTickets": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "min_tickets": {
+          "minTickets": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "min_price": {
+          "minPrice": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "min_days": {
+          "minDays": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "days_before_cancel": {
+          "daysBeforeCancel": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
@@ -315,16 +382,40 @@
           },
           "available": {
             "type": "boolean"
+          },
+          "isUsed": {
+            "type": "boolean",
+            "readOnly": true
           }
         },
         "required": [
-          "days_before_cancel",
+          "daysBeforeCancel",
           "id",
-          "max_tickets",
-          "min_days",
-          "min_price",
-          "min_tickets"
+          "isUsed",
+          "maxTickets",
+          "minDays",
+          "minPrice",
+          "minTickets",
+          "title"
         ]
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "body": {
+            "type": "string"
+          },
+          "seenAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": ["body", "title"]
       },
       "RoleBasedEvent": {
         "oneOf": [
@@ -356,63 +447,59 @@
           "description": {
             "type": "string"
           },
-          "event_place": {
-            "$ref": "#/components/schemas/EventPlace"
+          "place": {
+            "type": "integer",
+            "maximum": 9223372036854775807,
+            "minimum": -9223372036854775808,
+            "format": "int64"
           },
-          "ticket_price": {
+          "ticketPrice": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "start_date": {
-            "type": "string",
-            "format": "date-time"
+          "startDate": {
+            "type": "integer"
           },
-          "days_amount": {
+          "daysAmount": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "image_url": {
+          "imageUrl": {
             "type": "string",
             "format": "uri",
             "nullable": true,
             "maxLength": 200
           },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "tickets_bought": {
+          "ticketsBought": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "cancel_date": {
-            "type": "string",
-            "format": "date-time"
+          "cancelDate": {
+            "type": "integer"
+          },
+          "ticketsRequiredUntilCancel": {
+            "type": "integer",
+            "readOnly": true
           }
         },
         "required": [
-          "cancel_date",
-          "created_at",
+          "cancelDate",
           "creator",
-          "days_amount",
+          "daysAmount",
           "description",
-          "event_place",
           "id",
-          "start_date",
-          "ticket_price",
-          "tickets_bought",
-          "title",
-          "updated_at"
+          "place",
+          "startDate",
+          "ticketPrice",
+          "ticketsBought",
+          "ticketsRequiredUntilCancel",
+          "title"
         ]
       },
       "StatusEnum": {

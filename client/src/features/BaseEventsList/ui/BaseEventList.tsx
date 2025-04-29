@@ -1,8 +1,8 @@
 import { EventCard } from "@/entities/event";
-import type { Event } from "@/entities/event/model/types";
+import type { EventModel } from "@/entities/event/model/types";
 
 type BaseEventListProps = {
-  events: Event[];
+  events: EventModel[];
   limit?: number;
 };
 
