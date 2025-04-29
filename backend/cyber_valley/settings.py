@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "cyber_valley.events",
     "cyber_valley.web3_auth",
     "cyber_valley.users",
+    "cyber_valley.notifications",
 ]
 
 REST_FRAMEWORK = {
