@@ -1,5 +1,5 @@
 import type { EventPlace } from "@/entities/place/@x/event";
-import type { EventForm } from "../model/types";
+import type { EventForm } from "@/entities/event/";
 
 import { z, type ZodType } from "zod";
 import type { DateRange } from "react-day-picker";

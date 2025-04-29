@@ -2,7 +2,7 @@ import { Nav } from "@/shared/widgets/navigation";
 
 import { Link } from "react-router";
 
-import { EventsList } from "@/features/EventsList/ui/EventsList";
+import { EventsList } from "@/features/events-list/ui/EventsList";
 
 export const Home: React.FC = () => {
   return (

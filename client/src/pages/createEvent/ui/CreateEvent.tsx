@@ -1,4 +1,4 @@
-import { EventForm } from "@/entities/event/ui/EventForm";
+import { EventForm } from "@/features/event-form/ui/EventForm";
 import { mockDateRanges, mockEventPlaces } from "../mock";
 import { PageContainer } from "@/shared/ui/PageContainer";
 

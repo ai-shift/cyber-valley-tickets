@@ -1,10 +1,11 @@
 import type { DateRange } from "react-day-picker";
 
+import { format } from "date-fns";
+
 import { PopoverTrigger, Popover, PopoverContent } from "@/shared/ui/popover";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import { cn } from "@/shared/lib/utils";
-import { format } from "date-fns";
 
 type DatePickerProps = {
   date: Date;
