@@ -6,15 +6,26 @@
     },
     "paths": {
         "/api/auth/web3/login/": {
+            "get": {
+                "operationId": "api_auth_web3_login_retrieve",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            },
             "post": {
                 "operationId": "api_auth_web3_login_create",
                 "tags": [
                     "api"
                 ],
                 "security": [
-                    {
-                        "jwtAuth": []
-                    },
                     {}
                 ],
                 "responses": {
@@ -30,11 +41,6 @@
                 "description": "Available events in the syste",
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -70,11 +76,6 @@
                 "tags": [
                     "api"
                 ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -97,11 +98,6 @@
                 "operationId": "api_notifications_list",
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -136,11 +132,6 @@
                 "tags": [
                     "api"
                 ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -161,11 +152,6 @@
                 "description": "API endpoint that allows event places to be viewed",
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -204,11 +190,6 @@
                 ],
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -261,6 +242,19 @@
                             }
                         },
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/users/current/": {
+            "get": {
+                "operationId": "api_users_current_retrieve",
+                "tags": [
+                    "api"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -544,13 +538,6 @@
                     "access",
                     "refresh"
                 ]
-            }
-        },
-        "securitySchemes": {
-            "jwtAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
             }
         }
     }

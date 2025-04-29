@@ -15,7 +15,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
 from rest_framework import routers
@@ -25,19 +24,19 @@ from rest_framework_simplejwt.views import (
 
 from .events.views import EventPlaceViewSet, EventViewSet
 from .notifications.views import NotificationViewSet
-from .web3_auth.views import EthereumLoginView, login
+from .users.views import CurrentUserViewSet
+from .web3_auth.views import login
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
 router.register(r"events", EventViewSet)
 router.register(r"notifications", NotificationViewSet, basename="Notification")
+router.register(r"users", CurrentUserViewSet, basename="users")
 
 urlpatterns = [
     path("", SpectacularRedocView.as_view(), name="redoc"),
     path("api/", include(router.urls)),
-    path("admin/login", EthereumLoginView.as_view()),
-    path("admin/", admin.site.urls),
-    path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]
