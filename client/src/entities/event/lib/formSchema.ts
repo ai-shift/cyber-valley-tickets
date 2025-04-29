@@ -1,13 +1,13 @@
-import type { EventPlaceModel } from "@/entities/place";
-import type { EventFormModel } from "../model/types";
+import type { EventPlace } from "@/entities/place/@x/event";
+import type { EventForm } from "../model/types";
 
 import { z, type ZodType } from "zod";
 import type { DateRange } from "react-day-picker";
 
 export function createFormSchema(
-  places: EventPlaceModel[],
+  places: EventPlace[],
   bookedRanges: DateRange[],
-): ZodType<EventFormModel> {
+): ZodType<EventForm> {
   return z
     .object({
       title: z.string().min(1, "Title is required"),
@@ -36,7 +36,7 @@ export function createFormSchema(
         .refine((val) => val >= 1, "Price is too small")
         .transform((val) => val.toString()),
       startDate: z.date(),
-      durationDays: z
+      daysAmount: z
         .string()
         .transform(Number)
         .refine((val) => !Number.isNaN(val), "Not a valid number")
@@ -44,7 +44,7 @@ export function createFormSchema(
         .transform((val) => val.toString()),
     })
     .superRefine((data, ctx) => {
-      const place = places.find((p) => p.id === data.place);
+      const place = places.find((p) => `${p.id}` === data.place);
       if (place && +data.ticketPrice < place.minPrice) {
         ctx.addIssue({
           path: ["ticketPrice"],
@@ -64,9 +64,9 @@ export function createFormSchema(
         return acc;
       }, 999);
 
-      if (+data.durationDays > maxDays) {
+      if (+data.daysAmount > maxDays) {
         ctx.addIssue({
-          path: ["durationDays"],
+          path: ["daysAmount"],
           message: "Event overlaps with other event",
           code: z.ZodIssueCode.custom,
         });

@@ -10,7 +10,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   return (
     <article>
-      <img src={imageUrl} alt={title} />
+      <img
+        src={
+          imageUrl ??
+          "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
+        }
+        alt={title}
+      />
       <div className="flex justify-between">
         <div>
           <h3>{place.title}</h3>

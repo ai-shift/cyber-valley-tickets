@@ -1,4 +1,5 @@
-import type { EventPlaceModel } from "@/entities/place";
+import type { EventPlace } from "@/entities/place/@x/event";
+
 import {
   Select,
   SelectItem,
@@ -10,7 +11,7 @@ import {
 type PlaceSelectProps = {
   value: string;
   onChange: (...event: unknown[]) => void;
-  places: EventPlaceModel[];
+  places: EventPlace[];
 };
 
 export const PlaceSelect: React.FC<PlaceSelectProps> = ({
@@ -25,7 +26,7 @@ export const PlaceSelect: React.FC<PlaceSelectProps> = ({
       </SelectTrigger>
       <SelectContent>
         {places.map((place) => (
-          <SelectItem key={place.id} value={place.id}>
+          <SelectItem key={place.id} value={`${place.id}`}>
             {place.title}
           </SelectItem>
         ))}

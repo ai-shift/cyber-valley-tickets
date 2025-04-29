@@ -1,5 +1,5 @@
-import type { EventPlaceModel } from "@/entities/place/@x/event";
-import type { EventFormModel } from "../model/types";
+import type { EventPlace } from "@/entities/place/@x/event";
+import type { EventForm as EventFormModel } from "../model/types";
 import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
 
@@ -24,7 +24,7 @@ import { createFormSchema } from "../lib/formSchema";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
-  places: EventPlaceModel[];
+  places: EventPlace[];
   existingEvent?: EventFormModel;
 };
 
@@ -50,10 +50,8 @@ export const EventForm: React.FC<EventFormProps> = ({
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    alert(JSON.stringify(values));
   }
-
-  const placesMock = [...places];
 
   return (
     <Form {...form}>
@@ -97,7 +95,6 @@ export const EventForm: React.FC<EventFormProps> = ({
                 <Input
                   type="file"
                   onChange={(e) => {
-                    console.log(e);
                     if (e.target.files && e.target.files.length > 0) {
                       field.onChange(e.target.files[0]);
                     } else {
@@ -136,7 +133,7 @@ export const EventForm: React.FC<EventFormProps> = ({
             const isSelected = selectedPlace !== "";
 
             const minimumPrice =
-              placesMock.find((place) => place.id === selectedPlace)
+              places.find((place) => `${place.id}` === selectedPlace)
                 ?.minPrice ?? 0;
             return (
               <FormItem>
@@ -192,7 +189,7 @@ export const EventForm: React.FC<EventFormProps> = ({
         />
         <FormField
           control={form.control}
-          name="durationDays"
+          name="daysAmount"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Duration in days</FormLabel>

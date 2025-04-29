@@ -1,9 +1,3 @@
-export type EventPlaceModel = {
-  id: string;
-  title: string;
-  maxTickets: number;
-  minTickets: number;
-  minPrice: number;
-  minDays: number;
-  available: boolean;
-};
+import type { components } from "@/shared/api";
+
+export type EventPlace = components["schemas"]["EventPlace"];

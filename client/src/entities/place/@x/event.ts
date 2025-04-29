@@ -1,1 +1,1 @@
-export type { EventPlaceModel } from "../model/types";
+export type { EventPlace } from "../model/types";
