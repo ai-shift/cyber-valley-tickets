@@ -45,10 +45,12 @@ INSTALLED_APPS = [
     "cyber_valley.web3_auth",
     "cyber_valley.users",
     "cyber_valley.notifications",
+    "cyber_valley.scripts",
 ]
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "cyber_valley.web3_auth.authenticate.CookieJWTAuthentication",
     ),
