@@ -16,6 +16,7 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
         model = EventPlace
         fields = (
             "id",
+            "title",
             "max_tickets",
             "min_tickets",
             "min_price",

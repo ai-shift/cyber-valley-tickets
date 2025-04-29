@@ -12,3 +12,12 @@ run:
 
 generate-requirements:
 	uv export --no-hashes --format requirements-txt > requirements.txt
+
+make-migrations:
+	uv run manage.py makemigrations
+
+migrate: make-migrations
+	uv run manage.py migrate
+
+update-open-api-schema:
+	wget 'http://localhost:8000/schema?format=json' -O schema.json

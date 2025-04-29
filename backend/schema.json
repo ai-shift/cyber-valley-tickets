@@ -285,6 +285,10 @@
                         "minimum": -9223372036854775808,
                         "format": "int64"
                     },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
                     "max_tickets": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -325,7 +329,8 @@
                     "max_tickets",
                     "min_days",
                     "min_price",
-                    "min_tickets"
+                    "min_tickets",
+                    "title"
                 ]
             },
             "RoleBasedEvent": {

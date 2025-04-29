@@ -8,6 +8,7 @@ User = get_user_model()
 
 class EventPlace(models.Model):
     id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=200, null=False, unique=True)
     max_tickets = models.PositiveSmallIntegerField(null=False)
     min_tickets = models.PositiveSmallIntegerField(null=False)
     min_price = models.PositiveSmallIntegerField(null=False)
