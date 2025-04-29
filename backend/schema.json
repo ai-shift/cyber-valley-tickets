@@ -254,7 +254,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurrentUser"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -344,6 +351,27 @@
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
                     "title"
+                ]
+            },
+            "CurrentUser": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "address",
+                    "role"
                 ]
             },
             "EventPlace": {
@@ -438,6 +466,16 @@
                         "$ref": "#/components/schemas/StaffEvent"
                     }
                 ]
+            },
+            "RoleEnum": {
+                "enum": [
+                    "customer",
+                    "staff",
+                    "creator",
+                    "master"
+                ],
+                "type": "string",
+                "description": "* `customer` - Customer\n* `staff` - Staff\n* `creator` - Creator\n* `master` - Master"
             },
             "StaffEvent": {
                 "type": "object",
