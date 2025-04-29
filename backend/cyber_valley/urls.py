@@ -25,7 +25,7 @@ from rest_framework_simplejwt.views import (
 
 from .events.views import EventPlaceViewSet, EventViewSet
 from .notifications.views import NotificationViewSet
-from .web3_auth.views import login
+from .web3_auth.views import EthereumLoginView, login
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
@@ -35,6 +35,7 @@ router.register(r"notifications", NotificationViewSet, basename="Notification")
 urlpatterns = [
     path("", SpectacularRedocView.as_view(), name="redoc"),
     path("api/", include(router.urls)),
+    path("admin/login", EthereumLoginView.as_view()),
     path("admin/", admin.site.urls),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/auth/web3/login/", login, name="web3_login"),

@@ -1,7 +1,13 @@
 import os
 from typing import Final
 
+from django.contrib.auth.forms import AuthenticationForm
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.http import HttpRequest, HttpResponse
+from django.middleware import csrf
+from django.shortcuts import render
+from django.views import View
 from eth_account import Account
 from eth_account.messages import encode_defunct
 from pydantic import BaseModel, Field, ValidationError
@@ -29,6 +35,13 @@ class Web3LoginModel(BaseModel):
     message: str = Field(description="Message that is signed")
 
 
+class EthereumLoginView(View):
+    template_name = "login_ethereum.html"
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return render(request, self.template_name)
+
+
 # FIXME: Add request / response OpenAPI schema
 @api_view(["POST"])
 def login(request: Request) -> Response:
@@ -46,9 +59,21 @@ def login(request: Request) -> Response:
         user = User(address=data.address)
         user.save()
 
-    refresh = RefreshToken.for_user(user)
+    token = RefreshToken.for_user(user)
 
-    return Response({"token": str(refresh), "access": str(refresh.access_token)})
+    response = Response()
+
+    response.set_cookie(
+        key=settings.SIMPLE_JWT["AUTH_COOKIE"],
+        value=token.access_token,
+        expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+    csrf.get_token(request)
+
+    return response
 
 
 def verify_signature(data: Web3LoginModel) -> bool:
