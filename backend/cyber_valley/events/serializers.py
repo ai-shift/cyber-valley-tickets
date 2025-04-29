@@ -32,9 +32,9 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
 
 
 class EventSerializer(serializers.ModelSerializer[Event]):
-    event_place = EventPlaceSerializer()
-    creator = CreatorSerializer()
-    cancel_date = serializers.DateTimeField()
+    event_place = EventPlaceSerializer(required=True)
+    creator = CreatorSerializer(required=True)
+    start_date = serializers.IntegerField(required=True)
 
     class Meta:
         model = Event
@@ -49,12 +49,17 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "start_date",
             "days_amount",
             "image_url",
-            "created_at",
-            "updated_at",
         )
+
+    def to_representation(self, instance: Event) -> dict[str, Any]:
+        data = super().to_representation(instance)
+        data["start_date"] = data["start_date"].timestamp() * 100
+        return data
 
 
 class StaffEventSerializer(EventSerializer):
+    cancel_date = serializers.IntegerField(required=True)
+
     class Meta:
         model = EventSerializer.Meta.model
         fields = (
@@ -66,15 +71,16 @@ class StaffEventSerializer(EventSerializer):
     def to_representation(self, instance: Event) -> dict[str, Any]:
         data = super().to_representation(instance)
         data["tickets_bought"] = instance.tickets_bought
-        data["cancel_date"] = instance.created_at - timedelta(
-            days=instance.place.days_before_cancel
-        )
+        data["cancel_date"] = (
+            instance.created_at - timedelta(days=instance.place.days_before_cancel)
+        ).timestamp() * 1000
+
         return data
 
 
 class CreatorEventSerializer(StaffEventSerializer):
-    cancel_date = serializers.DateTimeField(required=False)
     tickets_bought = serializers.IntegerField(required=False)
+    cancel_date = serializers.IntegerField(required=False)
 
     class Meta:
         model = StaffEventSerializer.Meta.model
