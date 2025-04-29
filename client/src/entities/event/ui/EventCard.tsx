@@ -1,12 +1,12 @@
 import { Link } from "react-router";
-import type { EventModel } from "../model/types";
+import type { Event } from "../model/types";
 
 type EventCardProps = {
-  event: EventModel;
+  event: Event;
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const { imageUrl, place, startDate, durationDays, title } = event;
+  const { imageUrl, place, startDate, daysAmount, title } = event;
 
   return (
     <article>
@@ -16,7 +16,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           <h3>{place.title}</h3>
           <p>{title}</p>
           <p>
-            {startDate} ({durationDays})
+            {startDate} ({daysAmount})
           </p>
         </div>
         <Link

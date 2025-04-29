@@ -283,10 +283,7 @@
             "type": "string"
           },
           "place": {
-            "type": "integer",
-            "maximum": 9223372036854775807,
-            "minimum": -9223372036854775808,
-            "format": "int64"
+            "$ref": "#/components/schemas/EventPlace"
           },
           "ticketPrice": {
             "type": "integer",
@@ -448,10 +445,7 @@
             "type": "string"
           },
           "place": {
-            "type": "integer",
-            "maximum": 9223372036854775807,
-            "minimum": -9223372036854775808,
-            "format": "int64"
+            "$ref": "#/components/schemas/EventPlace"
           },
           "ticketPrice": {
             "type": "integer",

@@ -2,7 +2,6 @@ import type { EventPlaceModel } from "@/entities/place/@x/event";
 import type { components } from "@/shared/api";
 
 export type Event = components["schemas"]["StaffEvent" | "CreatorEvent"];
-console.log(Event);
 
 export type EventModel = {
   id: string;
