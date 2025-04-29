@@ -29,6 +29,7 @@ class Web3LoginModel(BaseModel):
     message: str = Field(description="Message that is signed")
 
 
+# FIXME: Add request / response OpenAPI schema
 @api_view(["POST"])
 def login(request: Request) -> Response:
     try:
