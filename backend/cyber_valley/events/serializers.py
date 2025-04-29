@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
 
-from cyber_valley.users.models import CyberValleyUser as UserType
+from django.contrib.auth.models import User as UserType
 
 from .models import Event, EventPlace
 
