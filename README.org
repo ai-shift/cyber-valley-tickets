@@ -5,11 +5,9 @@
 * Table of contents                                          :toc_3:noexport:
 - [[#problem][Problem]]
 - [[#solution][Solution]]
-  - [[#roles][Roles]]
-    - [[#customer][Customer]]
-    - [[#staff][Staff]]
-    - [[#creator][Creator]]
-    - [[#master][Master]]
+  - [[#domain][Domain]]
+    - [[#roles][Roles]]
+    - [[#event-data][Event data]]
   - [[#use-cases][Use cases]]
     - [[#create-event-place][Create event place]]
     - [[#update-event-place][Update event place]]
@@ -40,6 +38,7 @@
   - [[#will-tickets-have-some-metainfo-about-the-owner-name-number-etc][Will tickets have some metainfo about the owner (name, number etc)]]
   - [[#is-it-applicable-to-show-available-seats-count-for-all-so-the-creator-and-master-can-see-it-as-well-without-additional-screen][Is it applicable to show available seats count for all (so the creator and master can see it as well without additional screen)?]]
   - [[#ui-design-references][UI design references]]
+  - [[#do-socials-really-should-be-saved-in-ipfs-or-can-be-stored-on-the-back-end][Do socials really should be saved in IPFS or can be stored on the back-end?]]
 
 * Problem
 
@@ -49,22 +48,23 @@ Cyber Valley wants to host events and needs a convenient way to accept events of
 
 Create Web3 mobile first web app based on Ethereum network which covers main needs
 
-** Roles
+** Domain
+*** Roles
 
-*** Customer
+**** Customer
 
 Public role which has the following authorities:
 
 - List events
 - Buy ticket to event
 
-*** Staff
+**** Staff
 
 Assigned by the master role. Has all customer's authorities and:
 
 - Verify tickets for any event
 
-*** Creator
+**** Creator
 
 A.k.a shaman has all customer's authorities and:
 
@@ -72,7 +72,7 @@ A.k.a shaman has all customer's authorities and:
 - Edit own event requests
 - See pending own event requests
 
-*** Master
+**** Master
 
 Has all customer's, staff's and creator's authorities and:
 
@@ -81,6 +81,64 @@ Has all customer's, staff's and creator's authorities and:
 - Edit event requests
 - Cancel event
 - Close events
+
+*** Event data
+
+Abstraction over some entertainment in the specific place during some amount of days.
+
+#+begin_src plantuml :file ./img/event-model.png
+class EventModel {
+  id: int
+  title: string
+  description: string
+  imageUrl: string
+  place: EventPlaceModel
+  ticketPrice: int
+  ticketsBought: int
+  cancelDate: int
+  startDate: int
+  durationDays: int
+}
+
+note right of EventModel::title
+  Any string of length 100 chars
+end note
+
+note right of EventModel::description
+  Any string of length 300 chars
+end note
+
+note right of EventModel::imageUrl
+  Link to the cover image
+end note
+
+note right of EventModel::place
+  One of the available places that add boundaries for the event
+end note
+
+note right of EventModel::ticketPrice
+  Bounded by selected event place
+end note
+
+note right of EventModel::ticketsBought
+  Amount of tickets that were bought
+end note
+
+note right of EventModel::cancelDate
+  Date when event will be canceled if there will not be enought bought tickets
+end note
+
+note right of EventModel::startDate
+  The day when the event starts, should not overlap with existing events in the selected place
+end note
+
+note right of EventModel::durationDays
+  Duration of the event
+end note
+#+end_src
+
+#+RESULTS:
+[[file:./img/event-model.png]]
 
 ** Use cases
 
@@ -94,6 +152,7 @@ Adds a new event place
 
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlace {
+  title: string
   minTickets: int
   maxTickets: int
   minPrice: int
@@ -527,13 +586,6 @@ enum EventStatus {
   Closed
 }
 
-class EventPlace {
-  - maxTickets: int
-  - minTickets: int
-  - minPrice: int
-  - minDays: int
-}
-
 interface IERC20 {
   + transferFrom(address sender, address recipient, uint256 amount)
   + transfer(address recipient, uint256 amount)
@@ -748,8 +800,8 @@ Because of requirement to allow posting and fetching event requests for the mast
 
 For ~EVENT:READ_SENSITIVE~ or event's creator receive ~EventSensitiveModel~.
 
-#+begin_src plantuml :file ./img/event-model.png
-class EventModel {
+#+begin_src plantuml :file ./img/events-view.png
+class PublicEventModel {
   title: string
   description: string
   imageUrl: string
@@ -757,20 +809,29 @@ class EventModel {
   ticketPrice: int
   startDate: int
   durationDays: int
-  attended: bool
+  ticketStatus: TicketStatus
 }
 
 class EventSensitiveModel {
   status: EventStatus
   ticketsBought: int
   cancelDate: int
+  canBeCanceled: bool
+  ticketsRequiredBeforeCancel: int
 }
 
-EventSensitiveModel -> EventModel
+enum TicketStatus {
+  buy
+  show
+  redeemed
+}
+
+EventSensitiveModel -> PublicEventModel
+PublicEventModel -> TicketStatus
 #+end_src
 
 #+RESULTS:
-[[file:./img/event-model.png]]
+[[file:./img/events-view.png]]
 
 ***** GET /events/<int:event-id>/tickets/<str:ticket-id>
 
@@ -795,6 +856,8 @@ class EventTicketModel {
 
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlaceModel {
+  id: int
+  title: string
   maxTickets: int
   minTickets: int
   minPrice: int
@@ -823,6 +886,10 @@ class NotificationModel {
 #+RESULTS:
 [[file:./img/notification-model.png]]
 
+***** PUT /ipfs
+
+Accepts provided data (file or text), stores it in IPFS and returns [[https://docs.ipfs.tech/how-to/address-ipfs-on-web/#path-gateway][CID]]
+
 ***** POST /auth/generate-nonce/{public-address}
 
 Generates session and checks if the given ~public-address~ is allowed to sign-in
@@ -845,67 +912,152 @@ class VerifySignatureModel {
 [[file:./img/verify-signature-model.png]]
 
 *** Frontend
-**** Main
 
-***** Menu component:
+**** Page structure
 
-- Create event
-- Account
-- if master
-  - Edit event places
-  - Edit staff
-  - Pending requests
+#+begin_src plantuml :file ./img/page-structure.png
+@startsalt
+{
+{T!
+  + Page | authority
+  + Main | APP:ACCESS
+  ++ Event list | APP:ACCESS
+  +++ Event | APP:ACCESS
+  ++++ Attend | APP:ACCESS
+  ++++ Edit | EVENT:CREATE
+  ++ Account | APP:ACCESS
+  ++ Notifications | APP:ACCESS
+  ++ Create event | APP:ACCESS
+  ++ Manage | MANAGE:ACCESS
+}
+}
+@endsalt
+#+end_src
 
-***** Events list
+#+RESULTS:
+[[file:./img/page-structure.png]]
 
-Each containing:
+**** Main Page
 
-- Cover
+Only authorized users (via [[https://docs.login.xyz/][sign-in with Ethereum]]) can have access to this page.
+
+It provides the following components:
+
+- *Notifications* - Amount of unread notifications with link to the [[*Notifications][Notifications page]]
+- *Event list* - Top ~N~ upcoming events and link to the [[*Events list][Events list page]]
+- *Navigation* - List of available base pages for the current user
+  - _Create event_ - Redirects to [[*Create event][Create event page]]
+  - _Manage_ - Shown to ~MANAGE:ACCESS~ authority and redirects to the system [[*Manage][Manage page]]
+  - _Home_ - Redirects to the [[*Main Page][Main page]]
+  - _Account_ - Redirects to the [[*Account][Account page]]
+
+[[https://excalidraw.com/?element=IGeC3qEnw6SEahcF-W6_G#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+
+**** Notifications
+
+Page renders a list of models returned by [[*GET /notifications][GET /notifications]] endpoint
+
+Each notification can be opened to get description and mark it as ~seen~
+
+**** Events list
+
+Page renders a list of models returned by [[*GET /events][GET /events]] endpoint
+
+Each event card contains the following fields:
+
+- Cover image
 - Title
-- Place
-- Time range
+- Place title
+- Start date
 
-***** Notifications
+On click event card redirects to the [[*Event][Event page]]
+
+[[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
 **** Event
 
-- Event card data
-- Description
-- Tickets sold / total
-- Price
-- Attend
+Works with the model from [[*GET /events][GET /events]] endpoint
 
-- if creator
-  - if can be cancelled.
+Accepts ~eventId~ from URL parameters.
+
+*If creator* handled by the back-end, so simple conditional rendering is needed. Only check for ~TICKET:REDEEM~ is required
+
+- Cover image
+- Title
+- Place title
+- Start date
+- Description
+- Ticket price
+- Ticket status
+  - *buy* - Attend button. Navigates to [[*Attend event][Attend event page]]
+  - *show* - Show ticket button
+  - *redeemed* - Ticket redeemed
+- *if creator*
+  - Edit
+  - if ~canBeCanceled~
     - cancel date
     - required N tickets
-  - if pending
-    - Edit
-    - Request event edit
-- if attendee
-  - Attend changed to show ticket
-- if redeemed
-  - Attend changed to redeemed
-- it staff
+- *if ~TICKET:REDEEM~*
   - Redeem ticket
-  - Attend event
-    - Input socials
-    - Pay
+
+#+begin_quote
+Currently event model is pretty small, so it could be extracted from ~TanStack Query~ cache via [[https://tanstack.com/query/latest/docs/reference/QueryClient/#queryclientensurequerydata][ensureQueryData]].
+#+end_quote
+
+[[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+
+**** Attend event
+
+Requests a user to input his socials from [[*Save socials][Save socials]] section and redirects to the [[*Payment][Payment page]]. Consists of select box and input text field without any validation.
+
+After payment redirects to [[*Operation status][Operation status page]] and shows:
+
+- *On success* ticket QR code
+- *On failure* failure details
+
+[[https://excalidraw.com/?element=LlyKYIWZ3fWJ0lp0pX9po#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+
+***** Questions
+
+- [[*Do socials really should be saved in IPFS or can be stored on the back-end?][Do socials really should be saved in IPFS or can be stored on the back-end?]]
 
 **** Create event
 
-- Submition form (text, number, date range, select from list, img upload,
-- Payment button
+Requests a user to provide [[*Event data][Event data]] and =Confirm= button which redirects to [[*Payment][Payment page]]
+
+- *imageUrl* - Image file or pasting should be accepted in the form, then it should be sent with [[*PUT /ipfs][PUT /ipfs]] to get a CID for the further processing
+
+Other invariants should be checked in accordance to [[*Event data][Event data]] specification
+
+[[https://excalidraw.com/?element=884G2lWaGUN9FsHkarxxG#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+
+**** Edit event
+
+Works the same as [[*Create event][Create event page]], but instead of payment invokes ~updateEvent~ method of ~EventManager~ contract
+
+[[https://excalidraw.com/?element=ECGnLzjTF3oespczMEN3K#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
 
 **** Account
 
-- My events
-  - Pending requests
-  - Approved events
-  - Bought tickets
-- Logout
-- Income
+Provides personal info to the user:
 
+- *Events* - any relative i.e. attented or created. Master should see only ~pending~
+- *Logout* - allows to logout from the app
+
+**** Manage
+
+Provides administration features for the existing entities:
+
+- *Event place* - only places without approved events can be edited
+- *Staff* - add or remove staff by EOA address
+
+**** Payment
+
+Generic page for the payment
+
+**** Operation status
+
+Shows result of the made transaction
 
 * Questions
 
@@ -958,3 +1110,7 @@ Yes
 #+begin_quote
 https://dribbble.com/shots/23082238-Earthquake-Warning-App-Cyberpunk-Design-Style
 #+end_quote
+
+** Do socials really should be saved in IPFS or can be stored on the back-end?
+
+TBD
