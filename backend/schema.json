@@ -81,6 +81,9 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/CreatorEvent"
+                                },
+                                "examples": {
+                                    "Default": {}
                                 }
                             }
                         },
@@ -297,8 +300,11 @@
                     "description": {
                         "type": "string"
                     },
-                    "event_place": {
-                        "$ref": "#/components/schemas/EventPlace"
+                    "place": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64"
                     },
                     "ticket_price": {
                         "type": "integer",
@@ -322,20 +328,30 @@
                         "maxLength": 200
                     },
                     "tickets_bought": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true
                     },
                     "cancel_date": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "tickets_required_until_cancel": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
                     }
                 },
                 "required": [
+                    "cancel_date",
                     "creator",
                     "days_amount",
                     "description",
-                    "event_place",
                     "id",
+                    "place",
                     "start_date",
                     "ticket_price",
+                    "tickets_bought",
+                    "tickets_required_until_cancel",
                     "title"
                 ]
             },
@@ -452,8 +468,11 @@
                     "description": {
                         "type": "string"
                     },
-                    "event_place": {
-                        "$ref": "#/components/schemas/EventPlace"
+                    "place": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64"
                     },
                     "ticket_price": {
                         "type": "integer",
@@ -484,6 +503,10 @@
                     },
                     "cancel_date": {
                         "type": "integer"
+                    },
+                    "tickets_required_until_cancel": {
+                        "type": "integer",
+                        "readOnly": true
                     }
                 },
                 "required": [
@@ -491,11 +514,12 @@
                     "creator",
                     "days_amount",
                     "description",
-                    "event_place",
                     "id",
+                    "place",
                     "start_date",
                     "ticket_price",
                     "tickets_bought",
+                    "tickets_required_until_cancel",
                     "title"
                 ]
             },
