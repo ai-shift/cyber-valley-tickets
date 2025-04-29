@@ -8,6 +8,19 @@
         "/api/auth/web3/login/": {
             "get": {
                 "operationId": "api_auth_web3_login_retrieve",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "html",
+                                "json"
+                            ]
+                        }
+                    }
+                ],
                 "tags": [
                     "api"
                 ],
@@ -22,6 +35,19 @@
             },
             "post": {
                 "operationId": "api_auth_web3_login_create",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "html",
+                                "json"
+                            ]
+                        }
+                    }
+                ],
                 "tags": [
                     "api"
                 ],
@@ -310,9 +336,6 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "startDate": {
-                        "type": "integer"
-                    },
                     "daysAmount": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -329,7 +352,7 @@
                         "type": "integer",
                         "nullable": true
                     },
-                    "cancelDate": {
+                    "cancelDateTimestamp": {
                         "type": "integer",
                         "nullable": true
                     },
@@ -340,13 +363,12 @@
                     }
                 },
                 "required": [
-                    "cancelDate",
+                    "cancelDateTimestamp",
                     "creator",
                     "daysAmount",
                     "description",
                     "id",
                     "place",
-                    "startDate",
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
@@ -506,9 +528,6 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "startDate": {
-                        "type": "integer"
-                    },
                     "daysAmount": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -527,7 +546,7 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "cancelDate": {
+                    "cancelDateTimestamp": {
                         "type": "integer"
                     },
                     "ticketsRequiredUntilCancel": {
@@ -536,13 +555,12 @@
                     }
                 },
                 "required": [
-                    "cancelDate",
+                    "cancelDateTimestamp",
                     "creator",
                     "daysAmount",
                     "description",
                     "id",
                     "place",
-                    "startDate",
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
