@@ -5,6 +5,159 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/auth/web3/login/": {
+            "post": {
+                "operationId": "api_auth_web3_login_create",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/events/": {
+            "get": {
+                "operationId": "api_events_list",
+                "description": "Available events in the syste",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RoleBasedEvent"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/events/{id}/": {
+            "get": {
+                "operationId": "api_events_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this event.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreatorEvent"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/places/": {
+            "get": {
+                "operationId": "api_places_list",
+                "description": "API endpoint that allows event places to be viewed",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EventPlace"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/places/{id}/": {
+            "get": {
+                "operationId": "api_places_retrieve",
+                "description": "API endpoint that allows event places to be viewed",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 9223372036854775807,
+                            "minimum": -9223372036854775808,
+                            "format": "int64"
+                        },
+                        "description": "A unique value identifying this event place.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EventPlace"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/token/refresh/": {
             "post": {
                 "operationId": "api_token_refresh_create",
@@ -38,159 +191,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/TokenRefresh"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/auth/web3/login/": {
-            "post": {
-                "operationId": "auth_web3_login_create",
-                "tags": [
-                    "auth"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "description": "No response body"
-                    }
-                }
-            }
-        },
-        "/events/": {
-            "get": {
-                "operationId": "events_list",
-                "description": "Available events in the syste",
-                "tags": [
-                    "events"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/RoleBasedEvent"
-                                    }
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/events/{id}/": {
-            "get": {
-                "operationId": "events_retrieve",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "A unique integer value identifying this event.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "events"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/CreatorEvent"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/places/": {
-            "get": {
-                "operationId": "places_list",
-                "description": "API endpoint that allows event places to be viewed",
-                "tags": [
-                    "places"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/EventPlace"
-                                    }
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/places/{id}/": {
-            "get": {
-                "operationId": "places_retrieve",
-                "description": "API endpoint that allows event places to be viewed",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "schema": {
-                            "type": "integer",
-                            "maximum": 9223372036854775807,
-                            "minimum": -9223372036854775808,
-                            "format": "int64"
-                        },
-                        "description": "A unique value identifying this event place.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "places"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/EventPlace"
                                 }
                             }
                         },
@@ -244,8 +244,7 @@
                         "format": "int64"
                     },
                     "start_date": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "integer"
                     },
                     "days_amount": {
                         "type": "integer",
@@ -259,24 +258,14 @@
                         "nullable": true,
                         "maxLength": 200
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
                     "tickets_bought": {
                         "type": "integer"
                     },
                     "cancel_date": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "integer"
                     }
                 },
                 "required": [
-                    "created_at",
                     "creator",
                     "days_amount",
                     "description",
@@ -284,8 +273,7 @@
                     "id",
                     "start_date",
                     "ticket_price",
-                    "title",
-                    "updated_at"
+                    "title"
                 ]
             },
             "EventPlace": {
@@ -380,8 +368,7 @@
                         "format": "int64"
                     },
                     "start_date": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "integer"
                     },
                     "days_amount": {
                         "type": "integer",
@@ -395,14 +382,6 @@
                         "nullable": true,
                         "maxLength": 200
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
                     "tickets_bought": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -410,13 +389,11 @@
                         "format": "int64"
                     },
                     "cancel_date": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "integer"
                     }
                 },
                 "required": [
                     "cancel_date",
-                    "created_at",
                     "creator",
                     "days_amount",
                     "description",
@@ -425,8 +402,7 @@
                     "start_date",
                     "ticket_price",
                     "tickets_bought",
-                    "title",
-                    "updated_at"
+                    "title"
                 ]
             },
             "StatusEnum": {
