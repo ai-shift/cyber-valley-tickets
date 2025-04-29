@@ -89,6 +89,69 @@
                 }
             }
         },
+        "/api/notifications/": {
+            "get": {
+                "operationId": "api_notifications_list",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Notification"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/notifications/{id}/": {
+            "get": {
+                "operationId": "api_notifications_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Notification"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/places/": {
             "get": {
                 "operationId": "api_places_list",
@@ -321,15 +384,41 @@
                     },
                     "available": {
                         "type": "boolean"
+                    },
+                    "is_used": {
+                        "type": "boolean",
+                        "readOnly": true
                     }
                 },
                 "required": [
                     "days_before_cancel",
                     "id",
+                    "is_used",
                     "max_tickets",
                     "min_days",
                     "min_price",
                     "min_tickets",
+                    "title"
+                ]
+            },
+            "Notification": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "seen_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "body",
                     "title"
                 ]
             },

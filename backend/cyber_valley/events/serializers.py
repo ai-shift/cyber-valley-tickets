@@ -12,6 +12,8 @@ User = get_user_model()
 
 
 class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
+    is_used = serializers.SerializerMethodField()
+
     class Meta:
         model = EventPlace
         fields = (
@@ -23,7 +25,11 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
             "min_days",
             "days_before_cancel",
             "available",
+            "is_used",
         )
+
+    def get_is_used(self, obj: EventPlace) -> bool:
+        return obj.event_set.exclude(status__in=["closed", "cancelled"]).exists()
 
 
 class CreatorSerializer(serializers.ModelSerializer[UserType]):
