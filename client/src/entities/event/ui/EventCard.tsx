@@ -1,8 +1,8 @@
 import { Link } from "react-router";
-import type { Event } from "../model/event";
+import type { EventModel } from "../model/types";
 
 type EventCardProps = {
-  event: Event;
+  event: EventModel;
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
@@ -13,7 +13,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <img src={imageUrl} alt={title} />
       <div className="flex justify-between">
         <div>
-          <h3>{place}</h3>
+          <h3>{place.title}</h3>
           <p>{title}</p>
           <p>
             {startDate} ({durationDays})

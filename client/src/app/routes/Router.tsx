@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import { EventsList, Home } from "@/pages";
+import { EventsList, Home, CreateEvent } from "@/pages";
 
 export const Router = () => {
   return (
@@ -11,7 +11,7 @@ export const Router = () => {
         <Route path="/events">
           <Route index element={<EventsList />} />
           <Route path="/events/:eventId" />
-          <Route path="/events/create" />
+          <Route path="/events/create" element={<CreateEvent />} />
         </Route>
 
         <Route path="/profile" />

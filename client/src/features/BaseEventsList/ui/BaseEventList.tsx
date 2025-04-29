@@ -1,5 +1,5 @@
 import { EventCard } from "@/entities/event";
-import type { Event } from "@/entities/event/model/event";
+import type { Event } from "@/entities/event/model/types";
 
 type BaseEventListProps = {
   events: Event[];
