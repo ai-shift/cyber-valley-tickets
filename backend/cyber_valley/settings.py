@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "cyber_valley.events",
     "cyber_valley.web3_auth",
-    # "cyber_valley.users",
+    "cyber_valley.users",
     "cyber_valley.notifications",
 ]
 
@@ -118,7 +118,7 @@ DATABASES = {
     }
 }
 
-# AUTH_USER_MODEL = "users.CyberValleyUser"
+AUTH_USER_MODEL = "users.CyberValleyUser"
 
 SIMPLE_JWT = {
     "USER_ID_FIELD": "address",
