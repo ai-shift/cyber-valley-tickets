@@ -1,6 +1,4 @@
-import os
 from datetime import UTC, datetime
-from typing import Final
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -15,10 +13,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from web3 import Web3
-
-MOCK_WEB3_AUTH: Final = bool(os.getenv("MOCK_WEB3_AUTH"))
-if MOCK_WEB3_AUTH:
-    print("!!! USING MOCKED AUTH MODULE !!!")
 
 User = get_user_model()
 
@@ -45,7 +39,7 @@ def login(request: Request) -> Response:
     except ValidationError as e:
         raise exceptions.ParseError from e
 
-    if not (MOCK_WEB3_AUTH or verify_signature(data)):
+    if verify_signature(data):
         raise exceptions.AuthenticationFailed
 
     try:
