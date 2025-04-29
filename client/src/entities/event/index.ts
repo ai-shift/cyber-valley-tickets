@@ -1,2 +1,2 @@
-export type { EventModel } from "./model/types";
+export type { EventForm, Event } from "./model/types";
 export { EventCard } from "./ui/EventCard";
