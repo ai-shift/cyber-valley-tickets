@@ -233,17 +233,17 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TokenRefresh"
-                            }
-                        },
                         "application/x-www-form-urlencoded": {
                             "schema": {
                                 "$ref": "#/components/schemas/TokenRefresh"
                             }
                         },
                         "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenRefresh"
+                            }
+                        },
+                        "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/TokenRefresh"
                             }
@@ -306,52 +306,52 @@
                         "minimum": -9223372036854775808,
                         "format": "int64"
                     },
-                    "ticket_price": {
+                    "ticketPrice": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "start_date": {
+                    "startDate": {
                         "type": "integer"
                     },
-                    "days_amount": {
+                    "daysAmount": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "image_url": {
+                    "imageUrl": {
                         "type": "string",
                         "format": "uri",
                         "nullable": true,
                         "maxLength": 200
                     },
-                    "tickets_bought": {
+                    "ticketsBought": {
                         "type": "integer",
                         "nullable": true
                     },
-                    "cancel_date": {
+                    "cancelDate": {
                         "type": "integer",
                         "nullable": true
                     },
-                    "tickets_required_until_cancel": {
+                    "ticketsRequiredUntilCancel": {
                         "type": "integer",
                         "readOnly": true,
                         "nullable": true
                     }
                 },
                 "required": [
-                    "cancel_date",
+                    "cancelDate",
                     "creator",
-                    "days_amount",
+                    "daysAmount",
                     "description",
                     "id",
                     "place",
-                    "start_date",
-                    "ticket_price",
-                    "tickets_bought",
-                    "tickets_required_until_cancel",
+                    "startDate",
+                    "ticketPrice",
+                    "ticketsBought",
+                    "ticketsRequiredUntilCancel",
                     "title"
                 ]
             },
@@ -368,31 +368,31 @@
                         "type": "string",
                         "maxLength": 200
                     },
-                    "max_tickets": {
+                    "maxTickets": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "min_tickets": {
+                    "minTickets": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "min_price": {
+                    "minPrice": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "min_days": {
+                    "minDays": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "days_before_cancel": {
+                    "daysBeforeCancel": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
@@ -401,19 +401,19 @@
                     "available": {
                         "type": "boolean"
                     },
-                    "is_used": {
+                    "isUsed": {
                         "type": "boolean",
                         "readOnly": true
                     }
                 },
                 "required": [
-                    "days_before_cancel",
+                    "daysBeforeCancel",
                     "id",
-                    "is_used",
-                    "max_tickets",
-                    "min_days",
-                    "min_price",
-                    "min_tickets",
+                    "isUsed",
+                    "maxTickets",
+                    "minDays",
+                    "minPrice",
+                    "minTickets",
                     "title"
                 ]
             },
@@ -427,7 +427,7 @@
                     "body": {
                         "type": "string"
                     },
-                    "seen_at": {
+                    "seenAt": {
                         "type": "string",
                         "format": "date-time",
                         "nullable": true
@@ -474,52 +474,52 @@
                         "minimum": -9223372036854775808,
                         "format": "int64"
                     },
-                    "ticket_price": {
+                    "ticketPrice": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "start_date": {
+                    "startDate": {
                         "type": "integer"
                     },
-                    "days_amount": {
+                    "daysAmount": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "image_url": {
+                    "imageUrl": {
                         "type": "string",
                         "format": "uri",
                         "nullable": true,
                         "maxLength": 200
                     },
-                    "tickets_bought": {
+                    "ticketsBought": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "cancel_date": {
+                    "cancelDate": {
                         "type": "integer"
                     },
-                    "tickets_required_until_cancel": {
+                    "ticketsRequiredUntilCancel": {
                         "type": "integer",
                         "readOnly": true
                     }
                 },
                 "required": [
-                    "cancel_date",
+                    "cancelDate",
                     "creator",
-                    "days_amount",
+                    "daysAmount",
                     "description",
                     "id",
                     "place",
-                    "start_date",
-                    "ticket_price",
-                    "tickets_bought",
-                    "tickets_required_until_cancel",
+                    "startDate",
+                    "ticketPrice",
+                    "ticketsBought",
+                    "ticketsRequiredUntilCancel",
                     "title"
                 ]
             },
