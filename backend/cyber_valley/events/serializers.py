@@ -40,7 +40,7 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
 
 
 class EventSerializer(serializers.ModelSerializer[Event]):
-    event_place = EventPlaceSerializer(required=True)
+    place = EventPlaceSerializer(required=True)
     creator = CreatorSerializer(required=True)
     start_date = serializers.IntegerField(required=True)
 
