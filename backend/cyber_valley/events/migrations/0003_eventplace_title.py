@@ -4,16 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('events', '0002_rename_event_place_event_place_and_more'),
+        ("events", "0002_rename_event_place_event_place_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='eventplace',
-            name='title',
-            field=models.CharField(default='Event place title', max_length=200, unique=True),
+            model_name="eventplace",
+            name="title",
+            field=models.CharField(
+                default="Event place title", max_length=200, unique=True
+            ),
             preserve_default=False,
         ),
     ]
