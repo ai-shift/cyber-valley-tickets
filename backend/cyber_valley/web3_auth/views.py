@@ -8,7 +8,7 @@ from eth_account.messages import encode_defunct
 from pydantic import BaseModel, Field, ValidationError
 from rest_framework import exceptions
 from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -29,7 +29,7 @@ class Web3LoginModel(BaseModel):
 
 # FIXME: Add request / response OpenAPI schema
 @api_view(["POST", "GET"])
-@renderer_classes([TemplateHTMLRenderer])
+@renderer_classes([JSONRenderer, TemplateHTMLRenderer])
 def login(request: Request) -> Response:
     if request.method == "GET":
         return Response(template_name="login_ethereum.html")
@@ -39,7 +39,7 @@ def login(request: Request) -> Response:
     except ValidationError as e:
         raise exceptions.ParseError from e
 
-    if verify_signature(data):
+    if not verify_signature(data):
         raise exceptions.AuthenticationFailed
 
     try:
@@ -50,7 +50,9 @@ def login(request: Request) -> Response:
 
     token = RefreshToken.for_user(user)
 
-    response = Response()
+    response = Response(
+        status=204,
+    )
 
     response.set_cookie(
         key=settings.SIMPLE_JWT["AUTH_COOKIE"],
