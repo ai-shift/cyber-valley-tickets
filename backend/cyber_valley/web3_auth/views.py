@@ -1,10 +1,10 @@
 import os
+from datetime import UTC, datetime
 from typing import Final
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.middleware import csrf
-from django.shortcuts import render
 from eth_account import Account
 from eth_account.messages import encode_defunct
 from pydantic import BaseModel, Field, ValidationError
@@ -36,7 +36,8 @@ class Web3LoginModel(BaseModel):
 @api_view(["POST", "GET"])
 def login(request: Request) -> Response:
     if request.method == "GET":
-        return render(request, "login_ethereum.html")
+        return Response(template_name="login_ethereum.html")
+
     try:
         data = Web3LoginModel.model_validate(request.data)
     except ValidationError as e:
@@ -57,8 +58,8 @@ def login(request: Request) -> Response:
 
     response.set_cookie(
         key=settings.SIMPLE_JWT["AUTH_COOKIE"],
-        value=token.access_token,
-        expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+        value=str(token.access_token),
+        expires=datetime.now(tz=UTC) + settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
         secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
         httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
         samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
