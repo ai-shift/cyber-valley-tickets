@@ -2,6 +2,7 @@ from datetime import timedelta
 from typing import Any
 
 from django.contrib.auth import get_user_model
+from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
 
 from cyber_valley.users.models import CyberValleyUser as UserType
@@ -51,7 +52,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "status",
             "title",
             "description",
-            "event_place",
+            "place",
             "ticket_price",
             "start_date",
             "days_amount",
@@ -64,8 +65,17 @@ class EventSerializer(serializers.ModelSerializer[Event]):
         return data
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            name="Default",
+            response_only=True,
+        ),
+    ]
+)
 class StaffEventSerializer(EventSerializer):
     cancel_date = serializers.IntegerField(required=True)
+    tickets_required_until_cancel = serializers.SerializerMethodField(allow_null=False)
 
     class Meta:
         model = EventSerializer.Meta.model
@@ -73,6 +83,7 @@ class StaffEventSerializer(EventSerializer):
             *EventSerializer.Meta.fields,
             "tickets_bought",
             "cancel_date",
+            "tickets_required_until_cancel",
         )
 
     def to_representation(self, instance: Event) -> dict[str, Any]:
@@ -84,19 +95,32 @@ class StaffEventSerializer(EventSerializer):
 
         return data
 
+    def get_tickets_required_until_cancel(self, obj: Event) -> int:
+        return max(obj.tickets_bought - obj.place.min_tickets, 0)
+
 
 class CreatorEventSerializer(StaffEventSerializer):
-    tickets_bought = serializers.IntegerField(required=False)
-    cancel_date = serializers.IntegerField(required=False)
+    tickets_bought = serializers.IntegerField(allow_null=True)
+    cancel_date = serializers.IntegerField(allow_null=True)
+    tickets_required_until_cancel = serializers.SerializerMethodField(allow_null=True)
 
     class Meta:
         model = StaffEventSerializer.Meta.model
         fields = StaffEventSerializer.Meta.fields
 
-    def to_representation(self, instance: Event) -> dict[str, Any]:
-        data = super().to_representation(instance)
-        user = self.context["request"].user
-        if instance.creator != user:
-            data["tickets_bought"] = None
-            data["cancel_date"] = None
+    def to_representation(self, obj: Event) -> dict[str, Any]:
+        data = super().to_representation(obj)
+        if self.should_provide_sensitive(obj):
+            return data
+        # Keep only public fields
+        for field in self.Meta.fields:
+            if field in EventSerializer.Meta.fields:
+                continue
+            data[field] = None
+
         return data
+
+    def should_provide_sensitive(self, obj: Event) -> bool:
+        user = self.context["request"].user
+        assert isinstance(user, User)
+        return obj.creator.address == user.address
