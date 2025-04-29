@@ -31,10 +31,10 @@ router.register(r"places", views.EventPlaceViewSet)
 router.register(r"events", views.EventViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("", SpectacularRedocView.as_view(), name="redoc"),
+    path("api/", include(router.urls)),
     path("admin/", admin.site.urls),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
-    path("schema/redoc", SpectacularRedocView.as_view(), name="redoc"),
-    path("auth/web3/login/", login, name="web3_login"),
+    path("api/auth/web3/login/", login, name="web3_login"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
