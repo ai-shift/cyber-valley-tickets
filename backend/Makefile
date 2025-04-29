@@ -21,3 +21,6 @@ migrate: make-migrations
 
 update-open-api-schema:
 	wget 'http://localhost:8000/schema?format=json' -O schema.json
+
+seed_db: migrate
+	uv run manage.py seed_db --flush
