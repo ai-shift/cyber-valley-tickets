@@ -1,4 +1,4 @@
-import type { EventForm, Event } from "../model/types";
+import type { EventForm, Event } from "@/entities/event/";
 
 export function mapEventToEventForm(event: Event): EventForm {
   return {

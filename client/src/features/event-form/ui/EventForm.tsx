@@ -1,5 +1,5 @@
 import type { EventPlace } from "@/entities/place/@x/event";
-import type { EventForm as EventFormModel } from "../model/types";
+import type { EventForm as EventFormModel } from "../../../entities/event/model/types";
 import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
 
@@ -20,7 +20,7 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
-import { createFormSchema } from "../lib/formSchema";
+import { createFormSchema } from "../model/formSchema";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
