@@ -57,7 +57,7 @@ class Ticket(models.Model):
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="tickets", null=False
     )
-    ticket_id = models.CharField(max_length=255, unique=True, null=False)
+    id = models.CharField(max_length=255, primary_key=True)
     is_redeemed = models.BooleanField(default=False, null=False)
 
     def __str__(self) -> str:
