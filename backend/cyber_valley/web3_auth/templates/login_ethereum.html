@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login with Ethereum</title>
+    <style>
+      body { background-color: #3f3f3f; color: #e2e2e2; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 80vh; }
+      #login-button { padding: 15px 30px; font-size: 1.2em; cursor: pointer; }
+      #status { margin-top: 20px; color: red; }
+    </style>
+  </head>
+  <body>
+
+    <div>
+      <h1>Login with Ethereum</h1>
+      <button id="login-button">Connect Wallet & Sign In</button>
+      <p id="status"></p>
+    </div>
+
+    <script>
+      const statusElement = document.getElementById('status');
+      const loginButton = document.getElementById('login-button');
+
+      async function connectAndLogin() {
+        if (typeof window.ethereum === 'undefined') {
+          statusElement.textContent = 'MetaMask or other Web3 wallet not detected. Please install one.';
+          return;
+        }
+
+        statusElement.textContent = 'Connecting...';
+
+        try {
+          // Request account access
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const address = accounts[0]; // Use the first account
+
+          if (!address) {
+            statusElement.textContent = 'No Ethereum account selected.';
+            return;
+          }
+
+          statusElement.textContent = `Connected: ${address}. Generating message...`;
+
+          // *** IMPORTANT: Define the message to sign ***
+          // This message should ideally contain data like a nonce from the server
+          // to prevent replay attacks. For simplicity here, we use a static message + timestamp.
+          // A better approach: Backend provides a nonce via an API call.
+          const messageToSign = `Sign this message to authenticate with our service.\n\nAddress: ${address}\nTimestamp: ${new Date().toISOString()}`;
+          const msgParams = [address, messageToSign];
+
+          statusElement.textContent = 'Requesting signature...';
+
+          // Request signature
+          // Using personal_sign is generally preferred over eth_sign
+          const signature = await window.ethereum.request({
+            method: 'personal_sign',
+            params: msgParams,
+          });
+
+          statusElement.textContent = 'Signature received. Sending to backend...';
+
+          // Send address, signature, and message to your backend API
+          const response = await fetch('/api/auth/web3/login/', { // Adjust URL if necessary
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              // Include CSRF token for Django forms if applicable,
+              // but for a DRF API endpoint, it might not be needed
+              // if CSRF_USE_SESSIONS is False or you handle it differently.
+              // If needed: 'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+              address: address,
+              signature: signature,
+              message: messageToSign
+            }),
+          });
+
+          if (response.ok) {
+            statusElement.textContent = 'Login successful!';
+            window.location.href = '/';
+
+          } else {
+            const errorData = await response.json();
+            statusElement.textContent = `Login failed: ${response.status} - ${JSON.stringify(errorData)}`;
+            console.error('Login error:', errorData);
+          }
+
+        } catch (error) {
+          statusElement.textContent = `Operation cancelled or failed: ${error.message}`;
+          console.error('Web3 operation error:', error);
+        }
+      }
+
+      loginButton.addEventListener('click', connectAndLogin);
+
+      // Helper to get CSRF token if needed for Django forms
+      // function getCookie(name) {
+      //   let cookieValue = null;
+      //   if (document.cookie && document.cookie !== '') {
+      //     const cookies = document.cookie.split(';');
+      //     for (let i = 0; i < cookies.length; i++) {
+      //       const cookie = cookies[i].trim();
+      //       // Does this cookie string begin with the name we want?
+      //       if (cookie.substring(0, name.length + 1) === (name + '=')) {
+      //         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      //         break;
+      //       }
+      //     }
+      //   }
+      //   return cookieValue;
+      // }
+
+    </script>
+
+  </body>
+</html>
