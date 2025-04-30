@@ -1,4 +1,4 @@
-import type { EventPlace } from "@/entities/place/@x/event";
+import type { EventPlace } from "@/entities/place";
 
 import {
   Select,
