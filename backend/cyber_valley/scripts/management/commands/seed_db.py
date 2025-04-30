@@ -284,7 +284,7 @@ class Command(BaseCommand):
                 )
                 if ticket_created:
                     self.stdout.write(
-                        f"  Created Ticket {ticket.ticket_id} for Event '{event.title}'"
+                        f"  Created Ticket {ticket.id} for Event '{event.title}'"
                     )
                     # Increment tickets_bought on the event if a new ticket was created
                     event.tickets_bought += 1
