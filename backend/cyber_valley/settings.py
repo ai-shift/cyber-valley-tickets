@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
+from typing import Final, Literal, TypedDict
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,12 +45,14 @@ INSTALLED_APPS = [
     "cyber_valley.web3_auth",
     "cyber_valley.users",
     "cyber_valley.notifications",
+    "cyber_valley.scripts",
 ]
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "cyber_valley.web3_auth.authenticate.CookieJWTAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": (
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
@@ -93,7 +97,7 @@ ROOT_URLCONF = "cyber_valley.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -120,8 +124,27 @@ DATABASES = {
 
 AUTH_USER_MODEL = "users.CyberValleyUser"
 
-SIMPLE_JWT = {
+
+class SimpleJWTSettingsDict(TypedDict):
+    USER_ID_FIELD: str
+    ACCESS_TOKEN_LIFETIME: timedelta
+    AUTH_COOKIE: str
+    AUTH_COOKIE_DOMAIN: str | None
+    AUTH_COOKIE_SECURE: bool
+    AUTH_COOKIE_HTTP_ONLY: bool
+    AUTH_COOKIE_PATH: str
+    AUTH_COOKIE_SAMESITE: Literal["Lax", "Strict", "None", False] | None
+
+
+SIMPLE_JWT: Final[SimpleJWTSettingsDict] = {
     "USER_ID_FIELD": "address",
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=5),
+    "AUTH_COOKIE": "access_token",
+    "AUTH_COOKIE_DOMAIN": None,
+    "AUTH_COOKIE_SECURE": False,
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_PATH": "/",
+    "AUTH_COOKIE_SAMESITE": "Lax",
 }
 
 # Password validation

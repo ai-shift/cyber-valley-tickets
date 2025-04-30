@@ -6,15 +6,52 @@
     },
     "paths": {
         "/api/auth/web3/login/": {
-            "post": {
-                "operationId": "api_auth_web3_login_create",
+            "get": {
+                "operationId": "api_auth_web3_login_retrieve",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "html",
+                                "json"
+                            ]
+                        }
+                    }
+                ],
                 "tags": [
                     "api"
                 ],
                 "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "api_auth_web3_login_create",
+                "parameters": [
                     {
-                        "jwtAuth": []
-                    },
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "html",
+                                "json"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
                     {}
                 ],
                 "responses": {
@@ -30,11 +67,6 @@
                 "description": "Available events in the syste",
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -70,11 +102,6 @@
                 "tags": [
                     "api"
                 ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -97,11 +124,6 @@
                 "operationId": "api_notifications_list",
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -136,11 +158,6 @@
                 "tags": [
                     "api"
                 ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -161,11 +178,6 @@
                 "description": "API endpoint that allows event places to be viewed",
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -204,11 +216,6 @@
                 ],
                 "tags": [
                     "api"
-                ],
-                "security": [
-                    {
-                        "jwtAuth": []
-                    }
                 ],
                 "responses": {
                     "200": {
@@ -264,6 +271,26 @@
                     }
                 }
             }
+        },
+        "/api/users/current/": {
+            "get": {
+                "operationId": "api_users_current_retrieve",
+                "tags": [
+                    "api"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurrentUser"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -309,9 +336,6 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "startDate": {
-                        "type": "integer"
-                    },
                     "daysAmount": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -328,7 +352,7 @@
                         "type": "integer",
                         "nullable": true
                     },
-                    "cancelDate": {
+                    "cancelDateTimestamp": {
                         "type": "integer",
                         "nullable": true
                     },
@@ -339,17 +363,37 @@
                     }
                 },
                 "required": [
-                    "cancelDate",
+                    "cancelDateTimestamp",
                     "creator",
                     "daysAmount",
                     "description",
                     "id",
                     "place",
-                    "startDate",
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
                     "title"
+                ]
+            },
+            "CurrentUser": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "address",
+                    "role"
                 ]
             },
             "EventPlace": {
@@ -445,6 +489,16 @@
                     }
                 ]
             },
+            "RoleEnum": {
+                "enum": [
+                    "customer",
+                    "staff",
+                    "creator",
+                    "master"
+                ],
+                "type": "string",
+                "description": "* `customer` - Customer\n* `staff` - Staff\n* `creator` - Creator\n* `master` - Master"
+            },
             "StaffEvent": {
                 "type": "object",
                 "properties": {
@@ -474,9 +528,6 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "startDate": {
-                        "type": "integer"
-                    },
                     "daysAmount": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -495,7 +546,7 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "cancelDate": {
+                    "cancelDateTimestamp": {
                         "type": "integer"
                     },
                     "ticketsRequiredUntilCancel": {
@@ -504,13 +555,12 @@
                     }
                 },
                 "required": [
-                    "cancelDate",
+                    "cancelDateTimestamp",
                     "creator",
                     "daysAmount",
                     "description",
                     "id",
                     "place",
-                    "startDate",
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
@@ -544,13 +594,6 @@
                     "access",
                     "refresh"
                 ]
-            }
-        },
-        "securitySchemes": {
-            "jwtAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
             }
         }
     }
