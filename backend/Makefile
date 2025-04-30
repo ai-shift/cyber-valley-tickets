@@ -19,5 +19,8 @@ make-migrations:
 migrate: make-migrations
 	uv run manage.py migrate
 
-update-open-api-schema:
-	wget 'http://localhost:8000/schema?format=json' -O schema.json
+seed-db: migrate
+	uv run manage.py seed_db --flush
+
+open-api-schema:
+	uv run manage.py spectacular --format openapi-json --validate > schema.json
