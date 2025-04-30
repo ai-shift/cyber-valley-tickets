@@ -348,6 +348,10 @@
                         "nullable": true,
                         "maxLength": 200
                     },
+                    "startDateTimestamp": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
                     "ticketsBought": {
                         "type": "integer",
                         "nullable": true
@@ -369,6 +373,7 @@
                     "description",
                     "id",
                     "place",
+                    "startDateTimestamp",
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
@@ -540,6 +545,10 @@
                         "nullable": true,
                         "maxLength": 200
                     },
+                    "startDateTimestamp": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
                     "ticketsBought": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -561,6 +570,7 @@
                     "description",
                     "id",
                     "place",
+                    "startDateTimestamp",
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
