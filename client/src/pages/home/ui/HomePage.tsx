@@ -2,8 +2,7 @@ import { Nav } from "@/shared/widgets/navigation";
 
 import { Link } from "react-router";
 
-// FIXME: import { EventsList } from "@/features/events-list";
-import { EventsList } from "@/features/events-list/ui/EventsList";
+import { EventsList } from "@/features/events-list/";
 
 export const HomePage: React.FC = () => {
   return (

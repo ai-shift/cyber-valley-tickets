@@ -7,7 +7,7 @@ export const EventsDetailsPage: React.FC = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
 
-  if (eventId == undefined) {
+  if (eventId === undefined) {
     console.error("Give me eventId");
     navigate(-1);
     return;
