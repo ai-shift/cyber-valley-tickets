@@ -2,9 +2,7 @@ import { Nav } from "@/shared/widgets/navigation";
 
 import { Link } from "react-router";
 
-import { BaseEventList } from "@/features/BaseEventsList/ui/BaseEventList";
-
-import { events } from "../mock";
+import { EventsList } from "@/features/events-list/ui/EventsList";
 
 export const Home: React.FC = () => {
   return (
@@ -21,7 +19,7 @@ export const Home: React.FC = () => {
           <p>Upcoming events</p>
           <Link to="/events">See more...</Link>
         </div>
-        <BaseEventList events={events} limit={3} />
+        <EventsList limit={3} />
       </section>
     </div>
   );
