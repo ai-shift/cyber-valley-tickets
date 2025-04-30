@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import { EventsList, Home, CreateEvent } from "@/pages";
+import { CreateEvent, EventsList, Home } from "@/pages";
 
 export const Router = () => {
   return (

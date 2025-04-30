@@ -1,6 +1,6 @@
 import { AppContainer } from "@/shared/ui/AppContainer";
-import { Router } from "../routes/Router";
 import { QueryProvider } from "../providers/QueryProvider";
+import { Router } from "../routes/Router";
 
 export const App = () => {
   return (

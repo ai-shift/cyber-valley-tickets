@@ -1,4 +1,4 @@
-import { EventCard, type Event } from "@/entities/event";
+import { type Event, EventCard } from "@/entities/event";
 
 type EventsPreviewProps = {
   events: Event[];

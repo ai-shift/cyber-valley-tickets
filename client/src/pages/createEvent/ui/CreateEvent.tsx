@@ -1,6 +1,6 @@
 import { EventForm } from "@/features/event-form/ui/EventForm";
-import { mockDateRanges, mockEventPlaces } from "../mock";
 import { PageContainer } from "@/shared/ui/PageContainer";
+import { mockDateRanges, mockEventPlaces } from "../mock";
 
 export const CreateEvent: React.FC = () => {
   return (
