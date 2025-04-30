@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 from cyber_valley.users.models import CyberValleyUser as UserType
 
-from .models import Event, EventPlace
+from .models import Event, EventPlace, Ticket
 
 User = get_user_model()
 
@@ -121,3 +121,12 @@ class CreatorEventSerializer(StaffEventSerializer):
         user = self.context["request"].user
         assert isinstance(user, User)
         return obj.creator.address == user.address
+
+
+class TicketSerializer(serializers.ModelSerializer[Ticket]):
+    event_id = serializers.IntegerField(source="event")
+
+    class Meta:
+        model = Ticket
+        fields = ("id", "event_id")
+        read_only_fields = fields
