@@ -6,6 +6,7 @@ import {
   CreateEvent,
   EventsDetails,
   Notifications,
+  Manage,
 } from "@/pages";
 
 export const Router = () => {
@@ -20,6 +21,7 @@ export const Router = () => {
           <Route path="/events/create" element={<CreateEvent />} />
         </Route>
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/manage" element={<Manage />} />
 
         <Route path="/profile" />
       </Routes>
