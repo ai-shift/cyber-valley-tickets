@@ -3,7 +3,7 @@ import { PageContainer } from "@/shared/ui/PageContainer";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
 
-export const EventsDetails: React.FC = () => {
+export const EventsDetailsPage: React.FC = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
 

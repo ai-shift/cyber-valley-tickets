@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 import { EventsList } from "@/features/events-list/ui/EventsList";
 
-export const Home: React.FC = () => {
+export const HomePage: React.FC = () => {
   return (
     <div>
       <Nav />

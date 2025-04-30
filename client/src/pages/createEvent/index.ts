@@ -1,1 +1,1 @@
-export { CreateEvent } from "./ui/CreateEvent";
+export { CreateEventPage } from "./ui/CreateEventPage";
