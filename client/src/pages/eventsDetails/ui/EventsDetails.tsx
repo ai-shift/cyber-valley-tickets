@@ -7,7 +7,8 @@ export const EventsDetails: React.FC = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
 
-  if (eventId === undefined) {
+  if (eventId == undefined) {
+    console.error("Give me eventId");
     navigate(-1);
     return;
   }
@@ -18,6 +19,7 @@ export const EventsDetails: React.FC = () => {
   );
   if (isFetching) return <p>Loading</p>;
 
+  // TODO: Use retrieve event by id
   if (error || !data) {
     navigate("/events");
     return;
