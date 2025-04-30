@@ -12,13 +12,11 @@ type EventsListProps = {
 export const EventsList: React.FC<EventsListProps> = ({ limit, sortFn }) => {
   const { data, error, isFetching } = useQuery(eventQueries.list());
 
-  console.log(data);
-
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
-  if (!data?.data) return <p>No data for some reason</p>;
+  if (!data) return <p>No data for some reason</p>;
 
-  const events = data.data;
+  const events = data;
 
   return <EventsPreview events={events} limit={limit} />;
 };

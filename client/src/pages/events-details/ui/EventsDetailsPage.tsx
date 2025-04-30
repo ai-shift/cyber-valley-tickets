@@ -1,6 +1,7 @@
 import { eventQueries } from "@/entities/event";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { useQuery } from "@tanstack/react-query";
+import { format, fromUnixTime } from "date-fns";
 import { useNavigate, useParams } from "react-router";
 
 export const EventsDetailsPage: React.FC = () => {
@@ -18,12 +19,7 @@ export const EventsDetailsPage: React.FC = () => {
     eventQueries.detail(numericEventId),
   );
   if (isFetching) return <p>Loading</p>;
-
-  // TODO: Use retrieve event by id
-  if (error || !data) {
-    navigate("/events");
-    return;
-  }
+  if (error || !data) return <p>Something went wrong</p>;
 
   const {
     imageUrl,
@@ -45,7 +41,7 @@ export const EventsDetailsPage: React.FC = () => {
       />
       <div className="flex justify-between items-center">
         <p>{place.title}</p>
-        <p>{startDateTimestamp}</p>
+        <p>{format(fromUnixTime(startDateTimestamp / 1000), "d MMM yyy")}</p>
       </div>
       <p>{description}</p>
       <p>{ticketPrice}</p>
