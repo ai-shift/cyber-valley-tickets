@@ -1,5 +1,5 @@
-import type { EventPlace } from "@/entities/place/@x/event";
-import type { EventForm } from "@/entities/event/";
+import type { EventPlace } from "@/entities/place";
+import type { EventForm } from "./types";
 
 import { z, type ZodType } from "zod";
 import type { DateRange } from "react-day-picker";
@@ -29,19 +29,11 @@ export function createFormSchema(
           },
         ),
       place: z.string().min(1, "Place is required"),
-      ticketPrice: z
-        .string()
-        .transform(Number)
-        .refine((val) => !Number.isNaN(val), "Not a valid number")
-        .refine((val) => val >= 1, "Price is too small")
-        .transform((val) => val.toString()),
+      ticketPrice: z.number().refine((val) => val >= 1, "Price is too small"),
       startDate: z.date(),
       daysAmount: z
-        .string()
-        .transform(Number)
-        .refine((val) => !Number.isNaN(val), "Not a valid number")
-        .refine((val) => val >= 1, "Duration must be at least 1 day")
-        .transform((val) => val.toString()),
+        .number()
+        .refine((val) => val >= 1, "Duration must be at least 1 day"),
     })
     .superRefine((data, ctx) => {
       const place = places.find((p) => `${p.id}` === data.place);

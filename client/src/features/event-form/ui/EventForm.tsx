@@ -1,5 +1,5 @@
-import type { EventPlace } from "@/entities/place/@x/event";
-import type { EventForm as EventFormModel } from "../../../entities/event/model/types";
+import type { EventPlace } from "@/entities/place";
+import type { EventForm as EventFormModel } from "../model/types";
 import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
 
@@ -21,6 +21,7 @@ import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
 import { createFormSchema } from "../model/formSchema";
+import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
@@ -33,20 +34,20 @@ export const EventForm: React.FC<EventFormProps> = ({
   places,
   existingEvent,
 }) => {
-  const defaultValues = existingEvent ?? {
-    title: "Title",
-    description: "Long ass description to satisfy the f*king form",
-    ticketPrice: "",
-    place: "",
-    startDate: new Date(),
-    durationDays: "1",
-  };
-
   const formSchema = createFormSchema(places, bookedRanges);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: existingEvent
+      ? { ...existingEvent }
+      : {
+          title: "Title",
+          description: "Long ass description to satisfy the f*king form",
+          ticketPrice: 0,
+          place: "",
+          startDate: new Date(),
+          daysAmount: 1,
+        },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -149,20 +150,10 @@ export const EventForm: React.FC<EventFormProps> = ({
                     {...field}
                     disabled={!isSelected}
                     type="text"
-                    inputMode="decimal"
-                    onChange={(e) => {
-                      const input = e.target.value;
-
-                      if (input === "") {
-                        field.onChange("");
-                        return;
-                      }
-
-                      const regex = /^\d*\.?\d{0,2}$/;
-                      if (regex.test(input)) {
-                        field.onChange(input);
-                      }
-                    }}
+                    inputMode="numeric"
+                    onChange={(e) =>
+                      field.onChange(handleNumericInput(e.target.value))
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -197,19 +188,9 @@ export const EventForm: React.FC<EventFormProps> = ({
                 <Input
                   inputMode="decimal"
                   {...field}
-                  onChange={(e) => {
-                    const input = e.target.value;
-
-                    if (input === "") {
-                      field.onChange("");
-                      return;
-                    }
-
-                    const regex = /^[0-9]+$/;
-                    if (regex.test(input)) {
-                      field.onChange(input);
-                    }
-                  }}
+                  onChange={(e) =>
+                    field.onChange(handleNumericInput(e.target.value))
+                  }
                 />
               </FormControl>
               <FormMessage />
