@@ -394,11 +394,19 @@
                             }
                         ],
                         "readOnly": true
+                    },
+                    "tickets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Ticket"
+                        },
+                        "readOnly": true
                     }
                 },
                 "required": [
                     "address",
-                    "role"
+                    "role",
+                    "tickets"
                 ]
             },
             "EventPlace": {
@@ -587,6 +595,22 @@
                 ],
                 "type": "string",
                 "description": "* `submitted` - Submitted\n* `approved` - Approved\n* `declined` - Declined\n* `cancelled` - Cancelled\n* `closed` - Closed"
+            },
+            "Ticket": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "eventId": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "eventId",
+                    "id"
+                ]
             },
             "TokenRefresh": {
                 "type": "object",
