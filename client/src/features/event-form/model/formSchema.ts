@@ -1,8 +1,8 @@
 import type { EventPlace } from "@/entities/place";
 import type { EventForm } from "./types";
 
-import { z, type ZodType } from "zod";
 import type { DateRange } from "react-day-picker";
+import { type ZodType, z } from "zod";
 
 export function createFormSchema(
   places: EventPlace[],
