@@ -992,13 +992,19 @@ Accepts ~eventId~ from URL parameters.
   - *buy* - Attend button. Navigates to [[*Attend event][Attend event page]]
   - *show* - Show ticket button
   - *redeemed* - Ticket redeemed
+- *if staff*
+  - Redeem ticket
 - *if creator*
   - Edit
   - if ~canBeCanceled~
     - cancel date
     - required N tickets
-- *if ~TICKET:REDEEM~*
-  - Redeem ticket
+- *if master*
+  - if ~canBeCanceled~
+    - cancel date
+    - required N tickets
+  - if ~status~ is ~pending~:
+    - Decline / approve buttons
 
 #+begin_quote
 Currently event model is pretty small, so it could be extracted from ~TanStack Query~ cache via [[https://tanstack.com/query/latest/docs/reference/QueryClient/#queryclientensurequerydata][ensureQueryData]].
