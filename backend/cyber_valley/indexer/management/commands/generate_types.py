@@ -58,6 +58,7 @@ class Command(BaseCommand):
             input_file_type=datamodel_code_generator.InputFileType.JsonSchema,
             snake_case_field=True,
             output=settings.EVENT_MODELS_PATH,
+            use_double_quotes=True,
         )
         self.stdout.write(
             self.style.SUCCESS(f"Models saved to {settings.EVENT_MODELS_PATH}")
