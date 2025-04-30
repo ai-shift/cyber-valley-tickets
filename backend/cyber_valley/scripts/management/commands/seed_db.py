@@ -184,7 +184,7 @@ class Command(BaseCommand):
                     "days_amount": 2,
                     "status": Event.STATUS_CHOICES["submitted"],
                     "description": "Learn about the latest digital marketing trends.",
-                    "image_url": "http://example.com/summit_img.png",
+                    "image_url": "https://picsum.photos/1920/1080",
                     "created_at": now,
                     "updated_at": now,
                 },
@@ -222,7 +222,7 @@ class Command(BaseCommand):
                     "description": (
                         "Hands-on workshop for protecting your digital assets."
                     ),
-                    "image_url": "http://example.com/security_img.jpg",
+                    "image_url": "https://picsum.photos/1920/1080",
                     "created_at": now,
                     "updated_at": now,
                 },
