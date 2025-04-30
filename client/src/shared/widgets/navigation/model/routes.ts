@@ -17,6 +17,9 @@ export const routes: Route[] = [
   {
     path: "/events/create",
     title: "Create event",
-    restrictedTo: ["master", "staff", "creator"],
+  },
+  {
+    path: "/notifications",
+    title: "Notifications",
   },
 ];

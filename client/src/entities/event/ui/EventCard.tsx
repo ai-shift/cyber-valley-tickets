@@ -6,7 +6,7 @@ type EventCardProps = {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const { imageUrl, place, startDate, daysAmount, title } = event;
+  const { imageUrl, place, startDateTimestamp, daysAmount, title } = event;
 
   return (
     <article>
@@ -22,7 +22,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           <h3>{place.title}</h3>
           <p>{title}</p>
           <p>
-            {startDate} ({daysAmount})
+            {startDateTimestamp} ({daysAmount})
           </p>
         </div>
         <Link
