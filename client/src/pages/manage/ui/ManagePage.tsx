@@ -1,7 +1,7 @@
 import { PlaceForm } from "@/features/place-form/ui/PlaceForm";
 import { PageContainer } from "@/shared/ui/PageContainer";
 
-export const Manage: React.FC = () => {
+export const ManagePage: React.FC = () => {
   return (
     <PageContainer name="Manage">
       <PlaceForm />

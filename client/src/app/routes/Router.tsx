@@ -1,27 +1,27 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 
 import {
-  EventsList,
-  Home,
-  CreateEvent,
-  EventsDetails,
+  EventsListPage,
+  HomePage,
+  CreateEventPage,
+  EventsDetailsPage,
   Notifications,
-  Manage,
+  ManagePage,
 } from "@/pages";
 
 export const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" index element={<Home />} />
+        <Route path="/" index element={<HomePage />} />
 
         <Route path="/events">
-          <Route index element={<EventsList />} />
-          <Route path="/events/:eventId" element={<EventsDetails />} />
-          <Route path="/events/create" element={<CreateEvent />} />
+          <Route index element={<EventsListPage />} />
+          <Route path="/events/:eventId" element={<EventsDetailsPage />} />
+          <Route path="/events/create" element={<CreateEventPage />} />
         </Route>
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/manage" element={<Manage />} />
+        <Route path="/manage" element={<ManagePage />} />
 
         <Route path="/profile" />
       </Routes>
