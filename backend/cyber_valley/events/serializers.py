@@ -42,7 +42,7 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
 class EventSerializer(serializers.ModelSerializer[Event]):
     place = EventPlaceSerializer(required=True)
     creator = CreatorSerializer(required=True)
-    start_date_timestamp = serializers.IntegerField(required=True)
+    start_date_timestamp = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
@@ -56,12 +56,11 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "ticket_price",
             "days_amount",
             "image_url",
+            "start_date_timestamp",
         )
 
-    def to_representation(self, obj: Event) -> dict[str, Any]:
-        data = super().to_representation(obj)
-        data["start_date_timestamp"] = obj.start_date.timestamp() * 1000
-        return data
+    def get_start_date_timestamp(self, obj: EventPlace) -> int:
+        return int(obj.start_date.timestamp()) * 1000
 
 
 @extend_schema_serializer(
