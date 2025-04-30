@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "cyber_valley.users",
     "cyber_valley.notifications",
     "cyber_valley.scripts",
-    "cyber_valley.indexer"
+    "cyber_valley.indexer",
 ]
 
 REST_FRAMEWORK = {
@@ -194,3 +194,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ABI_BASE_PATH = BASE_DIR / "../ethereum/ignition/deployments/chain-11155111/artifacts"
+EVENT_MODELS_PATH = BASE_DIR / "cyber_valley/indexer/events_models.py"
