@@ -275,7 +275,7 @@ class Command(BaseCommand):
                     event=event,
                     owner=ticket_owner,
                     defaults={
-                        "ticket_id": (
+                        "id": (
                             f"TKT-{event.id}-{ticket_owner.address[:6]}"
                             f"-{uuid.uuid4().hex[:8]}",
                         ),
