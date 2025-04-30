@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "cyber_valley.users",
     "cyber_valley.notifications",
     "cyber_valley.scripts",
+    "cyber_valley.indexer"
 ]
 
 REST_FRAMEWORK = {
