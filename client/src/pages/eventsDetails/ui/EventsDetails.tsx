@@ -23,7 +23,14 @@ export const EventsDetails: React.FC = () => {
     return;
   }
 
-  const { imageUrl, title, description, place, ticketPrice, startDate } = data;
+  const {
+    imageUrl,
+    title,
+    description,
+    place,
+    ticketPrice,
+    startDateTimestamp,
+  } = data;
 
   return (
     <PageContainer name={title}>
@@ -36,7 +43,7 @@ export const EventsDetails: React.FC = () => {
       />
       <div className="flex justify-between items-center">
         <p>{place.title}</p>
-        <p>{startDate}</p>
+        <p>{startDateTimestamp}</p>
       </div>
       <p>{description}</p>
       <p>{ticketPrice}</p>

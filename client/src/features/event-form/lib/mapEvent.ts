@@ -7,8 +7,8 @@ export function mapEventToEventForm(event: Event): EventForm {
     description: event.description,
     image: undefined,
     place: event.place.id.toString(),
-    ticketPrice: event.ticketPrice.toString(),
+    ticketPrice: event.ticketPrice,
     startDate: new Date(event.startDateTimestamp),
-    daysAmount: event.daysAmount.toString(),
+    daysAmount: event.daysAmount,
   };
 }

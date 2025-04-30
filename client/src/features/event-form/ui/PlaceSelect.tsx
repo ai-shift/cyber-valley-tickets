@@ -2,10 +2,10 @@ import type { EventPlace } from "@/entities/place/@x/event";
 
 import {
   Select,
+  SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectContent,
 } from "@/shared/ui/select";
 
 type PlaceSelectProps = {
