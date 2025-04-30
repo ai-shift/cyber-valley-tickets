@@ -11,7 +11,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    get: operations["api_auth_web3_login_retrieve"];
     put?: never;
     post: operations["api_auth_web3_login_create"];
     delete?: never;
@@ -137,6 +137,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/current/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["api_users_current_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -153,14 +169,17 @@ export interface components {
       place: components["schemas"]["EventPlace"];
       /** Format: int64 */
       ticketPrice: number;
-      startDate: number;
       /** Format: int64 */
       daysAmount: number;
       /** Format: uri */
       imageUrl?: string | null;
       ticketsBought: number | null;
-      cancelDate: number | null;
+      cancelDateTimestamp: number | null;
       readonly ticketsRequiredUntilCancel: number | null;
+    };
+    CurrentUser: {
+      readonly address: string;
+      readonly role: components["schemas"]["RoleEnum"];
     };
     EventPlace: {
       /** Format: int64 */
@@ -188,6 +207,14 @@ export interface components {
     RoleBasedEvent:
       | components["schemas"]["CreatorEvent"]
       | components["schemas"]["StaffEvent"];
+    /**
+     * @description * `customer` - Customer
+     *     * `staff` - Staff
+     *     * `creator` - Creator
+     *     * `master` - Master
+     * @enum {string}
+     */
+    RoleEnum: "customer" | "staff" | "creator" | "master";
     StaffEvent: {
       readonly id: number;
       creator: components["schemas"]["Creator"];
@@ -197,14 +224,13 @@ export interface components {
       place: components["schemas"]["EventPlace"];
       /** Format: int64 */
       ticketPrice: number;
-      startDate: number;
       /** Format: int64 */
       daysAmount: number;
       /** Format: uri */
       imageUrl?: string | null;
       /** Format: int64 */
       ticketsBought: number;
-      cancelDate: number;
+      cancelDateTimestamp: number;
       readonly ticketsRequiredUntilCancel: number;
     };
     /**
@@ -229,9 +255,31 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  api_auth_web3_login_retrieve: {
+    parameters: {
+      query?: {
+        format?: "html" | "json";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   api_auth_web3_login_create: {
     parameters: {
-      query?: never;
+      query?: {
+        format?: "html" | "json";
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -390,6 +438,25 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["TokenRefresh"];
+        };
+      };
+    };
+  };
+  api_users_current_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CurrentUser"];
         };
       };
     };
