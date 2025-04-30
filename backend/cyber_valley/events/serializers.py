@@ -59,7 +59,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "start_date_timestamp",
         )
 
-    def get_start_date_timestamp(self, obj: EventPlace) -> int:
+    def get_start_date_timestamp(self, obj: Event) -> int:
         return int(obj.start_date.timestamp()) * 1000
 
 
