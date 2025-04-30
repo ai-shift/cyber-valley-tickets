@@ -1,12 +1,15 @@
+import type { EventSortFunction } from "../model/types";
+
+import { useQuery } from "@tanstack/react-query";
 import { eventQueries } from "@/entities/event";
 import { EventsPreview } from "@/widgets/EventsPreview";
-import { useQuery } from "@tanstack/react-query";
 
 type EventsListProps = {
   limit?: number;
+  sortFn?: EventSortFunction;
 };
 
-export const EventsList: React.FC<EventsListProps> = ({ limit }) => {
+export const EventsList: React.FC<EventsListProps> = ({ limit, sortFn }) => {
   const { data, error, isFetching } = useQuery(eventQueries.list());
 
   if (isFetching) return <p>Loading</p>;
