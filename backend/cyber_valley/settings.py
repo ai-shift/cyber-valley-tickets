@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
 from typing import Final, Literal, TypedDict
@@ -197,4 +198,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ABI_BASE_PATH = BASE_DIR / "../ethereum/ignition/deployments/chain-11155111/artifacts"
 EVENT_MODELS_PATH = BASE_DIR / "cyber_valley/indexer/events_models.py"
-ETH_NODE_ENDPOINT = os.environ.get("ETH_NODE_ENDPOINT", "ws://localhost:8545")
+ETH_NODE_HOST = os.environ.get("ETH_NODE_HOST", "localhost:8545")
