@@ -24,3 +24,6 @@ seed-db: migrate
 
 open-api-schema:
 	uv run manage.py spectacular --format openapi-json --validate > schema.json
+
+tests:
+	uv run pytest
