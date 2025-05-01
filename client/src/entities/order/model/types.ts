@@ -10,7 +10,6 @@ interface EventOrder extends BaseOrder {
   ticket?: never;
 }
 
-//TODO? Check the idea about socials
 interface TicketOrder extends BaseOrder {
   type: "buy_ticket";
   event?: never;
