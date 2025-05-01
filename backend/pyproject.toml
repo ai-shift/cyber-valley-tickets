@@ -23,6 +23,7 @@ dev = [
     "django-stubs[compatible-mypy]>=5.2.0",
     "djangorestframework-stubs[compatible-mypy]>=3.16.0",
     "mypy>=1.15.0",
+    "pytest>=8.3.5",
     "ruff>=0.11.7",
 ]
 
