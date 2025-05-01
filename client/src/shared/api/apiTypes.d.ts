@@ -181,6 +181,7 @@ export interface components {
         CurrentUser: {
             readonly address: string;
             readonly role: components["schemas"]["RoleEnum"];
+            readonly tickets: components["schemas"]["Ticket"][];
         };
         EventPlace: {
             /** Format: int64 */
@@ -242,6 +243,10 @@ export interface components {
          * @enum {string}
          */
         StatusEnum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
+        Ticket: {
+            readonly id: string;
+            eventId: number;
+        };
         TokenRefresh: {
             readonly access: string;
             refresh: string;
