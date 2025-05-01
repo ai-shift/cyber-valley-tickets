@@ -197,3 +197,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ABI_BASE_PATH = BASE_DIR / "../ethereum/ignition/deployments/chain-11155111/artifacts"
 EVENT_MODELS_PATH = BASE_DIR / "cyber_valley/indexer/events_models.py"
+ETH_NODE_ENDPOINT = os.environ.get("ETH_NODE_ENDPOINT", "ws://localhost:8545")

@@ -2,11 +2,11 @@ import asyncio
 import logging
 from argparse import ArgumentParser
 from collections.abc import Iterable
-from concurrent.futures import Future
 from queue import Queue
 from typing import Any, Final, NoReturn
 
 import pyshen
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from tenacity import after_log, before_log, retry, wait_fixed
 from web3 import AsyncWeb3, WebSocketProvider
@@ -40,25 +40,29 @@ class Command(BaseCommand):
 
     def handle(self, *_args: list[Any], **_options: dict[str, Any]) -> None:
         pyshen.logging.setup()
-        provider = WebSocketProvider()
+        provider = WebSocketProvider(settings.ETH_NODE_ENDPOINT)
         queue: Queue[LogReceipt] = Queue()
-        _listeners_fut = run_listeners(provider, queue, SUPPORTED_CONTRACTS[0].values())
-
-
-def run_listeners(
-    provider: WebSocketProvider,
-    queue: Queue[LogReceipt],
-    contract_addresses: Iterable[str],
-) -> Future[list[NoReturn]]:
-    return pyshen.aext.run_coro_in_thread(
-        asyncio.gather(
-            *[arun_listener(provider, queue, address) for address in contract_addresses]
+        listener_loop = pyshen.aext.create_event_loop_thread()
+        listener_fut = pyshen.aext.run_coro_in_thread(
+            arun_listeners(provider, queue, SUPPORTED_CONTRACTS[0].values()),
+            listener_loop,
         )
-    )
+        listener_fut.result()
 
 
 class NodeListenerStoppedError(Exception):
     pass
+
+
+async def arun_listeners(
+    provider: WebSocketProvider,
+    queue: Queue[LogReceipt],
+    contract_addresses: Iterable[str],
+) -> NoReturn:
+    await asyncio.gather(
+        *[arun_listener(provider, queue, address) for address in contract_addresses],
+    )
+    raise NodeListenerStoppedError
 
 
 @retry(
@@ -70,6 +74,7 @@ class NodeListenerStoppedError(Exception):
 async def arun_listener(
     provider: WebSocketProvider, queue: Queue[LogReceipt], contract_address: str
 ) -> NoReturn:
+    log.info("Strting logs listener for %s", contract_address)
     async with AsyncWeb3(provider) as w3:
         filter_params = {"address": contract_address}
         _subscription_id = await w3.eth.subscribe("logs", filter_params)
