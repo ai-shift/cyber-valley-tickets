@@ -1,6 +1,16 @@
-export type Role = "master" | "staff" | "creator" | "user";
+import type { components } from "@/shared/api";
+
+type Role = components["schemas"]["RoleEnum"];
+
 export type Resource = "*" | "event" | "place" | "ticket";
-export type Action = "*" | "create" | "read" | "edit" | "delete";
+export type Action =
+  | "*"
+  | "create"
+  | "read"
+  | "edit"
+  | "delete"
+  | "purchase"
+  | "redeem";
 
 type PartialRecord<K extends string | number | symbol, T> = { [P in K]?: T };
 type ResourceActions = PartialRecord<Resource, Action[]>;
@@ -10,14 +20,21 @@ export type RoleControl = {
 };
 
 export const RBAC_ROLES: RoleControl = {
+  customer: {
+    event: ["read", "create"],
+    ticket: ["purchase"],
+  },
+  creator: {
+    event: ["read", "create", "edit", "delete"],
+    ticket: ["purchase"],
+  },
+  staff: {
+    event: ["read", "create", "edit", "delete"],
+    ticket: ["redeem"],
+  },
   master: {
     "*": ["*"],
   },
-  staff: {
-    event: [],
-  },
-  creator: {},
-  user: {},
 };
 
 export type Permissions = `${Exclude<Resource, "*">}:${Exclude<Action, "*">}`;
