@@ -128,5 +128,5 @@ class TicketSerializer(serializers.ModelSerializer[Ticket]):
 
     class Meta:
         model = Ticket
-        fields = ("id", "event_id")
+        fields = ("id", "event_id", "is_redeemed")
         read_only_fields = fields
