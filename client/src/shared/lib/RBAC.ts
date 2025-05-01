@@ -1,6 +1,6 @@
 import type { components } from "@/shared/api";
 
-type Role = components["schemas"]["RoleEnum"];
+export type Role = components["schemas"]["RoleEnum"];
 
 export type Resource = "*" | "event" | "place" | "ticket";
 export type Action =

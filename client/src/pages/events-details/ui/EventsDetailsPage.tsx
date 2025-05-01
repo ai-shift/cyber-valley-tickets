@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
 
 import { eventQueries } from "@/entities/event";
+import { userQueries } from "@/entities/user/api/userQueries";
 
 import { PageContainer } from "@/shared/ui/PageContainer";
 
-import { checkPermission } from "@/shared/lib/RBAC";
-import { userQueries } from "@/entities/user/api/userQueries";
+import { Ticket } from "@/features/ticket/ui/Ticket";
 
 export const EventsDetailsPage: React.FC = () => {
   const { eventId } = useParams();
@@ -21,13 +21,15 @@ export const EventsDetailsPage: React.FC = () => {
 
   const numericEventId: number = +eventId;
 
-  const { data, error, isFetching } = useQuery(
-    eventQueries.detail(numericEventId),
-  );
-  const { data: userData } = useQuery(userQueries.current());
+  const {
+    data: event,
+    error,
+    isFetching,
+  } = useQuery(eventQueries.detail(numericEventId));
+  const { data: user } = useQuery(userQueries.current());
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
-  if (!data || !userData) return <p>GG</p>;
+  if (!event || !user) return <p>GG</p>;
 
   const {
     imageUrl,
@@ -36,7 +38,7 @@ export const EventsDetailsPage: React.FC = () => {
     place,
     ticketPrice,
     startDateTimestamp,
-  } = data;
+  } = event;
 
   return (
     <PageContainer name={title}>
@@ -53,6 +55,7 @@ export const EventsDetailsPage: React.FC = () => {
       </div>
       <p className="text-center py-3.5">{description}</p>
       <p>Price: {ticketPrice}</p>
+      <Ticket event={event} user={user} />
     </PageContainer>
   );
 };
