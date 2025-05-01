@@ -44,10 +44,12 @@ export const useOrderStore = create<OrderState>()(
         (state) => {
           if (state.order?.type !== "buy_ticket") return state;
           return {
-            ...state,
-            ticket: {
-              eventId: state.order.ticket.eventId,
-              social,
+            order: {
+              ...state.order,
+              ticket: {
+                ...state.order.ticket,
+                social,
+              },
             },
           };
         },
