@@ -7,13 +7,17 @@ interface BaseOrder {
 interface EventOrder extends BaseOrder {
   type: "create_event";
   event: Event;
-  eventId?: never;
+  ticket?: never;
 }
 
+//TODO? Check the idea about socials
 interface TicketOrder extends BaseOrder {
   type: "buy_ticket";
   event?: never;
-  eventId: string;
+  ticket: {
+    eventId: string;
+    socials?: string;
+  };
 }
 
 export type Order = EventOrder | TicketOrder;
