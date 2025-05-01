@@ -24,6 +24,7 @@ dev = [
     "djangorestframework-stubs[compatible-mypy]>=3.16.0",
     "mypy>=1.15.0",
     "pytest>=8.3.5",
+    "pytest-print>=1.1.0",
     "ruff>=0.11.7",
 ]
 

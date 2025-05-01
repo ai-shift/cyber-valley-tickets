@@ -115,6 +115,7 @@ dev = [
     { name = "djangorestframework-stubs", extra = ["compatible-mypy"] },
     { name = "mypy" },
     { name = "pytest" },
+    { name = "pytest-print" },
     { name = "ruff" },
 ]
 
@@ -139,6 +140,7 @@ dev = [
     { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = ">=3.16.0" },
     { name = "mypy", specifier = ">=1.15.0" },
     { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-print", specifier = ">=1.1.0" },
     { name = "ruff", specifier = ">=0.11.7" },
 ]
 
@@ -1062,6 +1064,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ae/3c/c9d525a414d506893f0cd8a8d0de7706446213181570cdbd766691164e40/pytest-8.3.5.tar.gz", hash = "sha256:f4efe70cc14e511565ac476b57c279e12a855b11f48f212af1080ef2263d3845", size = 1450891 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/30/3d/64ad57c803f1fa1e963a7946b6e0fea4a70df53c1a7fed304586539c2bac/pytest-8.3.5-py3-none-any.whl", hash = "sha256:c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820", size = 343634 },
+]
+
+[[package]]
+name = "pytest-print"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/79/eb/18c4bdcb4e0ee39ee15d9456469f3da73db033ce37e8e68501426c870bbc/pytest_print-1.1.0.tar.gz", hash = "sha256:15cf4236c735a8f1865403f7a9fbbb95f6b6b98f3759046f9f30a24c8a32018d", size = 12581 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/3e/af3a9fa14a014241dc8c0637fdddc02440a7ffa678247c374dd96416a447/pytest_print-1.1.0-py3-none-any.whl", hash = "sha256:ec82a8bbe5e1d4f6b3a287c2c119de7e5cdf57a31981e9dba2a4809c5829bb5e", size = 7167 },
 ]
 
 [[package]]
