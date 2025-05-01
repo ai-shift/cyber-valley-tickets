@@ -8,10 +8,11 @@ interface OrderState {
   order: Order | null;
   setEventOrder: (order: Event) => void;
   setTicketOrder: (order: string) => void;
+  setSocialsToTicketOrder: (social: string) => void;
   clearOrder: () => void;
 }
 
-export const useOrderStore = create<OrderState, [["zustand/devtools", never]]>(
+export const useOrderStore = create<OrderState>()(
   devtools((set) => ({
     order: null,
     setEventOrder: (event) =>
@@ -30,11 +31,28 @@ export const useOrderStore = create<OrderState, [["zustand/devtools", never]]>(
         {
           order: {
             type: "buy_ticket",
-            eventId: eventId,
+            ticket: {
+              eventId: eventId,
+            },
           },
         },
         undefined,
         "order/setTicketOrder",
+      ),
+    setSocialsToTicketOrder: (social) =>
+      set(
+        (state) => {
+          if (state.order?.type !== "buy_ticket") return state;
+          return {
+            ...state,
+            ticket: {
+              eventId: state.order.ticket.eventId,
+              social,
+            },
+          };
+        },
+        undefined,
+        "order/setTicketSocials",
       ),
     clearOrder: () => set({ order: null }, undefined, "order/clearOrder"),
   })),
