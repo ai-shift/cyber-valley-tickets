@@ -1,4 +1,4 @@
-export type EventForm = {
+export type EventFormType = {
   title: string;
   description: string;
   image?: File;

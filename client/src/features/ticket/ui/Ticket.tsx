@@ -22,6 +22,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
     navigate("/socials");
   }
 
+  //TODO Add is redeemed when endpoint ready
   if (!haveTicket) return <Button onClick={initOrder}>Attend</Button>;
   if (haveTicket) return <Button>Show ticket</Button>;
 };

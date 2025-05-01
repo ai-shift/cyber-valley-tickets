@@ -1,5 +1,5 @@
 import type { EventPlace } from "@/entities/place";
-import type { EventForm } from "./types";
+import type { EventFormType } from "./types";
 
 import type { DateRange } from "react-day-picker";
 import { type ZodType, z } from "zod";
@@ -7,7 +7,7 @@ import { type ZodType, z } from "zod";
 export function createFormSchema(
   places: EventPlace[],
   bookedRanges: DateRange[],
-): ZodType<EventForm> {
+): ZodType<EventFormType> {
   return z
     .object({
       title: z.string().min(1, "Title is required"),

@@ -1,7 +1,7 @@
 import type { Event } from "@/entities/event/";
-import type { EventForm } from "../model/types";
+import type { EventFormType } from "../model/types";
 
-export function mapEventToEventForm(event: Event): EventForm {
+export function mapEventToEventForm(event: Event): EventFormType {
   return {
     title: event.title,
     description: event.description,
