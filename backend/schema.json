@@ -605,11 +605,16 @@
                     },
                     "eventId": {
                         "type": "integer"
+                    },
+                    "isRedeemed": {
+                        "type": "boolean",
+                        "readOnly": true
                     }
                 },
                 "required": [
                     "eventId",
-                    "id"
+                    "id",
+                    "isRedeemed"
                 ]
             },
             "TokenRefresh": {
