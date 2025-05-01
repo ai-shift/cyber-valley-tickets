@@ -15,7 +15,7 @@ interface TicketOrder extends BaseOrder {
   type: "buy_ticket";
   event?: never;
   ticket: {
-    eventId: string;
+    eventId: number;
     socials?: string;
   };
 }

@@ -8,6 +8,7 @@ import {
   Notifications,
   ManagePage,
   PurchasePage,
+  SocialsPage,
 } from "@/pages";
 
 export const Router = () => {
@@ -25,6 +26,7 @@ export const Router = () => {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/manage" element={<ManagePage />} />
         <Route path="/purchase" element={<PurchasePage />} />
+        <Route path="/socials" element={<SocialsPage />} />
 
         <Route path="/profile" />
       </Routes>
