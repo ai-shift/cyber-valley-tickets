@@ -7,7 +7,7 @@ import { devtools } from "zustand/middleware";
 interface OrderState {
   order: Order | null;
   setEventOrder: (order: Event) => void;
-  setTicketOrder: (order: string) => void;
+  setTicketOrder: (order: number) => void;
   setSocialsToTicketOrder: (social: string) => void;
   clearOrder: () => void;
 }
