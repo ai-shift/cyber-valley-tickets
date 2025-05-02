@@ -37,9 +37,11 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({ existingPlace }) => {
         },
   });
 
+  // TODO: Add smart contract call
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-3">
@@ -56,6 +58,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({ existingPlace }) => {
             </FormItem>
           )}
         />
+        {/* TODO: Decompose into own component */}
         <FormField
           control={form.control}
           name="minTickets"
