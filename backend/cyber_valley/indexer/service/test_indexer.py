@@ -16,6 +16,8 @@ from web3.contract import Contract
 from web3.types import LogReceipt
 from web3.utils.address import get_create_address
 
+from . import indexer
+
 ETHEREUM_DIR: Final = Path(__file__).parent.parent.parent.parent.parent / "ethereum"
 ETH_NETWORK_HOST: Final = "localhost:8545"
 CONTRACTS_INFO: Final = (
@@ -122,6 +124,8 @@ def _get_all_contracts(
             for tx in transactions
             if not isinstance(tx, HexBytes)
         )
+    ### XXX: Skip mocked ERC20 contract
+    contract_addresses = contract_addresses[1:]
     assert len(contract_addresses) == len(CONTRACTS_INFO)
     return {
         address: w3.eth.contract(
@@ -141,5 +145,5 @@ def test_create_event(w3: Web3, run_hardhat_test: HardhatTestRunner) -> None:
     with run_hardhat_test("createEvent"):
         contracts = _get_all_contracts(w3)
         logs = _get_logs(w3, list(contracts.keys()))
-        print(f"Got {len(logs)} logs")
-        pytest.fail("Not implemented")
+        processed = [indexer.parse_log(log, contracts) for log in logs]
+        print(f"Processed logs: {processed}")
