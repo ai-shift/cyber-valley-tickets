@@ -7,3 +7,4 @@ class NotificationSerializer(serializers.ModelSerializer[Notification]):
     class Meta:
         model = Notification
         fields = ("title", "body", "seen_at")
+        read_only_fields = fields
