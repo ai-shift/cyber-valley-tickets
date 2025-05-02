@@ -1,6 +1,7 @@
 import type { components } from "@/shared/api";
 
 export type Event = components["schemas"]["StaffEvent" | "CreatorEvent"];
+// XXX: Post mortem review
 export type EventDto = Pick<
   Event,
   "title" | "description" | "daysAmount" | "ticketPrice"
