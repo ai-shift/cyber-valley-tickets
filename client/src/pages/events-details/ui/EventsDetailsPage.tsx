@@ -1,5 +1,5 @@
-import { format, fromUnixTime } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
+import { format, fromUnixTime } from "date-fns";
 import { useNavigate, useParams } from "react-router";
 
 import { eventQueries } from "@/entities/event";

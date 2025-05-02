@@ -1,7 +1,7 @@
 import type { EventPlace } from "@/entities/place";
-import type { EventFormInput } from "../model/types";
 import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
+import type { EventFormInput } from "../model/types";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,10 +20,10 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
-import { createFormSchema } from "../model/formSchema";
+import type { EventDto } from "@/entities/event";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { mapEventFormToEventDto } from "../lib/mapEvent";
-import type { EventDto } from "@/entities/event";
+import { createFormSchema } from "../model/formSchema";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
