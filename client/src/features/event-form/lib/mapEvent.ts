@@ -1,6 +1,6 @@
 import type { Event, EventDto } from "@/entities/event/";
-import type { EventFormInput, EventFormOutput } from "../model/types";
 import { getUnixTime } from "date-fns";
+import type { EventFormInput, EventFormOutput } from "../model/types";
 
 export function mapEventToEventForm(event: Event): EventFormInput {
   return {

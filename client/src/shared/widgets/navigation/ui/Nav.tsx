@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { userQueries } from "@/entities/user/api/userQueries";
+import { useQuery } from "@tanstack/react-query";
 
 import { routes } from "../model/routes";
 import { NavLink } from "./NavLink";

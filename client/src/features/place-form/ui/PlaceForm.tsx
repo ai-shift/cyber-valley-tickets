@@ -1,5 +1,5 @@
-import type { EventPlaceForm } from "../model/types";
 import type { z } from "zod";
+import type { EventPlaceForm } from "../model/types";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -15,8 +15,8 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 
-import { formSchema } from "../model/formSchema";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { formSchema } from "../model/formSchema";
 
 type PlaceFormProps = {
   existingPlace?: EventPlaceForm;

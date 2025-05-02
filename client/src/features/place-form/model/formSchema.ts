@@ -1,11 +1,7 @@
 import { type ZodType, z } from "zod";
 import type { EventPlaceForm } from "./types";
 
-const numberField = (
-  min: number,
-  max: number,
-  fieldName: string,
-) =>
+const numberField = (min: number, max: number, fieldName: string) =>
   z
     .number({
       required_error: `${fieldName} is required`,
@@ -22,11 +18,7 @@ export const formSchema: ZodType<EventPlaceForm> = z
     minTickets: numberField(1, 65536, "Minimum ticket amount"),
     minPrice: numberField(1, 65536, "Minimum price"),
     minDays: numberField(1, 256, "Minimum days limit"),
-    daysBeforeCancel: numberField(
-      1,
-      65536,
-      "Period before cancellation",
-    ),
+    daysBeforeCancel: numberField(1, 65536, "Period before cancellation"),
   })
   .refine(({ maxTickets, minTickets }) => maxTickets > minTickets, {
     message: "Minimum tickets amount can't be bigger then maximum",

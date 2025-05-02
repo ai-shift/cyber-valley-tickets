@@ -1,8 +1,8 @@
 import type { EventSortFunction } from "../model/types";
 
-import { useQuery } from "@tanstack/react-query";
 import { eventQueries } from "@/entities/event";
 import { EventsPreview } from "@/widgets/EventsPreview";
+import { useQuery } from "@tanstack/react-query";
 
 type EventsListProps = {
   limit?: number;
