@@ -89,7 +89,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({ existingPlace }) => {
   );
 };
 
-type CustomFormComponent = {
+type CustomFormComponentProps = {
   control: Control<EventPlaceForm, unknown, EventPlaceForm>;
   fieldName:
     | "maxTickets"
@@ -104,7 +104,7 @@ const CustomFormComponent = ({
   control,
   fieldName,
   title,
-}: CustomFormComponent) => {
+}: CustomFormComponentProps) => {
   return (
     <FormField
       control={control}
