@@ -9,14 +9,13 @@ type EventsListProps = {
   sortFn?: EventSortFunction;
 };
 
+// TODO: Rename sort to filter
 export const EventsList: React.FC<EventsListProps> = ({ limit, sortFn }) => {
-  const { data, error, isFetching } = useQuery(eventQueries.list());
+  const { data: events, error, isFetching } = useQuery(eventQueries.list());
 
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
-  if (!data) return <p>No data for some reason</p>;
-
-  const events = data;
+  if (!events) return <p>No data for some reason</p>;
 
   return <EventsPreview events={events} limit={limit} />;
 };
