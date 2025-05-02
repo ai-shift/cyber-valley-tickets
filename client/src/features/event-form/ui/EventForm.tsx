@@ -175,7 +175,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               <FormControl>
                 <DatePicker
                   date={field.value}
-                  setDate={field.onChange}
+                  setDate={field.onChange} // TODO: Unsafe cast this Any into proper type
                   disabled={bookedRanges}
                 />
               </FormControl>
