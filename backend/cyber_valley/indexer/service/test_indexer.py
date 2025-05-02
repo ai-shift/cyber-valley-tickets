@@ -1,7 +1,7 @@
 import subprocess
-import sys
 import threading
-from collections.abc import Generator
+from collections.abc import Callable, Generator
+from contextlib import AbstractContextManager, contextmanager
 from functools import partial
 from pathlib import Path
 from typing import Final
@@ -15,22 +15,31 @@ ETH_NETWORK_HOST: Final = "localhost:8545"
 ProcessStarter = Generator[None]
 
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
     printer_session("Starting hardhat node")
     # Pathetic hardhat, impossible to set port of the node via CMD
     yield from _execute(
-        "pnpm exec hardhat node",
+        "pnpm exec hardhat node --fulltrace",
         yield_after_line="Started HTTP and WebSocket JSON-RPC server",
     )
     printer_session("Hardhat node terminated")
 
 
-@pytest.fixture(scope="module", autouse=True)
-def run_hardhat_tests(printer_session: Printer) -> ProcessStarter:
-    printer_session("Starting hardhat test")
-    yield from _execute("pnpm exec hardhat --network localhost test")
-    printer_session("Hardhat test finished")
+HardhatTestRunner = Callable[[str], AbstractContextManagero[None]]
+
+
+@pytest.fixture
+def run_hardhat_test(printer_session: Printer) -> HardhatTestRunner:
+    @contextmanager
+    def inner(test_to_run: str) -> ProcessStarter:
+        printer_session(f"Starting hardhat test of {test_to_run}")
+        yield from _execute(
+            f"pnpm exec hardhat --network localhost test --grep {test_to_run}"
+        )
+        printer_session(f"Hardhat test finished of {test_to_run}")
+
+    return inner
 
 
 def _execute(
@@ -69,6 +78,11 @@ def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
         pass
 
 
-def test_execute() -> None:
-    print("Running my test", file=sys.stderr)
-    pytest.fail("Not implemented")
+def test_create_event(run_hardhat_test: HardhatTestRunner) -> None:
+    with run_hardhat_test("createEvent"):
+        pytest.fail("Not implemented")
+
+
+def test_update_event_place(run_hardhat_test: HardhatTestRunner) -> None:
+    with run_hardhat_test("updateEventPlace"):
+        pytest.fail("Not implemented")
