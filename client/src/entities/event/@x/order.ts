@@ -1,1 +1,1 @@
-export type { Event } from "../";
+export type { EventDto } from "../index";

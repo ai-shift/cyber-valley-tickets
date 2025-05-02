@@ -1,5 +1,5 @@
 import type { EventPlace } from "@/entities/place";
-import type { EventFormType } from "./types";
+import type { EventFormOutput } from "./types";
 
 import type { DateRange } from "react-day-picker";
 import { type ZodType, z } from "zod";
@@ -7,18 +7,17 @@ import { type ZodType, z } from "zod";
 export function createFormSchema(
   places: EventPlace[],
   bookedRanges: DateRange[],
-): ZodType<EventFormType> {
+): ZodType<EventFormOutput> {
   return z
     .object({
       title: z.string().min(1, "Title is required"),
       description: z.string().min(10, "This is too short for description"),
       image: z
         .instanceof(File)
-        .optional()
         .refine((val) => val instanceof File, {
           message: "File is required.",
         })
-        .refine((val) => val?.size <= 10 * 1024 * 1024, {
+        .refine((val) => val.size <= 10 * 1024 * 1024, {
           message: "File size must be less than 10MB.",
         })
         .refine(

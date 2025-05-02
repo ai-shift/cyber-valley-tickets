@@ -1,2 +1,6 @@
 export { EventForm } from "./ui/EventForm";
-export type { EventFormType } from "./model/types";
+export type {
+  EventFormInput,
+  EventFormOutput,
+} from "./model/types";
+export { mapEventFormToEventDto } from "./lib/mapEvent";

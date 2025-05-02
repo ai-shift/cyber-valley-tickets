@@ -1,5 +1,5 @@
 import type { EventPlace } from "@/entities/place";
-import type { EventFormType } from "../model/types";
+import type { EventFormInput } from "../model/types";
 import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
 
@@ -22,12 +22,14 @@ import { PlaceSelect } from "./PlaceSelect";
 
 import { createFormSchema } from "../model/formSchema";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { mapEventFormToEventDto } from "../lib/mapEvent";
+import type { EventDto } from "@/entities/event";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
   places: EventPlace[];
-  onSumbit: (values: EventFormType) => void;
-  existingEvent?: EventFormType;
+  onSumbit: (values: EventDto) => void;
+  existingEvent?: EventFormInput;
 };
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -53,7 +55,8 @@ export const EventForm: React.FC<EventFormProps> = ({
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    submitHandler(values);
+    const eventDto = mapEventFormToEventDto(values);
+    submitHandler(eventDto);
   }
 
   return (
