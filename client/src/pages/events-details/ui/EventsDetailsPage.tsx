@@ -7,6 +7,7 @@ import { userQueries } from "@/entities/user/api/userQueries";
 
 import { PageContainer } from "@/shared/ui/PageContainer";
 
+// FIXME: Do not import from feature contents directly
 import { Ticket } from "@/features/ticket/ui/Ticket";
 
 export const EventsDetailsPage: React.FC = () => {

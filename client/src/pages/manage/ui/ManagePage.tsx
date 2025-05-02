@@ -1,3 +1,4 @@
+// FIXME: Do not import from feature contents directly
 import { PlaceForm } from "@/features/place-form/ui/PlaceForm";
 import { PageContainer } from "@/shared/ui/PageContainer";
 

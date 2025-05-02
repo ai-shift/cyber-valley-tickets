@@ -1,6 +1,7 @@
 import type { EventDto } from "@/entities/event";
 
 import { useOrderStore } from "@/entities/order";
+// FIXME: Do not import from feature contents directly
 import { EventForm } from "@/features/event-form/ui/EventForm";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { useNavigate } from "react-router";
