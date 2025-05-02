@@ -19,10 +19,10 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   if (error) return <p>{error.message}</p>;
   if (!(events && user)) return <p>No data for some reason</p>;
 
-  const limitedEvents = limit ? events.slice(0, limit) : events;
   const displayEvents = filterFn
     ? limitedEvents.filter((event) => filterFn(event, user))
     : limitedEvents;
+  const limitedEvents = limit ? displayEvents.slice(0, limit) : displayEvents;
 
   return (
     <div>
