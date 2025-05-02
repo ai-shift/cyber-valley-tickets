@@ -2,7 +2,7 @@ import type { z } from "zod";
 import type { EventPlaceForm } from "../model/types";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { type Control, useForm } from "react-hook-form";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -31,9 +31,9 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({ existingPlace }) => {
           title: "",
           minTickets: 1,
           maxTickets: 100,
-          daysBeforeCancel: 0,
-          minDays: 0,
-          minPrice: 0,
+          daysBeforeCancel: 1,
+          minDays: 1,
+          minPrice: 1,
         },
   });
 
@@ -58,109 +58,73 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({ existingPlace }) => {
             </FormItem>
           )}
         />
-        {/* TODO: Decompose into own component */}
-        <FormField
+        <CustomFormComponent
           control={form.control}
-          name="minTickets"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Minimum tickets</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  inputMode="numeric"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          fieldName="minTickets"
+          title="Minimum tickets amount"
         />
-        <FormField
+        <CustomFormComponent
           control={form.control}
-          name="maxTickets"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Maximum tickets</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  inputMode="numeric"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          fieldName="maxTickets"
+          title="Maximum tickets amount"
         />
-        <FormField
+        <CustomFormComponent
           control={form.control}
-          name="minDays"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Minimum days</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  inputMode="numeric"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          fieldName="minDays"
+          title="Minimum days"
         />
-        <FormField
+        <CustomFormComponent
           control={form.control}
-          name="minPrice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Minimum price</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  inputMode="numeric"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          fieldName="minPrice"
+          title="Minimum price"
         />
-        <FormField
+        <CustomFormComponent
           control={form.control}
-          name="daysBeforeCancel"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Days before cancel</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  inputMode="numeric"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          fieldName="daysBeforeCancel"
+          title="Days before cancel"
         />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
+  );
+};
+
+type CustomFormComponent = {
+  control: Control<EventPlaceForm, unknown, EventPlaceForm>;
+  fieldName:
+    | "maxTickets"
+    | "minTickets"
+    | "minPrice"
+    | "minDays"
+    | "daysBeforeCancel";
+  title: string;
+};
+
+const CustomFormComponent = ({
+  control,
+  fieldName,
+  title,
+}: CustomFormComponent) => {
+  return (
+    <FormField
+      control={control}
+      name={fieldName}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{title}</FormLabel>
+          <FormControl>
+            <Input
+              placeholder=""
+              inputMode="numeric"
+              {...field}
+              onChange={(e) =>
+                field.onChange(handleNumericInput(e.target.value))
+              }
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };
