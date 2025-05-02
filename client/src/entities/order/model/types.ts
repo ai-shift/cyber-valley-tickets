@@ -1,4 +1,4 @@
-import type { Event } from "@/entities/event/@x/order";
+import type { EventDto } from "@/entities/event/@x/order";
 
 interface BaseOrder {
   type: "create_event" | "buy_ticket";
@@ -6,7 +6,7 @@ interface BaseOrder {
 
 interface EventOrder extends BaseOrder {
   type: "create_event";
-  event: Event;
+  event: EventDto;
   ticket?: never;
 }
 

@@ -12,12 +12,11 @@ type TicketProps = {
 
 export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   const navigate = useNavigate();
-  const { clearOrder, setTicketOrder } = useOrderStore();
+  const { setTicketOrder } = useOrderStore();
 
   const haveTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
 
   function initOrder() {
-    clearOrder();
     setTicketOrder(event.id);
     navigate("/socials");
   }
