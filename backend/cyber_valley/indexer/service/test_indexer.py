@@ -4,10 +4,12 @@ from collections.abc import Callable, Generator
 from contextlib import AbstractContextManager, contextmanager
 from functools import partial
 from pathlib import Path
-from typing import Final
+from typing import Final, Literal
 
 import pytest
 from pytest_print import Printer
+from web3 import Web3
+from web3.utils.address import get_create_address
 
 ETHEREUM_DIR: Final = Path(__file__).parent.parent.parent.parent.parent / "ethereum"
 ETH_NETWORK_HOST: Final = "localhost:8545"
@@ -26,7 +28,7 @@ def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
     printer_session("Hardhat node terminated")
 
 
-HardhatTestRunner = Callable[[str], AbstractContextManagero[None]]
+HardhatTestRunner = Callable[[str], AbstractContextManager[None]]
 
 
 @pytest.fixture
@@ -40,6 +42,13 @@ def run_hardhat_test(printer_session: Printer) -> HardhatTestRunner:
         printer_session(f"Hardhat test finished of {test_to_run}")
 
     return inner
+
+
+@pytest.fixture
+def w3() -> Web3:
+    w3 = Web3(Web3.HTTPProvider(f"http://{ETH_NETWORK_HOST}"))
+    assert w3.is_connected()
+    return w3
 
 
 def _execute(
@@ -72,17 +81,31 @@ def _execute(
     print("End of", command)
 
 
+def _get_all_contracts(
+    w3: Web3, *, from_block: int = 0, to_block: int | Literal["latest"] = "latest"
+) -> list[str]:
+    contract_addresses = []
+    for block_number in range(
+        from_block, w3.eth.block_number if to_block == "latest" else to_block + 1
+    ):
+        block = w3.eth.get_block(block_number, full_transactions=True)
+        contract_addresses.extend(
+            get_create_address(tx["from"], tx["nonce"])
+            for tx in block["transactions"]
+            if tx["to"] is None
+        )
+
+    return contract_addresses
+
+
 def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
     assert proc.stdout
     while return_after_line not in proc.stdout.readline():
         pass
 
 
-def test_create_event(run_hardhat_test: HardhatTestRunner) -> None:
+def test_create_event(w3: Web3, run_hardhat_test: HardhatTestRunner) -> None:
     with run_hardhat_test("createEvent"):
-        pytest.fail("Not implemented")
-
-
-def test_update_event_place(run_hardhat_test: HardhatTestRunner) -> None:
-    with run_hardhat_test("updateEventPlace"):
+        contracts = _get_all_contracts(w3)
+        print(f"{contracts=}")
         pytest.fail("Not implemented")
