@@ -1,5 +1,5 @@
 import type { Role } from "@/shared/lib/RBAC";
-import type { Route } from "../model/link";
+import type { Route } from "../model/routes";
 
 import { NavLink as Link } from "react-router";
 
