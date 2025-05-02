@@ -1,4 +1,5 @@
 import type { DateRange } from "react-day-picker";
+import type { SelectSingleEventHandler } from "react-day-picker";
 
 import { format } from "date-fns";
 
@@ -9,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 
 type DatePickerProps = {
   date: Date;
-  setDate: (...event: unknown[]) => void; // TODO: Create proper type instead of unknown
+  setDate: SelectSingleEventHandler;
   disabled: DateRange[];
 };
 
