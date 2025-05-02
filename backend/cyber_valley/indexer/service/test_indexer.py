@@ -21,11 +21,6 @@ ETH_NETWORK_HOST: Final = "localhost:8545"
 CONTRACTS_INFO: Final = (
     (
         ETHEREUM_DIR
-        / "artifacts/contracts/mocks/SimpleERC20Xylose.sol"
-        / "SimpleERC20Xylose.json"
-    ),
-    (
-        ETHEREUM_DIR
         / "artifacts/contracts/CyberValleyEventManager.sol"
         / "CyberValleyEventManager.json"
     ),
