@@ -6,10 +6,13 @@ from queue import Queue
 from typing import Any, NoReturn
 
 import pyshen
+from eth_typing import ChecksumAddress
+from pydantic import BaseModel
 from tenacity import after_log, before_log, retry, wait_fixed
 from web3 import AsyncWeb3, Web3, WebSocketProvider
 from web3.contract import Contract
 from web3.types import LogReceipt
+from web3.exceptions import MismatchedABI
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +28,9 @@ class NodeListenerStoppedError(Exception):
 
 
 def gather_events(
-    queue: Queue[LogReceipt], eth_node_host: str, contracts: dict[str, Contract]
+    queue: Queue[LogReceipt],
+    eth_node_host: str,
+    contracts: dict[ChecksumAddress, Contract],
 ) -> None:
     provider = WebSocketProvider(eth_node_host)
     listener_loop = pyshen.aext.create_event_loop_thread()
@@ -35,7 +40,7 @@ def gather_events(
     )
     while receipt := queue.get():
         try:
-            process_contract_log(receipt, contracts)
+            parse_log(receipt, contracts)
         except Exception:
             log.exception("Failed to process log receipt %s", receipt)
             # TODO: Save failed to process event & notify
@@ -71,9 +76,26 @@ async def arun_listener(
     raise NodeListenerStoppedError
 
 
-def process_contract_log(
-    log_receipt: LogReceipt, contracts: dict[str, Contract]
-) -> None:
+def parse_log(
+    log_receipt: LogReceipt, contracts: dict[ChecksumAddress, Contract]
+) -> None | BaseModel:
+    event = None
+    for contract in contracts.values():
+        event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
+        assert len(event_names) == len(set(event_names))
+        for event_name in event_names:
+            try:
+                decoded_log = getattr(contract.events, event_name).process_log(log_receipt)
+            except MismatchedABI:
+                continue
+
+            event = decoded_log
+            break
+
+    if event is None:
+        log.warning("Failed to decode log")
+        return None
+
     raise NotImplementedError
 
 
