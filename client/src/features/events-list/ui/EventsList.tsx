@@ -1,7 +1,7 @@
 import { type Event, eventQueries } from "@/entities/event";
 import { userQueries } from "@/entities/user/api/userQueries";
-import { EventsPreview } from "@/widgets/EventsPreview";
 import { useQuery } from "@tanstack/react-query";
+import { EventCard } from "./EventCard";
 
 import type { User } from "@/entities/user";
 
@@ -17,11 +17,18 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   //TODO optimize conditional rendering logic
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
-  if (!events || !user) return <p>No data for some reason</p>;
+  if (!(events && user)) return <p>No data for some reason</p>;
 
+  const limitedEvents = limit ? events.slice(0, limit) : events;
   const displayEvents = filterFn
-    ? events.filter((event) => filterFn(event, user))
-    : events;
+    ? limitedEvents.filter((event) => filterFn(event, user))
+    : limitedEvents;
 
-  return <EventsPreview events={displayEvents} limit={limit} />;
+  return (
+    <div>
+      {displayEvents.map((event) => (
+        <EventCard key={event.id} event={event} user={user} />
+      ))}
+    </div>
+  );
 };

@@ -1,11 +1,13 @@
+import type { Event } from "@/entities/event";
+import type { User } from "@/entities/user";
 import { Link } from "react-router";
-import type { Event } from "../model/types";
 
 type EventCardProps = {
   event: Event;
+  user: User;
 };
 
-export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
   const { imageUrl, place, startDateTimestamp, daysAmount, title } = event;
 
   return (
