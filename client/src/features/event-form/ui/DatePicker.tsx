@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 
 type DatePickerProps = {
   date: Date;
-  setDate: (...event: unknown[]) => void;
+  setDate: (...event: unknown[]) => void; // TODO: Create proper type instead of unknown
   disabled: DateRange[];
 };
 
