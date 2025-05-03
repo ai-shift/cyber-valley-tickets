@@ -3,18 +3,19 @@ import logging
 from collections.abc import Iterable
 from dataclasses import dataclass
 from queue import Queue
-from typing import Any, NoReturn
+from typing import Any, NoReturn, cast
 
 import pyshen
 from eth_typing import ChecksumAddress
 from pydantic import BaseModel
+from returns.result import safe
 from tenacity import after_log, before_log, retry, wait_fixed
-from web3 import AsyncWeb3, Web3, WebSocketProvider
+from web3 import AsyncWeb3, WebSocketProvider
 from web3.contract import Contract
 from web3.exceptions import MismatchedABI
 from web3.types import LogReceipt
 
-from . import event_models
+from . import events_models
 
 log = logging.getLogger(__name__)
 
@@ -78,9 +79,12 @@ async def arun_listener(
     raise NodeListenerStoppedError
 
 
-def parse_log(
-    log_receipt: LogReceipt, contracts: list[type[Contract]]
-) -> None | BaseModel:
+class EventNotRecognizedError(Exception):
+    pass
+
+
+@safe
+def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseModel:
     event = None
     for contract in contracts:
         event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
@@ -97,7 +101,8 @@ def parse_log(
             break
 
     if event is None:
-        log.warning("Failed to decode log")
-        return None
+        raise EventNotRecognizedError
 
-    return event["event"]
+    event_model = getattr(events_models, event["event"])
+    assert issubclass(event_model, BaseModel)
+    return cast(type[BaseModel], event_model).model_validate(event["args"])

@@ -13,6 +13,7 @@ dependencies = [
     "eth-account>=0.13.7",
     "pydantic>=2.11.3",
     "pyshen",
+    "returns[compatible-mypy]>=0.25.0",
     "tenacity>=9.1.2",
     "web3>=7.10.0",
 ]
@@ -123,6 +124,11 @@ untyped_calls_exclude = [
 [[tool.mypy.overrides]]
 module = ["telebot.*", "telegramify_markdown.*"]
 follow_untyped_imports = true
+
+[mypy.plugins]
+plugins = [
+  "returns.contrib.mypy.returns_plugin"
+]
 
 [tool.django-stubs]
 django_settings_module = "cyber_valley.settings"
