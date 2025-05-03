@@ -1,6 +1,6 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, expect } from "chai";
 import {
+  loadFixture,
   cancelEvent,
   closeEvent,
   createAndCancelEvent,

@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import threading
 from collections.abc import Callable, Generator
@@ -41,13 +42,13 @@ ProcessStarter = Generator[None]
 
 @pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
-    printer_session("Starting hardhat node")
+    printer_session("Starting ganache node")
     # Pathetic hardhat, impossible to set port of the node via CMD
     yield from _execute(
-        "pnpm exec hardhat node --fulltrace",
-        yield_after_line="Started HTTP and WebSocket JSON-RPC server",
+        "pnpm exec ganache-cli",
+        yield_after_line="Listening on ",
     )
-    printer_session("Hardhat node terminated")
+    printer_session("Ganache node terminated")
 
 
 HardhatTestRunner = Callable[[str], AbstractContextManager[None]]
@@ -59,7 +60,8 @@ def run_hardhat_test(printer_session: Printer) -> HardhatTestRunner:
     def inner(test_to_run: str) -> ProcessStarter:
         printer_session(f"Starting hardhat test of {test_to_run}")
         yield from _execute(
-            f"pnpm exec hardhat --network localhost test --grep {test_to_run}"
+            f"pnpm exec hardhat --network localhost test --grep {test_to_run}",
+            env={"DISABLE_BLOCKHAIN_RESTORE": "1"},
         )
         printer_session(f"Hardhat test finished of {test_to_run}")
 
@@ -74,7 +76,11 @@ def w3() -> Web3:
 
 
 def _execute(
-    command: str, *, yield_after_line: None | str = None, timeout: int = 5
+    command: str,
+    *,
+    yield_after_line: None | str = None,
+    timeout: int = 5,
+    env: None | dict[str, str] = None,
 ) -> ProcessStarter:
     proc = subprocess.Popen(  # noqa: S602
         command,
@@ -83,6 +89,7 @@ def _execute(
         stderr=subprocess.STDOUT,
         shell=True,
         text=True,
+        env=os.environ.copy() | (env or {}),
     )
 
     if yield_after_line:
@@ -111,7 +118,7 @@ def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
 
 def _get_all_contracts(
     w3: Web3, *, from_block: int = 0, to_block: int | Literal["latest"] = "latest"
-) -> dict[ChecksumAddress, Contract]:
+) -> list[type[Contract]]:
     contract_addresses: list[ChecksumAddress] = []
     for block_number in range(
         from_block, w3.eth.block_number if to_block == "latest" else to_block + 1
@@ -124,26 +131,29 @@ def _get_all_contracts(
             for tx in transactions
             if not isinstance(tx, HexBytes)
         )
-    ### XXX: Skip mocked ERC20 contract
-    contract_addresses = contract_addresses[1:]
-    assert len(contract_addresses) == len(CONTRACTS_INFO)
-    return {
-        address: w3.eth.contract(
-            address=address, abi=json.loads(CONTRACTS_INFO[idx].read_text())["abi"]
-        )
-        for idx, address in enumerate(contract_addresses)
-    }
+    contracts: list[type[Contract]] = []
+    for address in contract_addresses:
+        deployed_bytecode = w3.eth.get_code(address).hex()
+        for abi_path in CONTRACTS_INFO:
+            meta_info = json.loads(abi_path.read_text())
+            if meta_info["deployedBytecode"][2:] != deployed_bytecode:
+                continue
+            abi = meta_info["abi"]
+            if abi not in (contract.abi for contract in contracts):
+                continue
+            contracts.append(w3.eth.contract(abi=abi))
+    assert len(contracts) == len(CONTRACTS_INFO)
+    return contracts
 
 
-def _get_logs(w3: Web3, contracts: list[ChecksumAddress]) -> list[LogReceipt]:
-    return w3.eth.filter(
-        {"fromBlock": 0, "toBlock": "latest", "address": contracts}
-    ).get_all_entries()
+def _get_logs(w3: Web3) -> list[LogReceipt]:
+    return w3.eth.filter({"fromBlock": 0, "toBlock": "latest"}).get_all_entries()
 
 
 def test_create_event(w3: Web3, run_hardhat_test: HardhatTestRunner) -> None:
     with run_hardhat_test("createEvent"):
         contracts = _get_all_contracts(w3)
-        logs = _get_logs(w3, list(contracts.keys()))
+        logs = _get_logs(w3)
+        print(f"Got logs: {len(logs)}")
         processed = [indexer.parse_log(log, contracts) for log in logs]
         print(f"Processed logs: {processed}")

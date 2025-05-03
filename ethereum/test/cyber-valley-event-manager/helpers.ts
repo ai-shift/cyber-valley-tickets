@@ -1,4 +1,7 @@
-import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
+import {
+  loadFixture as hardhatLoadFixture,
+  time,
+} from "@nomicfoundation/hardhat-network-helpers";
 import { assert, expect } from "chai";
 import type {
   BaseContract,
@@ -50,6 +53,20 @@ export type ContractsFixture = {
   creator: Signer;
   staff: Signer;
 };
+
+const blockchainRestoreDisabled = process.env.DISABLE_BLOCKHAIN_RESTORE != null;
+
+if (blockchainRestoreDisabled) {
+  console.warn("!!! BLOCKCHAIN SNAPSHOT RESTORATION IS DISABLED !!!");
+}
+
+async function dummyLoadFixture<T>(fn: (() => T)): () => T {
+  return await fn();
+}
+
+const loadFixture = blockchainRestoreDisabled ? async <T>(fn: () => T) => await fn() : hardhatLoadFixture;
+
+export { loadFixture };
 
 export async function deployContract(): Promise<ContractsFixture> {
   console.log("Deploying contract");
