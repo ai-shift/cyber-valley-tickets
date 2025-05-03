@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from hexbytes import HexBytes
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-from web3 import Web3
 
 
 class EventPlaceUpdated(BaseModel):
@@ -65,25 +64,10 @@ class RoleAdminChanged(BaseModel):
     new_admin_role: str = Field(..., alias="newAdminRole")
 
 
-# FIXME: Decompose into own module
-ROLES = ("DEFAULT_ADMIN_ROLE", "MASTER_ROLE", "STAFF_ROLE", "EVENT_MANAGER_ROLE")
-BYTES_TO_ROLE = {Web3.keccak(text=role): role for role in ROLES}
-BYTES_TO_ROLE[HexBytes(b"\x00" * 32)] = ROLES[0]
-
-
 class RoleGranted(BaseModel):
     role: str
     account: str
     sender: str
-
-    # FIXME: Decompose into own module and assign in runtime
-    @field_validator("role", mode="before")
-    @classmethod
-    def validate_role(cls, value: HexBytes) -> str:
-        try:
-            return BYTES_TO_ROLE[value]
-        except KeyError as e:
-            raise ValueError from e
 
 
 class RoleRevoked(BaseModel):

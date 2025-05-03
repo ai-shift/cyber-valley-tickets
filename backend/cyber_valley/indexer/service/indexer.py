@@ -1,3 +1,5 @@
+from web3 import Web3
+from pydantic import field_validator
 import asyncio
 import logging
 from collections.abc import Iterable
@@ -12,7 +14,7 @@ from returns.result import safe
 from tenacity import after_log, before_log, retry, wait_fixed
 from web3 import AsyncWeb3, WebSocketProvider
 from web3.contract import Contract
-from web3.exceptions import MismatchedABI
+from web3.exceptions import MismatchedABI, LogTopicError
 from web3.types import LogReceipt
 
 from . import events_models
@@ -29,6 +31,19 @@ class SupportedContract:
 class NodeListenerStoppedError(Exception):
     pass
 
+
+_ROLES = ("DEFAULT_ADMIN_ROLE", "MASTER_ROLE", "STAFF_ROLE", "EVENT_MANAGER_ROLE")
+_BYTES_TO_ROLE = {Web3.keccak(text=role): role for role in ROLES}
+_BYTES_TO_ROLE[HexBytes(b"\x00" * 32)] = ROLES[0]
+
+@field_validator("role", mode="before")
+def _validate_role(cls: BaseModel, value: HexBytes) -> str:
+    try:
+        return BYTES_TO_ROLE[value]
+    except KeyError as e:
+        raise ValueError from e
+
+setattr(event_models.RoleGranted, "validate_role", _validate_role)
 
 def gather_events(
     queue: Queue[LogReceipt],
@@ -85,24 +100,21 @@ class EventNotRecognizedError(Exception):
 
 @safe
 def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseModel:
-    event = None
     for contract in contracts:
         event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
         assert len(event_names) == len(set(event_names))
         for event_name in event_names:
             try:
-                decoded_log = getattr(contract.events, event_name).process_log(
+                event = getattr(contract.events, event_name).process_log(
                     log_receipt
                 )
-            except MismatchedABI:
+            except (MismatchedABI, LogTopicError):
+                continue
+            event_model = getattr(events_models, event["event"])
+            assert issubclass(event_model, BaseModel)
+            try:  # Some events have the same names e.g. Transfer or Approval
+                return cast(type[BaseModel], event_model).model_validate(event["args"])
+            except ValueError:
                 continue
 
-            event = decoded_log
-            break
-
-    if event is None:
-        raise EventNotRecognizedError
-
-    event_model = getattr(events_models, event["event"])
-    assert issubclass(event_model, BaseModel)
-    return cast(type[BaseModel], event_model).model_validate(event["args"])
+    raise EventNotRecognizedError
