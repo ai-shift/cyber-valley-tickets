@@ -11,8 +11,8 @@ from pydantic import BaseModel
 from tenacity import after_log, before_log, retry, wait_fixed
 from web3 import AsyncWeb3, Web3, WebSocketProvider
 from web3.contract import Contract
-from web3.types import LogReceipt
 from web3.exceptions import MismatchedABI
+from web3.types import LogReceipt
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class NodeListenerStoppedError(Exception):
 def gather_events(
     queue: Queue[LogReceipt],
     eth_node_host: str,
-    contracts: dict[ChecksumAddress, Contract],
+    contracts: dict[ChecksumAddress, type[Contract]],
 ) -> None:
     provider = WebSocketProvider(eth_node_host)
     listener_loop = pyshen.aext.create_event_loop_thread()
@@ -40,7 +40,7 @@ def gather_events(
     )
     while receipt := queue.get():
         try:
-            parse_log(receipt, contracts)
+            parse_log(receipt, list(contracts.values()))
         except Exception:
             log.exception("Failed to process log receipt %s", receipt)
             # TODO: Save failed to process event & notify
@@ -77,15 +77,17 @@ async def arun_listener(
 
 
 def parse_log(
-    log_receipt: LogReceipt, contracts: dict[ChecksumAddress, Contract]
+    log_receipt: LogReceipt, contracts: list[type[Contract]]
 ) -> None | BaseModel:
     event = None
-    for contract in contracts.values():
+    for contract in contracts:
         event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
         assert len(event_names) == len(set(event_names))
         for event_name in event_names:
             try:
-                decoded_log = getattr(contract.events, event_name).process_log(log_receipt)
+                decoded_log = getattr(contract.events, event_name).process_log(
+                    log_receipt
+                )
             except MismatchedABI:
                 continue
 
@@ -96,7 +98,7 @@ def parse_log(
         log.warning("Failed to decode log")
         return None
 
-    raise NotImplementedError
+    return event["event"]
 
 
 def decode_log(log_receipt: LogReceipt, contract_abi: list[dict[str, Any]]) -> Any:

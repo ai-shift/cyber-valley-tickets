@@ -48,6 +48,9 @@ importers:
       ethers:
         specifier: ^6.13.5
         version: 6.13.5
+      ganache-cli:
+        specifier: ^6.12.2
+        version: 6.12.2
       hardhat:
         specifier: ^2.22.19
         version: 2.23.0(ts-node@10.9.2(@types/node@22.14.1)(typescript@5.8.3))(typescript@5.8.3)
@@ -1233,6 +1236,15 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  ganache-cli@6.12.2:
+    resolution: {integrity: sha512-bnmwnJDBDsOWBUP8E/BExWf85TsdDEFelQSzihSJm9VChVO1SHp94YXLP5BlA4j/OTxp0wR4R1Tje9OHOuAJVw==}
+    deprecated: ganache-cli is now ganache; visit https://trfl.io/g7 for details
+    hasBin: true
+    bundledDependencies:
+      - source-map-support
+      - yargs
+      - ethereumjs-util
 
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
@@ -3824,6 +3836,8 @@ snapshots:
     optional: true
 
   function-bind@1.1.2: {}
+
+  ganache-cli@6.12.2: {}
 
   get-caller-file@2.0.5: {}
 
