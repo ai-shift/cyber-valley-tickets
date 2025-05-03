@@ -1,5 +1,5 @@
 import { type Event, eventQueries } from "@/entities/event";
-import { userQueries } from "@/entities/user/api/userQueries";
+import { userQueries } from "@/entities/user";
 import { useQuery } from "@tanstack/react-query";
 import { EventCard } from "./EventCard";
 

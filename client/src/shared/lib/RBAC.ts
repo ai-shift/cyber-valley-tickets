@@ -29,7 +29,7 @@ export const RBAC_ROLES: RoleControl = {
     ticket: ["purchase"],
   },
   staff: {
-    event: ["read", "create", "edit", "delete"],
+    event: ["read", "create"],
     ticket: ["redeem"],
   },
   master: {

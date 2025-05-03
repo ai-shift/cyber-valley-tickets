@@ -1,4 +1,4 @@
-import { userQueries } from "@/entities/user/api/userQueries";
+import { userQueries } from "@/entities/user";
 import { useQuery } from "@tanstack/react-query";
 
 import { routes } from "../model/routes";
