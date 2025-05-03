@@ -46,11 +46,15 @@ def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
     printer_session("Starting hardhat node")
     try:
         yield from _execute(
-            "pnpm exec hardhat node",
-            yield_after_line="Listening on ",
+            "node_modules/.bin/hardhat node",
+            yield_after_line="Started HTTP and WebSocket JSON-RPC server at ",
         )
     except (subprocess.TimeoutExpired, ValueError):
         pass
+    # This shit can't be killed from python. DIE ANYWAY
+    subprocess.run("pkill -f node.*hardhat.*.js", shell=True)
+    # Seems like hardhat node caches some stuff which should be cleaned
+    (ETHEREUM_DIR / "cache/solidity-files-cache.json").unlink(missing_ok=True)
     printer_session("Hardhat node terminated")
 
 
