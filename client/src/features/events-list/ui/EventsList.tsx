@@ -1,5 +1,5 @@
 import { type Event, eventQueries } from "@/entities/event";
-import { userQueries } from "@/entities/user";
+import { useUser } from "@/entities/user";
 import { useQuery } from "@tanstack/react-query";
 import { EventCard } from "./EventCard";
 
@@ -12,7 +12,7 @@ type EventsListProps = {
 
 export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   const { data: events, error, isFetching } = useQuery(eventQueries.list());
-  const { data: user } = useQuery(userQueries.current());
+  const { user } = useUser();
 
   //TODO optimize conditional rendering logic
   if (isFetching) return <p>Loading</p>;

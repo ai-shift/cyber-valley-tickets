@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { eventQueries } from "@/entities/event";
-import { userQueries } from "@/entities/user";
+import { useUser } from "@/entities/user";
 
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { DetailsBlock } from "./DetailsBlock";
 import { ManageEvent } from "@/features/manage-event";
+import { canEdit } from "@/features/create-edit-event";
 
 type EventDetailsProps = {
   eventId: string;
@@ -18,7 +19,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   } = useQuery(eventQueries.detail(+eventId));
 
   //TODO: Replace with single component
-  const { data: user } = useQuery(userQueries.current());
+  const { user } = useUser();
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
   if (!event || !user) return <p>GG</p>;
@@ -33,7 +34,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     startDateTimestamp,
   } = event;
 
-  const isCreator = event.creator.address === user.address;
+  const editPermission = canEdit(user, event);
 
   return (
     <div className="flex flex-col">
@@ -77,7 +78,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
       <Ticket event={event} user={user} />
       <ManageEvent
         eventId={eventId}
-        isCreator={isCreator}
+        canEdit={editPermission}
         role={user.role}
         status={event.status}
       />

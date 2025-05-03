@@ -1,11 +1,11 @@
-import { userQueries } from "@/entities/user";
+import { useUser } from "@/entities/user";
 import { useQuery } from "@tanstack/react-query";
 
 import { routes } from "../model/routes";
 import { NavLink } from "./NavLink";
 
 export const Nav = () => {
-  //   const { user } = useQuery(userQueries.current());
+  //   const { user } = useUser();
   //TODO: Import from the auth store
   const user = { role: "master" };
 

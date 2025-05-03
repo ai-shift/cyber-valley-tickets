@@ -8,19 +8,17 @@ type ManageEventProps = {
   role: Role;
   status: EventStatus;
   eventId: string;
-  isCreator: boolean;
+  canEdit: boolean;
 };
 
 export const ManageEvent: React.FC<ManageEventProps> = ({
   role,
   status,
   eventId,
-  isCreator,
+  canEdit,
 }) => {
   if (status !== "submitted") return;
   const navigate = useNavigate();
-
-  const canEdit = checkPermission(role, "event:edit") || isCreator;
 
   const canControl = checkPermission(role, "event:accept/decline");
 
@@ -28,7 +26,7 @@ export const ManageEvent: React.FC<ManageEventProps> = ({
     navigate(`/events/${eventId}/edit`);
   }
 
-  //TODO: Add logic and rewrite to sepparate functions if switch is shit
+  //TODO: Add fetching logic and rewrite to sepparate functions if switch is shit
   function onControll(action: "accept" | "decline") {
     switch (action) {
       case "accept":
