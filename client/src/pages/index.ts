@@ -6,3 +6,4 @@ export { Notifications } from "./notifications";
 export { ManagePage } from "./manage";
 export { PurchasePage } from "./purchase";
 export { SocialsPage } from "./socials";
+export { EditEventPage } from "./edit-event";
