@@ -42,13 +42,12 @@ ProcessStarter = Generator[None]
 
 @pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
-    printer_session("Starting ganache node")
-    # Pathetic hardhat, impossible to set port of the node via CMD
+    printer_session("Starting hardha node")
     yield from _execute(
-        "pnpm exec ganache-cli",
+        "pnpm exec hardhat node",
         yield_after_line="Listening on ",
     )
-    printer_session("Ganache node terminated")
+    printer_session("Hardhat node terminated")
 
 
 HardhatTestRunner = Callable[[str], AbstractContextManager[None]]
