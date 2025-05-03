@@ -10,7 +10,8 @@ export type Action =
   | "edit"
   | "delete"
   | "purchase"
-  | "redeem";
+  | "redeem"
+  | "accept/decline";
 
 type PartialRecord<K extends string | number | symbol, T> = { [P in K]?: T };
 type ResourceActions = PartialRecord<Resource, Action[]>;
@@ -25,7 +26,7 @@ export const RBAC_ROLES: RoleControl = {
     ticket: ["purchase"],
   },
   creator: {
-    event: ["read", "create", "edit", "delete"],
+    event: ["read", "create"],
     ticket: ["purchase"],
   },
   staff: {

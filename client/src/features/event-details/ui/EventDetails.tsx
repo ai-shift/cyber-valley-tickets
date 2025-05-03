@@ -5,6 +5,7 @@ import { userQueries } from "@/entities/user";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { DetailsBlock } from "./DetailsBlock";
+import { ManageEvent } from "@/features/manage-event";
 
 type EventDetailsProps = {
   eventId: string;
@@ -15,6 +16,8 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     error,
     isFetching,
   } = useQuery(eventQueries.detail(+eventId));
+
+  //TODO: Replace with single component
   const { data: user } = useQuery(userQueries.current());
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
@@ -29,6 +32,8 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     ticketsBought,
     startDateTimestamp,
   } = event;
+
+  const isCreator = event.creator.address === user.address;
 
   return (
     <div className="flex flex-col">
@@ -70,6 +75,12 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
       </div>
 
       <Ticket event={event} user={user} />
+      <ManageEvent
+        eventId={eventId}
+        isCreator={isCreator}
+        role={user.role}
+        status={event.status}
+      />
     </div>
   );
 };
