@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from hexbytes import HexBytes
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from web3 import Web3
 
 
@@ -18,6 +18,8 @@ class EventPlaceUpdated(BaseModel):
 
 
 class EventStatusChanged(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     event_id: int = Field(..., alias="eventId")
     status: int
 
@@ -36,6 +38,8 @@ class EventUpdated(BaseModel):
 
 
 class NewEventPlaceAvailable(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     event_place_id: int = Field(..., alias="eventPlaceId")
     max_tickets: int = Field(..., alias="maxTickets")
     min_tickets: int = Field(..., alias="minTickets")
@@ -44,6 +48,8 @@ class NewEventPlaceAvailable(BaseModel):
 
 
 class NewEventRequest(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     id: int
     creator: str
     event_place_id: int = Field(..., alias="eventPlaceId")

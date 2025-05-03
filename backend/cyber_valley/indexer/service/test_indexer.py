@@ -6,7 +6,7 @@ from collections.abc import Callable, Generator
 from contextlib import AbstractContextManager, contextmanager, suppress
 from functools import partial
 from pathlib import Path
-from typing import Final, Literal
+from typing import Any, Final, Literal
 
 import pytest
 from eth_typing import ChecksumAddress
@@ -86,7 +86,11 @@ def events_factory(w3: Web3, run_hardhat_test: HardhatTestRunner) -> EventsFacto
         with run_hardhat_test(test_to_run):
             contracts = _get_all_contracts(w3)
             logs = _get_logs(w3)
-            return [indexer.parse_log(log, contracts).unwrap() for log in logs]
+            return [
+                indexer.parse_log(log, contracts).unwrap()
+                for log in logs
+                if len(log["topics"]) == 1
+            ]
 
     return inner
 
@@ -130,6 +134,28 @@ def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
     assert proc.stdout
     while return_after_line not in proc.stdout.readline():
         pass
+
+
+class MatchesAnyMixin:
+    def __eq__(self, other: Any) -> bool:
+        return any(isinstance(other, cls) for cls in self.__class__.__bases__)
+
+    def __hash__(self) -> int:
+        return hash(self.__class__.__name__)
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__
+
+    def __str__(self) -> str:
+        return "*"
+
+
+class MatchesAnyStr(MatchesAnyMixin, str):
+    __slots__ = ()
+
+
+class MatchesAnyInt(MatchesAnyMixin, int):
+    pass
 
 
 def test_create_event_place(events_factory: EventsFactory) -> None:
@@ -232,6 +258,132 @@ def test_update_event_place(events_factory: EventsFactory) -> None:
     assert all(event == expected for event in event_place_updated_events)
     _cleanup_asserted_events(events, event_place_updated_events)
     #  end-region   -- EventPlaceUpdated
+
+    assert len(events) == 0, events
+
+
+def test_submit_event_request(events_factory: EventsFactory) -> None:
+    events = events_factory("submitEventRequest")
+
+    #  begin-region -- RoleGranted
+    role_to_count = {
+        "MASTER_ROLE": 0,
+        "STAFF_ROLE": 0,
+        "DEFAULT_ADMIN_ROLE": 0,
+        "EVENT_MANAGER_ROLE": 0,
+    }
+    for role, count in role_to_count.items():
+        role_granted_events = [
+            event
+            for event in events
+            if isinstance(event, events_models.RoleGranted) and event.role == role
+        ]
+        assert len(role_granted_events) == count
+        _cleanup_asserted_events(events, role_granted_events)
+    #  end-region   -- RoleGranted
+
+    #  begin-region -- NewEventPlaceAvailable
+    new_place_available_events = [
+        event
+        for event in events
+        if isinstance(event, events_models.NewEventPlaceAvailable)
+    ]
+    expected = {
+        events_models.NewEventPlaceAvailable.model_validate(
+            {
+                "eventPlaceId": 0,
+                "maxTickets": 100,
+                "minTickets": 50,
+                "minPrice": 20,
+                "minDays": 1,
+            }
+        ): 9,
+        events_models.NewEventPlaceAvailable.model_validate(
+            {
+                "eventPlaceId": 0,
+                "maxTickets": 100,
+                "minTickets": 50,
+                "minPrice": 20,
+                "minDays": 2,
+            }
+        ): 1,
+        events_models.NewEventPlaceAvailable.model_validate(
+            {
+                "eventPlaceId": 0,
+                "maxTickets": 100,
+                "minTickets": 50,
+                "minPrice": 30,
+                "minDays": 1,
+            }
+        ): 1,
+    }
+    for event in new_place_available_events:
+        expected[event] -= 1
+    assert sum(expected.values()) == 0
+    _cleanup_asserted_events(events, new_place_available_events)
+    #  end-region   -- NewEventPlaceAvailable
+
+    #  begin-region -- EventPlaceUpdated
+    event_place_updated_events = [
+        event for event in events if isinstance(event, events_models.EventPlaceUpdated)
+    ]
+    expected = events_models.EventPlaceUpdated.model_validate(
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 150,
+            "minTickets": 20,
+            "minPrice": 30,
+            "minDays": 2,
+        }
+    )
+    assert all(event == expected for event in event_place_updated_events)
+    _cleanup_asserted_events(events, event_place_updated_events)
+    #  end-region   -- EventPlaceUpdated
+
+    #  begin-region -- NewEventRequest
+    new_event_request_events = [
+        event for event in events if isinstance(event, events_models.NewEventRequest)
+    ]
+    expected = [
+        {
+            "id": 0,
+            "creator": MatchesAnyStr(),
+            "eventPlaceId": 0,
+            "ticketPrice": 20,
+            "cancelDate": MatchesAnyInt(),
+            "startDate": MatchesAnyInt(),
+            "daysAmount": 1,
+        },
+        {
+            "id": 0,
+            "creator": MatchesAnyStr(),
+            "eventPlaceId": 0,
+            "ticketPrice": 20,
+            "cancelDate": MatchesAnyInt(),
+            "startDate": MatchesAnyInt(),
+            "daysAmount": 4,
+        },
+    ]
+    expected_counters = [2, 3]
+    for event in new_event_request_events:
+        expected_counters[expected.index(event.model_dump(by_alias=True))] -= 1
+    assert sum(expected_counters) == 0
+    _cleanup_asserted_events(events, new_event_request_events)
+    #  end-region   -- NewEventRequest
+
+    #  begin-region -- EventStatusChanged
+    event_status_changed_events = [
+        event for event in events if isinstance(event, events_models.EventStatusChanged)
+    ]
+    expected = {
+        events_models.EventStatusChanged.model_validate(data): count
+        for data, count in [({"eventId": 0, "status": 1}, 3)]
+    }
+    for event in event_status_changed_events:
+        expected[event] -= 1
+    assert sum(expected.values()) == 0
+    _cleanup_asserted_events(events, event_status_changed_events)
+    #  end-region   -- EventStatusChanged
 
     assert len(events) == 0, events
 
