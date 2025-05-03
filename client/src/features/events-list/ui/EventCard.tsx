@@ -1,9 +1,10 @@
 import type { Event } from "@/entities/event";
 import type { User } from "@/entities/user";
-import { format, fromUnixTime } from "date-fns";
+
 import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
 import { StatusBage } from "./StatusBage";
+import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 
 type EventCardProps = {
   event: Event;
@@ -22,7 +23,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
       <Link to={`/events/${event.id}`}>
         <div className=" p-5">
           <h2>{title}</h2>
-          <p>{format(fromUnixTime(startDateTimestamp / 1000), "dd.LL.y")}</p>
+          <p>{formatTimestamp(startDateTimestamp)}</p>
           <p>{place.title}</p>
           <p>{description}</p>
           {isMaster ? (
