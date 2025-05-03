@@ -69,7 +69,6 @@ const loadFixture = blockchainRestoreDisabled ? async <T>(fn: () => T) => await 
 export { loadFixture };
 
 export async function deployContract(): Promise<ContractsFixture> {
-  console.log("Deploying contract");
   const [owner, master, devTeam, creator, staff] = await ethers.getSigners();
   const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
