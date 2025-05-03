@@ -20,13 +20,13 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   if (!(events && user)) return <p>No data for some reason</p>;
 
   const displayEvents = filterFn
-    ? limitedEvents.filter((event) => filterFn(event, user))
-    : limitedEvents;
+    ? events.filter((event) => filterFn(event, user))
+    : events;
   const limitedEvents = limit ? displayEvents.slice(0, limit) : displayEvents;
 
   return (
     <div>
-      {displayEvents.map((event) => (
+      {limitedEvents.map((event) => (
         <EventCard key={event.id} event={event} user={user} />
       ))}
     </div>
