@@ -44,10 +44,13 @@ ProcessStarter = Generator[None]
 @pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
     printer_session("Starting hardhat node")
-    yield from _execute(
-        "pnpm exec hardhat node",
-        yield_after_line="Listening on ",
-    )
+    try:
+        yield from _execute(
+            "pnpm exec hardhat node",
+            yield_after_line="Listening on ",
+        )
+    except (subprocess.TimeoutExpired, ValueError):
+        pass
     printer_session("Hardhat node terminated")
 
 
