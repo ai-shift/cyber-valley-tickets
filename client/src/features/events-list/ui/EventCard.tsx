@@ -1,6 +1,9 @@
 import type { Event } from "@/entities/event";
 import type { User } from "@/entities/user";
+import { format, fromUnixTime } from "date-fns";
+import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
+import { StatusBage } from "./StatusBage";
 
 type EventCardProps = {
   event: Event;
@@ -8,26 +11,32 @@ type EventCardProps = {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
-  const { imageUrl, place, startDateTimestamp, daysAmount, title } = event;
+  const { place, startDateTimestamp, description, title, ticketPrice, status } =
+    event;
+
+  const hasTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
+  const isMaster = user.role === "master";
 
   return (
-    <article>
+    <article className=" border-2 border-red-500">
       <Link to={`/events/${event.id}`}>
-        <img
-          src={
-            imageUrl ??
-            "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
-          }
-          alt={title}
-        />
-        <div className="flex justify-between">
-          <div>
-            <h3>{place.title}</h3>
-            <p>{title}</p>
-            <p>
-              {startDateTimestamp} ({daysAmount})
-            </p>
-          </div>
+        <div className=" p-5">
+          <h2>{title}</h2>
+          <p>{format(fromUnixTime(startDateTimestamp / 1000), "dd.LL.y")}</p>
+          <p>{place.title}</p>
+          <p>{description}</p>
+          {isMaster ? (
+            <StatusBage status={status} />
+          ) : (
+            <div className="flex justify-between items-center">
+              <p>{ticketPrice}</p>
+              {hasTicket ? (
+                <Button> Show ticket</Button>
+              ) : (
+                <Button> Attend</Button>
+              )}
+            </div>
+          )}
         </div>
       </Link>
     </article>

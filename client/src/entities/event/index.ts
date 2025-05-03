@@ -1,2 +1,2 @@
-export type { Event, EventDto } from "./model/types";
+export type { Event, EventDto, EventStatus } from "./model/types";
 export { eventQueries } from "./api/eventQueries";
