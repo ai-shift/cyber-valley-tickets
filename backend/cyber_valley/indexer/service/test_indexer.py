@@ -3,7 +3,7 @@ import os
 import subprocess
 import threading
 from collections.abc import Callable, Generator
-from contextlib import AbstractContextManager, contextmanager
+from contextlib import AbstractContextManager, contextmanager, suppress
 from functools import partial
 from pathlib import Path
 from typing import Final, Literal
@@ -34,9 +34,6 @@ CONTRACTS_INFO: Final = (
         / "CyberValleyEventTicket.json"
     ),
 )
-"""
-Contains contracts and their ABI in order of deployment
-"""
 
 ProcessStarter = Generator[None]
 
@@ -44,15 +41,13 @@ ProcessStarter = Generator[None]
 @pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
     printer_session("Starting hardhat node")
-    try:
+    with suppress(subprocess.TimeoutExpired, ValueError):
         yield from _execute(
             "node_modules/.bin/hardhat node",
             yield_after_line="Started HTTP and WebSocket JSON-RPC server at ",
         )
-    except (subprocess.TimeoutExpired, ValueError):
-        pass
     # This shit can't be killed from python. DIE ANYWAY
-    subprocess.run("pkill -f node.*hardhat.*.js", shell=True)
+    subprocess.run("pkill -f node.*hardhat.*.js", shell=True, check=False)  # noqa: S602 S607
     # Seems like hardhat node caches some stuff which should be cleaned
     (ETHEREUM_DIR / "cache/solidity-files-cache.json").unlink(missing_ok=True)
     printer_session("Hardhat node terminated")
@@ -178,6 +173,65 @@ def test_create_event_place(events_factory: EventsFactory) -> None:
             pytest.fail(f"Got unexpected NewEventPlaceAvailable events: {unexpected}")
     _cleanup_asserted_events(events, new_place_available_events)
     #  end-region   -- NewEventPlaceAvailable
+
+    assert len(events) == 0, events
+
+
+def test_update_event_place(events_factory: EventsFactory) -> None:
+    events = events_factory("updateEventPlace")
+
+    #  begin-region -- RoleGranted
+    role_to_count = {
+        "MASTER_ROLE": 14,
+        "STAFF_ROLE": 7,
+        "DEFAULT_ADMIN_ROLE": 14,
+        "EVENT_MANAGER_ROLE": 7,
+    }
+    for role, count in role_to_count.items():
+        role_granted_events = [
+            event
+            for event in events
+            if isinstance(event, events_models.RoleGranted) and event.role == role
+        ]
+        assert len(role_granted_events) == count
+        _cleanup_asserted_events(events, role_granted_events)
+    #  end-region   -- RoleGranted
+
+    #  begin-region -- NewEventPlaceAvailable
+    new_place_available_events = [
+        event
+        for event in events
+        if isinstance(event, events_models.NewEventPlaceAvailable)
+    ]
+    expected = events_models.NewEventPlaceAvailable.model_validate(
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "minDays": 1,
+        }
+    )
+    assert all(event == expected for event in new_place_available_events)
+    _cleanup_asserted_events(events, new_place_available_events)
+    #  end-region   -- NewEventPlaceAvailable
+
+    #  begin-region -- EventPlaceUpdated
+    event_place_updated_events = [
+        event for event in events if isinstance(event, events_models.EventPlaceUpdated)
+    ]
+    expected = events_models.EventPlaceUpdated.model_validate(
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 150,
+            "minTickets": 20,
+            "minPrice": 30,
+            "minDays": 2,
+        }
+    )
+    assert all(event == expected for event in event_place_updated_events)
+    _cleanup_asserted_events(events, event_place_updated_events)
+    #  end-region   -- EventPlaceUpdated
 
     assert len(events) == 0, events
 
