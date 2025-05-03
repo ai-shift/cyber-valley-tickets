@@ -43,7 +43,7 @@ ProcessStarter = Generator[None]
 
 @pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
-    printer_session("Starting hardha node")
+    printer_session("Starting hardhat node")
     yield from _execute(
         "pnpm exec hardhat node",
         yield_after_line="Listening on ",
