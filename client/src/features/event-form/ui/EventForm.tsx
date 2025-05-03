@@ -59,6 +59,11 @@ export const EventForm: React.FC<EventFormProps> = ({
     submitHandler(eventDto);
   }
 
+  const selectedPlace = places.find(
+    (place) => `${place.id}` === form.watch("place"),
+  );
+  const isSelected = !!selectedPlace;
+
   return (
     <Form {...form}>
       <form
@@ -116,6 +121,44 @@ export const EventForm: React.FC<EventFormProps> = ({
             </FormItem>
           )}
         />
+        <div className="flex">
+          <FormField
+            control={form.control}
+            name="startDate"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Start date</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    date={field.value}
+                    setDate={field.onChange}
+                    disabled={bookedRanges}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="daysAmount"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Duration in days</FormLabel>
+                <FormControl>
+                  <Input
+                    inputMode="decimal"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(handleNumericInput(e.target.value))
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="place"
@@ -131,16 +174,29 @@ export const EventForm: React.FC<EventFormProps> = ({
             </FormItem>
           )}
         />
+        {isSelected && (
+          <div className="">
+            <div>
+              <h3 className="text-[#02d7f2] font-bold mb-2">
+                {selectedPlace.title}
+              </h3>
+              <ul className=" space-y-1">
+                <li>Min Tickets: {selectedPlace.minTickets}</li>
+                <li>Max Tickets: {selectedPlace.maxTickets}</li>
+                <li>
+                  Cancel Days: {selectedPlace.daysBeforeCancel} days before
+                  event
+                </li>
+                <li>Min Ticket Price: {selectedPlace.minPrice} USDT</li>
+              </ul>
+            </div>
+          </div>
+        )}
         <FormField
           control={form.control}
           name="ticketPrice"
           render={({ field }) => {
-            const selectedPlace = form.watch().place;
-            const isSelected = selectedPlace !== "";
-
-            const minimumPrice =
-              places.find((place) => `${place.id}` === selectedPlace)
-                ?.minPrice ?? 0;
+            const minimumPrice = selectedPlace?.minPrice ?? 0;
             return (
               <FormItem>
                 <FormLabel>
@@ -165,42 +221,6 @@ export const EventForm: React.FC<EventFormProps> = ({
               </FormItem>
             );
           }}
-        />
-        <FormField
-          control={form.control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Start date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  date={field.value}
-                  setDate={field.onChange}
-                  disabled={bookedRanges}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="daysAmount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration in days</FormLabel>
-              <FormControl>
-                <Input
-                  inputMode="decimal"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
         />
         <Button type="submit" variant="default">
           Submit
