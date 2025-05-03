@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class EventPlaceUpdated(BaseModel):
@@ -61,6 +61,12 @@ class RoleGranted(BaseModel):
     role: str
     account: str
     sender: str
+
+    @validator("role", pre=True)
+    def validate_role(cls, value: bytes) -> str:
+        if not isinstance(value, bytes):
+            raise ValueError
+        return "UnknownYetRole"
 
 
 class RoleRevoked(BaseModel):
