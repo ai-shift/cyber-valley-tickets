@@ -11,13 +11,14 @@ from typing import Final, Literal
 import pytest
 from eth_typing import ChecksumAddress
 from hexbytes import HexBytes
+from pydantic import BaseModel
 from pytest_print import Printer
 from web3 import Web3
 from web3.contract import Contract
 from web3.types import LogReceipt
 from web3.utils.address import get_create_address
 
-from . import indexer
+from . import events_models, indexer
 
 ETHEREUM_DIR: Final = Path(__file__).parent.parent.parent.parent.parent / "ethereum"
 ETH_NETWORK_HOST: Final = "localhost:8545"
@@ -115,6 +116,57 @@ def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
         pass
 
 
+def test_create_event_place(w3: Web3, run_hardhat_test: HardhatTestRunner) -> None:
+    with run_hardhat_test("createEventPlace"):
+        contracts = _get_all_contracts(w3)
+        logs = _get_logs(w3)
+        events = [indexer.parse_log(log, contracts).unwrap() for log in logs]
+        print(f"Parserd {len(events)} events")
+
+        #  begin-region -- RoleGranted
+        role_to_count = {
+            "MASTER_ROLE": 14,
+            "STAFF_ROLE": 7,
+            "DEFAULT_ADMIN_ROLE": 14,
+            "EVENT_MANAGER_ROLE": 7,
+        }
+        for role, count in role_to_count.items():
+            role_granted_events = [
+                event
+                for event in events
+                if isinstance(event, events_models.RoleGranted) and event.role == role
+            ]
+            assert len(role_granted_events) == count
+            _cleanup_asserted_events(events, role_granted_events)
+        #  end-region   -- RoleGranted
+
+        #  begin-region -- NewEventPlaceAvailable
+        new_place_available_events = [
+            event
+            for event in events
+            if isinstance(event, events_models.NewEventPlaceAvailable)
+        ]
+        match new_place_available_events:
+            case [event]:
+                assert event == events_models.NewEventPlaceAvailable.model_validate(
+                    {
+                        "eventPlaceId": 0,
+                        "maxTickets": 100,
+                        "minTickets": 50,
+                        "minPrice": 20,
+                        "minDays": 1,
+                    }
+                )
+            case unexpected:
+                pytest.fail(
+                    f"Got unexpected NewEventPlaceAvailable events: {unexpected}"
+                )
+        _cleanup_asserted_events(events, new_place_available_events)
+        #  end-region   -- NewEventPlaceAvailable
+
+        assert len(events) == 0, events
+
+
 def _get_all_contracts(
     w3: Web3, *, from_block: int = 0, to_block: int | Literal["latest"] = "latest"
 ) -> list[type[Contract]]:
@@ -151,10 +203,8 @@ def _get_logs(w3: Web3) -> list[LogReceipt]:
     return w3.eth.filter({"fromBlock": 0, "toBlock": "latest"}).get_all_entries()
 
 
-def test_create_event(w3: Web3, run_hardhat_test: HardhatTestRunner) -> None:
-    with run_hardhat_test("createEvent"):
-        contracts = _get_all_contracts(w3)
-        logs = _get_logs(w3)
-        print(f"Got logs: {len(logs)}")
-        processed = [indexer.parse_log(log, contracts) for log in logs]
-        print(f"Processed logs: {processed}")
+def _cleanup_asserted_events[T: BaseModel](
+    events: list[BaseModel], asserted_events: list[T]
+) -> None:
+    for evt in asserted_events:
+        events.remove(evt)
