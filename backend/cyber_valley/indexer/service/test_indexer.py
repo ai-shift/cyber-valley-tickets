@@ -75,6 +75,20 @@ def w3() -> Web3:
     return w3
 
 
+EventsFactory = Callable[[str], list[BaseModel]]
+
+
+@pytest.fixture
+def events_factory(w3: Web3, run_hardhat_test: HardhatTestRunner) -> EventsFactory:
+    def inner(test_to_run: str) -> list[BaseModel]:
+        with run_hardhat_test(test_to_run):
+            contracts = _get_all_contracts(w3)
+            logs = _get_logs(w3)
+            return [indexer.parse_log(log, contracts).unwrap() for log in logs]
+
+    return inner
+
+
 def _execute(
     command: str,
     *,
@@ -116,55 +130,49 @@ def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
         pass
 
 
-def test_create_event_place(w3: Web3, run_hardhat_test: HardhatTestRunner) -> None:
-    with run_hardhat_test("createEventPlace"):
-        contracts = _get_all_contracts(w3)
-        logs = _get_logs(w3)
-        events = [indexer.parse_log(log, contracts).unwrap() for log in logs]
-        print(f"Parserd {len(events)} events")
+def test_create_event_place(events_factory: EventsFactory) -> None:
+    events = events_factory("createEventPlace")
 
-        #  begin-region -- RoleGranted
-        role_to_count = {
-            "MASTER_ROLE": 14,
-            "STAFF_ROLE": 7,
-            "DEFAULT_ADMIN_ROLE": 14,
-            "EVENT_MANAGER_ROLE": 7,
-        }
-        for role, count in role_to_count.items():
-            role_granted_events = [
-                event
-                for event in events
-                if isinstance(event, events_models.RoleGranted) and event.role == role
-            ]
-            assert len(role_granted_events) == count
-            _cleanup_asserted_events(events, role_granted_events)
-        #  end-region   -- RoleGranted
-
-        #  begin-region -- NewEventPlaceAvailable
-        new_place_available_events = [
+    #  begin-region -- RoleGranted
+    role_to_count = {
+        "MASTER_ROLE": 14,
+        "STAFF_ROLE": 7,
+        "DEFAULT_ADMIN_ROLE": 14,
+        "EVENT_MANAGER_ROLE": 7,
+    }
+    for role, count in role_to_count.items():
+        role_granted_events = [
             event
             for event in events
-            if isinstance(event, events_models.NewEventPlaceAvailable)
+            if isinstance(event, events_models.RoleGranted) and event.role == role
         ]
-        match new_place_available_events:
-            case [event]:
-                assert event == events_models.NewEventPlaceAvailable.model_validate(
-                    {
-                        "eventPlaceId": 0,
-                        "maxTickets": 100,
-                        "minTickets": 50,
-                        "minPrice": 20,
-                        "minDays": 1,
-                    }
-                )
-            case unexpected:
-                pytest.fail(
-                    f"Got unexpected NewEventPlaceAvailable events: {unexpected}"
-                )
-        _cleanup_asserted_events(events, new_place_available_events)
-        #  end-region   -- NewEventPlaceAvailable
+        assert len(role_granted_events) == count
+        _cleanup_asserted_events(events, role_granted_events)
+    #  end-region   -- RoleGranted
 
-        assert len(events) == 0, events
+    #  begin-region -- NewEventPlaceAvailable
+    new_place_available_events = [
+        event
+        for event in events
+        if isinstance(event, events_models.NewEventPlaceAvailable)
+    ]
+    match new_place_available_events:
+        case [event]:
+            assert event == events_models.NewEventPlaceAvailable.model_validate(
+                {
+                    "eventPlaceId": 0,
+                    "maxTickets": 100,
+                    "minTickets": 50,
+                    "minPrice": 20,
+                    "minDays": 1,
+                }
+            )
+        case unexpected:
+            pytest.fail(f"Got unexpected NewEventPlaceAvailable events: {unexpected}")
+    _cleanup_asserted_events(events, new_place_available_events)
+    #  end-region   -- NewEventPlaceAvailable
+
+    assert len(events) == 0, events
 
 
 def _get_all_contracts(
