@@ -14,6 +14,8 @@ from web3.contract import Contract
 from web3.exceptions import MismatchedABI
 from web3.types import LogReceipt
 
+from . import event_models
+
 log = logging.getLogger(__name__)
 
 
@@ -99,25 +101,3 @@ def parse_log(
         return None
 
     return event["event"]
-
-
-def decode_log(log_receipt: LogReceipt, contract_abi: list[dict[str, Any]]) -> Any:
-    event_signature_hash = log_receipt["topics"][0]
-    w3 = Web3()
-
-    for item in contract_abi:
-        if item["type"] == "event":
-            event_name = item["name"]
-            input_types = ",".join([arg["type"] for arg in item["inputs"]])
-            event_signature_text = f"{event_name}({input_types})"
-            calculated_hash = w3.keccak(text=event_signature_text)
-
-            if calculated_hash == event_signature_hash:
-                # Found the event, now decode the data
-                event = w3.eth.contract(abi=[item]).events[
-                    event_name
-                ]()  # Create a temporary contract for this event
-                decoded_event = event.process_log(log_receipt)
-                return event_name, decoded_event["args"]
-
-    return None, None
