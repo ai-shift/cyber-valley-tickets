@@ -136,10 +136,12 @@ def _get_all_contracts(
         deployed_bytecode = w3.eth.get_code(address).hex()
         for abi_path in CONTRACTS_INFO:
             meta_info = json.loads(abi_path.read_text())
+            # Cut 0x out
             if meta_info["deployedBytecode"][2:] != deployed_bytecode:
                 continue
             abi = meta_info["abi"]
-            if abi not in (contract.abi for contract in contracts):
+            # Only unique ABIs are requried
+            if abi in (contract.abi for contract in contracts):
                 continue
             contracts.append(w3.eth.contract(abi=abi))
     assert len(contracts) == len(CONTRACTS_INFO)
