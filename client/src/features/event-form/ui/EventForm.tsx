@@ -1,7 +1,6 @@
 import type { EventPlace } from "@/entities/place";
 import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
-import type { EventFormInput } from "../model/types";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,16 +19,16 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
-import type { EventDto } from "@/entities/event";
+import type { Event, EventDto } from "@/entities/event";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
-import { mapEventFormToEventDto } from "../lib/mapEvent";
+import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
   places: EventPlace[];
   onSumbit: (values: EventDto) => void;
-  existingEvent?: EventFormInput;
+  existingEvent?: Event;
 };
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -38,12 +37,15 @@ export const EventForm: React.FC<EventFormProps> = ({
   onSumbit: submitHandler,
   existingEvent,
 }) => {
+  const eventForEdit = existingEvent
+    ? mapEventToEventForm(existingEvent)
+    : undefined;
   const formSchema = createFormSchema(places, bookedRanges);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: existingEvent
-      ? { ...existingEvent }
+    defaultValues: eventForEdit
+      ? { ...eventForEdit }
       : {
           title: "Title",
           description: "Long ass description to satisfy the f*king form",
