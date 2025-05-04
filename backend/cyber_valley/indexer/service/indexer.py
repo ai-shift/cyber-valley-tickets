@@ -1,7 +1,7 @@
-from web3 import Web3
-from pydantic import field_validator
 import asyncio
+import importlib
 import logging
+import pkgutil
 from collections.abc import Iterable
 from dataclasses import dataclass
 from queue import Queue
@@ -14,12 +14,16 @@ from returns.result import safe
 from tenacity import after_log, before_log, retry, wait_fixed
 from web3 import AsyncWeb3, WebSocketProvider
 from web3.contract import Contract
-from web3.exceptions import MismatchedABI, LogTopicError
+from web3.exceptions import LogTopicError, MismatchedABI
 from web3.types import LogReceipt
 
-from . import events_models
-
 log = logging.getLogger(__name__)
+
+_package_name = ".events"
+_EVENTS_MODULES = [
+    importlib.import_module(f"{_package_name}.{module_name}")
+    for _, module_name, _ in pkgutil.walk_packages([_package_name])
+]
 
 
 @dataclass
@@ -31,19 +35,6 @@ class SupportedContract:
 class NodeListenerStoppedError(Exception):
     pass
 
-
-_ROLES = ("DEFAULT_ADMIN_ROLE", "MASTER_ROLE", "STAFF_ROLE", "EVENT_MANAGER_ROLE")
-_BYTES_TO_ROLE = {Web3.keccak(text=role): role for role in ROLES}
-_BYTES_TO_ROLE[HexBytes(b"\x00" * 32)] = ROLES[0]
-
-@field_validator("role", mode="before")
-def _validate_role(cls: BaseModel, value: HexBytes) -> str:
-    try:
-        return BYTES_TO_ROLE[value]
-    except KeyError as e:
-        raise ValueError from e
-
-setattr(event_models.RoleGranted, "validate_role", _validate_role)
 
 def gather_events(
     queue: Queue[LogReceipt],
@@ -105,16 +96,18 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
         assert len(event_names) == len(set(event_names))
         for event_name in event_names:
             try:
-                event = getattr(contract.events, event_name).process_log(
-                    log_receipt
-                )
+                event = getattr(contract.events, event_name).process_log(log_receipt)
             except (MismatchedABI, LogTopicError):
                 continue
-            event_model = getattr(events_models, event["event"])
-            assert issubclass(event_model, BaseModel)
-            try:  # Some events have the same names e.g. Transfer or Approval
-                return cast(type[BaseModel], event_model).model_validate(event["args"])
-            except ValueError:
-                continue
+
+            for module in _EVENTS_MODULES:
+                event_model = getattr(module, event["event"])
+                assert issubclass(event_model, BaseModel)
+                try:  # Some events have the same names e.g. Transfer or Approval
+                    return cast(type[BaseModel], event_model).model_validate(
+                        event["args"]
+                    )
+                except ValueError:
+                    continue
 
     raise EventNotRecognizedError
