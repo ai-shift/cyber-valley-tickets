@@ -1,7 +1,13 @@
 import type { EventDto } from "@/entities/event/@x/order";
 
+export type Socials = {
+  type: string;
+  contactInfo: string;
+};
+
 interface BaseOrder {
   type: "create_event" | "buy_ticket";
+  socials?: Socials;
 }
 
 interface EventOrder extends BaseOrder {
@@ -15,7 +21,6 @@ interface TicketOrder extends BaseOrder {
   event?: never;
   ticket: {
     eventId: number;
-    socials?: string;
   };
 }
 
