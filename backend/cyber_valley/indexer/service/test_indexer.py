@@ -667,6 +667,11 @@ def test_update_event(events_factory: EventsFactory) -> None:
     assert len(events) == 0, events
 
 
+def test_buy_ticket(events_factory: EventsFactory) -> None:
+    events = events_factory("buyTicket")
+    assert len(events) == 0, events
+
+
 def _get_all_contracts(w3: Web3) -> list[type[Contract]]:
     return [
         w3.eth.contract(abi=json.loads(info_path.read_text())["abi"])
