@@ -11,6 +11,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
 from typing import Final, Literal, TypedDict
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     "cyber_valley.users",
     "cyber_valley.notifications",
     "cyber_valley.scripts",
+    "cyber_valley.indexer",
 ]
 
 REST_FRAMEWORK = {
@@ -209,3 +211,26 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EVENT_MODELS_BASE_PATH = BASE_DIR / "cyber_valley/indexer/service/events"
+ETH_NODE_HOST = os.environ.get("ETH_NODE_HOST", "localhost:8545")
+ETHEREUM_DIR: Final = BASE_DIR.parent / "ethereum"
+ETH_NETWORK_HOST: Final = "localhost:8545"
+# XXX: Order should match actual deployment flow
+CONTRACTS_INFO: Final = (
+    (
+        ETHEREUM_DIR
+        / "artifacts/contracts/mocks/SimpleERC20Xylose.sol"
+        / "SimpleERC20Xylose.json"
+    ),
+    (
+        ETHEREUM_DIR
+        / "artifacts/contracts/CyberValleyEventTicket.sol/"
+        / "CyberValleyEventTicket.json"
+    ),
+    (
+        ETHEREUM_DIR
+        / "artifacts/contracts/CyberValleyEventManager.sol"
+        / "CyberValleyEventManager.json"
+    ),
+)
