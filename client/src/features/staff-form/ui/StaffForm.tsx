@@ -1,0 +1,58 @@
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
+import { useForm } from "react-hook-form";
+import { formSchema } from "../model/formSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/ui/form";
+
+type StaffFormProps = {
+  onSubmit: (address: string) => void;
+};
+
+export const StaffForm: React.FC<StaffFormProps> = ({
+  onSubmit: submitHandler,
+}) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      address: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    submitHandler(values.address);
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 p-5">
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Staff address</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter string starting with 0x" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="w-full">
+          {" "}
+          {/* Submit button */}
+          Submit
+        </Button>
+      </form>
+    </Form>
+  );
+};

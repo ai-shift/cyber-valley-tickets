@@ -20,9 +20,13 @@ import { formSchema } from "../model/formSchema";
 
 type PlaceFormProps = {
   existingPlace?: EventPlaceForm;
+  onSubmit: (values: EventPlaceForm) => void;
 };
 
-export const PlaceForm: React.FC<PlaceFormProps> = ({ existingPlace }) => {
+export const PlaceForm: React.FC<PlaceFormProps> = ({
+  existingPlace,
+  onSubmit: submitHandler,
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingPlace
@@ -37,9 +41,8 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({ existingPlace }) => {
         },
   });
 
-  // TODO: Add smart contract call
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    submitHandler(values);
   }
 
   return (
