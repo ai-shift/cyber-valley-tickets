@@ -1018,13 +1018,13 @@
                 }
             }
         },
-        "/api/notifications/seen/{id}/": {
+        "/api/notifications/seen/{notification_id}/": {
             "post": {
                 "operationId": "api_notifications_seen_create",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "notificationId",
                         "schema": {
                             "type": "string"
                         },
