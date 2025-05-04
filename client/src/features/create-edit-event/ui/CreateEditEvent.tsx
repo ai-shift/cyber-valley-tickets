@@ -44,10 +44,9 @@ export const CreateEditEvent: React.FC<CreateEditEventProps> = ({
   if (!places || !events)
     return <p>Guys from tanstack. fix this pls already</p>;
 
-  const dateRanges = extractRanges(events);
-
   if (editEventId) {
     const foundEvent = events.find((event) => `${event.id}` === editEventId);
+    const dateRanges = extractRanges(events, Number(editEventId));
 
     if (!foundEvent) {
       return <p>Event you are trying to edit is not found</p>;
@@ -67,6 +66,7 @@ export const CreateEditEvent: React.FC<CreateEditEventProps> = ({
     );
   }
 
+  const dateRanges = extractRanges(events);
   return (
     <EventForm bookedRanges={dateRanges} places={places} onSumbit={onSubmit} />
   );
