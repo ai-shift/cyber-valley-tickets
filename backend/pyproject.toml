@@ -25,6 +25,7 @@ dev = [
     "djangorestframework-stubs[compatible-mypy]>=3.16.0",
     "mypy>=1.15.0",
     "pytest>=8.3.5",
+    "pytest-django>=4.11.1",
     "pytest-print>=1.1.0",
     "ruff>=0.11.7",
 ]
@@ -135,3 +136,6 @@ django_settings_module = "cyber_valley.settings"
 
 [tool.uv.sources]
 pyshen = { git = "https://github.com/ai-shift/pyshen", rev = "c869ba2676a89dc05ff8a32a829d59636031666c" }
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "cyber_valley.settings"

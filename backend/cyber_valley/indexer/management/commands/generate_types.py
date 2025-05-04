@@ -27,41 +27,37 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
-        assert settings.ABI_BASE_PATH.exists()
-        assert settings.EVENT_MODELS_PATH.exists()
+        settings.EVENT_MODELS_BASE_PATH.mkdir(parents=True, exist_ok=True)
+        (settings.EVENT_MODELS_BASE_PATH / "__init__.py").write_text("")
 
-        events_abi: list[dict[str, Any]] = []
-        for abi_file in settings.ABI_BASE_PATH.glob("*.json"):
-            self.stdout.write(f"Parsing ABI file: {abi_file}")
-            contents = json.loads(abi_file.read_text())
-            events_abi.extend(
-                el
-                for el in contents.get("abi", ())
-                if el["type"] == "event"
-                and all(evt["name"] != el["name"] for evt in events_abi)
+        for info_path in settings.CONTRACTS_INFO:
+            self.stdout.write(f"Parsing ABI file: {info_path}")
+            contents = json.loads(info_path.read_text())
+            events_abi = [el for el in contents.get("abi", ()) if el["type"] == "event"]
+            self.stdout.write(f"Parsed {len(events_abi)} raw ABI events")
+            schema = {
+                "title": "Cyber valley events",
+                "type": "object",
+                "properties": {
+                    event["name"]: event_abi_to_json_schema(event)
+                    for event in events_abi
+                },
+            }
+
+            if options["print_schema"]:
+                self.stdout.write("Generated JSON Schema:")
+                self.stdout.write(pformat(schema))
+
+            datamodel_code_generator.generate(
+                json.dumps(schema),
+                input_file_type=datamodel_code_generator.InputFileType.JsonSchema,
+                snake_case_field=True,
+                output=settings.EVENT_MODELS_BASE_PATH / (info_path.stem + ".py"),
+                use_double_quotes=True,
+                enable_faux_immutability=True,
             )
-        self.stdout.write(f"Parsed {len(events_abi)} raw ABI events")
-        schema = {
-            "title": "Cyber valley events",
-            "type": "object",
-            "properties": {
-                event["name"]: event_abi_to_json_schema(event) for event in events_abi
-            },
-        }
-
-        if options["print_schema"]:
-            self.stdout.write("Generated JSON Schema:")
-            self.stdout.write(pformat(schema))
-
-        datamodel_code_generator.generate(
-            json.dumps(schema),
-            input_file_type=datamodel_code_generator.InputFileType.JsonSchema,
-            snake_case_field=True,
-            output=settings.EVENT_MODELS_PATH,
-            use_double_quotes=True,
-        )
         self.stdout.write(
-            self.style.SUCCESS(f"Models saved to {settings.EVENT_MODELS_PATH}")
+            self.style.SUCCESS(f"Models saved to {settings.EVENT_MODELS_BASE_PATH}")
         )
 
 

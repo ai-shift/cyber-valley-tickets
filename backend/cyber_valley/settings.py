@@ -196,6 +196,25 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-ABI_BASE_PATH = BASE_DIR / "../ethereum/ignition/deployments/chain-11155111/artifacts"
-EVENT_MODELS_PATH = BASE_DIR / "cyber_valley/indexer/events_models.py"
+EVENT_MODELS_BASE_PATH = BASE_DIR / "cyber_valley/indexer/service/events"
 ETH_NODE_HOST = os.environ.get("ETH_NODE_HOST", "localhost:8545")
+ETHEREUM_DIR: Final = BASE_DIR.parent / "ethereum"
+ETH_NETWORK_HOST: Final = "localhost:8545"
+# XXX: Order should match actual deployment flow
+CONTRACTS_INFO: Final = (
+    (
+        ETHEREUM_DIR
+        / "artifacts/contracts/mocks/SimpleERC20Xylose.sol"
+        / "SimpleERC20Xylose.json"
+    ),
+    (
+        ETHEREUM_DIR
+        / "artifacts/contracts/CyberValleyEventTicket.sol/"
+        / "CyberValleyEventTicket.json"
+    ),
+    (
+        ETHEREUM_DIR
+        / "artifacts/contracts/CyberValleyEventManager.sol"
+        / "CyberValleyEventManager.json"
+    ),
+)
