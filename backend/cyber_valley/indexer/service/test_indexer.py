@@ -378,14 +378,7 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
     _cleanup_asserted_events(events, event_status_changed_events)
     #  end-region   -- EventStatusChanged
 
-    _cleanup_asserted_events(
-        events,
-        [
-            event
-            for event in events
-            if event.__class__.__name__ in ("Transfer", "Approval")
-        ],
-    )
+    _cleanup_erc_events(events)
 
     assert len(events) == 0, events
 
@@ -406,3 +399,16 @@ def _cleanup_asserted_events[T: BaseModel](
 ) -> None:
     for evt in asserted_events:
         events.remove(evt)
+
+
+def _cleanup_erc_events[T: BaseModel](
+    events: list[BaseModel]
+) -> None:
+    _cleanup_asserted_events(
+        events,
+        [
+            event
+            for event in events
+            if event.__class__.__name__ in ("Transfer", "Approval")
+        ],
+    )
