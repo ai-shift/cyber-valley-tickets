@@ -38,6 +38,9 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: ^5.74.6
         version: 5.74.7(@tanstack/react-query@5.74.4(react@19.1.0))(react@19.1.0)
+      '@yudiel/react-qr-scanner':
+        specifier: ^2.3.0
+        version: 2.3.0(@types/emscripten@1.40.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1059,6 +1062,9 @@ packages:
   '@types/babel__traverse@7.20.7':
     resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
 
+  '@types/emscripten@1.40.1':
+    resolution: {integrity: sha512-sr53lnYkQNhjHNN0oJDdUm5564biioI5DuOpycufDVK7D3y+GR3oUswe2rlwY1nPNyusHbrJ9WoTyIHl4/Bpwg==}
+
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
 
@@ -1129,6 +1135,12 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0
 
+  '@yudiel/react-qr-scanner@2.3.0':
+    resolution: {integrity: sha512-LrqcsZycchneyCXTWaZ7odMSUMF73InyKxvICS6sSVhxCZ6NhA+cI7EYwn/naedG9vCkw7pojWBAEoMjQnnHcg==}
+    peerDependencies:
+      react: ^17 || ^18 || ^19
+      react-dom: ^17 || ^18 || ^19
+
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -1163,6 +1175,9 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
+  barcode-detector@3.0.1:
+    resolution: {integrity: sha512-3fCzG/Py4SVgZJhubD1mt7rVprtHEVWrxQN4FUOG0oulPE4193evbgyptxcOYsfTNEtMlWc+Ec9tdxhjlR4/Ww==}
 
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -1774,6 +1789,9 @@ packages:
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 
+  sdp@3.2.0:
+    resolution: {integrity: sha512-d7wDPgDV3DDiqulJjKiV2865wKsJ34YI+NDREbm+FySq6WuKOikwyNQcm+doLAZ1O6ltdO0SeKle2xMpN3Brgw==}
+
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
@@ -1938,6 +1956,10 @@ packages:
       yaml:
         optional: true
 
+  webrtc-adapter@9.0.3:
+    resolution: {integrity: sha512-5fALBcroIl31OeXAdd1YUntxiZl1eHlZZWzNg3U4Fn+J9/cGL3eT80YlrsWGvj2ojuz1rZr2OXkgCzIxAZ7vRQ==}
+    engines: {node: '>=6.0.0', npm: '>=3.10.0'}
+
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
@@ -1981,6 +2003,11 @@ packages:
         optional: true
       use-sync-external-store:
         optional: true
+
+  zxing-wasm@2.1.1:
+    resolution: {integrity: sha512-bVginoJO28p4jRC9T1mFXF3hi0ZlZfF1Y2QHCFFxMczdlgFDBk+pwWJKwWMSNH0qpoOxLNxEDCcrt6gtLBS5PQ==}
+    peerDependencies:
+      '@types/emscripten': '>=1.39.6'
 
 snapshots:
 
@@ -2793,6 +2820,8 @@ snapshots:
     dependencies:
       '@babel/types': 7.27.0
 
+  '@types/emscripten@1.40.1': {}
+
   '@types/estree@1.0.7': {}
 
   '@types/json-schema@7.0.15': {}
@@ -2897,6 +2926,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@yudiel/react-qr-scanner@2.3.0(@types/emscripten@1.40.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      barcode-detector: 3.0.1(@types/emscripten@1.40.1)
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      webrtc-adapter: 9.0.3
+    transitivePeerDependencies:
+      - '@types/emscripten'
+
   acorn-jsx@5.3.2(acorn@8.14.1):
     dependencies:
       acorn: 8.14.1
@@ -2925,6 +2963,12 @@ snapshots:
       tslib: 2.8.1
 
   balanced-match@1.0.2: {}
+
+  barcode-detector@3.0.1(@types/emscripten@1.40.1):
+    dependencies:
+      zxing-wasm: 2.1.1(@types/emscripten@1.40.1)
+    transitivePeerDependencies:
+      - '@types/emscripten'
 
   brace-expansion@1.1.11:
     dependencies:
@@ -3506,6 +3550,8 @@ snapshots:
 
   scheduler@0.26.0: {}
 
+  sdp@3.2.0: {}
+
   semver@6.3.1: {}
 
   semver@7.7.1: {}
@@ -3614,6 +3660,10 @@ snapshots:
       jiti: 2.4.2
       lightningcss: 1.29.2
 
+  webrtc-adapter@9.0.3:
+    dependencies:
+      sdp: 3.2.0
+
   which@2.0.2:
     dependencies:
       isexe: 2.0.0
@@ -3634,3 +3684,8 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.1.2
       react: 19.1.0
+
+  zxing-wasm@2.1.1(@types/emscripten@1.40.1):
+    dependencies:
+      '@types/emscripten': 1.40.1
+      type-fest: 4.40.1

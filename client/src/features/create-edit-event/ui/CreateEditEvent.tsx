@@ -1,9 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-
-import { type Event, eventQueries, type EventDto } from "@/entities/event";
-import { placesQueries } from "@/entities/place/api/placesQueries";
+import type { Event, EventDto } from "@/entities/event";
 import { EventForm } from "@/features/event-form";
 import { extractRanges } from "../lib/extractRanges";
+import { useEventsAndPlaces } from "../api/useEventsAndPlaces";
+import { Suspense } from "react";
 
 type CreateEditEventBaseProps = {
   onSubmit: (event: EventDto) => void;
@@ -26,23 +25,11 @@ export const CreateEditEvent: React.FC<CreateEditEventProps> = ({
   onSubmit,
   canEdit,
 }) => {
-  const {
-    data: places,
-    error: placeError,
-    isFetching: placeLoading,
-  } = useQuery(placesQueries.list());
-  const {
-    data: events,
-    error: eventError,
-    isFetching: eventLoading,
-  } = useQuery(eventQueries.list());
+  const { events, places, isLoading, errors } = useEventsAndPlaces();
 
-  if (placeLoading || eventLoading)
-    //TODO: Another place with conditional hell. What to do..
-    return <p>Loading</p>;
-  if (eventError || placeError) return <p>Error</p>;
-  if (!places || !events)
-    return <p>Guys from tanstack. fix this pls already</p>;
+  if (isLoading) return <p>Loading</p>;
+  if (errors.length > 0) return <p>{errors.at(0)?.message}</p>;
+  if (!events || !places) return <p>Internal error. Try again later</p>;
 
   if (editEventId) {
     const foundEvent = events.find((event) => `${event.id}` === editEventId);
@@ -57,17 +44,25 @@ export const CreateEditEvent: React.FC<CreateEditEventProps> = ({
     }
 
     return (
-      <EventForm
-        existingEvent={foundEvent}
-        bookedRanges={dateRanges}
-        places={places}
-        onSumbit={onSubmit}
-      />
+      <Suspense fallback={<p>Loading</p>}>
+        <EventForm
+          existingEvent={foundEvent}
+          bookedRanges={dateRanges}
+          places={places}
+          onSumbit={onSubmit}
+        />
+      </Suspense>
     );
   }
 
   const dateRanges = extractRanges(events);
   return (
-    <EventForm bookedRanges={dateRanges} places={places} onSumbit={onSubmit} />
+    <Suspense fallback={<p>Loading</p>}>
+      <EventForm
+        bookedRanges={dateRanges}
+        places={places}
+        onSumbit={onSubmit}
+      />
+    </Suspense>
   );
 };
