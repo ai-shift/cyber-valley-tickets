@@ -16,3 +16,7 @@ export const myEventsFilter = (event: Event, user: User) => {
     event.creator.address === user.address
   );
 };
+
+export const upcoming = (event: Event) => {
+  return event.status === "approved";
+};
