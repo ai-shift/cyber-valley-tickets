@@ -10,6 +10,7 @@ dependencies = [
     "djangorestframework-camel-case>=1.4.2",
     "djangorestframework-simplejwt[crypto]>=5.5.0",
     "drf-spectacular>=0.28.0",
+    "drf-standardized-errors[openapi]>=0.14.1",
     "eth-account>=0.13.7",
     "pydantic>=2.11.3",
     "web3>=7.10.0",

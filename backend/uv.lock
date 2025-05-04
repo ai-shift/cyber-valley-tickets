@@ -92,6 +92,7 @@ dependencies = [
     { name = "djangorestframework-camel-case" },
     { name = "djangorestframework-simplejwt", extra = ["crypto"] },
     { name = "drf-spectacular" },
+    { name = "drf-standardized-errors", extra = ["openapi"] },
     { name = "eth-account" },
     { name = "pydantic" },
     { name = "web3" },
@@ -112,6 +113,7 @@ requires-dist = [
     { name = "djangorestframework-camel-case", specifier = ">=1.4.2" },
     { name = "djangorestframework-simplejwt", extras = ["crypto"], specifier = ">=5.5.0" },
     { name = "drf-spectacular", specifier = ">=0.28.0" },
+    { name = "drf-standardized-errors", extras = ["openapi"], specifier = ">=0.14.1" },
     { name = "eth-account", specifier = ">=0.13.7" },
     { name = "pydantic", specifier = ">=2.11.3" },
     { name = "web3", specifier = ">=7.10.0" },
@@ -421,6 +423,25 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/da/b9/741056455aed00fa51a1df41fad5ad27c8e0d433b6bf490d4e60e2808bc6/drf_spectacular-0.28.0.tar.gz", hash = "sha256:2c778a47a40ab2f5078a7c42e82baba07397bb35b074ae4680721b2805943061", size = 237849 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/66/c2929871393b1515c3767a670ff7d980a6882964a31a4ca2680b30d7212a/drf_spectacular-0.28.0-py3-none-any.whl", hash = "sha256:856e7edf1056e49a4245e87a61e8da4baff46c83dbc25be1da2df77f354c7cb4", size = 103928 },
+]
+
+[[package]]
+name = "drf-standardized-errors"
+version = "0.14.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "djangorestframework" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4d/cc/fd5b8cbc66c361125cba0497573a5ecac94521a715267d7db4d113257a73/drf_standardized_errors-0.14.1.tar.gz", hash = "sha256:0610dcd0096b75365102d276022a22e59a1f8db8825bb0bff05e1b7194ba145d", size = 58730 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/44/70/589efc32d6f268576e2f3c2a595ef19a305c5d5acbfd26d10ebd45278778/drf_standardized_errors-0.14.1-py3-none-any.whl", hash = "sha256:4941e0f81be94eb0904549999cf221988a5b0f524041c3877530e24f70328ed8", size = 25512 },
+]
+
+[package.optional-dependencies]
+openapi = [
+    { name = "drf-spectacular" },
+    { name = "inflection" },
 ]
 
 [[package]]
