@@ -639,7 +639,7 @@
                     "closed"
                 ],
                 "type": "string",
-                "description": "* `submitted` - Submitted\n* `approved` - Approved\n* `declined` - Declined\n* `cancelled` - Cancelled\n* `closed` - Closed"
+                "description": "* `submitted` - submitted\n* `approved` - approved\n* `declined` - declined\n* `cancelled` - cancelled\n* `closed` - closed"
             },
             "Ticket": {
                 "type": "object",
