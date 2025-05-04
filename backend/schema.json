@@ -2478,6 +2478,10 @@
             "Notification": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string",
+                        "readOnly": true
+                    },
                     "title": {
                         "type": "string",
                         "readOnly": true
@@ -2491,10 +2495,17 @@
                         "format": "date-time",
                         "readOnly": true,
                         "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
                     }
                 },
                 "required": [
                     "body",
+                    "createdAt",
+                    "id",
                     "seenAt",
                     "title"
                 ]
