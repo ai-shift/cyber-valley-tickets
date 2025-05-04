@@ -12,6 +12,7 @@ type EventDetailsProps = {
   eventId: string;
 };
 export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
+  const { user } = useUser();
   const {
     data: event,
     error,
@@ -19,7 +20,6 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   } = useQuery(eventQueries.detail(+eventId));
 
   //TODO: Replace with single component
-  const { user } = useUser();
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.message}</p>;
   if (!event || !user) return <p>GG</p>;
