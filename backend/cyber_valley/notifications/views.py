@@ -29,7 +29,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
         return Notification.objects.filter(user=user)
 
     @extend_schema(responses={204: OpenApiResponse()})
-    @action(detail=False, methods=["post"], url_path="seen/(?P<id>[^/.]+)")
+    @action(detail=False, methods=["post"], url_path="seen/(?P<notification_id>[^/.]+)")
     def seen(self, request: Request, notification_id: int | None = None) -> Response:
         user = request.user
         notification = get_object_or_404(
