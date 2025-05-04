@@ -5,18 +5,19 @@ import { Button } from "@/shared/ui/button";
 
 type ShowTicketProps = {
   ticket: Ticket;
-  isOld: boolean;
+  hasPassed: boolean;
 };
-export const ShowTicket: React.FC<ShowTicketProps> = ({ ticket, isOld }) => {
+export const ShowTicket: React.FC<ShowTicketProps> = ({ ticket, hasPassed }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
         {ticket.isRedeemed ? (
           <Button disabled>Ticket redeemed</Button>
         ) : (
-          <Button disabled={isOld}>Show ticket</Button>
+          <Button disabled={hasPassed}>Show ticket</Button>
         )}
       </DialogTrigger>
+      {/* TODO: Use rem insted of px */}
       <DialogContent className="w-11/12 sm:max-w-[425px]">
         <div className="flex justify-center items-center py-20">
           <QRCode size={256} value={`${ticket.id}`} />

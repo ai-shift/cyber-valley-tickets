@@ -43,7 +43,7 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
             <FormItem>
               <FormLabel>Network</FormLabel>
               <FormControl>
-                <SelectNetwork value={field.value} onChange={field.onChange} />
+                <SelectNetwork networkName={field.value} onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

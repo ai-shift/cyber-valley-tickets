@@ -13,6 +13,7 @@ type CreateEventProps = CreateEditEventBaseProps & {
   canEdit?: undefined;
 };
 
+// TODO: Cast `editEventId` to in on the page layer
 type EditEventProps = CreateEditEventBaseProps & {
   editEventId: string;
   canEdit: (event: Event) => boolean;

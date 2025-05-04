@@ -13,6 +13,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
 
   const { mutate } = useReadNotification();
 
+  // TODO: Use notification id as int
   function clickHandler() {
     mutate("1");
   }

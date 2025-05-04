@@ -10,5 +10,6 @@ export const canEdit = (user: User, event: Event) => {
   return eventPending && (editingPermited || isCreator);
 };
 
+// TODO: Rename
 export const currCanEdit = (user: User) => (event: Event) =>
   canEdit(user, event);
