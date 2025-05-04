@@ -11,6 +11,7 @@ type TicketProps = {
 };
 
 export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
+  if (user.role === "master") return null;
   const navigate = useNavigate();
   const { setTicketOrder } = useOrderStore();
 
