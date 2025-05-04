@@ -5,6 +5,7 @@ import { useOrderStore } from "@/entities/order";
 import { useNavigate } from "react-router";
 
 import { Button } from "@/shared/ui/button";
+import { eventPassed } from "../lib/eventPassed";
 type TicketProps = {
   user: User;
   event: Event;
@@ -16,6 +17,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   const { setTicketOrder } = useOrderStore();
 
   const haveTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
+  const isOld = eventPassed(event.startDateTimestamp / 1000, event.daysAmount);
 
   function initOrder() {
     setTicketOrder(event.id);
@@ -23,8 +25,17 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   }
 
   // TODO: Add is redeemed when endpoint ready
-  // TODO: Use ternary operator
-  //TODO: disabled if event pass or redeemed
-  if (!haveTicket) return <Button onClick={initOrder}>Attend</Button>;
-  if (haveTicket) return <Button>Show ticket</Button>;
+
+  return (
+    <div>
+      {isOld && <p>Event is already over</p>}
+      {haveTicket ? (
+        <Button disabled={isOld}>Show ticket</Button>
+      ) : (
+        <Button disabled={isOld} onClick={initOrder}>
+          Attend
+        </Button>
+      )}
+    </div>
+  );
 };
