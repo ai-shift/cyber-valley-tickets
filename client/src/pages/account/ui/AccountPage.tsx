@@ -19,7 +19,7 @@ export const AccountPage: React.FC = () => {
           />
           <p>{user.address.slice(0, 16)}...</p>
         </div>
-        <Link to="/my-events">My events</Link>
+        <Link to="/account/my-events">My events</Link>
         <Button>Logout</Button>
       </div>
     </PageContainer>

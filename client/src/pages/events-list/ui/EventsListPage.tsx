@@ -1,10 +1,10 @@
-import { EventsList as BaseEventList } from "@/features/events-list";
+import { EventsList, uniteFilter } from "@/features/events-list";
 import { PageContainer } from "@/shared/ui/PageContainer";
 
 export const EventsListPage: React.FC = () => {
   return (
     <PageContainer name="Events">
-      <BaseEventList />
+      <EventsList filterFn={uniteFilter} />
     </PageContainer>
   );
 };
