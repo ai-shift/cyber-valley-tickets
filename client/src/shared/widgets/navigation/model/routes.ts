@@ -17,15 +17,11 @@ export const routes: Route[] = [
     restrictedTo: ["master"],
   },
   {
-    path: "/profile",
-    title: "Profile",
-  },
-  {
     path: "/events/create",
     title: "Create event",
   },
   {
-    path: "/notifications",
-    title: "Notifications",
+    path: "/account",
+    title: "Account",
   },
 ];
