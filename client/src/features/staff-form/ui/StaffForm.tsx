@@ -48,8 +48,6 @@ export const StaffForm: React.FC<StaffFormProps> = ({
           )}
         />
         <Button type="submit" className="w-full">
-          {" "}
-          {/* Submit button */}
           Submit
         </Button>
       </form>

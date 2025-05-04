@@ -12,6 +12,7 @@ import {
   EditEventPage,
   CreatePlacePage,
   AssignStaffPage,
+  AccountPage,
 } from "@/pages";
 
 export const Router = () => {
@@ -37,7 +38,7 @@ export const Router = () => {
         <Route path="/purchase" element={<PurchasePage />} />
         <Route path="/socials" element={<SocialsPage />} />
 
-        <Route path="/profile" />
+        <Route path="/account" element={<AccountPage />} />
       </Routes>
     </BrowserRouter>
   );

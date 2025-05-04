@@ -9,3 +9,4 @@ export { SocialsPage } from "./socials";
 export { EditEventPage } from "./edit-event";
 export { CreatePlacePage } from "./create-place";
 export { AssignStaffPage } from "./assign-staff";
+export { AccountPage } from "./account/ui/AccountPage";
