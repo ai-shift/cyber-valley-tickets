@@ -729,6 +729,142 @@
                 }
             }
         },
+        "/api/ipfs/events/cover": {
+            "put": {
+                "operationId": "api_ipfs_events_cover_update",
+                "tags": [
+                    "api"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiIpfsEventsCoverUpdateErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "405": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse405"
+                                },
+                                "examples": {
+                                    "MethodNotAllowed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "method_not_allowed",
+                                                    "detail": "Method \"get\" not allowed.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "406": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse406"
+                                },
+                                "examples": {
+                                    "NotAcceptable": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_acceptable",
+                                                    "detail": "Could not satisfy the request Accept header.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "415": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse415"
+                                },
+                                "examples": {
+                                    "UnsupportedMediaType": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "unsupported_media_type",
+                                                    "detail": "Unsupported media type \"application/json\" in request.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse500"
+                                },
+                                "examples": {
+                                    "APIException": {
+                                        "value": {
+                                            "type": "server_error",
+                                            "errors": [
+                                                {
+                                                    "code": "error",
+                                                    "detail": "A server error occurred.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "204": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/notifications/": {
             "get": {
                 "operationId": "api_notifications_list",
@@ -1034,25 +1170,6 @@
                 "tags": [
                     "api"
                 ],
-                "requestBody": {
-                    "content": {
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Notification"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Notification"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Notification"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "400": {
                         "content": {
@@ -1496,17 +1613,17 @@
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/TokenRefresh"
+                                "$ref": "#/components/schemas/TokenRefreshRequest"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/TokenRefresh"
+                                "$ref": "#/components/schemas/TokenRefreshRequest"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TokenRefresh"
+                                "$ref": "#/components/schemas/TokenRefreshRequest"
                             }
                         }
                     },
@@ -1801,6 +1918,19 @@
                 }
             },
             "ApiEventsRetrieveErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ParseErrorResponse"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "client_error": "#/components/schemas/ParseErrorResponse"
+                    }
+                }
+            },
+            "ApiIpfsEventsCoverUpdateErrorResponse400": {
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
@@ -2693,14 +2823,22 @@
                     "access": {
                         "type": "string",
                         "readOnly": true
-                    },
-                    "refresh": {
-                        "type": "string",
-                        "writeOnly": true
                     }
                 },
                 "required": [
-                    "access",
+                    "access"
+                ]
+            },
+            "TokenRefreshRequest": {
+                "type": "object",
+                "properties": {
+                    "refresh": {
+                        "type": "string",
+                        "writeOnly": true,
+                        "minLength": 1
+                    }
+                },
+                "required": [
                     "refresh"
                 ]
             },

@@ -12,6 +12,7 @@ dependencies = [
     "drf-spectacular>=0.28.0",
     "drf-standardized-errors[openapi]>=0.14.1",
     "eth-account>=0.13.7",
+    "ipfshttpclient>=0.7.0",
     "pydantic>=2.11.3",
     "pyshen",
     "returns[compatible-mypy]>=0.25.0",
@@ -124,7 +125,7 @@ untyped_calls_exclude = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["telebot.*", "telegramify_markdown.*"]
+module = ["ipfshttpclient.*"]
 follow_untyped_imports = true
 
 [mypy.plugins]
