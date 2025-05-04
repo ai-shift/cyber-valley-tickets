@@ -1,8 +1,10 @@
+from pathlib import Path
 import json
 from pprint import pformat
 from typing import Any
 
 import datamodel_code_generator
+from datamodel_code_generator import DataModelType
 from django.conf import settings  # Import Django settings
 from django.core.management.base import BaseCommand, CommandParser
 
@@ -27,9 +29,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
-        settings.EVENT_MODELS_BASE_PATH.mkdir(parents=True, exist_ok=True)
-        (settings.EVENT_MODELS_BASE_PATH / "__init__.py").write_text("")
-
         for info_path in settings.CONTRACTS_INFO:
             self.stdout.write(f"Parsing ABI file: {info_path}")
             contents = json.loads(info_path.read_text())
@@ -55,6 +54,8 @@ class Command(BaseCommand):
                 output=settings.EVENT_MODELS_BASE_PATH / (info_path.stem + ".py"),
                 use_double_quotes=True,
                 enable_faux_immutability=True,
+                output_model_type=DataModelType.PydanticV2BaseModel,
+                custom_file_header_path=Path(__file__).parent / "model_header.txt"
             )
         self.stdout.write(
             self.style.SUCCESS(f"Models saved to {settings.EVENT_MODELS_BASE_PATH}")
