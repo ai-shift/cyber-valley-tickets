@@ -1,6 +1,6 @@
 import { useUser } from "@/entities/user";
-import { Button } from "@/shared/ui/button";
 import { PageContainer } from "@/shared/ui/PageContainer";
+import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
 
 export const AccountPage: React.FC = () => {

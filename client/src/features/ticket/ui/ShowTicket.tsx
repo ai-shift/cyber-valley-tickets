@@ -1,13 +1,16 @@
-import { Dialog, DialogTrigger, DialogContent } from "@/shared/ui/dialog";
-import type { Ticket } from "../model/types";
-import QRCode from "react-qr-code";
 import { Button } from "@/shared/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/shared/ui/dialog";
+import QRCode from "react-qr-code";
+import type { Ticket } from "../model/types";
 
 type ShowTicketProps = {
   ticket: Ticket;
   hasPassed: boolean;
 };
-export const ShowTicket: React.FC<ShowTicketProps> = ({ ticket, hasPassed }) => {
+export const ShowTicket: React.FC<ShowTicketProps> = ({
+  ticket,
+  hasPassed,
+}) => {
   return (
     <Dialog>
       <DialogTrigger asChild>

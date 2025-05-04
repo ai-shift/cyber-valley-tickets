@@ -6,8 +6,8 @@ import { useNavigate } from "react-router";
 
 import { Button } from "@/shared/ui/button";
 import { isEventPassed } from "../lib/eventPassed";
-import { ShowTicket } from "./ShowTicket";
 import { Redeem } from "./Redeem";
+import { ShowTicket } from "./ShowTicket";
 type TicketProps = {
   user: User;
   event: Event;
@@ -18,7 +18,10 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   const { setTicketOrder } = useOrderStore();
 
   const ticket = user.tickets.find((ticket) => ticket.eventId === event.id);
-  const hasPassed = isEventPassed(event.startDateTimestamp / 1000, event.daysAmount);
+  const hasPassed = isEventPassed(
+    event.startDateTimestamp / 1000,
+    event.daysAmount,
+  );
 
   function initOrder() {
     setTicketOrder(event.id);

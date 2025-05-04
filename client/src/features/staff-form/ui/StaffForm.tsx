@@ -1,9 +1,4 @@
-import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
-import { useForm } from "react-hook-form";
-import { formSchema } from "../model/formSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { z } from "zod";
 import {
   Form,
   FormControl,
@@ -12,6 +7,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
+import { formSchema } from "../model/formSchema";
 
 export const StaffForm: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
