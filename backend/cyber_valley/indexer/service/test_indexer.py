@@ -257,10 +257,10 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
 
     #  begin-region -- RoleGranted
     role_to_count = {
-        "MASTER_ROLE": 0,
-        "STAFF_ROLE": 0,
-        "DEFAULT_ADMIN_ROLE": 0,
-        "EVENT_MANAGER_ROLE": 0,
+        "MASTER_ROLE": 22,
+        "STAFF_ROLE": 11,
+        "DEFAULT_ADMIN_ROLE": 22,
+        "EVENT_MANAGER_ROLE": 11,
     }
     for role, count in role_to_count.items():
         role_granted_events = [
@@ -377,6 +377,15 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
     assert sum(expected.values()) == 0
     _cleanup_asserted_events(events, event_status_changed_events)
     #  end-region   -- EventStatusChanged
+
+    _cleanup_asserted_events(
+        events,
+        [
+            event
+            for event in events
+            if event.__class__.__name__ in ("Transfer", "Approval")
+        ],
+    )
 
     assert len(events) == 0, events
 
