@@ -24,11 +24,11 @@ class EventPlace(models.Model):
 
 class Event(models.Model):
     STATUS_CHOICES: ClassVar[dict[str, str]] = {
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "declined": "Declined",
-        "cancelled": "Cancelled",
-        "closed": "Closed",
+        "submitted": "submitted",
+        "approved": "approved",
+        "declined": "declined",
+        "cancelled": "cancelled",
+        "closed": "closed",
     }
 
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
