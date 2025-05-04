@@ -102,6 +102,7 @@ SPECTACULAR_SETTINGS = {
         "ErrorCode429Enum": "drf_standardized_errors.openapi_serializers.ErrorCode429Enum.choices",
         "ErrorCode500Enum": "drf_standardized_errors.openapi_serializers.ErrorCode500Enum.choices",
     },
+    "COMPONENT_SPLIT_REQUEST": True,
 }
 
 MIDDLEWARE = [
@@ -234,3 +235,5 @@ CONTRACTS_INFO: Final = (
         / "CyberValleyEventManager.json"
     ),
 )
+
+IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])

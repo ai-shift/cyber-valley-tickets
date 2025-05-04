@@ -16,13 +16,13 @@ Including another URLconf
 """
 
 from django.urls import include, path
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework import routers
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from .events.views import EventPlaceViewSet, EventViewSet
+from .events.views import EventPlaceViewSet, EventViewSet, upload_event_cover_to_ipfs
 from .notifications.views import NotificationViewSet
 from .users.views import CurrentUserViewSet
 from .web3_auth.views import login
@@ -34,8 +34,9 @@ router.register(r"notifications", NotificationViewSet, basename="Notification")
 router.register(r"users", CurrentUserViewSet, basename="users")
 
 urlpatterns = [
-    path("", SpectacularRedocView.as_view(), name="redoc"),
+    path("", SpectacularSwaggerView.as_view(), name="swagger"),
     path("api/", include(router.urls)),
+    path("api/ipfs/events/cover", upload_event_cover_to_ipfs, name="ipfs"),
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
