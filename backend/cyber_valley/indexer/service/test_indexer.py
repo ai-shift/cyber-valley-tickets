@@ -279,38 +279,34 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
         for event in events
         if isinstance(event, CyberValleyEventManager.NewEventPlaceAvailable)
     ]
-    expected = {
-        CyberValleyEventManager.NewEventPlaceAvailable.model_validate(
-            {
-                "eventPlaceId": 0,
-                "maxTickets": 100,
-                "minTickets": 50,
-                "minPrice": 20,
-                "minDays": 1,
-            }
-        ): 9,
-        CyberValleyEventManager.NewEventPlaceAvailable.model_validate(
-            {
-                "eventPlaceId": 0,
-                "maxTickets": 100,
-                "minTickets": 50,
-                "minPrice": 20,
-                "minDays": 2,
-            }
-        ): 1,
-        CyberValleyEventManager.NewEventPlaceAvailable.model_validate(
-            {
-                "eventPlaceId": 0,
-                "maxTickets": 100,
-                "minTickets": 50,
-                "minPrice": 30,
-                "minDays": 1,
-            }
-        ): 1,
-    }
+    expected = [
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "minDays": 1,
+        },
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "minDays": 2,
+        },
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 30,
+            "minDays": 1,
+        },
+    ]
+    expected_counts = [9, 1, 1]
+    assert len(expected) == len(expected_counts)
     for event in new_place_available_events:
-        expected[event] -= 1
-    assert sum(expected.values()) == 0
+        expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
+    assert sum(expected_counts) == 0
     _cleanup_asserted_events(events, new_place_available_events)
     #  end-region   -- NewEventPlaceAvailable
 
@@ -359,10 +355,10 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
             "daysAmount": 4,
         },
     ]
-    expected_counters = [2, 3]
+    expected_counts = [2, 3]
     for event in new_event_request_events:
-        expected_counters[expected.index(event.model_dump(by_alias=True))] -= 1
-    assert sum(expected_counters) == 0
+        expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
+    assert sum(expected_counts) == 0
     _cleanup_asserted_events(events, new_event_request_events)
     #  end-region   -- NewEventRequest
 
