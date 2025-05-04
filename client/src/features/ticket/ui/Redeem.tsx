@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import { useState } from "react";
 
 import { Button } from "@/shared/ui/button";
 

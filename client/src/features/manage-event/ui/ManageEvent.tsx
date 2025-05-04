@@ -1,6 +1,6 @@
 import type { EventStatus } from "@/entities/event";
 
-import { checkPermission, type Role } from "@/shared/lib/RBAC";
+import { type Role, checkPermission } from "@/shared/lib/RBAC";
 import { Button } from "@/shared/ui/button";
 import { useNavigate } from "react-router";
 

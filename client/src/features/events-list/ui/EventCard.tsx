@@ -1,10 +1,10 @@
 import type { Event } from "@/entities/event";
 import type { User } from "@/entities/user";
 
+import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
 import { StatusBage } from "./StatusBage";
-import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 
 type EventCardProps = {
   event: Event;

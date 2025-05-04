@@ -1,5 +1,5 @@
 import type { Socials } from "@/entities/order";
-import { z, type ZodType } from "zod";
+import { type ZodType, z } from "zod";
 
 export const formSchema: ZodType<Socials> = z.object({
   // TODO: Fix typo

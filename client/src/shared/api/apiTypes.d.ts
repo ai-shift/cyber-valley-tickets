@@ -4,509 +4,511 @@
  */
 
 export interface paths {
-    "/api/auth/web3/login/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["api_auth_web3_login_retrieve"];
-        put?: never;
-        post: operations["api_auth_web3_login_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/api/auth/web3/login/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/events/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Available events in the syste */
-        get: operations["api_events_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["api_auth_web3_login_retrieve"];
+    put?: never;
+    post: operations["api_auth_web3_login_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/events/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/events/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["api_events_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Available events in the syste */
+    get: operations["api_events_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/events/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/notifications/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["api_notifications_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["api_events_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/notifications/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/notifications/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["api_notifications_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["api_notifications_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/notifications/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/notifications/{id}/seen/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["api_notifications_seen_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["api_notifications_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/notifications/{id}/seen/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/places/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description API endpoint that allows event places to be viewed */
-        get: operations["api_places_list"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["api_notifications_seen_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/places/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/places/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description API endpoint that allows event places to be viewed */
-        get: operations["api_places_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description API endpoint that allows event places to be viewed */
+    get: operations["api_places_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/places/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/token/refresh/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Takes a refresh type JSON web token and returns an access type JSON web
-         *     token if the refresh token is valid. */
-        post: operations["api_token_refresh_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description API endpoint that allows event places to be viewed */
+    get: operations["api_places_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/token/refresh/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/users/current/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["api_users_current_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** @description Takes a refresh type JSON web token and returns an access type JSON web
+     *     token if the refresh token is valid. */
+    post: operations["api_token_refresh_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/current/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    get: operations["api_users_current_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        Creator: {
-            address: string;
-        };
-        CreatorEvent: {
-            readonly id: number;
-            creator: components["schemas"]["Creator"];
-            status?: components["schemas"]["StatusEnum"];
-            title: string;
-            description: string;
-            place: components["schemas"]["EventPlace"];
-            /** Format: int64 */
-            ticketPrice: number;
-            /** Format: int64 */
-            daysAmount: number;
-            /** Format: uri */
-            imageUrl?: string | null;
-            readonly startDateTimestamp: number;
-            ticketsBought: number | null;
-            cancelDateTimestamp: number | null;
-            readonly ticketsRequiredUntilCancel: number | null;
-        };
-        CurrentUser: {
-            readonly address: string;
-            readonly role: components["schemas"]["RoleEnum"];
-            readonly tickets: components["schemas"]["Ticket"][];
-        };
-        EventPlace: {
-            /** Format: int64 */
-            id: number;
-            title: string;
-            /** Format: int64 */
-            maxTickets: number;
-            /** Format: int64 */
-            minTickets: number;
-            /** Format: int64 */
-            minPrice: number;
-            /** Format: int64 */
-            minDays: number;
-            /** Format: int64 */
-            daysBeforeCancel: number;
-            available?: boolean;
-            readonly isUsed: boolean;
-        };
-        Notification: {
-            readonly title: string;
-            readonly body: string;
-            /** Format: date-time */
-            readonly seenAt: string | null;
-        };
-        RoleBasedEvent: components["schemas"]["CreatorEvent"] | components["schemas"]["StaffEvent"];
-        /**
-         * @description * `customer` - Customer
-         *     * `staff` - Staff
-         *     * `creator` - Creator
-         *     * `master` - Master
-         * @enum {string}
-         */
-        RoleEnum: "customer" | "staff" | "creator" | "master";
-        StaffEvent: {
-            readonly id: number;
-            creator: components["schemas"]["Creator"];
-            status?: components["schemas"]["StatusEnum"];
-            title: string;
-            description: string;
-            place: components["schemas"]["EventPlace"];
-            /** Format: int64 */
-            ticketPrice: number;
-            /** Format: int64 */
-            daysAmount: number;
-            /** Format: uri */
-            imageUrl?: string | null;
-            readonly startDateTimestamp: number;
-            /** Format: int64 */
-            ticketsBought: number;
-            cancelDateTimestamp: number;
-            readonly ticketsRequiredUntilCancel: number;
-        };
-        /**
-         * @description * `submitted` - submitted
-         *     * `approved` - approved
-         *     * `declined` - declined
-         *     * `cancelled` - cancelled
-         *     * `closed` - closed
-         * @enum {string}
-         */
-        StatusEnum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
-        Ticket: {
-            readonly id: string;
-            eventId: number;
-            readonly isRedeemed: boolean;
-        };
-        TokenRefresh: {
-            readonly access: string;
-            refresh: string;
-        };
+  schemas: {
+    Creator: {
+      address: string;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    CreatorEvent: {
+      readonly id: number;
+      creator: components["schemas"]["Creator"];
+      status?: components["schemas"]["StatusEnum"];
+      title: string;
+      description: string;
+      place: components["schemas"]["EventPlace"];
+      /** Format: int64 */
+      ticketPrice: number;
+      /** Format: int64 */
+      daysAmount: number;
+      /** Format: uri */
+      imageUrl?: string | null;
+      readonly startDateTimestamp: number;
+      ticketsBought: number | null;
+      cancelDateTimestamp: number | null;
+      readonly ticketsRequiredUntilCancel: number | null;
+    };
+    CurrentUser: {
+      readonly address: string;
+      readonly role: components["schemas"]["RoleEnum"];
+      readonly tickets: components["schemas"]["Ticket"][];
+    };
+    EventPlace: {
+      /** Format: int64 */
+      id: number;
+      title: string;
+      /** Format: int64 */
+      maxTickets: number;
+      /** Format: int64 */
+      minTickets: number;
+      /** Format: int64 */
+      minPrice: number;
+      /** Format: int64 */
+      minDays: number;
+      /** Format: int64 */
+      daysBeforeCancel: number;
+      available?: boolean;
+      readonly isUsed: boolean;
+    };
+    Notification: {
+      readonly title: string;
+      readonly body: string;
+      /** Format: date-time */
+      readonly seenAt: string | null;
+    };
+    RoleBasedEvent:
+      | components["schemas"]["CreatorEvent"]
+      | components["schemas"]["StaffEvent"];
+    /**
+     * @description * `customer` - Customer
+     *     * `staff` - Staff
+     *     * `creator` - Creator
+     *     * `master` - Master
+     * @enum {string}
+     */
+    RoleEnum: "customer" | "staff" | "creator" | "master";
+    StaffEvent: {
+      readonly id: number;
+      creator: components["schemas"]["Creator"];
+      status?: components["schemas"]["StatusEnum"];
+      title: string;
+      description: string;
+      place: components["schemas"]["EventPlace"];
+      /** Format: int64 */
+      ticketPrice: number;
+      /** Format: int64 */
+      daysAmount: number;
+      /** Format: uri */
+      imageUrl?: string | null;
+      readonly startDateTimestamp: number;
+      /** Format: int64 */
+      ticketsBought: number;
+      cancelDateTimestamp: number;
+      readonly ticketsRequiredUntilCancel: number;
+    };
+    /**
+     * @description * `submitted` - submitted
+     *     * `approved` - approved
+     *     * `declined` - declined
+     *     * `cancelled` - cancelled
+     *     * `closed` - closed
+     * @enum {string}
+     */
+    StatusEnum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
+    Ticket: {
+      readonly id: string;
+      eventId: number;
+      readonly isRedeemed: boolean;
+    };
+    TokenRefresh: {
+      readonly access: string;
+      refresh: string;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    api_auth_web3_login_retrieve: {
-        parameters: {
-            query?: {
-                format?: "html" | "json";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  api_auth_web3_login_retrieve: {
+    parameters: {
+      query?: {
+        format?: "html" | "json";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    api_auth_web3_login_create: {
-        parameters: {
-            query?: {
-                format?: "html" | "json";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    api_events_list: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RoleBasedEvent"][];
-                };
-            };
-        };
+  };
+  api_auth_web3_login_create: {
+    parameters: {
+      query?: {
+        format?: "html" | "json";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    api_events_retrieve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this event. */
-                id: number;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreatorEvent"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    api_notifications_list: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Notification"][];
-                };
-            };
-        };
+  };
+  api_events_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    api_notifications_retrieve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Notification"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["RoleBasedEvent"][];
         };
+      };
     };
-    api_notifications_seen_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/x-www-form-urlencoded": components["schemas"]["Notification"];
-                "multipart/form-data": components["schemas"]["Notification"];
-                "application/json": components["schemas"]["Notification"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  api_events_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description A unique integer value identifying this event. */
+        id: number;
+      };
+      cookie?: never;
     };
-    api_places_list: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EventPlace"][];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["CreatorEvent"];
         };
+      };
     };
-    api_places_retrieve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this event place. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EventPlace"];
-                };
-            };
-        };
+  };
+  api_notifications_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    api_token_refresh_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/x-www-form-urlencoded": components["schemas"]["TokenRefresh"];
-                "multipart/form-data": components["schemas"]["TokenRefresh"];
-                "application/json": components["schemas"]["TokenRefresh"];
-            };
+        content: {
+          "application/json": components["schemas"]["Notification"][];
         };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TokenRefresh"];
-                };
-            };
-        };
+      };
     };
-    api_users_current_retrieve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurrentUser"];
-                };
-            };
-        };
+  };
+  api_notifications_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Notification"];
+        };
+      };
+    };
+  };
+  api_notifications_seen_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/x-www-form-urlencoded": components["schemas"]["Notification"];
+        "multipart/form-data": components["schemas"]["Notification"];
+        "application/json": components["schemas"]["Notification"];
+      };
+    };
+    responses: {
+      /** @description No response body */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  api_places_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EventPlace"][];
+        };
+      };
+    };
+  };
+  api_places_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description A unique value identifying this event place. */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EventPlace"];
+        };
+      };
+    };
+  };
+  api_token_refresh_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/x-www-form-urlencoded": components["schemas"]["TokenRefresh"];
+        "multipart/form-data": components["schemas"]["TokenRefresh"];
+        "application/json": components["schemas"]["TokenRefresh"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenRefresh"];
+        };
+      };
+    };
+  };
+  api_users_current_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CurrentUser"];
+        };
+      };
+    };
+  };
 }
