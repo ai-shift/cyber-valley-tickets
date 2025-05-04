@@ -1,6 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getDetailEvent } from "./getDetailedEvent";
-import { getEvents } from "./getEvents";
+import { getEvents, getDetailEvent } from "./queries";
 
 export const eventQueries = {
   list: () =>
