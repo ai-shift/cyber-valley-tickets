@@ -5,21 +5,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('notifications', '0001_initial'),
+        ("notifications", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='notification',
-            name='notification_id',
+            model_name="notification",
+            name="notification_id",
             field=models.PositiveIntegerField(default=1, editable=False),
             preserve_default=False,
         ),
         migrations.AlterUniqueTogether(
-            name='notification',
-            unique_together={('user', 'notification_id')},
+            name="notification",
+            unique_together={("user", "notification_id")},
         ),
     ]

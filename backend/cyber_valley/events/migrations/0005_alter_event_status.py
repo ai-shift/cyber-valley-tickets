@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('events', '0004_remove_ticket_ticket_id_alter_ticket_id'),
+        ("events", "0004_remove_ticket_ticket_id_alter_ticket_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='event',
-            name='status',
-            field=models.CharField(choices=[('submitted', 'submitted'), ('approved', 'approved'), ('declined', 'declined'), ('cancelled', 'cancelled'), ('closed', 'closed')], default='submitted', max_length=10),
+            model_name="event",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("submitted", "submitted"),
+                    ("approved", "approved"),
+                    ("declined", "declined"),
+                    ("cancelled", "cancelled"),
+                    ("closed", "closed"),
+                ],
+                default="submitted",
+                max_length=10,
+            ),
         ),
     ]
