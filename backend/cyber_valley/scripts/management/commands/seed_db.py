@@ -32,9 +32,7 @@ class Command(BaseCommand):
             Ticket.objects.all().delete()
             Event.objects.all().delete()
             EventPlace.objects.all().delete()
-            # Be careful flushing users. Exclude the specific master user.
-            master_address_to_exclude = "0x7cAFfEf233EF9c30688844fC2C4048469011FFe1"
-            CyberValleyUser.objects.exclude(address=master_address_to_exclude).delete()
+            CyberValleyUser.objects.all().delete()
             self.stdout.write("Data flushed.")
 
         with transaction.atomic():
