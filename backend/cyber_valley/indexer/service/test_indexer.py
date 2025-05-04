@@ -491,6 +491,114 @@ def test_approve_event(events_factory: EventsFactory) -> None:
     assert len(events) == 0, events
 
 
+def test_decline_event(events_factory: EventsFactory) -> None:
+    events = events_factory("declineEvent")
+
+    #  begin-region -- RoleGranted
+    role_to_count = {
+        "MASTER_ROLE": 8,
+        "STAFF_ROLE": 4,
+        "DEFAULT_ADMIN_ROLE": 8,
+        "EVENT_MANAGER_ROLE": 4,
+    }
+    for role, count in role_to_count.items():
+        role_granted_events = [
+            event
+            for event in events
+            if isinstance(event, CyberValleyEventManager.RoleGranted)
+            and event.role == role
+        ]
+        assert len(role_granted_events) == count
+        _cleanup_asserted_events(events, role_granted_events)
+    #  end-region   -- RoleGranted
+
+    #  begin-region -- NewEventPlaceAvailable
+    new_place_available_events = [
+        event
+        for event in events
+        if isinstance(event, CyberValleyEventManager.NewEventPlaceAvailable)
+    ]
+    expected = [
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "minDays": 1,
+        },
+    ]
+    expected_counts = [2]
+    assert len(expected) == len(expected_counts)
+    for event in new_place_available_events:
+        expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
+    assert sum(expected_counts) == 0
+    _cleanup_asserted_events(events, new_place_available_events)
+    #  end-region   -- NewEventPlaceAvailable
+
+    #  begin-region -- EventPlaceUpdated
+    event_place_updated_events = [
+        event
+        for event in events
+        if isinstance(event, CyberValleyEventManager.EventPlaceUpdated)
+    ]
+    expected = CyberValleyEventManager.EventPlaceUpdated.model_validate(
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 150,
+            "minTickets": 20,
+            "minPrice": 30,
+            "minDays": 2,
+        }
+    )
+    assert all(event == expected for event in event_place_updated_events)
+    _cleanup_asserted_events(events, event_place_updated_events)
+    #  end-region   -- EventPlaceUpdated
+
+    #  begin-region -- NewEventRequest
+    new_event_request_events = [
+        event
+        for event in events
+        if isinstance(event, CyberValleyEventManager.NewEventRequest)
+    ]
+    expected = [
+        {
+            "id": 0,
+            "creator": MatchesAnyStr(),
+            "eventPlaceId": 0,
+            "ticketPrice": 20,
+            "cancelDate": MatchesAnyInt(),
+            "startDate": MatchesAnyInt(),
+            "daysAmount": 1,
+        }
+    ]
+    expected_counts = [2]
+    for event in new_event_request_events:
+        expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
+    assert sum(expected_counts) == 0
+    _cleanup_asserted_events(events, new_event_request_events)
+    #  end-region   -- NewEventRequest
+
+    #  begin-region -- EventStatusChanged
+    event_status_changed_events = [
+        event
+        for event in events
+        if isinstance(event, CyberValleyEventManager.EventStatusChanged)
+    ]
+    expected = [
+        {"eventId": 0, "status": 2},
+    ]
+    expected_counts = [2]
+    for event in event_status_changed_events:
+        expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
+    assert sum(expected_counts) == 0
+    _cleanup_asserted_events(events, event_status_changed_events)
+    #  end-region   -- EventStatusChanged
+
+    _cleanup_erc_events(events)
+
+    assert len(events) == 0, events
+
+
 def _get_all_contracts(w3: Web3) -> list[type[Contract]]:
     return [
         w3.eth.contract(abi=json.loads(info_path.read_text())["abi"])
