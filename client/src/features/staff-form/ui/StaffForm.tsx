@@ -13,13 +13,7 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 
-type StaffFormProps = {
-  onSubmit: (address: string) => void;
-};
-
-export const StaffForm: React.FC<StaffFormProps> = ({
-  onSubmit: submitHandler,
-}) => {
+export const StaffForm: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -28,7 +22,8 @@ export const StaffForm: React.FC<StaffFormProps> = ({
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    submitHandler(values.address);
+    // TODO: @scipunch add Web3 call
+    console.log(values.address);
   };
 
   return (

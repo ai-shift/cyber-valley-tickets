@@ -15,6 +15,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
   const { place, startDateTimestamp, description, title, ticketPrice, status } =
     event;
 
+  // TODO: Check if event was not closed or cancells (i.e. approved)
   const hasTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
   const isMaster = user.role === "master";
 
