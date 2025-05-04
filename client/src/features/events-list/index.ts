@@ -1,2 +1,2 @@
 export { EventsList } from "./ui/EventsList";
-export { filter } from "./lib/filter";
+export * from "./lib/filters";
