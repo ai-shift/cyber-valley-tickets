@@ -150,6 +150,46 @@
         }
       }
     },
+    "/api/notifications/{id}/seen/": {
+      "post": {
+        "operationId": "api_notifications_seen_create",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": ["api"],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Notification"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Notification"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Notification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
     "/api/places/": {
       "get": {
         "operationId": "api_places_list",
@@ -440,18 +480,20 @@
         "properties": {
           "title": {
             "type": "string",
-            "maxLength": 200
+            "readOnly": true
           },
           "body": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "seenAt": {
             "type": "string",
             "format": "date-time",
+            "readOnly": true,
             "nullable": true
           }
         },
-        "required": ["body", "title"]
+        "required": ["body", "seenAt", "title"]
       },
       "RoleBasedEvent": {
         "oneOf": [
@@ -544,7 +586,7 @@
       "StatusEnum": {
         "enum": ["submitted", "approved", "declined", "cancelled", "closed"],
         "type": "string",
-        "description": "* `submitted` - Submitted\n* `approved` - Approved\n* `declined` - Declined\n* `cancelled` - Cancelled\n* `closed` - Closed"
+        "description": "* `submitted` - submitted\n* `approved` - approved\n* `declined` - declined\n* `cancelled` - cancelled\n* `closed` - closed"
       },
       "Ticket": {
         "type": "object",
@@ -555,9 +597,13 @@
           },
           "eventId": {
             "type": "integer"
+          },
+          "isRedeemed": {
+            "type": "boolean",
+            "readOnly": true
           }
         },
-        "required": ["eventId", "id"]
+        "required": ["eventId", "id", "isRedeemed"]
       },
       "TokenRefresh": {
         "type": "object",
