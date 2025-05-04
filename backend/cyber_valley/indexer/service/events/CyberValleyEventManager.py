@@ -97,26 +97,3 @@ class RoleRevoked(BaseModel):
     role: str
     account: str
     sender: str
-
-
-class CyberValleyEvents(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    event_place_updated: EventPlaceUpdated | None = Field(
-        None, alias="EventPlaceUpdated"
-    )
-    event_status_changed: EventStatusChanged | None = Field(
-        None, alias="EventStatusChanged"
-    )
-    event_ticket_verified: EventTicketVerified | None = Field(
-        None, alias="EventTicketVerified"
-    )
-    event_updated: EventUpdated | None = Field(None, alias="EventUpdated")
-    new_event_place_available: NewEventPlaceAvailable | None = Field(
-        None, alias="NewEventPlaceAvailable"
-    )
-    new_event_request: NewEventRequest | None = Field(None, alias="NewEventRequest")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
-    role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
-    role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
