@@ -43,6 +43,7 @@ def event_place() -> EventPlace:
         min_tickets=10,
         min_price=50,
         min_days=7,
+        days_before_cancel=3,
     )
 
 
@@ -142,6 +143,7 @@ def test_sync_event_updated(event: Event) -> None:
         min_tickets=20,
         min_price=75,
         min_days=10,
+        days_before_cancel=2,
     )
     event_data = CyberValleyEventManager.EventUpdated.model_validate(
         {
