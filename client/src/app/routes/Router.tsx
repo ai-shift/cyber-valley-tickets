@@ -14,6 +14,7 @@ import {
   AssignStaffPage,
   AccountPage,
   MyEventsPage,
+  StatusPage,
 } from "@/pages";
 
 export const Router = () => {
@@ -38,6 +39,7 @@ export const Router = () => {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/purchase" element={<PurchasePage />} />
         <Route path="/socials" element={<SocialsPage />} />
+        <Route path="/status/:status" element={<StatusPage />} />
 
         <Route path="/account">
           <Route index element={<AccountPage />} />
