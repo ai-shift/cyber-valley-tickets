@@ -1018,7 +1018,7 @@
                 }
             }
         },
-        "/api/notifications/{id}/seen/": {
+        "/api/notifications/seen/{id}/": {
             "post": {
                 "operationId": "api_notifications_seen_create",
                 "parameters": [
@@ -1184,7 +1184,7 @@
                         },
                         "description": ""
                     },
-                    "201": {
+                    "204": {
                         "description": "No response body"
                     }
                 }
@@ -2479,7 +2479,7 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string",
+                        "type": "integer",
                         "readOnly": true
                     },
                     "title": {
