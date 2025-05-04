@@ -81,17 +81,3 @@ class Transfer(BaseModel):
     from_: str = Field(..., alias="from")
     to: str
     token_id: int = Field(..., alias="tokenId")
-
-
-class CyberValleyEvents(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    approval: Approval | None = Field(None, alias="Approval")
-    approval_for_all: ApprovalForAll | None = Field(None, alias="ApprovalForAll")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
-    role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
-    role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
-    ticket_minted: TicketMinted | None = Field(None, alias="TicketMinted")
-    ticket_redeemed: TicketRedeemed | None = Field(None, alias="TicketRedeemed")
-    transfer: Transfer | None = Field(None, alias="Transfer")
