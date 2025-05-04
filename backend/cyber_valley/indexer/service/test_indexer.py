@@ -800,6 +800,10 @@ def _cleanup_asserted_events[T: BaseModel](
 
 
 def _cleanup_erc_events[T: BaseModel](events: list[BaseModel]) -> None:
+    """
+    On each hardhat there are ERC20 or ERC721 events, which are
+    out of the indexer scope, so this helper function removes them
+    """
     _cleanup_asserted_events(
         events,
         [
