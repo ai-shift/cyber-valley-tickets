@@ -6,7 +6,7 @@ import {
   EventsListPage,
   HomePage,
   ManagePage,
-  Notifications,
+  NotificationsPage,
   PurchasePage,
   SocialsPage,
   EditEventPage,
@@ -35,7 +35,7 @@ export const Router = () => {
           <Route path="/manage/assign-staff" element={<AssignStaffPage />} />
         </Route>
 
-        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/purchase" element={<PurchasePage />} />
         <Route path="/socials" element={<SocialsPage />} />
 
