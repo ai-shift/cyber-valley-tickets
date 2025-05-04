@@ -41,7 +41,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             selected={date}
             onSelect={setDate}
             defaultMonth={date}
-            disabled={disabled}
+            disabled={[{ before: new Date() }, ...disabled]}
           />
         </PopoverContent>
       </Popover>

@@ -29,7 +29,7 @@ export function createFormSchema(
         ),
       place: z.string().min(1, "Place is required"),
       ticketPrice: z.number().refine((val) => val >= 1, "Price is too small"),
-      startDate: z.date(),
+      startDate: z.date().min(new Date(), "Can't change the past"),
       daysAmount: z
         .number()
         .refine((val) => val >= 1, "Duration must be at least 1 day"),
