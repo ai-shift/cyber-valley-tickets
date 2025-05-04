@@ -1,8 +1,17 @@
+import { useNavigate, Navigate } from "react-router";
+
+import { type Socials, useOrderStore } from "@/entities/order";
 import { SocialsForm } from "@/features/socials-form";
 
 export const SocialsPage: React.FC = () => {
-  function handleSubmit() {
-    console.log("foo");
+  const navigate = useNavigate();
+  const { order, setSocials } = useOrderStore();
+
+  if (!order?.type) return <Navigate to="/events" />;
+
+  function handleSubmit(socials: Socials) {
+    setSocials(socials);
+    navigate("/purchase");
   }
   return <SocialsForm onSumbit={handleSubmit} />;
 };

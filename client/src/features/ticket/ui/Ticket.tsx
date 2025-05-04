@@ -24,6 +24,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
 
   // TODO: Add is redeemed when endpoint ready
   // TODO: Use ternary operator
+  //TODO: disabled if event pass or redeemed
   if (!haveTicket) return <Button onClick={initOrder}>Attend</Button>;
   if (haveTicket) return <Button>Show ticket</Button>;
 };

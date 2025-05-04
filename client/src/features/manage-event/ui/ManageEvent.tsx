@@ -38,12 +38,15 @@ export const ManageEvent: React.FC<ManageEventProps> = ({
     }
   }
 
-  if (canEdit) return <Button onClick={onEdit}>Edit</Button>;
-  if (canControl)
-    return (
-      <div className=" flex gap-7">
-        <Button onClick={() => onControll("accept")}>Accept</Button>
-        <Button onClick={() => onControll("decline")}>Decline</Button>
-      </div>
-    );
+  return (
+    <div>
+      {canEdit && <Button onClick={onEdit}>Edit</Button>}
+      {canControl && (
+        <div className=" flex gap-7">
+          <Button onClick={() => onControll("accept")}>Accept</Button>
+          <Button onClick={() => onControll("decline")}>Decline</Button>
+        </div>
+      )}
+    </div>
+  );
 };
