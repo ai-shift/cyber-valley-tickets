@@ -1,5 +1,5 @@
-from pathlib import Path
 import json
+from pathlib import Path
 from pprint import pformat
 from typing import Any
 
@@ -55,7 +55,7 @@ class Command(BaseCommand):
                 use_double_quotes=True,
                 enable_faux_immutability=True,
                 output_model_type=DataModelType.PydanticV2BaseModel,
-                custom_file_header_path=Path(__file__).parent / "model_header.txt"
+                custom_file_header_path=Path(__file__).parent / "model_header.txt",
             )
         self.stdout.write(
             self.style.SUCCESS(f"Models saved to {settings.EVENT_MODELS_BASE_PATH}")

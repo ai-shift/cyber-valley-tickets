@@ -17,12 +17,14 @@ from web3.contract import Contract
 from web3.exceptions import LogTopicError, MismatchedABI
 from web3.types import LogReceipt
 
+from . import events
+
 log = logging.getLogger(__name__)
 
-_package_name = ".events"
 _EVENTS_MODULES = [
-    importlib.import_module(f"{_package_name}.{module_name}")
-    for _, module_name, _ in pkgutil.walk_packages([_package_name])
+    importlib.import_module(f".{module_name}", package=f"{events.__name__}")
+    for _, module_name, _ in pkgutil.walk_packages(events.__path__)
+    if module_name != "patches"
 ]
 
 
@@ -85,8 +87,9 @@ async def arun_listener(
     raise NodeListenerStoppedError
 
 
+@dataclass
 class EventNotRecognizedError(Exception):
-    pass
+    log_receipt: LogReceipt
 
 
 @safe
@@ -101,7 +104,10 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
                 continue
 
             for module in _EVENTS_MODULES:
-                event_model = getattr(module, event["event"])
+                try:
+                    event_model = getattr(module, event["event"])
+                except AttributeError:
+                    continue
                 assert issubclass(event_model, BaseModel)
                 try:  # Some events have the same names e.g. Transfer or Approval
                     return cast(type[BaseModel], event_model).model_validate(
@@ -110,4 +116,4 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
                 except ValueError:
                     continue
 
-    raise EventNotRecognizedError
+    raise EventNotRecognizedError(log_receipt)

@@ -3,9 +3,11 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+
+from .patches import validate_role
 
 
 class Approval(BaseModel):
@@ -39,7 +41,7 @@ class RoleGranted(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    role: str
+    role: Annotated[str, BeforeValidator(validate_role)]
     account: str
     sender: str
 
@@ -85,13 +87,11 @@ class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    approval: Optional[Approval] = Field(None, alias="Approval")
-    approval_for_all: Optional[ApprovalForAll] = Field(None, alias="ApprovalForAll")
-    role_admin_changed: Optional[RoleAdminChanged] = Field(
-        None, alias="RoleAdminChanged"
-    )
-    role_granted: Optional[RoleGranted] = Field(None, alias="RoleGranted")
-    role_revoked: Optional[RoleRevoked] = Field(None, alias="RoleRevoked")
-    ticket_minted: Optional[TicketMinted] = Field(None, alias="TicketMinted")
-    ticket_redeemed: Optional[TicketRedeemed] = Field(None, alias="TicketRedeemed")
-    transfer: Optional[Transfer] = Field(None, alias="Transfer")
+    approval: Approval | None = Field(None, alias="Approval")
+    approval_for_all: ApprovalForAll | None = Field(None, alias="ApprovalForAll")
+    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
+    role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
+    role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
+    ticket_minted: TicketMinted | None = Field(None, alias="TicketMinted")
+    ticket_redeemed: TicketRedeemed | None = Field(None, alias="TicketRedeemed")
+    transfer: Transfer | None = Field(None, alias="Transfer")

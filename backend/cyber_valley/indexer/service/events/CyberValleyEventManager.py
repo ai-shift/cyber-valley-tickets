@@ -3,9 +3,11 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+
+from .patches import validate_role
 
 
 class EventPlaceUpdated(BaseModel):
@@ -83,7 +85,7 @@ class RoleGranted(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    role: str
+    role: Annotated[str, BeforeValidator(validate_role)]
     account: str
     sender: str
 
@@ -101,22 +103,20 @@ class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    event_place_updated: Optional[EventPlaceUpdated] = Field(
+    event_place_updated: EventPlaceUpdated | None = Field(
         None, alias="EventPlaceUpdated"
     )
-    event_status_changed: Optional[EventStatusChanged] = Field(
+    event_status_changed: EventStatusChanged | None = Field(
         None, alias="EventStatusChanged"
     )
-    event_ticket_verified: Optional[EventTicketVerified] = Field(
+    event_ticket_verified: EventTicketVerified | None = Field(
         None, alias="EventTicketVerified"
     )
-    event_updated: Optional[EventUpdated] = Field(None, alias="EventUpdated")
-    new_event_place_available: Optional[NewEventPlaceAvailable] = Field(
+    event_updated: EventUpdated | None = Field(None, alias="EventUpdated")
+    new_event_place_available: NewEventPlaceAvailable | None = Field(
         None, alias="NewEventPlaceAvailable"
     )
-    new_event_request: Optional[NewEventRequest] = Field(None, alias="NewEventRequest")
-    role_admin_changed: Optional[RoleAdminChanged] = Field(
-        None, alias="RoleAdminChanged"
-    )
-    role_granted: Optional[RoleGranted] = Field(None, alias="RoleGranted")
-    role_revoked: Optional[RoleRevoked] = Field(None, alias="RoleRevoked")
+    new_event_request: NewEventRequest | None = Field(None, alias="NewEventRequest")
+    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
+    role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
+    role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
