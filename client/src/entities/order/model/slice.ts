@@ -1,5 +1,5 @@
 import type { EventDto } from "@/entities/event/@x/order";
-import type { Order } from "./types";
+import type { Order, Socials } from "./types";
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
@@ -8,7 +8,7 @@ interface OrderState {
   order: Order | null;
   setEventOrder: (order: EventDto) => void;
   setTicketOrder: (order: number) => void;
-  setSocialsToTicketOrder: (social: string) => void;
+  setSocials: (social: Socials) => void;
 }
 
 const initialState = { order: null };
@@ -42,20 +42,11 @@ export const useOrderStore = create<OrderState>()(
         undefined,
         "order/setTicketOrder",
       ),
-    setSocialsToTicketOrder: (social) =>
+    setSocials: (socials) =>
       set(
-        (state) => {
-          if (state.order?.type !== "buy_ticket") return state;
-          return {
-            order: {
-              ...state.order,
-              ticket: {
-                ...state.order.ticket,
-                social,
-              },
-            },
-          };
-        },
+        (state) => ({
+          order: state.order && { ...state.order, socials },
+        }),
         undefined,
         "order/setTicketSocials",
       ),
