@@ -169,6 +169,14 @@ def nonce(_request: Request) -> Response:
     return Response({"nonce": nonce})
 
 
+@api_view(["GET"])
+def logout(_request: Request) -> Response:
+    response = Response(status=200)
+    response.delete_cookie(settings.SIMPLE_JWT["AUTH_COOKIE"])
+    response.delete_cookie(settings.SIMPLE_JWT["REFRESH_COOKIE"])
+    return response
+
+
 def verify_signature(data: Web3LoginModel) -> bool:
     message_hash = encode_defunct(text=data.message)
     try:

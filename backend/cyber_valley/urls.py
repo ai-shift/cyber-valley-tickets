@@ -18,9 +18,6 @@ Including another URLconf
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework import routers
-from rest_framework_simplejwt.views import (
-    TokenRefreshView,
-)
 
 from .events.views import (
     EventPlaceViewSet,
@@ -30,7 +27,7 @@ from .events.views import (
 )
 from .notifications.views import NotificationViewSet
 from .users.views import CurrentUserViewSet
-from .web3_auth.views import login, nonce, refresh, verify
+from .web3_auth.views import login, logout, nonce, refresh, verify
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
@@ -47,6 +44,6 @@ urlpatterns = [
     path("api/auth/web3/nonce/", nonce, name="web3_nonce"),
     path("api/auth/verify", verify, name="jwt_verify"),
     path("api/auth/refresh", refresh, name="jwt_refresh"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/auth/logout", logout, name="jwt_logout"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]
