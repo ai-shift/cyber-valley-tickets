@@ -21,6 +21,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 minPrice;
         uint8 daysBeforeCancel;
         uint8 minDays;
+        CyberValley.Multihash meta;
     }
 
     enum EventStatus {
@@ -48,7 +49,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 minTickets,
         uint16 minPrice,
         uint8 daysBeforeCancel,
-        uint8 minDays
+        uint8 minDays,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     );
     event EventPlaceUpdated(
         uint256 eventPlaceId,
@@ -56,7 +60,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 minTickets,
         uint16 minPrice,
         uint8 daysBeforeCancel,
-        uint8 minDays
+        uint8 minDays,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     );
     event NewEventRequest(
         uint256 id,
@@ -131,14 +138,23 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 _minTickets,
         uint16 _minPrice,
         uint8 _daysBeforeCancel,
-        uint8 _minDays
+        uint8 _minDays,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     ) external onlyMaster {
+        CyberValley.Multihash memory meta = CyberValley.Multihash({
+            digest: digest,
+            hashFunction: hashFunction,
+            size: size
+        });
         EventPlace memory place = EventPlace({
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
             daysBeforeCancel: _daysBeforeCancel,
-            minDays: _minDays
+            minDays: _minDays,
+            meta: meta
         });
         _validateEventPlace(place);
         eventPlaces.push(place);
@@ -148,7 +164,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             _minTickets,
             _minPrice,
             _daysBeforeCancel,
-            _minDays
+            _minDays,
+            digest,
+            hashFunction,
+            size
         );
     }
 
@@ -158,15 +177,24 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 _minTickets,
         uint16 _minPrice,
         uint8 _daysBeforeCancel,
-        uint8 _minDays
+        uint8 _minDays,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     ) external onlyMaster {
         require(eventPlaceId < eventPlaces.length, "eventPlaceId should exist");
+        CyberValley.Multihash memory meta = CyberValley.Multihash({
+            digest: digest,
+            hashFunction: hashFunction,
+            size: size
+        });
         EventPlace memory place = EventPlace({
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
             daysBeforeCancel: _daysBeforeCancel,
-            minDays: _minDays
+            minDays: _minDays,
+            meta: meta
         });
         _validateEventPlace(place);
         eventPlaces[eventPlaceId] = place;
@@ -176,7 +204,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             _minTickets,
             _minPrice,
             _daysBeforeCancel,
-            _minDays
+            _minDays,
+            digest,
+            hashFunction,
+            size
         );
     }
 
