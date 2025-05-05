@@ -30,7 +30,7 @@ from .events.views import (
 )
 from .notifications.views import NotificationViewSet
 from .users.views import CurrentUserViewSet
-from .web3_auth.views import login, verify, nonce
+from .web3_auth.views import login, nonce, verify
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)

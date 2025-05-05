@@ -29,6 +29,7 @@ class Web3LoginModel:
     address: str
     signature: str
     message: str
+    nonce: str
 
 
 class Web3LoginModelSerializer(serializers.Serializer[Web3LoginModel]):
@@ -38,7 +39,8 @@ class Web3LoginModelSerializer(serializers.Serializer[Web3LoginModel]):
     signature = serializers.CharField(
         help_text="Message signed with user's private key"
     )
-    message = serializers.CharField(help_text="Nonce value retrieved from the server")
+    message = serializers.CharField(help_text="Original message")
+    nonce = serializers.CharField(help_text="Nonce value retrieved from the server")
 
     def create(self, validated_data: dict[str, Any]) -> Web3LoginModel:
         return Web3LoginModel(**validated_data)
@@ -57,6 +59,9 @@ def login(request: Request) -> Response:
     data = Web3LoginModelSerializer(data=request.data)
     data.is_valid(raise_exception=True)
     data = data.save()
+
+    if not cache.delete(data.nonce):
+        return Response("Nonce expired or invalid", status=400)
 
     if not verify_signature(data):
         raise exceptions.AuthenticationFailed
