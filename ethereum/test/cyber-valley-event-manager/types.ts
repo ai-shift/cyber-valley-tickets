@@ -20,6 +20,9 @@ export type EventUpdatedEvent = {
   ticketPrice: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type NewEventPlaceAvailableEvent = {
   eventPlaceId: BigNumberish;
@@ -39,6 +42,9 @@ export type NewEventRequestEvent = {
   ticketPrice: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type RoleAdminChangedEvent = {
   role: string;
@@ -69,7 +75,7 @@ export type EventPlace = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
-  meta: Multihash
+  meta: Multihash;
 };
 
 export type Event = {
@@ -79,6 +85,7 @@ export type Event = {
   startDate: BigNumberish;
   daysAmount: BigNumberish;
   status: BigNumberish;
+  meta: Multihash;
 };
 
 // Method argument types
@@ -106,6 +113,9 @@ export type SubmitEventRequestArgs = {
   ticketPrice: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type UpdateEventArgs = {
@@ -114,6 +124,9 @@ export type UpdateEventArgs = {
   ticketPrice: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type UpdateEventPlaceArgs = {
@@ -164,6 +177,7 @@ export const submitEventRequestArgsToArray = (
     args.ticketPrice,
     args.startDate,
     args.daysAmount,
+    args.digest, args.hashFunction, args.size
   ];
 };
 
@@ -176,6 +190,7 @@ export const updateEventArgsToArray = (
     args.ticketPrice,
     args.startDate,
     args.daysAmount,
+    args.digest, args.hashFunction, args.size
   ];
 };
 
