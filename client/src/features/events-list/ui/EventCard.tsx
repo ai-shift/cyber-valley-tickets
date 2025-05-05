@@ -35,7 +35,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
               {hasTicket ? (
                 <Button> Show ticket</Button>
               ) : (
-                <Button> Attend</Button>
+                <Button>Attend</Button>
               )}
             </div>
           )}
