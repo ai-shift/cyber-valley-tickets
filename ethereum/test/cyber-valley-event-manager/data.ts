@@ -40,6 +40,7 @@ export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
   ticketPrice: defaultCreateEventPlaceRequest.minPrice,
   startDate: timestamp(5),
   daysAmount: defaultCreateEventPlaceRequest.minDays,
+  ...multihash
 };
 
 export const defaultCloseEventArgs: CloseEventArgs = {
