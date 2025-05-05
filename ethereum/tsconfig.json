@@ -8,8 +8,9 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "allowJs": true,
   },
-  "include": ["./scripts", "./test", "./typechain-types"],
+  "include": ["./scripts", "./test", "./typechain-types", "./lib"],
   "files": ["./hardhat.config.ts"]
 }
