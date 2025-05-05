@@ -14,37 +14,39 @@ import {
   NotificationsPage,
   PurchasePage,
   SocialsPage,
-  StatusPage,
 } from "@/pages";
+import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 
 export const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" index element={<HomePage />} />
+        <Route element={<NavContainer />}>
+          <Route path="/" index element={<HomePage />} />
 
-        <Route path="/events">
-          <Route index element={<EventsListPage />} />
-          <Route path="/events/:eventId" element={<EventsDetailsPage />} />
-          <Route path="/events/:eventId/edit" element={<EditEventPage />} />
-          <Route path="/events/create" element={<CreateEventPage />} />
+          <Route path="/events">
+            <Route index element={<EventsListPage />} />
+            <Route path="/events/:eventId" element={<EventsDetailsPage />} />
+            <Route path="/events/:eventId/edit" element={<EditEventPage />} />
+            <Route path="/events/create" element={<CreateEventPage />} />
+          </Route>
+
+          <Route path="/manage">
+            <Route index element={<ManagePage />} />
+            <Route path="/manage/create-place" element={<CreatePlacePage />} />
+            <Route path="/manage/assign-staff" element={<AssignStaffPage />} />
+          </Route>
+
+          <Route path="/notifications" element={<NotificationsPage />} />
+
+          <Route path="/account">
+            <Route index element={<AccountPage />} />
+            <Route path="/account/my-events" element={<MyEventsPage />} />
+          </Route>
         </Route>
 
-        <Route path="/manage">
-          <Route index element={<ManagePage />} />
-          <Route path="/manage/create-place" element={<CreatePlacePage />} />
-          <Route path="/manage/assign-staff" element={<AssignStaffPage />} />
-        </Route>
-
-        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/purchase" element={<PurchasePage />} />
         <Route path="/socials" element={<SocialsPage />} />
-        <Route path="/status/:status" element={<StatusPage />} />
-
-        <Route path="/account">
-          <Route index element={<AccountPage />} />
-          <Route path="/account/my-events" element={<MyEventsPage />} />
-        </Route>
       </Routes>
     </BrowserRouter>
   );

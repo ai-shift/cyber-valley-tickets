@@ -79,11 +79,22 @@
 
 @layer components {
   .card {
-    clip-path: polygon(0% 0%, 90% 0%, 100% 30%, 100% 100%, 10% 100%, 0% 70%);
+    clip-path: polygon(
+      81.7% 0%,
+      97.2% 6%,
+      100% 33.5%,
+      100% 100%,
+      18.3% 100%,
+      2.8% 94%,
+      0% 66.5%,
+      0% 0%
+    );
+
     border-width: 1px;
     border-style: solid;
     border-color: var(--primary);
-    padding: 1.3rem;
+    padding: 1rem;
+    position: relative;
   }
 }
 
