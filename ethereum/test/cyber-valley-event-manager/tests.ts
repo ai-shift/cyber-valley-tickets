@@ -1,6 +1,5 @@
 import { assert, expect } from "chai";
 import {
-  loadFixture,
   cancelEvent,
   closeEvent,
   createAndCancelEvent,
@@ -11,6 +10,7 @@ import {
   createValidEventPlace,
   deployContract,
   itExpectsOnlyMaster,
+  loadFixture,
   stringify,
   submitEventRequest,
 } from "./helpers";

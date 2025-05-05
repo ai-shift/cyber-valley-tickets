@@ -65,7 +65,9 @@ async function dummyLoadFixture<T>(fn: Fixture<T>): Promise<T> {
   return await fn();
 }
 
-const loadFixture = blockchainRestoreDisabled ? dummyLoadFixture : hardhatLoadFixture;
+const loadFixture = blockchainRestoreDisabled
+  ? dummyLoadFixture
+  : hardhatLoadFixture;
 
 export { loadFixture };
 

@@ -67,7 +67,7 @@ export type Multihash = {
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
-}
+};
 
 export type EventPlace = {
   maxTickets: BigNumberish;
@@ -166,7 +166,16 @@ export const declineEventArgsToArray = (
 export const createEventPlaceArgsToArray = (
   args: CreateEventPlaceArgs,
 ): Parameters<CyberValleyEventManager["createEventPlace"]> => {
-  return [args.maxTickets, args.minTickets, args.minPrice, args.daysBeforeCancel, args.minDays, args.digest, args.hashFunction, args.size];
+  return [
+    args.maxTickets,
+    args.minTickets,
+    args.minPrice,
+    args.daysBeforeCancel,
+    args.minDays,
+    args.digest,
+    args.hashFunction,
+    args.size,
+  ];
 };
 
 export const submitEventRequestArgsToArray = (
@@ -177,7 +186,9 @@ export const submitEventRequestArgsToArray = (
     args.ticketPrice,
     args.startDate,
     args.daysAmount,
-    args.digest, args.hashFunction, args.size
+    args.digest,
+    args.hashFunction,
+    args.size,
   ];
 };
 
@@ -190,7 +201,9 @@ export const updateEventArgsToArray = (
     args.ticketPrice,
     args.startDate,
     args.daysAmount,
-    args.digest, args.hashFunction, args.size
+    args.digest,
+    args.hashFunction,
+    args.size,
   ];
 };
 
@@ -206,7 +219,7 @@ export const updateEventPlaceArgsToArray = (
     args.minDays,
     args.digest,
     args.hashFunction,
-    args.size
+    args.size,
   ];
 };
 
