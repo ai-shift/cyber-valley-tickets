@@ -36,7 +36,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address creator;
         uint256 eventPlaceId;
         uint16 ticketPrice;
-        uint256 cancelDate;
         uint256 startDate;
         uint16 daysAmount;
         EventStatus status;
@@ -64,7 +63,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address creator,
         uint256 eventPlaceId,
         uint16 ticketPrice,
-        uint256 cancelDate,
         uint256 startDate,
         uint16 daysAmount
     );
@@ -73,7 +71,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 id,
         uint256 eventPlaceId,
         uint16 ticketPrice,
-        uint256 cancelDate,
         uint256 startDate,
         uint16 daysAmount
     );
@@ -201,7 +198,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     function submitEventRequest(
         uint256 eventPlaceId,
         uint16 ticketPrice,
-        uint256 cancelDate,
         uint256 startDate,
         uint16 daysAmount
     ) external {
@@ -227,7 +223,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 creator: msg.sender,
                 eventPlaceId: eventPlaceId,
                 ticketPrice: ticketPrice,
-                cancelDate: cancelDate,
                 startDate: startDate,
                 daysAmount: daysAmount,
                 status: EventStatus.Submitted,
@@ -240,7 +235,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             msg.sender,
             eventPlaceId,
             ticketPrice,
-            cancelDate,
             startDate,
             daysAmount
         );
@@ -283,14 +277,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventId,
         uint256 eventPlaceId,
         uint16 ticketPrice,
-        uint256 cancelDate,
         uint256 startDate,
         uint16 daysAmount
     ) external onlyMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         evt.eventPlaceId = eventPlaceId;
         evt.ticketPrice = ticketPrice;
-        evt.cancelDate = cancelDate;
         evt.startDate = startDate;
         evt.daysAmount = daysAmount;
         validateEvent(evt);
@@ -298,7 +290,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             eventId,
             eventPlaceId,
             ticketPrice,
-            cancelDate,
             startDate,
             daysAmount
         );
@@ -316,16 +307,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Days amount is less than allowed"
         );
         require(
-            evt.cancelDate < evt.startDate,
-            "Cancelation date should be earlier than start"
-        );
-        require(
-            evt.cancelDate >= block.timestamp,
-            "Requested event can't be in the past"
-        );
-        require(
-            evt.startDate - evt.cancelDate >= SECONDS_IN_DAY,
-            "Cancel date should be at least one day before the start date"
+            block.timestamp + SECONDS_IN_DAY * (place.daysBeforeCancel + 1) <=
+                evt.startDate,
+            "Not enough time to avoid cancelling"
         );
         // Saves from requests that will allocate a lot of buckets
         // in the `DateOverlapChecker`
@@ -417,9 +401,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.status == EventStatus.Approved,
             "Only event in approved state can be cancelled"
         );
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
         require(
-            block.timestamp >= evt.cancelDate,
-            "Event can not be cancelled before setted date"
+            evt.startDate - place.daysBeforeCancel * SECONDS_IN_DAY >=
+                block.timestamp,
+            "Event still have time"
         );
         evt.status = EventStatus.Cancelled;
         for (uint256 idx = 0; idx < evt.customers.length; idx++) {

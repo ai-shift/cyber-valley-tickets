@@ -15,7 +15,6 @@ export type EventUpdatedEvent = {
   id: BigNumberish;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
 };
@@ -32,7 +31,6 @@ export type NewEventRequestEvent = {
   id: BigNumberish;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
 };
@@ -65,7 +63,6 @@ export type Event = {
   creator: string;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
   status: BigNumberish;
@@ -91,7 +88,6 @@ export type CreateEventPlaceArgs = {
 export type SubmitEventRequestArgs = {
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
 };
@@ -100,7 +96,6 @@ export type UpdateEventArgs = {
   eventId: BigNumberish;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
 };
@@ -148,7 +143,6 @@ export const submitEventRequestArgsToArray = (
   return [
     args.eventPlaceId,
     args.ticketPrice,
-    args.cancelDate,
     args.startDate,
     args.daysAmount,
   ];
@@ -161,7 +155,6 @@ export const updateEventArgsToArray = (
     args.eventId,
     args.eventPlaceId,
     args.ticketPrice,
-    args.cancelDate,
     args.startDate,
     args.daysAmount,
   ];

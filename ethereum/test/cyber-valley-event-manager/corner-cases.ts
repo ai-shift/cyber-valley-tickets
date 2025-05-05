@@ -62,22 +62,6 @@ export const submitEventIncompatibleEventPlaceCornerCases = [
   {
     eventPlacePatch: {},
     eventRequestPatch: {
-      cancelDate: timestamp(-2),
-      startDate: timestamp(-1),
-    },
-    revertsWith: "Requested event can't be in the past",
-  },
-  {
-    evenPlacePatch: {},
-    eventRequestPatch: {
-      startDate: timestamp(-2),
-      cancelDate: timestamp(-1),
-    },
-    revertsWith: "Cancelation date should be earlier than start",
-  },
-  {
-    eventPlacePatch: {},
-    eventRequestPatch: {
       startDate: timestamp(300),
     },
     revertsWith: "Requested event is too far in the future",
