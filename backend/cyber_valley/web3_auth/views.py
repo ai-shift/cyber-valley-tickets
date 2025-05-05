@@ -1,9 +1,11 @@
+import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.middleware import csrf
 from drf_spectacular.utils import (
     extend_schema,
@@ -102,3 +104,18 @@ def verify_signature(data: Web3LoginModel) -> bool:
 @permission_classes([IsAuthenticated])
 def verify(_request: Request) -> Response:
     return Response(status=200)
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {"nonce": {"type": "string"}},
+        }
+    }
+)
+@api_view(["GET"])
+def nonce(_request: Request) -> Response:
+    nonce = secrets.token_hex(16)
+    cache.set(nonce, "nonce", timeout=10)
+    return Response({"nonce": nonce})
