@@ -12,8 +12,10 @@ export const useEventsAndPlaces = () => {
     (error) => error !== null,
   );
 
-  const places = placesResult.data;
-  const events = eventsResult.data;
-
-  return { places, events, isLoading, errors };
+  return {
+    places: placesResult.data,
+    events: eventsResult.data,
+    isLoading,
+    errors,
+  };
 };
