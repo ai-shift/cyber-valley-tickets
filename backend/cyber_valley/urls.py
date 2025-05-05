@@ -30,7 +30,7 @@ from .events.views import (
 )
 from .notifications.views import NotificationViewSet
 from .users.views import CurrentUserViewSet
-from .web3_auth.views import login, nonce, verify
+from .web3_auth.views import login, nonce, refresh, verify
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
@@ -46,6 +46,7 @@ urlpatterns = [
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/auth/web3/nonce/", nonce, name="web3_nonce"),
     path("api/auth/verify", verify, name="jwt_verify"),
+    path("api/auth/refresh", refresh, name="jwt_refresh"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]
