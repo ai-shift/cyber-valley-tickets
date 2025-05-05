@@ -8,6 +8,7 @@ export type EventPlaceUpdatedEvent = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
 };
 export type EventUpdatedEvent = {
@@ -23,6 +24,7 @@ export type NewEventPlaceAvailableEvent = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
 };
 export type NewEventRequestEvent = {
@@ -55,6 +57,7 @@ export type EventPlace = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
 };
 
@@ -81,6 +84,7 @@ export type CreateEventPlaceArgs = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
 };
 
@@ -106,6 +110,7 @@ export type UpdateEventPlaceArgs = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
 };
 
@@ -134,7 +139,7 @@ export const declineEventArgsToArray = (
 export const createEventPlaceArgsToArray = (
   args: CreateEventPlaceArgs,
 ): Parameters<CyberValleyEventManager["createEventPlace"]> => {
-  return [args.maxTickets, args.minTickets, args.minPrice, args.minDays];
+  return [args.maxTickets, args.minTickets, args.minPrice, args.daysBeforeCancel, args.minDays];
 };
 
 export const submitEventRequestArgsToArray = (
@@ -170,6 +175,7 @@ export const updateEventPlaceArgsToArray = (
     args.maxTickets,
     args.minTickets,
     args.minPrice,
+    args.daysBeforeCancel,
     args.minDays,
   ];
 };
