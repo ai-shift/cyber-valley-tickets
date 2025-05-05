@@ -28,7 +28,7 @@ export const CreateEditEvent: React.FC<CreateEditEventProps> = ({
   const { events, places, isLoading, errors } = useEventsAndPlaces();
 
   if (isLoading) return <p>Loading</p>;
-  if (errors.length > 0) return <p>{errors.at(0)?.message}</p>;
+  if (errors.length > 0) return <p>{errors.toString()}</p>;
   if (!events || !places) return <p>Internal error. Try again later</p>;
 
   if (editEventId) {

@@ -21,6 +21,193 @@
         "tags": ["api"],
         "security": [{}],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginRetrieveErrorResponse400"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "description": "No response body"
           }
@@ -41,6 +228,193 @@
         "tags": ["api"],
         "security": [{}],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateErrorResponse400"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "description": "No response body"
           }
@@ -53,6 +427,112 @@
         "description": "Available events in the syste",
         "tags": ["api"],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiEventsListErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -85,6 +565,136 @@
         ],
         "tags": ["api"],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiEventsRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -106,6 +716,112 @@
         "operationId": "api_notifications_list",
         "tags": ["api"],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiNotificationsListErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -137,6 +853,136 @@
         ],
         "tags": ["api"],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiNotificationsRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -184,6 +1030,136 @@
           }
         },
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiNotificationsSeenCreateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "201": {
             "description": "No response body"
           }
@@ -196,6 +1172,112 @@
         "description": "API endpoint that allows event places to be viewed",
         "tags": ["api"],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiPlacesListErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -232,6 +1314,136 @@
         ],
         "tags": ["api"],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiPlacesRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -271,6 +1483,112 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiTokenRefreshCreateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -289,6 +1607,112 @@
         "operationId": "api_users_current_retrieve",
         "tags": ["api"],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiUsersCurrentRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -305,6 +1729,286 @@
   },
   "components": {
     "schemas": {
+      "ApiAuthWeb3LoginCreateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiAuthWeb3LoginRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiEventsListErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiEventsRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiNotificationsListErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiNotificationsRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiNotificationsSeenCreateError": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "attr",
+          "mapping": {
+            "non_field_errors": "#/components/schemas/ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"
+          }
+        }
+      },
+      "ApiNotificationsSeenCreateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiNotificationsSeenCreateValidationError"
+          },
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "validation_error": "#/components/schemas/ApiNotificationsSeenCreateValidationError",
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiNotificationsSeenCreateNonFieldErrorsErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["non_field_errors"],
+            "type": "string",
+            "description": "* `non_field_errors` - non_field_errors"
+          },
+          "code": {
+            "enum": ["invalid", "null"],
+            "type": "string",
+            "description": "* `invalid` - invalid\n* `null` - null"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiNotificationsSeenCreateValidationError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ValidationErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiNotificationsSeenCreateError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ApiPlacesListErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiPlacesRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiTokenRefreshCreateError": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiTokenRefreshCreateNonFieldErrorsErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiTokenRefreshCreateRefreshErrorComponent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "attr",
+          "mapping": {
+            "non_field_errors": "#/components/schemas/ApiTokenRefreshCreateNonFieldErrorsErrorComponent",
+            "refresh": "#/components/schemas/ApiTokenRefreshCreateRefreshErrorComponent"
+          }
+        }
+      },
+      "ApiTokenRefreshCreateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiTokenRefreshCreateValidationError"
+          },
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "validation_error": "#/components/schemas/ApiTokenRefreshCreateValidationError",
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiTokenRefreshCreateNonFieldErrorsErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["non_field_errors"],
+            "type": "string",
+            "description": "* `non_field_errors` - non_field_errors"
+          },
+          "code": {
+            "enum": ["invalid", "no_active_account", "null"],
+            "type": "string",
+            "description": "* `invalid` - invalid\n* `no_active_account` - no_active_account\n* `null` - null"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiTokenRefreshCreateRefreshErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["refresh"],
+            "type": "string",
+            "description": "* `refresh` - refresh"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiTokenRefreshCreateValidationError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ValidationErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiTokenRefreshCreateError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ApiUsersCurrentRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ClientErrorEnum": {
+        "enum": ["client_error"],
+        "type": "string",
+        "description": "* `client_error` - Client Error"
+      },
       "Creator": {
         "type": "object",
         "properties": {
@@ -413,6 +2117,186 @@
         },
         "required": ["address", "role", "tickets"]
       },
+      "Error404": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode404Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error405": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode405Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error406": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode406Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error415": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode415Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error500": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode500Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ErrorCode404Enum": {
+        "enum": ["not_found"],
+        "type": "string",
+        "description": "* `not_found` - Not Found"
+      },
+      "ErrorCode405Enum": {
+        "enum": ["method_not_allowed"],
+        "type": "string",
+        "description": "* `method_not_allowed` - Method Not Allowed"
+      },
+      "ErrorCode406Enum": {
+        "enum": ["not_acceptable"],
+        "type": "string",
+        "description": "* `not_acceptable` - Not Acceptable"
+      },
+      "ErrorCode415Enum": {
+        "enum": ["unsupported_media_type"],
+        "type": "string",
+        "description": "* `unsupported_media_type` - Unsupported Media Type"
+      },
+      "ErrorCode500Enum": {
+        "enum": ["error"],
+        "type": "string",
+        "description": "* `error` - Error"
+      },
+      "ErrorResponse404": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error404"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse405": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error405"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse406": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error406"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse415": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error415"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse500": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ServerErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error500"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
       "EventPlace": {
         "type": "object",
         "properties": {
@@ -495,6 +2379,42 @@
         },
         "required": ["body", "seenAt", "title"]
       },
+      "ParseError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ParseErrorCodeEnum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ParseErrorCodeEnum": {
+        "enum": ["parse_error"],
+        "type": "string",
+        "description": "* `parse_error` - Parse Error"
+      },
+      "ParseErrorResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParseError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
       "RoleBasedEvent": {
         "oneOf": [
           {
@@ -509,6 +2429,11 @@
         "enum": ["customer", "staff", "creator", "master"],
         "type": "string",
         "description": "* `customer` - Customer\n* `staff` - Staff\n* `creator` - Creator\n* `master` - Master"
+      },
+      "ServerErrorEnum": {
+        "enum": ["server_error"],
+        "type": "string",
+        "description": "* `server_error` - Server Error"
       },
       "StaffEvent": {
         "type": "object",
@@ -618,6 +2543,11 @@
           }
         },
         "required": ["access", "refresh"]
+      },
+      "ValidationErrorEnum": {
+        "enum": ["validation_error"],
+        "type": "string",
+        "description": "* `validation_error` - Validation Error"
       }
     }
   }
