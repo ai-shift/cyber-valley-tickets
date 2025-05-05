@@ -30,10 +30,6 @@ from .serializers import (
 
 
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
-    """
-    API endpoint that allows event places to be viewed
-    """
-
     queryset = EventPlace.objects.all().prefetch_related("event_set")
     serializer_class = EventPlaceSerializer
     permission_classes = (IsAuthenticated,)
