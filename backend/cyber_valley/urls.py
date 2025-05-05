@@ -30,7 +30,7 @@ from .events.views import (
 )
 from .notifications.views import NotificationViewSet
 from .users.views import CurrentUserViewSet
-from .web3_auth.views import login
+from .web3_auth.views import login, verify
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
@@ -44,6 +44,7 @@ urlpatterns = [
     path("api/ipfs/events/meta", upload_event_meta_to_ipfs, name="ipfs-events"),
     path("api/ipfs/places/meta", upload_place_meta_to_ipfs, name="ipfs-events"),
     path("api/auth/web3/login/", login, name="web3_login"),
+    path("api/auth/verify", verify, name="jwt_verify"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]

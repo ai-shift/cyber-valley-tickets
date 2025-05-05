@@ -11,7 +11,8 @@ from drf_spectacular.utils import (
 from eth_account import Account
 from eth_account.messages import encode_defunct
 from rest_framework import exceptions, serializers
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -95,3 +96,9 @@ def verify_signature(data: Web3LoginModel) -> bool:
     except Exception as e:
         print(f"Signature verification error: {e}")
     return False
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def verify(_request: Request) -> Response:
+    return Response(status=200)
