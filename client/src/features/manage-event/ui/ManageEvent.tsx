@@ -4,14 +4,14 @@ import { type Role, checkPermission } from "@/shared/lib/RBAC";
 import { Button } from "@/shared/ui/button";
 import { useNavigate } from "react-router";
 
-type ManageEventProps = {
+type MaybeManageEventProps = {
   role: Role;
   status: EventStatus;
   eventId: number;
   canEdit: boolean;
 };
 
-export const ManageEvent: React.FC<ManageEventProps> = ({
+export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   role,
   status,
   eventId,

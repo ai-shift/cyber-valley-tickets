@@ -3,7 +3,7 @@ import { useUser } from "@/entities/user";
 import { useQuery } from "@tanstack/react-query";
 
 import { canEdit } from "@/features/create-edit-event";
-import { ManageEvent } from "@/features/manage-event";
+import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { DetailsBlock } from "./DetailsBlock";
@@ -76,7 +76,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
       </div>
 
       <Ticket event={event} user={user} />
-      <ManageEvent
+      <MaybeManageEvent
         eventId={eventId}
         canEdit={editPermission}
         role={user.role}

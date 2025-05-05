@@ -1,1 +1,1 @@
-export { ManageEvent } from "./ui/ManageEvent";
+export { MaybeManageEvent } from "./ui/ManageEvent";

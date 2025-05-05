@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { EventCard } from "./EventCard";
 
 import type { User } from "@/entities/user";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 
 type EventsListProps = {
   limit?: number;
@@ -14,9 +15,8 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   const { data: events, error, isFetching } = useQuery(eventQueries.list());
   const { user } = useUser();
 
-  //TODO optimize conditional rendering logic
   if (isFetching) return <p>Loading</p>;
-  if (error) return <p>{error.message}</p>;
+  if (error) return <ErrorMessage errors={error} />;
   if (!(events && user)) return <p>No data for some reason</p>;
 
   const displayEvents = filterFn
