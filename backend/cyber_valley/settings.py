@@ -237,3 +237,13 @@ CONTRACTS_INFO: Final = (
 )
 
 IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])
+
+ACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
