@@ -3,6 +3,7 @@ import { Nav } from "@/shared/widgets/navigation";
 import { Link } from "react-router";
 
 import { EventsList, upcomingFilter } from "@/features/events-list/";
+import { NotificationIcon } from "@/features/notifications";
 
 export const HomePage: React.FC = () => {
   return (
@@ -10,8 +11,8 @@ export const HomePage: React.FC = () => {
       <Nav />
       <div className="w-full h-2 bg-amber-700" />
       <div className="flex justify-between items-center p-3">
-        <p>You have 6 unread notifications</p>
-        <Link to="/notifications">See all...</Link>
+        <p> </p>
+        <NotificationIcon />
       </div>
       <div className="w-full h-2 bg-amber-700" />
       <section>

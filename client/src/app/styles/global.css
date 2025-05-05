@@ -1,3 +1,4 @@
+@import "./fonts/fonts.css";
 @import "tailwindcss";
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
@@ -121,6 +122,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body {
+  /* biome-ignore lint/a11y/useGenericFontNames: <Downloaded font> */
+  font-family: Chakra Petch;
 }
 
 input::-webkit-outer-spin-button,
