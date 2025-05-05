@@ -1,4 +1,4 @@
-import { AppContainer } from "@/shared/ui/AppContainer";
+import { AppContainer } from "@/shared/widgets/layout/AppContainer";
 import { QueryProvider } from "../providers/QueryProvider";
 import { Router } from "../routes/Router";
 
