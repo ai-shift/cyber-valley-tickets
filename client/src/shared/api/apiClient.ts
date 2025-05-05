@@ -16,6 +16,4 @@ const errorMiddleware: Middleware = {
   },
 };
 
-//TODO: create func ApiError to text (fuck TS)
-
 apiClient.use(errorMiddleware);

@@ -7,9 +7,10 @@ import { ManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { DetailsBlock } from "./DetailsBlock";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 
 type EventDetailsProps = {
-  eventId: string;
+  eventId: number;
 };
 export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   const { user } = useUser();
@@ -17,10 +18,10 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     data: event,
     error,
     isFetching,
-  } = useQuery(eventQueries.detail(+eventId));
+  } = useQuery(eventQueries.detail(eventId));
 
   if (isFetching) return <p>Loading</p>;
-  if (error) return <p>{error.type}</p>;
+  if (error) return <ErrorMessage errors={error} />;
   if (!event || !user) return <p>GG</p>;
 
   const {
