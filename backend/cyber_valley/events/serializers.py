@@ -1,9 +1,9 @@
-from django.core.files import File
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Any
 
 from django.contrib.auth import get_user_model
+from django.core.files import File
 from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
 
@@ -136,15 +136,15 @@ class TicketSerializer(serializers.ModelSerializer[Ticket]):
 
 @dataclass
 class EventMetaData:
-    cover: File
+    cover: File[bytes]
     title: str
     description: str
 
 
-class UploadEventMetaToIpfsSerializer(serializers.Serializer):
+class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
     cover = serializers.FileField()
     title = serializers.CharField()
     description = serializers.CharField()
 
-    def create(self, validated_data) -> EventMetaData:
+    def create(self, validated_data: dict[str, Any]) -> EventMetaData:
         return EventMetaData(**validated_data)
