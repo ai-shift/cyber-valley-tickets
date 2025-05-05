@@ -20,8 +20,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
           <Button disabled={hasPassed}>Show ticket</Button>
         )}
       </DialogTrigger>
-      {/* TODO: Use rem insted of px */}
-      <DialogContent className="w-11/12 sm:max-w-[425px]">
+      <DialogContent className="w-11/12 sm:max-w-96">
         <div className="flex justify-center items-center py-20">
           <QRCode size={256} value={`${ticket.id}`} />
         </div>
