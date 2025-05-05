@@ -1,6 +1,6 @@
 import { readNotification } from "@/entities/notification";
-import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/shared/api";
+import { useMutation } from "@tanstack/react-query";
 
 export const useReadNotification = () =>
   useMutation({

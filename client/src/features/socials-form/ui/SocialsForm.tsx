@@ -1,10 +1,10 @@
-import type { z } from "zod";
 import type { Socials } from "@/entities/order";
+import type { z } from "zod";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
-import { formSchema } from "../model/formSchema";
+import { Button } from "@/shared/ui/button";
 import {
   Form,
   FormControl,
@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
-import { Button } from "@/shared/ui/button";
+import { formSchema } from "../model/formSchema";
 import { SelectNetwork } from "./SelectNetwork";
 
 type SocialsFormProps = {
@@ -43,7 +43,10 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
             <FormItem>
               <FormLabel>Network</FormLabel>
               <FormControl>
-                <SelectNetwork value={field.value} onChange={field.onChange} />
+                <SelectNetwork
+                  networkName={field.value}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

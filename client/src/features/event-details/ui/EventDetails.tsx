@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
 import { eventQueries } from "@/entities/event";
 import { useUser } from "@/entities/user";
+import { useQuery } from "@tanstack/react-query";
 
+import { canEdit } from "@/features/create-edit-event";
+import { ManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { DetailsBlock } from "./DetailsBlock";
-import { ManageEvent } from "@/features/manage-event";
-import { canEdit } from "@/features/create-edit-event";
 
 type EventDetailsProps = {
   eventId: string;
@@ -19,9 +19,6 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     isFetching,
   } = useQuery(eventQueries.detail(+eventId));
 
-  console.log(error);
-
-  //TODO: Replace with single component
   if (isFetching) return <p>Loading</p>;
   if (error) return <p>{error.type}</p>;
   if (!event || !user) return <p>GG</p>;

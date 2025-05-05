@@ -1,9 +1,4 @@
-import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
-import { useForm } from "react-hook-form";
-import { formSchema } from "../model/formSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { z } from "zod";
 import {
   Form,
   FormControl,
@@ -12,14 +7,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
+import { formSchema } from "../model/formSchema";
 
-type StaffFormProps = {
-  onSubmit: (address: string) => void;
-};
-
-export const StaffForm: React.FC<StaffFormProps> = ({
-  onSubmit: submitHandler,
-}) => {
+export const StaffForm: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -28,7 +22,8 @@ export const StaffForm: React.FC<StaffFormProps> = ({
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    submitHandler(values.address);
+    // TODO: @scipunch add Web3 call
+    console.log(values.address);
   };
 
   return (
