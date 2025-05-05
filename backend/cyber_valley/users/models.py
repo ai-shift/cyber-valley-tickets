@@ -1,7 +1,22 @@
-from typing import ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
+
+if TYPE_CHECKING:
+    CharFieldType = models.CharField[str, str]
+else:
+    CharFieldType = models.CharField
+
+
+class AddressField(CharFieldType):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs["max_length"] = 42
+        super().__init__(*args, **kwargs)
+
+    def get_prep_value(self, value: str) -> None | str:
+        value = super().get_prep_value(value)
+        return value if value is None else value.lower()
 
 
 class CyberValleyUser(AbstractBaseUser):
@@ -17,7 +32,7 @@ class CyberValleyUser(AbstractBaseUser):
         (MASTER, "Master"),
     )
 
-    address = models.CharField(max_length=42, primary_key=True)
+    address = AddressField(primary_key=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=CUSTOMER)
     # XXX: This field is requred because of bug in simplejwt
     is_active = models.BooleanField(default=True)
