@@ -10,6 +10,9 @@ export type EventPlaceUpdatedEvent = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type EventUpdatedEvent = {
   id: BigNumberish;
@@ -25,6 +28,9 @@ export type NewEventPlaceAvailableEvent = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type NewEventRequestEvent = {
   creator: string;
@@ -51,12 +57,19 @@ export type RoleRevokedEvent = {
 };
 
 // Struct types
+export type Multihash = {
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
+}
+
 export type EventPlace = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  meta: Multihash
 };
 
 export type Event = {
@@ -83,6 +96,9 @@ export type CreateEventPlaceArgs = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type SubmitEventRequestArgs = {
@@ -107,6 +123,9 @@ export type UpdateEventPlaceArgs = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type CloseEventArgs = {
@@ -134,7 +153,7 @@ export const declineEventArgsToArray = (
 export const createEventPlaceArgsToArray = (
   args: CreateEventPlaceArgs,
 ): Parameters<CyberValleyEventManager["createEventPlace"]> => {
-  return [args.maxTickets, args.minTickets, args.minPrice, args.daysBeforeCancel, args.minDays];
+  return [args.maxTickets, args.minTickets, args.minPrice, args.daysBeforeCancel, args.minDays, args.digest, args.hashFunction, args.size];
 };
 
 export const submitEventRequestArgsToArray = (
@@ -170,6 +189,9 @@ export const updateEventPlaceArgsToArray = (
     args.minPrice,
     args.daysBeforeCancel,
     args.minDays,
+    args.digest,
+    args.hashFunction,
+    args.size
   ];
 };
 
