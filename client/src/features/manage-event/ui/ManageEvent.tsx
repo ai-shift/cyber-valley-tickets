@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 type ManageEventProps = {
   role: Role;
   status: EventStatus;
-  eventId: string;
+  eventId: number;
   canEdit: boolean;
 };
 

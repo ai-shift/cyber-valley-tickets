@@ -6,10 +6,11 @@ export const EventsDetailsPage: React.FC = () => {
   const { eventId } = useParams();
 
   if (eventId === undefined) return <Navigate to={"/events"} />;
+  const numericId = Number(eventId);
 
   return (
     <PageContainer name="Event Details">
-      <EventDetails eventId={eventId} />
+      <EventDetails eventId={numericId} />
     </PageContainer>
   );
 };
