@@ -31,7 +31,6 @@ export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
   eventPlaceId: defaultUpdateEventPlaceRequest.eventPlaceId,
   ticketPrice: defaultCreateEventPlaceRequest.minPrice,
   startDate: timestamp(5),
-  cancelDate: timestamp(1),
   daysAmount: defaultCreateEventPlaceRequest.minDays,
 };
 
