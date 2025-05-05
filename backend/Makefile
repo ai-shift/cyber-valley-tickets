@@ -1,3 +1,6 @@
+ipfs_container_name := "cyber-valley-ipfs"
+valkey_container_name := "cyber-valley-valkey"
+
 format:
 	uv run ruff format
 
@@ -7,7 +10,7 @@ lint: format
 
 pre-commit: lint
 
-run:
+run: run-ipfs-node run-valkey
 	uv run python manage.py runserver
 
 generate-requirements:
@@ -32,8 +35,10 @@ tests:
 run-ipfs-node:
 	test -n "$(IPFS_STAGING)" || exit 1
 	test -n "$(IPFS_DATA)" || exit 1
+	docker stop $(ipfs_container_name) || true
+	docker rm $(ipfs_container_name) || true
 	docker run --rm -d \
-		--name cyber-valley-ipfs \
+		--name $(ipfs_container_name) \
 		-v $$IPFS_STAGING:/export \
 		-v $$IPFS_DATA:/data/ipfs \
 		-p 4001:4001 \
@@ -43,7 +48,9 @@ run-ipfs-node:
 		ipfs/go-ipfs:v0.7.0
 
 run-valkey:
+	docker stop $(valkey_container_name) || true
+	docker rm $(valkey_container_name) || true
 	docker run --rm -d \
-		--name cyber-valley-valkey \
+		--name $(valkey_container_name) \
 		-p 6379:6379 \
 		valkey/valkey:8.1.1
