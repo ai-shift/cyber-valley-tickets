@@ -25,6 +25,9 @@
                     "api"
                 ],
                 "security": [
+                    {
+                        "cookieJWTAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -38,6 +41,73 @@
                             "text/html": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiAuthWeb3LoginRetrieveErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -269,6 +339,9 @@
                     "required": true
                 },
                 "security": [
+                    {
+                        "cookieJWTAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -282,6 +355,73 @@
                             "text/html": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -482,12 +622,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiEventsListErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -622,12 +803,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiEventsRetrieveErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -785,12 +1007,53 @@
                     },
                     "required": true
                 },
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -927,12 +1190,53 @@
                     },
                     "required": true
                 },
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -1059,12 +1363,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiNotificationsListErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -1198,12 +1543,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiNotificationsRetrieveErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -1358,12 +1744,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiNotificationsSeenCreateErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -1501,12 +1928,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiPlacesListErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -1644,12 +2112,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiPlacesRetrieveErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -1941,12 +2450,53 @@
                 "tags": [
                     "api"
                 ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiUsersCurrentRetrieveErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -2995,6 +3545,26 @@
                     "tickets"
                 ]
             },
+            "Error401": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "$ref": "#/components/schemas/ErrorCode401Enum"
+                    },
+                    "detail": {
+                        "type": "string"
+                    },
+                    "attr": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
             "Error404": {
                 "type": "object",
                 "properties": {
@@ -3095,6 +3665,14 @@
                     "detail"
                 ]
             },
+            "ErrorCode401Enum": {
+                "enum": [
+                    "authentication_failed",
+                    "not_authenticated"
+                ],
+                "type": "string",
+                "description": "* `authentication_failed` - Authentication Failed\n* `not_authenticated` - Not Authenticated"
+            },
             "ErrorCode404Enum": {
                 "enum": [
                     "not_found"
@@ -3129,6 +3707,24 @@
                 ],
                 "type": "string",
                 "description": "* `error` - Error"
+            },
+            "ErrorResponse401": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ClientErrorEnum"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Error401"
+                        }
+                    }
+                },
+                "required": [
+                    "errors",
+                    "type"
+                ]
             },
             "ErrorResponse404": {
                 "type": "object",
@@ -3590,6 +4186,14 @@
                     "message",
                     "signature"
                 ]
+            }
+        },
+        "securitySchemes": {
+            "cookieJWTAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "access_token",
+                "description": "JSON Web Token authentication via cookie"
             }
         }
     }
