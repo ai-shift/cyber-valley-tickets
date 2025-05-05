@@ -7,15 +7,14 @@ type NotificationCardProps = {
 export const NotificationCard: React.FC<NotificationCardProps> = ({
   notification,
 }) => {
-  const { body, title, seenAt } = notification;
+  const { body, title, seenAt, id } = notification;
 
   const isNew = !seenAt;
 
   const { mutate } = useReadNotification();
 
-  // TODO: Use notification id as int
   function clickHandler() {
-    mutate("1");
+    mutate(id);
   }
 
   return (
