@@ -1,12 +1,16 @@
+from dataclasses import dataclass
 from datetime import UTC, datetime
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.middleware import csrf
+from drf_spectacular.utils import (
+    extend_schema,
+)
 from eth_account import Account
 from eth_account.messages import encode_defunct
-from pydantic import BaseModel, Field, ValidationError
-from rest_framework import exceptions
+from rest_framework import exceptions, serializers
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.request import Request
@@ -17,27 +21,39 @@ from web3 import Web3
 User = get_user_model()
 
 
-class Web3LoginModel(BaseModel):
-    address: str = Field(
-        description="User's externally owned account address",
-        min_length=42,
-        max_length=42,
+@dataclass
+class Web3LoginModel:
+    address: str
+    signature: str
+    message: str
+
+
+class Web3LoginModelSerializer(serializers.Serializer[Web3LoginModel]):
+    address = serializers.CharField(
+        min_length=42, max_length=42, help_text="Address of the user's EOA"
     )
-    signature: str = Field(description="Message signed with user's private key")
-    message: str = Field(description="Message that is signed")
+    signature = serializers.CharField(
+        help_text="Message signed with user's private key"
+    )
+    message = serializers.CharField(help_text="Nonce value retrieved from the server")
+
+    def create(self, validated_data: dict[str, Any]) -> Web3LoginModel:
+        return Web3LoginModel(**validated_data)
 
 
-# FIXME: Add request / response OpenAPI schema
+@extend_schema(
+    request=Web3LoginModelSerializer,
+    responses={(200, "text/html"): str, (204, "applicaiton/json"): None},
+)
 @api_view(["POST", "GET"])
 @renderer_classes([JSONRenderer, TemplateHTMLRenderer])
 def login(request: Request) -> Response:
     if request.method == "GET":
         return Response(template_name="login_ethereum.html")
 
-    try:
-        data = Web3LoginModel.model_validate(request.data)
-    except ValidationError as e:
-        raise exceptions.ParseError from e
+    data = Web3LoginModelSerializer(data=request.data)
+    data.is_valid(raise_exception=True)
+    data = data.save()
 
     if not verify_signature(data):
         raise exceptions.AuthenticationFailed
