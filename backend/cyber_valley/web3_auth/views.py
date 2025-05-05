@@ -86,23 +86,66 @@ def login(request: Request) -> Response:
         httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
         samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
     )
+    response.set_cookie(
+        key=settings.SIMPLE_JWT["REFRESH_COOKIE"],
+        value=str(token),
+        expires=datetime.now(tz=UTC) + settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
+        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+
     csrf.get_token(request)
 
     return response
 
 
-def verify_signature(data: Web3LoginModel) -> bool:
-    message_hash = encode_defunct(text=data.message)
-    try:
-        recovered_address = Account.recover_message(
-            message_hash, signature=data.signature
+@api_view(["GET"])
+def refresh(request: Request) -> Response:
+    cookie_name = settings.SIMPLE_JWT["AUTH_COOKIE"]
+    raw_token = request.COOKIES.get(cookie_name)
+    if not raw_token:
+        return Response(
+            f"Refresh token cookie ({cookie_name}) was not provided", status=400
         )
-        recovered_address = Web3.to_checksum_address(recovered_address)
-        if data.address.lower() == recovered_address.lower():
-            return True
-    except Exception as e:
-        print(f"Signature verification error: {e}")
-    return False
+
+    # Should be ok because used the same in the original source code
+    refresh = RefreshToken(raw_token)  # type: ignore[arg-type]
+    address = refresh.payload.get("address", None)
+    try:
+        User.objects.get(address=address)
+    except User.DoesNotExist:
+        return Response(status=404)
+
+    refresh.set_jti()
+    refresh.set_exp()
+    refresh.set_iat()
+    refresh.outstand()
+
+    response = Response(
+        status=204,
+    )
+
+    response.set_cookie(
+        key=settings.SIMPLE_JWT["AUTH_COOKIE"],
+        value=str(refresh.access_token),
+        expires=datetime.now(tz=UTC) + settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+    response.set_cookie(
+        key=settings.SIMPLE_JWT["REFRESH_COOKIE"],
+        value=str(refresh),
+        expires=refresh.payload["exp"],
+        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+
+    csrf.get_token(request)
+
+    return response
 
 
 @api_view(["GET"])
@@ -124,3 +167,17 @@ def nonce(_request: Request) -> Response:
     nonce = secrets.token_hex(16)
     cache.set(nonce, "nonce", timeout=10)
     return Response({"nonce": nonce})
+
+
+def verify_signature(data: Web3LoginModel) -> bool:
+    message_hash = encode_defunct(text=data.message)
+    try:
+        recovered_address = Account.recover_message(
+            message_hash, signature=data.signature
+        )
+        recovered_address = Web3.to_checksum_address(recovered_address)
+        if data.address.lower() == recovered_address.lower():
+            return True
+    except Exception as e:
+        print(f"Signature verification error: {e}")
+    return False
