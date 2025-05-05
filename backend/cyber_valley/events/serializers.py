@@ -136,7 +136,7 @@ class TicketSerializer(serializers.ModelSerializer[Ticket]):
 
 @dataclass
 class EventMetaData:
-    cover: File[bytes]
+    cover: "File[bytes]"
     title: str
     description: str
 
@@ -148,3 +148,18 @@ class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
 
     def create(self, validated_data: dict[str, Any]) -> EventMetaData:
         return EventMetaData(**validated_data)
+
+
+@dataclass
+class PlaceMetaData:
+    cover: "File[bytes]"
+    title: str
+    description: str
+
+
+class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
+    title = serializers.CharField()
+    description = serializers.CharField()
+
+    def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:
+        return PlaceMetaData(**validated_data)

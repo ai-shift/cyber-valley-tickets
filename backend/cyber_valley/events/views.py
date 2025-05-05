@@ -27,6 +27,7 @@ from .serializers import (
     EventSerializer,
     StaffEventSerializer,
     UploadEventMetaToIpfsSerializer,
+    UploadPlaceMetaToIpfsSerializer,
 )
 
 
@@ -77,7 +78,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
     meta = meta.save()
     user = request.user
     assert not isinstance(user, AnonymousUser)
-    target_base_path = settings.IPFS_DATA_PATH / user.address / "events"
+    target_base_path = settings.IPFS_DATA_PATH / "users" / user.address / "events"
     target_base_path.mkdir(exist_ok=True, parents=True)
     # FIXME: Can be a name without a suffix
     assert meta.cover.name
@@ -91,6 +92,34 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
             "title": meta.title,
             "description": meta.description,
             "cover": cover_hash,
+        }
+        meta_hash = client.add_json(event_meta)
+    return Response({"cid": meta_hash}, status=204)
+
+
+@extend_schema(
+    request=UploadPlaceMetaToIpfsSerializer,
+    responses={
+        204: {
+            "type": "object",
+            "properties": {"cid": {"type": "string"}},
+            "description": "IPFS CID of stored data",
+        }
+    },
+)
+@api_view(["PUT"])
+@parser_classes([MultiPartParser])
+@permission_classes([IsAuthenticated])
+def upload_place_meta_to_ipfs(request: Request) -> Response:
+    meta = UploadPlaceMetaToIpfsSerializer(data=request.data)
+    meta.is_valid(raise_exception=True)
+    meta = meta.save()
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        event_meta = {
+            "title": meta.title,
+            "description": meta.description,
         }
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash}, status=204)
