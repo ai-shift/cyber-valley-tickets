@@ -32,7 +32,7 @@ tests:
 run-ipfs-node:
 	test -n "$(IPFS_STAGING)" || exit 1
 	test -n "$(IPFS_DATA)" || exit 1
-	docker run -d \
+	docker run --rm -d \
 		--name cyber-valley-ipfs \
 		-v $$IPFS_STAGING:/export \
 		-v $$IPFS_DATA:/data/ipfs \
