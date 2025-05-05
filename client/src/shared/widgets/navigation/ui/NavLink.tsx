@@ -15,7 +15,12 @@ export const NavLink: React.FC<NavLinkProps> = ({ route, role }) => {
 
   return (
     canDisplay && (
-      <Link to={path} className={({ isActive }) => (isActive ? "" : "")}>
+      <Link
+        to={path}
+        className={({ isActive }) =>
+          `flex-1 text-center clip-corners p-4 border-[1px] border-primary font-semibold ${isActive ? "text-black bg-primary" : "text-white"}`
+        }
+      >
         {title}
       </Link>
     )
