@@ -15,7 +15,7 @@ from rest_framework.decorators import (
     parser_classes,
     permission_classes,
 )
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -27,7 +27,6 @@ from .serializers import (
     EventSerializer,
     StaffEventSerializer,
     UploadEventMetaToIpfsSerializer,
-    EventMetaData
 )
 
 
@@ -61,15 +60,13 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
 
 @extend_schema(
     request=UploadEventMetaToIpfsSerializer,
-    responses={204: {
-        "type": "object",
-        "properties": {
-            "cid": {
-                "type": "string"
-            }
-        },
-        "description": "IPFS CID of stored data"
-    }},
+    responses={
+        204: {
+            "type": "object",
+            "properties": {"cid": {"type": "string"}},
+            "description": "IPFS CID of stored data",
+        }
+    },
 )
 @api_view(["PUT"])
 @parser_classes([MultiPartParser])
@@ -82,7 +79,10 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
     assert not isinstance(user, AnonymousUser)
     target_base_path = settings.IPFS_DATA_PATH / user.address / "events"
     target_base_path.mkdir(exist_ok=True, parents=True)
+    # FIXME: Can be a name without a suffix
+    assert meta.cover.name
     extension = Path(meta.cover.name).suffix
+    assert extension
     result_path = target_base_path / f"{int(time.time())}{extension}"
     result_path.write_bytes(meta.cover.read())
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
@@ -90,7 +90,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
         event_meta = {
             "title": meta.title,
             "description": meta.description,
-            "cover": cover_hash
+            "cover": cover_hash,
         }
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash}, status=204)
