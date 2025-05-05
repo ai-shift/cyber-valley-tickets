@@ -26,7 +26,7 @@ export const ManageEvent: React.FC<ManageEventProps> = ({
     navigate(`/events/${eventId}/edit`);
   }
 
-  //TODO: Add fetching logic and rewrite to sepparate functions if switch is shit
+  //TODO: @scipunch Add fetching logic and rewrite to sepparate functions if switch is shit
   function onControll(action: "accept" | "decline") {
     switch (action) {
       case "accept":
