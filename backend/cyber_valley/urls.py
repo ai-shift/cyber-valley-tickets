@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from .events.views import EventPlaceViewSet, EventViewSet, upload_event_cover_to_ipfs
+from .events.views import EventPlaceViewSet, EventViewSet, upload_event_meta_to_ipfs
 from .notifications.views import NotificationViewSet
 from .users.views import CurrentUserViewSet
 from .web3_auth.views import login
@@ -36,7 +36,7 @@ router.register(r"users", CurrentUserViewSet, basename="users")
 urlpatterns = [
     path("", SpectacularSwaggerView.as_view(), name="swagger"),
     path("api/", include(router.urls)),
-    path("api/ipfs/events/cover", upload_event_cover_to_ipfs, name="ipfs"),
+    path("api/ipfs/events/meta", upload_event_meta_to_ipfs, name="ipfs-events"),
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),

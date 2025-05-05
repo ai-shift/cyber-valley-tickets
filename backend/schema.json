@@ -729,9 +729,9 @@
                 }
             }
         },
-        "/api/ipfs/events/cover": {
+        "/api/ipfs/events/meta": {
             "put": {
-                "operationId": "api_ipfs_events_cover_update",
+                "operationId": "api_ipfs_events_meta_update",
                 "tags": [
                     "api"
                 ],
@@ -739,18 +739,18 @@
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "type": "string",
-                                "format": "binary"
+                                "$ref": "#/components/schemas/UploadEventMetaToIpfsRequest"
                             }
                         }
-                    }
+                    },
+                    "required": true
                 },
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiIpfsEventsCoverUpdateErrorResponse400"
+                                    "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateErrorResponse400"
                                 }
                             }
                         },
@@ -856,7 +856,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                        "cid": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "description": "IPFS CID of stored data"
                                 }
                             }
                         },
@@ -1310,7 +1316,6 @@
         "/api/places/": {
             "get": {
                 "operationId": "api_places_list",
-                "description": "API endpoint that allows event places to be viewed",
                 "tags": [
                     "api"
                 ],
@@ -1440,7 +1445,6 @@
         "/api/places/{id}/": {
             "get": {
                 "operationId": "api_places_retrieve",
-                "description": "API endpoint that allows event places to be viewed",
                 "parameters": [
                     {
                         "in": "path",
@@ -1930,8 +1934,99 @@
                     }
                 }
             },
-            "ApiIpfsEventsCoverUpdateErrorResponse400": {
+            "ApiIpfsEventsMetaUpdateCoverErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "cover"
+                        ],
+                        "type": "string",
+                        "description": "* `cover` - cover"
+                    },
+                    "code": {
+                        "enum": [
+                            "empty",
+                            "invalid",
+                            "no_name",
+                            "null",
+                            "required"
+                        ],
+                        "type": "string",
+                        "description": "* `empty` - empty\n* `invalid` - invalid\n* `no_name` - no_name\n* `null` - null\n* `required` - required"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsEventsMetaUpdateDescriptionErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "description"
+                        ],
+                        "type": "string",
+                        "description": "* `description` - description"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsEventsMetaUpdateError": {
                 "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateCoverErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateTitleErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "attr",
+                    "mapping": {
+                        "non_field_errors": "#/components/schemas/ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent",
+                        "cover": "#/components/schemas/ApiIpfsEventsMetaUpdateCoverErrorComponent",
+                        "title": "#/components/schemas/ApiIpfsEventsMetaUpdateTitleErrorComponent",
+                        "description": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent"
+                    }
+                }
+            },
+            "ApiIpfsEventsMetaUpdateErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateValidationError"
+                    },
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
                     }
@@ -1939,9 +2034,88 @@
                 "discriminator": {
                     "propertyName": "type",
                     "mapping": {
+                        "validation_error": "#/components/schemas/ApiIpfsEventsMetaUpdateValidationError",
                         "client_error": "#/components/schemas/ParseErrorResponse"
                     }
                 }
+            },
+            "ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "non_field_errors"
+                        ],
+                        "type": "string",
+                        "description": "* `non_field_errors` - non_field_errors"
+                    },
+                    "code": {
+                        "enum": [
+                            "invalid",
+                            "null"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid` - invalid\n* `null` - null"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsEventsMetaUpdateTitleErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "title"
+                        ],
+                        "type": "string",
+                        "description": "* `title` - title"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsEventsMetaUpdateValidationError": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ValidationErrorEnum"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateError"
+                        }
+                    }
+                },
+                "required": [
+                    "errors",
+                    "type"
+                ]
             },
             "ApiNotificationsListErrorResponse400": {
                 "oneOf": [
@@ -2840,6 +3014,28 @@
                 },
                 "required": [
                     "refresh"
+                ]
+            },
+            "UploadEventMetaToIpfsRequest": {
+                "type": "object",
+                "properties": {
+                    "cover": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "description": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": [
+                    "cover",
+                    "description",
+                    "title"
                 ]
             },
             "ValidationErrorEnum": {
