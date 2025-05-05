@@ -173,6 +173,87 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ApiAuthWeb3LoginCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthWeb3LoginRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsSeenCreateError: components["schemas"]["ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"];
+        ApiNotificationsSeenCreateErrorResponse400: components["schemas"]["ApiNotificationsSeenCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsSeenCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiNotificationsSeenCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiNotificationsSeenCreateError"][];
+        };
+        ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiTokenRefreshCreateError: components["schemas"]["ApiTokenRefreshCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiTokenRefreshCreateRefreshErrorComponent"];
+        ApiTokenRefreshCreateErrorResponse400: components["schemas"]["ApiTokenRefreshCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiTokenRefreshCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `no_active_account` - no_active_account
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "no_active_account" | "null";
+            detail: string;
+        };
+        ApiTokenRefreshCreateRefreshErrorComponent: {
+            /**
+             * @description * `refresh` - refresh (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "refresh";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiTokenRefreshCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiTokenRefreshCreateError"][];
+        };
+        ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        /**
+         * @description * `client_error` - Client Error
+         * @enum {string}
+         */
+        ClientErrorEnum: "client_error";
         Creator: {
             address: string;
         };
@@ -199,6 +280,76 @@ export interface components {
             readonly role: components["schemas"]["RoleEnum"];
             readonly tickets: components["schemas"]["Ticket"][];
         };
+        Error404: {
+            code: components["schemas"]["ErrorCode404Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error405: {
+            code: components["schemas"]["ErrorCode405Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error406: {
+            code: components["schemas"]["ErrorCode406Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error415: {
+            code: components["schemas"]["ErrorCode415Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error500: {
+            code: components["schemas"]["ErrorCode500Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        /**
+         * @description * `not_found` - Not Found
+         * @enum {string}
+         */
+        ErrorCode404Enum: "not_found";
+        /**
+         * @description * `method_not_allowed` - Method Not Allowed
+         * @enum {string}
+         */
+        ErrorCode405Enum: "method_not_allowed";
+        /**
+         * @description * `not_acceptable` - Not Acceptable
+         * @enum {string}
+         */
+        ErrorCode406Enum: "not_acceptable";
+        /**
+         * @description * `unsupported_media_type` - Unsupported Media Type
+         * @enum {string}
+         */
+        ErrorCode415Enum: "unsupported_media_type";
+        /**
+         * @description * `error` - Error
+         * @enum {string}
+         */
+        ErrorCode500Enum: "error";
+        ErrorResponse404: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error404"][];
+        };
+        ErrorResponse405: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error405"][];
+        };
+        ErrorResponse406: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error406"][];
+        };
+        ErrorResponse415: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error415"][];
+        };
+        ErrorResponse500: {
+            type: components["schemas"]["ServerErrorEnum"];
+            errors: components["schemas"]["Error500"][];
+        };
         EventPlace: {
             /** Format: int64 */
             id: number;
@@ -222,6 +373,24 @@ export interface components {
             /** Format: date-time */
             readonly seenAt: string | null;
         };
+        ParseError: {
+            code: components["schemas"]["ParseErrorCodeEnum"];
+            detail: string;
+            attr: string | null;
+        };
+        /**
+         * @description * `parse_error` - Parse Error
+         * @enum {string}
+         */
+        ParseErrorCodeEnum: "parse_error";
+        ParseErrorResponse: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "client_error";
+            errors: components["schemas"]["ParseError"][];
+        };
         RoleBasedEvent: components["schemas"]["CreatorEvent"] | components["schemas"]["StaffEvent"];
         /**
          * @description * `customer` - Customer
@@ -231,6 +400,11 @@ export interface components {
          * @enum {string}
          */
         RoleEnum: "customer" | "staff" | "creator" | "master";
+        /**
+         * @description * `server_error` - Server Error
+         * @enum {string}
+         */
+        ServerErrorEnum: "server_error";
         StaffEvent: {
             readonly id: number;
             creator: components["schemas"]["Creator"];
@@ -268,6 +442,11 @@ export interface components {
             readonly access: string;
             refresh: string;
         };
+        /**
+         * @description * `validation_error` - Validation Error
+         * @enum {string}
+         */
+        ValidationErrorEnum: "validation_error";
     };
     responses: never;
     parameters: never;
@@ -295,6 +474,51 @@ export interface operations {
                 };
                 content?: never;
             };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
+                    "text/html": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                    "text/html": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                    "text/html": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                    "text/html": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                    "text/html": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
     };
     api_auth_web3_login_create: {
@@ -315,6 +539,51 @@ export interface operations {
                 };
                 content?: never;
             };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
+                    "text/html": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                    "text/html": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                    "text/html": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                    "text/html": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                    "text/html": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
     };
     api_events_list: {
@@ -332,6 +601,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RoleBasedEvent"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
                 };
             };
         };
@@ -356,6 +665,54 @@ export interface operations {
                     "application/json": components["schemas"]["CreatorEvent"];
                 };
             };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
     };
     api_notifications_list: {
@@ -373,6 +730,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Notification"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
                 };
             };
         };
@@ -394,6 +791,54 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Notification"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
                 };
             };
         };
@@ -422,6 +867,54 @@ export interface operations {
                 };
                 content?: never;
             };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsSeenCreateErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
     };
     api_places_list: {
@@ -439,6 +932,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventPlace"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiPlacesListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
                 };
             };
         };
@@ -461,6 +994,54 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventPlace"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiPlacesRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
                 };
             };
         };
@@ -488,6 +1069,46 @@ export interface operations {
                     "application/json": components["schemas"]["TokenRefresh"];
                 };
             };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiTokenRefreshCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
     };
     api_users_current_retrieve: {
@@ -505,6 +1126,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CurrentUser"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersCurrentRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
                 };
             };
         };

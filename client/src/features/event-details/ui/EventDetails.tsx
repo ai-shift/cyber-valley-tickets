@@ -19,9 +19,11 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     isFetching,
   } = useQuery(eventQueries.detail(+eventId));
 
+  console.log(error);
+
   //TODO: Replace with single component
   if (isFetching) return <p>Loading</p>;
-  if (error) return <p>{error.message}</p>;
+  if (error) return <p>{error.type}</p>;
   if (!event || !user) return <p>GG</p>;
 
   const {
