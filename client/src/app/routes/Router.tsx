@@ -1,19 +1,19 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 
 import {
+  AccountPage,
+  AssignStaffPage,
   CreateEventPage,
+  CreatePlacePage,
+  EditEventPage,
   EventsDetailsPage,
   EventsListPage,
   HomePage,
   ManagePage,
+  MyEventsPage,
   NotificationsPage,
   PurchasePage,
   SocialsPage,
-  EditEventPage,
-  CreatePlacePage,
-  AssignStaffPage,
-  AccountPage,
-  MyEventsPage,
   StatusPage,
 } from "@/pages";
 

@@ -1,4 +1,4 @@
-import { useNavigate, Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 import { type Socials, useOrderStore } from "@/entities/order";
 import { SocialsForm } from "@/features/socials-form";

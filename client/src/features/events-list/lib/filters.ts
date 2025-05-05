@@ -17,6 +17,6 @@ export const myEventsFilter = (event: Event, user: User) => {
   );
 };
 
-export const upcoming = (event: Event) => {
+export const upcomingFilter = (event: Event) => {
   return event.status === "approved";
 };

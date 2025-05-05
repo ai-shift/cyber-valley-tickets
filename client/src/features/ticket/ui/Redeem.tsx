@@ -1,8 +1,9 @@
-import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import { useState } from "react";
 
 import { Button } from "@/shared/ui/button";
 
+// TODO: @scipunch add web3 bind
 export const Redeem: React.FC = () => {
   const [open, setOpen] = useState(false);
 

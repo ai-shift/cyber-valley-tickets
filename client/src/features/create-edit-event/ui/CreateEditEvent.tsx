@@ -1,8 +1,8 @@
 import type { Event, EventDto } from "@/entities/event";
 import { EventForm } from "@/features/event-form";
-import { extractRanges } from "../lib/extractRanges";
-import { useEventsAndPlaces } from "../api/useEventsAndPlaces";
 import { Suspense } from "react";
+import { useEventsAndPlaces } from "../api/useEventsAndPlaces";
+import { extractRanges } from "../lib/extractRanges";
 
 type CreateEditEventBaseProps = {
   onSubmit: (event: EventDto) => void;
@@ -13,6 +13,7 @@ type CreateEventProps = CreateEditEventBaseProps & {
   canEdit?: undefined;
 };
 
+// TODO: Cast `editEventId` to in on the page layer
 type EditEventProps = CreateEditEventBaseProps & {
   editEventId: string;
   canEdit: (event: Event) => boolean;

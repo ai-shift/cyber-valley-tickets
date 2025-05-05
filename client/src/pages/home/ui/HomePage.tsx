@@ -2,7 +2,7 @@ import { Nav } from "@/shared/widgets/navigation";
 
 import { Link } from "react-router";
 
-import { EventsList, upcoming } from "@/features/events-list/";
+import { EventsList, upcomingFilter } from "@/features/events-list/";
 
 export const HomePage: React.FC = () => {
   return (
@@ -19,7 +19,7 @@ export const HomePage: React.FC = () => {
           <p>Upcoming events</p>
           <Link to="/events">See more...</Link>
         </div>
-        <EventsList limit={3} filterFn={upcoming} />
+        <EventsList limit={3} filterFn={upcomingFilter} />
       </section>
     </div>
   );
