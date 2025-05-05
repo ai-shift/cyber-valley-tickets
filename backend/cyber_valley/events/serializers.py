@@ -1,3 +1,5 @@
+from django.core.files import File
+from dataclasses import dataclass
 from datetime import timedelta
 from typing import Any
 
@@ -130,3 +132,19 @@ class TicketSerializer(serializers.ModelSerializer[Ticket]):
         model = Ticket
         fields = ("id", "event_id", "is_redeemed")
         read_only_fields = fields
+
+
+@dataclass
+class EventMetaData:
+    cover: File
+    title: str
+    description: str
+
+
+class UploadEventMetaToIpfsSerializer(serializers.Serializer):
+    cover = serializers.FileField()
+    title = serializers.CharField()
+    description = serializers.CharField()
+
+    def create(self, validated_data) -> EventMetaData:
+        return EventMetaData(**validated_data)

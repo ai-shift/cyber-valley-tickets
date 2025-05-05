@@ -26,6 +26,8 @@ from .serializers import (
     EventPlaceSerializer,
     EventSerializer,
     StaffEventSerializer,
+    UploadEventMetaToIpfsSerializer,
+    EventMetaData
 )
 
 
@@ -58,23 +60,37 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
 
 
 @extend_schema(
-    request={
-        "multipart/form-data": bytes,
-    },
-    responses={204: str},
+    request=UploadEventMetaToIpfsSerializer,
+    responses={204: {
+        "type": "object",
+        "properties": {
+            "cid": {
+                "type": "string"
+            }
+        },
+        "description": "IPFS CID of stored data"
+    }},
 )
 @api_view(["PUT"])
-@parser_classes([FormParser, MultiPartParser])
+@parser_classes([MultiPartParser])
 @permission_classes([IsAuthenticated])
-def upload_event_cover_to_ipfs(request: Request) -> Response:
+def upload_event_meta_to_ipfs(request: Request) -> Response:
+    meta = UploadEventMetaToIpfsSerializer(data=request.data)
+    meta.is_valid(raise_exception=True)
+    meta = meta.save()
     user = request.user
     assert not isinstance(user, AnonymousUser)
-    file = request.FILES["cover"]
     target_base_path = settings.IPFS_DATA_PATH / user.address / "events"
     target_base_path.mkdir(exist_ok=True, parents=True)
-    extension = Path(file.name).suffix
+    extension = Path(meta.cover.name).suffix
     result_path = target_base_path / f"{int(time.time())}{extension}"
-    result_path.write_bytes(file.read())
+    result_path.write_bytes(meta.cover.read())
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         cover_hash = client.add(result_path)["Hash"]
-    return Response(cover_hash, content_type="text/plain")
+        event_meta = {
+            "title": meta.title,
+            "description": meta.description,
+            "cover": cover_hash
+        }
+        meta_hash = client.add_json(event_meta)
+    return Response({"cid": meta_hash}, status=204)
