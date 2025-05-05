@@ -15,10 +15,12 @@ export const EditEventPage: React.FC = () => {
     console.log("Updated");
   }
 
+  const numbericId = +eventId;
+
   return (
     <PageContainer name="Edit page">
       <CreateEditEvent
-        editEventId={eventId}
+        editEventId={numbericId}
         onSubmit={updateOrder}
         canEdit={canUserEdit(user)}
       />

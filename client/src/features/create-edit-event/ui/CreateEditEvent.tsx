@@ -15,7 +15,7 @@ type CreateEventProps = CreateEditEventBaseProps & {
 
 // TODO: Cast `editEventId` to in on the page layer
 type EditEventProps = CreateEditEventBaseProps & {
-  editEventId: string;
+  editEventId: number;
   canEdit: (event: Event) => boolean;
 };
 
@@ -33,7 +33,7 @@ export const CreateEditEvent: React.FC<CreateEditEventProps> = ({
   if (!events || !places) return <p>Internal error. Try again later</p>;
 
   if (editEventId) {
-    const foundEvent = events.find((event) => `${event.id}` === editEventId);
+    const foundEvent = events.find((event) => event.id === editEventId);
     const dateRanges = extractRanges(events, Number(editEventId));
 
     if (!foundEvent) {
