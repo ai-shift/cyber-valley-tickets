@@ -996,13 +996,13 @@
         }
       }
     },
-    "/api/notifications/{id}/seen/": {
+    "/api/notifications/seen/{notification_id}/": {
       "post": {
         "operationId": "api_notifications_seen_create",
         "parameters": [
           {
             "in": "path",
-            "name": "id",
+            "name": "notificationId",
             "schema": {
               "type": "string"
             },
@@ -1160,7 +1160,7 @@
             },
             "description": ""
           },
-          "201": {
+          "204": {
             "description": "No response body"
           }
         }
@@ -2362,6 +2362,10 @@
       "Notification": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
           "title": {
             "type": "string",
             "readOnly": true
@@ -2375,9 +2379,14 @@
             "format": "date-time",
             "readOnly": true,
             "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         },
-        "required": ["body", "seenAt", "title"]
+        "required": ["body", "createdAt", "id", "seenAt", "title"]
       },
       "ParseError": {
         "type": "object",

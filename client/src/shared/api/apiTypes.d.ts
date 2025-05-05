@@ -4,1184 +4,1173 @@
  */
 
 export interface paths {
-  "/api/auth/web3/login/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/web3/login/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_auth_web3_login_retrieve"];
+        put?: never;
+        post: operations["api_auth_web3_login_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_auth_web3_login_retrieve"];
-    put?: never;
-    post: operations["api_auth_web3_login_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Available events in the syste */
+        get: operations["api_events_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Available events in the syste */
-    get: operations["api_events_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/notifications/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/notifications/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_notifications_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/notifications/{id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/notifications/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_notifications_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/notifications/{id}/seen/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/notifications/seen/{notification_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_notifications_seen_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["api_notifications_seen_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/places/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/places/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description API endpoint that allows event places to be viewed */
+        get: operations["api_places_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description API endpoint that allows event places to be viewed */
-    get: operations["api_places_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/places/{id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/places/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description API endpoint that allows event places to be viewed */
+        get: operations["api_places_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description API endpoint that allows event places to be viewed */
-    get: operations["api_places_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/token/refresh/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/token/refresh/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Takes a refresh type JSON web token and returns an access type JSON web
+         *     token if the refresh token is valid. */
+        post: operations["api_token_refresh_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** @description Takes a refresh type JSON web token and returns an access type JSON web
-     *     token if the refresh token is valid. */
-    post: operations["api_token_refresh_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/current/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/current/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_users_current_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_users_current_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    ApiAuthWeb3LoginCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiAuthWeb3LoginRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiNotificationsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiNotificationsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiNotificationsSeenCreateError: components["schemas"]["ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"];
-    ApiNotificationsSeenCreateErrorResponse400:
-      | components["schemas"]["ApiNotificationsSeenCreateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiNotificationsSeenCreateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
+    schemas: {
+        ApiAuthWeb3LoginCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthWeb3LoginRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsSeenCreateError: components["schemas"]["ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"];
+        ApiNotificationsSeenCreateErrorResponse400: components["schemas"]["ApiNotificationsSeenCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsSeenCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiNotificationsSeenCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiNotificationsSeenCreateError"][];
+        };
+        ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiTokenRefreshCreateError: components["schemas"]["ApiTokenRefreshCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiTokenRefreshCreateRefreshErrorComponent"];
+        ApiTokenRefreshCreateErrorResponse400: components["schemas"]["ApiTokenRefreshCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiTokenRefreshCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `no_active_account` - no_active_account
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "no_active_account" | "null";
+            detail: string;
+        };
+        ApiTokenRefreshCreateRefreshErrorComponent: {
+            /**
+             * @description * `refresh` - refresh (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "refresh";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiTokenRefreshCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiTokenRefreshCreateError"][];
+        };
+        ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        /**
+         * @description * `client_error` - Client Error
+         * @enum {string}
+         */
+        ClientErrorEnum: "client_error";
+        Creator: {
+            address: string;
+        };
+        CreatorEvent: {
+            readonly id: number;
+            creator: components["schemas"]["Creator"];
+            status?: components["schemas"]["StatusEnum"];
+            title: string;
+            description: string;
+            place: components["schemas"]["EventPlace"];
+            /** Format: int64 */
+            ticketPrice: number;
+            /** Format: int64 */
+            daysAmount: number;
+            /** Format: uri */
+            imageUrl?: string | null;
+            readonly startDateTimestamp: number;
+            ticketsBought: number | null;
+            cancelDateTimestamp: number | null;
+            readonly ticketsRequiredUntilCancel: number | null;
+        };
+        CurrentUser: {
+            readonly address: string;
+            readonly role: components["schemas"]["RoleEnum"];
+            readonly tickets: components["schemas"]["Ticket"][];
+        };
+        Error404: {
+            code: components["schemas"]["ErrorCode404Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error405: {
+            code: components["schemas"]["ErrorCode405Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error406: {
+            code: components["schemas"]["ErrorCode406Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error415: {
+            code: components["schemas"]["ErrorCode415Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error500: {
+            code: components["schemas"]["ErrorCode500Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        /**
+         * @description * `not_found` - Not Found
+         * @enum {string}
+         */
+        ErrorCode404Enum: "not_found";
+        /**
+         * @description * `method_not_allowed` - Method Not Allowed
+         * @enum {string}
+         */
+        ErrorCode405Enum: "method_not_allowed";
+        /**
+         * @description * `not_acceptable` - Not Acceptable
+         * @enum {string}
+         */
+        ErrorCode406Enum: "not_acceptable";
+        /**
+         * @description * `unsupported_media_type` - Unsupported Media Type
+         * @enum {string}
+         */
+        ErrorCode415Enum: "unsupported_media_type";
+        /**
+         * @description * `error` - Error
+         * @enum {string}
+         */
+        ErrorCode500Enum: "error";
+        ErrorResponse404: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error404"][];
+        };
+        ErrorResponse405: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error405"][];
+        };
+        ErrorResponse406: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error406"][];
+        };
+        ErrorResponse415: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error415"][];
+        };
+        ErrorResponse500: {
+            type: components["schemas"]["ServerErrorEnum"];
+            errors: components["schemas"]["Error500"][];
+        };
+        EventPlace: {
+            /** Format: int64 */
+            id: number;
+            title: string;
+            /** Format: int64 */
+            maxTickets: number;
+            /** Format: int64 */
+            minTickets: number;
+            /** Format: int64 */
+            minPrice: number;
+            /** Format: int64 */
+            minDays: number;
+            /** Format: int64 */
+            daysBeforeCancel: number;
+            available?: boolean;
+            readonly isUsed: boolean;
+        };
+        Notification: {
+            readonly id: number;
+            readonly title: string;
+            readonly body: string;
+            /** Format: date-time */
+            readonly seenAt: string | null;
+            /** Format: date-time */
+            readonly createdAt: string;
+        };
+        ParseError: {
+            code: components["schemas"]["ParseErrorCodeEnum"];
+            detail: string;
+            attr: string | null;
+        };
+        /**
+         * @description * `parse_error` - Parse Error
+         * @enum {string}
+         */
+        ParseErrorCodeEnum: "parse_error";
+        ParseErrorResponse: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "client_error";
+            errors: components["schemas"]["ParseError"][];
+        };
+        RoleBasedEvent: components["schemas"]["CreatorEvent"] | components["schemas"]["StaffEvent"];
+        /**
+         * @description * `customer` - Customer
+         *     * `staff` - Staff
+         *     * `creator` - Creator
+         *     * `master` - Master
+         * @enum {string}
+         */
+        RoleEnum: "customer" | "staff" | "creator" | "master";
+        /**
+         * @description * `server_error` - Server Error
+         * @enum {string}
+         */
+        ServerErrorEnum: "server_error";
+        StaffEvent: {
+            readonly id: number;
+            creator: components["schemas"]["Creator"];
+            status?: components["schemas"]["StatusEnum"];
+            title: string;
+            description: string;
+            place: components["schemas"]["EventPlace"];
+            /** Format: int64 */
+            ticketPrice: number;
+            /** Format: int64 */
+            daysAmount: number;
+            /** Format: uri */
+            imageUrl?: string | null;
+            readonly startDateTimestamp: number;
+            /** Format: int64 */
+            ticketsBought: number;
+            cancelDateTimestamp: number;
+            readonly ticketsRequiredUntilCancel: number;
+        };
+        /**
+         * @description * `submitted` - submitted
+         *     * `approved` - approved
+         *     * `declined` - declined
+         *     * `cancelled` - cancelled
+         *     * `closed` - closed
+         * @enum {string}
+         */
+        StatusEnum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
+        Ticket: {
+            readonly id: string;
+            eventId: number;
+            readonly isRedeemed: boolean;
+        };
+        TokenRefresh: {
+            readonly access: string;
+            refresh: string;
+        };
+        /**
+         * @description * `validation_error` - Validation Error
+         * @enum {string}
+         */
+        ValidationErrorEnum: "validation_error";
     };
-    ApiNotificationsSeenCreateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiNotificationsSeenCreateError"][];
-    };
-    ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiTokenRefreshCreateError:
-      | components["schemas"]["ApiTokenRefreshCreateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiTokenRefreshCreateRefreshErrorComponent"];
-    ApiTokenRefreshCreateErrorResponse400:
-      | components["schemas"]["ApiTokenRefreshCreateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiTokenRefreshCreateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `no_active_account` - no_active_account
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "no_active_account" | "null";
-      detail: string;
-    };
-    ApiTokenRefreshCreateRefreshErrorComponent: {
-      /**
-       * @description * `refresh` - refresh (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "refresh";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiTokenRefreshCreateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiTokenRefreshCreateError"][];
-    };
-    ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    /**
-     * @description * `client_error` - Client Error
-     * @enum {string}
-     */
-    ClientErrorEnum: "client_error";
-    Creator: {
-      address: string;
-    };
-    CreatorEvent: {
-      readonly id: number;
-      creator: components["schemas"]["Creator"];
-      status?: components["schemas"]["StatusEnum"];
-      title: string;
-      description: string;
-      place: components["schemas"]["EventPlace"];
-      /** Format: int64 */
-      ticketPrice: number;
-      /** Format: int64 */
-      daysAmount: number;
-      /** Format: uri */
-      imageUrl?: string | null;
-      readonly startDateTimestamp: number;
-      ticketsBought: number | null;
-      cancelDateTimestamp: number | null;
-      readonly ticketsRequiredUntilCancel: number | null;
-    };
-    CurrentUser: {
-      readonly address: string;
-      readonly role: components["schemas"]["RoleEnum"];
-      readonly tickets: components["schemas"]["Ticket"][];
-    };
-    Error404: {
-      code: components["schemas"]["ErrorCode404Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error405: {
-      code: components["schemas"]["ErrorCode405Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error406: {
-      code: components["schemas"]["ErrorCode406Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error415: {
-      code: components["schemas"]["ErrorCode415Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error500: {
-      code: components["schemas"]["ErrorCode500Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    /**
-     * @description * `not_found` - Not Found
-     * @enum {string}
-     */
-    ErrorCode404Enum: "not_found";
-    /**
-     * @description * `method_not_allowed` - Method Not Allowed
-     * @enum {string}
-     */
-    ErrorCode405Enum: "method_not_allowed";
-    /**
-     * @description * `not_acceptable` - Not Acceptable
-     * @enum {string}
-     */
-    ErrorCode406Enum: "not_acceptable";
-    /**
-     * @description * `unsupported_media_type` - Unsupported Media Type
-     * @enum {string}
-     */
-    ErrorCode415Enum: "unsupported_media_type";
-    /**
-     * @description * `error` - Error
-     * @enum {string}
-     */
-    ErrorCode500Enum: "error";
-    ErrorResponse404: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error404"][];
-    };
-    ErrorResponse405: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error405"][];
-    };
-    ErrorResponse406: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error406"][];
-    };
-    ErrorResponse415: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error415"][];
-    };
-    ErrorResponse500: {
-      type: components["schemas"]["ServerErrorEnum"];
-      errors: components["schemas"]["Error500"][];
-    };
-    EventPlace: {
-      /** Format: int64 */
-      id: number;
-      title: string;
-      /** Format: int64 */
-      maxTickets: number;
-      /** Format: int64 */
-      minTickets: number;
-      /** Format: int64 */
-      minPrice: number;
-      /** Format: int64 */
-      minDays: number;
-      /** Format: int64 */
-      daysBeforeCancel: number;
-      available?: boolean;
-      readonly isUsed: boolean;
-    };
-    Notification: {
-      readonly title: string;
-      readonly body: string;
-      /** Format: date-time */
-      readonly seenAt: string | null;
-    };
-    ParseError: {
-      code: components["schemas"]["ParseErrorCodeEnum"];
-      detail: string;
-      attr: string | null;
-    };
-    /**
-     * @description * `parse_error` - Parse Error
-     * @enum {string}
-     */
-    ParseErrorCodeEnum: "parse_error";
-    ParseErrorResponse: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "client_error";
-      errors: components["schemas"]["ParseError"][];
-    };
-    RoleBasedEvent:
-      | components["schemas"]["CreatorEvent"]
-      | components["schemas"]["StaffEvent"];
-    /**
-     * @description * `customer` - Customer
-     *     * `staff` - Staff
-     *     * `creator` - Creator
-     *     * `master` - Master
-     * @enum {string}
-     */
-    RoleEnum: "customer" | "staff" | "creator" | "master";
-    /**
-     * @description * `server_error` - Server Error
-     * @enum {string}
-     */
-    ServerErrorEnum: "server_error";
-    StaffEvent: {
-      readonly id: number;
-      creator: components["schemas"]["Creator"];
-      status?: components["schemas"]["StatusEnum"];
-      title: string;
-      description: string;
-      place: components["schemas"]["EventPlace"];
-      /** Format: int64 */
-      ticketPrice: number;
-      /** Format: int64 */
-      daysAmount: number;
-      /** Format: uri */
-      imageUrl?: string | null;
-      readonly startDateTimestamp: number;
-      /** Format: int64 */
-      ticketsBought: number;
-      cancelDateTimestamp: number;
-      readonly ticketsRequiredUntilCancel: number;
-    };
-    /**
-     * @description * `submitted` - submitted
-     *     * `approved` - approved
-     *     * `declined` - declined
-     *     * `cancelled` - cancelled
-     *     * `closed` - closed
-     * @enum {string}
-     */
-    StatusEnum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
-    Ticket: {
-      readonly id: string;
-      eventId: number;
-      readonly isRedeemed: boolean;
-    };
-    TokenRefresh: {
-      readonly access: string;
-      refresh: string;
-    };
-    /**
-     * @description * `validation_error` - Validation Error
-     * @enum {string}
-     */
-    ValidationErrorEnum: "validation_error";
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  api_auth_web3_login_retrieve: {
-    parameters: {
-      query?: {
-        format?: "html" | "json";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_auth_web3_login_retrieve: {
+        parameters: {
+            query?: {
+                format?: "html" | "json";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
+                    "text/html": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                    "text/html": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                    "text/html": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                    "text/html": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                    "text/html": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No response body */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_auth_web3_login_create: {
+        parameters: {
+            query?: {
+                format?: "html" | "json";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
+                    "text/html": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                    "text/html": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                    "text/html": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                    "text/html": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                    "text/html": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
-          "text/html": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-          "text/html": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-          "text/html": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-          "text/html": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-          "text/html": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_auth_web3_login_create: {
-    parameters: {
-      query?: {
-        format?: "html" | "json";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_events_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleBasedEvent"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No response body */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_events_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this event. */
+                id: number;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatorEvent"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
-          "text/html": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-          "text/html": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-          "text/html": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-          "text/html": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-          "text/html": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_events_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_notifications_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Notification"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_notifications_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["RoleBasedEvent"][];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Notification"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsListErrorResponse400"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_events_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description A unique integer value identifying this event. */
-        id: number;
-      };
-      cookie?: never;
+    api_notifications_seen_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notificationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Notification"];
+                "multipart/form-data": components["schemas"]["Notification"];
+                "application/json": components["schemas"]["Notification"];
+            };
+        };
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsSeenCreateErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_places_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["CreatorEvent"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPlace"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiPlacesListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_notifications_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_places_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique value identifying this event place. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPlace"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiPlacesRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_token_refresh_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Notification"][];
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["TokenRefresh"];
+                "multipart/form-data": components["schemas"]["TokenRefresh"];
+                "application/json": components["schemas"]["TokenRefresh"];
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenRefresh"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiTokenRefreshCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ApiNotificationsListErrorResponse400"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_notifications_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
+    api_users_current_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrentUser"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersCurrentRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Notification"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiNotificationsRetrieveErrorResponse400"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_notifications_seen_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "application/x-www-form-urlencoded": components["schemas"]["Notification"];
-        "multipart/form-data": components["schemas"]["Notification"];
-        "application/json": components["schemas"]["Notification"];
-      };
-    };
-    responses: {
-      /** @description No response body */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiNotificationsSeenCreateErrorResponse400"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_places_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EventPlace"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiPlacesListErrorResponse400"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_places_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description A unique value identifying this event place. */
-        id: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EventPlace"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiPlacesRetrieveErrorResponse400"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_token_refresh_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/x-www-form-urlencoded": components["schemas"]["TokenRefresh"];
-        "multipart/form-data": components["schemas"]["TokenRefresh"];
-        "application/json": components["schemas"]["TokenRefresh"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TokenRefresh"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiTokenRefreshCreateErrorResponse400"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_users_current_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CurrentUser"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersCurrentRetrieveErrorResponse400"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
 }
