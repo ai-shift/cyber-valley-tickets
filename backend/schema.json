@@ -3007,6 +3007,9 @@
                     },
                     {
                         "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateMessageErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateNonceErrorComponent"
                     }
                 ],
                 "discriminator": {
@@ -3015,7 +3018,8 @@
                         "non_field_errors": "#/components/schemas/ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent",
                         "address": "#/components/schemas/ApiAuthWeb3LoginCreateAddressErrorComponent",
                         "signature": "#/components/schemas/ApiAuthWeb3LoginCreateSignatureErrorComponent",
-                        "message": "#/components/schemas/ApiAuthWeb3LoginCreateMessageErrorComponent"
+                        "message": "#/components/schemas/ApiAuthWeb3LoginCreateMessageErrorComponent",
+                        "nonce": "#/components/schemas/ApiAuthWeb3LoginCreateNonceErrorComponent"
                     }
                 }
             },
@@ -3085,6 +3089,38 @@
                         ],
                         "type": "string",
                         "description": "* `invalid` - invalid\n* `null` - null"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateNonceErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "nonce"
+                        ],
+                        "type": "string",
+                        "description": "* `nonce` - nonce"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
                     },
                     "detail": {
                         "type": "string"
@@ -4537,12 +4573,18 @@
                     "message": {
                         "type": "string",
                         "minLength": 1,
+                        "description": "Original message"
+                    },
+                    "nonce": {
+                        "type": "string",
+                        "minLength": 1,
                         "description": "Nonce value retrieved from the server"
                     }
                 },
                 "required": [
                     "address",
                     "message",
+                    "nonce",
                     "signature"
                 ]
             }
