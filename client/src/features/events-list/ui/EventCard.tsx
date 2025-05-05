@@ -20,9 +20,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
   const isMaster = user.role === "master";
 
   return (
-    <article className=" border-2 border-red-500">
+    <article className="card">
       <Link to={`/events/${event.id}`}>
-        <div className=" p-5">
+        <div>
           <h2>{title}</h2>
           <p>{formatTimestamp(startDateTimestamp)}</p>
           <p>{place.title}</p>
