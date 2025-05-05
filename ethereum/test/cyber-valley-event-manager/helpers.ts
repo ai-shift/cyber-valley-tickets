@@ -60,11 +60,12 @@ if (blockchainRestoreDisabled) {
   console.warn("!!! BLOCKCHAIN SNAPSHOT RESTORATION IS DISABLED !!!");
 }
 
-async function dummyLoadFixture<T>(fn: (() => T)): () => T {
+type Fixture<T> = () => Promise<T>;
+async function dummyLoadFixture<T>(fn: Fixture<T>): Promise<T> {
   return await fn();
 }
 
-const loadFixture = blockchainRestoreDisabled ? async <T>(fn: () => T) => await fn() : hardhatLoadFixture;
+const loadFixture = blockchainRestoreDisabled ? dummyLoadFixture : hardhatLoadFixture;
 
 export { loadFixture };
 
