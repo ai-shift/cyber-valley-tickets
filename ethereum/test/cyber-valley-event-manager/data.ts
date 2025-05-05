@@ -14,6 +14,7 @@ export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   maxTickets: 100,
   minTickets: 50,
   minPrice: 20,
+  daysBeforeCancel: 1,
   minDays: 1,
 };
 
@@ -22,6 +23,7 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   maxTickets: 150,
   minTickets: 20,
   minPrice: 30,
+  daysBeforeCancel: 1,
   minDays: 2,
 };
 
