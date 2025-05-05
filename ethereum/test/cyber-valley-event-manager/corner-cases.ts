@@ -37,7 +37,7 @@ export const createEventPlaceCornerCases = [
       minDaysBeforeCancel: 0,
     },
     revertedWith: "Values must be greater than zero",
-  }
+  },
 ];
 
 export const submitEventIncompatibleEventPlaceCornerCases = [
@@ -68,13 +68,13 @@ export const submitEventIncompatibleEventPlaceCornerCases = [
   },
   {
     eventPlacePatch: {
-      daysBeforeCancel: 5
+      daysBeforeCancel: 5,
     },
     eventRequestPatch: {
       startDate: timestamp(1),
     },
     revertsWith: "Not enough time to avoid cancelling",
-  }
+  },
 ];
 
 export const submitEventDateRangeOverlapCornerCases = [

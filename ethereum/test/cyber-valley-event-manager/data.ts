@@ -8,10 +8,10 @@ import type {
 } from "./types";
 
 const multihash = {
-  digest: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+  digest: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
   hashFunction: 18,
-  size: 32
-}
+  size: 32,
+};
 
 export const devTeamPercentage = 10;
 export const masterPercentage = 50;
@@ -22,7 +22,7 @@ export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   minPrice: 20,
   daysBeforeCancel: 1,
   minDays: 1,
-  ...multihash
+  ...multihash,
 };
 
 export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
@@ -32,7 +32,7 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   minPrice: 30,
   daysBeforeCancel: 1,
   minDays: 2,
-  ...multihash
+  ...multihash,
 };
 
 export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
@@ -40,7 +40,7 @@ export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
   ticketPrice: defaultCreateEventPlaceRequest.minPrice,
   startDate: timestamp(5),
   daysAmount: defaultCreateEventPlaceRequest.minDays,
-  ...multihash
+  ...multihash,
 };
 
 export const defaultCloseEventArgs: CloseEventArgs = {
