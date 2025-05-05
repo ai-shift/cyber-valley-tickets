@@ -1,7 +1,7 @@
 import type { EventDto } from "@/entities/event";
 
 import { useOrderStore } from "@/entities/order";
-import { CreateEditEvent } from "@/features/create-edit-event";
+import { CreateEvent } from "@/features/create-edit-event";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { useNavigate } from "react-router";
 
@@ -17,7 +17,7 @@ export const CreateEventPage: React.FC = () => {
 
   return (
     <PageContainer name="Create event">
-      <CreateEditEvent onSubmit={initOrderPurchase} />
+      <CreateEvent onSubmit={initOrderPurchase} />
     </PageContainer>
   );
 };

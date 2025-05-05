@@ -1,6 +1,5 @@
 import { useUser } from "@/entities/user";
-import { CreateEditEvent } from "@/features/create-edit-event";
-import { canUserEdit } from "@/features/create-edit-event";
+import { canUserEdit, EditEvent } from "@/features/create-edit-event";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { Navigate, useParams } from "react-router";
 
@@ -19,7 +18,7 @@ export const EditEventPage: React.FC = () => {
 
   return (
     <PageContainer name="Edit page">
-      <CreateEditEvent
+      <EditEvent
         editEventId={numbericId}
         onSubmit={updateOrder}
         canEdit={canUserEdit(user)}
