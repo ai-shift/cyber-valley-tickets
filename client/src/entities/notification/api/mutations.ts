@@ -1,7 +1,6 @@
 import { apiClient } from "@/shared/api";
 
-// TODO: Use int instead of string
-export const readNotification = async (id: string) =>
+export const readNotification = async (id: number) =>
   await apiClient.POST("/api/notifications/{id}/seen/", {
-    params: { path: { id } },
+    params: { path: { id: `${id}` } },
   });
