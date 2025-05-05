@@ -41,6 +41,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 daysAmount;
         EventStatus status;
         address[] customers;
+        CyberValley.Multihash meta;
     }
 
     event NewEventPlaceAvailable(
@@ -71,7 +72,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventPlaceId,
         uint16 ticketPrice,
         uint256 startDate,
-        uint16 daysAmount
+        uint16 daysAmount,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     );
     event EventStatusChanged(uint256 eventId, EventStatus status);
     event EventUpdated(
@@ -79,7 +83,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventPlaceId,
         uint16 ticketPrice,
         uint256 startDate,
-        uint16 daysAmount
+        uint16 daysAmount,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     );
     event EventTicketVerified(uint256 tokenId);
 
@@ -230,7 +237,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventPlaceId,
         uint16 ticketPrice,
         uint256 startDate,
-        uint16 daysAmount
+        uint16 daysAmount,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     ) external {
         require(
             usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice,
@@ -257,7 +267,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 startDate: startDate,
                 daysAmount: daysAmount,
                 status: EventStatus.Submitted,
-                customers: new address[](0)
+                customers: new address[](0),
+                meta: CyberValley.Multihash({
+                    digest: digest,
+                    hashFunction: hashFunction,
+                    size: size
+                })
             })
         );
         validateEvent(events[events.length - 1]);
@@ -267,7 +282,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             eventPlaceId,
             ticketPrice,
             startDate,
-            daysAmount
+            daysAmount,
+            digest,
+            hashFunction,
+            size
         );
     }
 
@@ -309,20 +327,31 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventPlaceId,
         uint16 ticketPrice,
         uint256 startDate,
-        uint16 daysAmount
+        uint16 daysAmount,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
     ) external onlyMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         evt.eventPlaceId = eventPlaceId;
         evt.ticketPrice = ticketPrice;
         evt.startDate = startDate;
         evt.daysAmount = daysAmount;
+        evt.meta = CyberValley.Multihash({
+            digest: digest,
+            hashFunction: hashFunction,
+            size: size
+        });
         validateEvent(evt);
         emit EventUpdated(
             eventId,
             eventPlaceId,
             ticketPrice,
             startDate,
-            daysAmount
+            daysAmount,
+            digest,
+            hashFunction,
+            size
         );
     }
 
