@@ -19,6 +19,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 maxTickets;
         uint16 minTickets;
         uint16 minPrice;
+        uint8 daysBeforeCancel;
         uint8 minDays;
     }
 
@@ -47,6 +48,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 maxTickets,
         uint16 minTickets,
         uint16 minPrice,
+        uint8 daysBeforeCancel,
         uint8 minDays
     );
     event EventPlaceUpdated(
@@ -54,6 +56,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 maxTickets,
         uint16 minTickets,
         uint16 minPrice,
+        uint8 daysBeforeCancel,
         uint8 minDays
     );
     event NewEventRequest(
@@ -130,12 +133,14 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 _maxTickets,
         uint16 _minTickets,
         uint16 _minPrice,
+        uint8 _daysBeforeCancel,
         uint8 _minDays
     ) external onlyMaster {
         EventPlace memory place = EventPlace({
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
+            daysBeforeCancel: _daysBeforeCancel,
             minDays: _minDays
         });
         _validateEventPlace(place);
@@ -145,6 +150,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             _maxTickets,
             _minTickets,
             _minPrice,
+            _daysBeforeCancel,
             _minDays
         );
     }
@@ -154,6 +160,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 _maxTickets,
         uint16 _minTickets,
         uint16 _minPrice,
+        uint8 _daysBeforeCancel,
         uint8 _minDays
     ) external onlyMaster {
         require(eventPlaceId < eventPlaces.length, "eventPlaceId should exist");
@@ -161,6 +168,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
+            daysBeforeCancel: _daysBeforeCancel,
             minDays: _minDays
         });
         _validateEventPlace(place);
@@ -170,6 +178,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             _maxTickets,
             _minTickets,
             _minPrice,
+            _daysBeforeCancel,
             _minDays
         );
     }
@@ -183,6 +192,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             eventPlace.maxTickets > 0 &&
                 eventPlace.minTickets > 0 &&
                 eventPlace.minPrice > 0 &&
+                eventPlace.daysBeforeCancel > 0 &&
                 eventPlace.minDays > 0,
             "Values must be greater than zero"
         );
