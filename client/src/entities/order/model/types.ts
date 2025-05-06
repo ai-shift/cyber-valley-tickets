@@ -19,9 +19,13 @@ interface EventOrder extends BaseOrder {
 interface TicketOrder extends BaseOrder {
   type: "buy_ticket";
   event?: never;
-  ticket: {
-    eventId: number;
-  };
+  ticket: OrderTicket;
+}
+
+export interface OrderTicket {
+  eventId: number;
+  eventTitle: string;
+  ticketPrice: number;
 }
 
 export type Order = EventOrder | TicketOrder;

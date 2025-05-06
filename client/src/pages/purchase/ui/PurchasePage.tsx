@@ -1,4 +1,5 @@
 import { useOrderStore } from "@/entities/order";
+import { Purchase } from "@/features/purchase";
 import { Navigate } from "react-router";
 
 export const PurchasePage: React.FC = () => {
@@ -9,7 +10,7 @@ export const PurchasePage: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-5xl text-center py-30">{order.type}</h2>
+      <Purchase />
     </div>
   );
 };
