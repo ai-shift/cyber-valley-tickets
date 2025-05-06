@@ -13,6 +13,10 @@ import { getBytes32FromMultiash } from "./multihash";
 const eventManagerAddress = "0x1";
 const eventTicketAddress = "0x2";
 
+export async function getEventSubmitionPrice(): Promise<BigNumberish> {
+  return 100;
+}
+
 export async function getAddress(): Promise<string> {
   const { signer } = await getContext();
   return await signer.getAddress();
