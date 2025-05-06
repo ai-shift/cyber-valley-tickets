@@ -1,10 +1,10 @@
 import { useRefreshSlice } from "@/app/providers";
-import { login } from "../api/login";
-import { Button } from "@/shared/ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { cn } from "@/shared/lib/utils";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
-import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../api/login";
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
