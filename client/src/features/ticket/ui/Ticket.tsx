@@ -26,7 +26,11 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   );
 
   function initOrder() {
-    setTicketOrder(event.id);
+    setTicketOrder({
+      eventId: event.id,
+      eventTitle: event.title,
+      ticketPrice: event.ticketPrice,
+    });
     navigate("/socials");
   }
 
