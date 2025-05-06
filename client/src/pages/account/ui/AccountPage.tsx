@@ -1,3 +1,4 @@
+import { useAuth } from "@/app/providers/authProvider/hooks/useAuth";
 import { useUser } from "@/entities/user";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { Button } from "@/shared/ui/button";
@@ -5,6 +6,7 @@ import { Link } from "react-router";
 
 export const AccountPage: React.FC = () => {
   const { user } = useUser();
+  const { logout } = useAuth();
 
   if (!user) return <p>Feels bad, man</p>;
 
@@ -20,7 +22,7 @@ export const AccountPage: React.FC = () => {
           <p>{user.address.slice(0, 16)}...</p>
         </div>
         <Link to="/account/my-events">My events</Link>
-        <Button>Logout</Button>
+        <Button onClick={logout}>Logout</Button>
       </div>
     </PageContainer>
   );
