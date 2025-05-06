@@ -17,7 +17,7 @@ export function getCurrencySymbol(): string {
   return "₮";
 }
 
-export async function getEventSubmitionPrice(): Promise<BigNumberish> {
+export function getEventSubmitionPrice(): BigNumberish {
   return 100;
 }
 
