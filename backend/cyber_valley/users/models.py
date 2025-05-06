@@ -51,3 +51,17 @@ class CyberValleyUser(AbstractBaseUser):
     @property
     def is_master(self) -> bool:
         return self.role == self.MASTER
+
+
+class UserSocials(models.Model):
+    class Network(models.TextChoices):
+        TELEGRAM = "telegram"
+        INSTAGRAM = "instagram"
+        DISCORD = "discord"
+        WHATSAPP = "whatsapp"
+
+    user = models.ForeignKey(
+        CyberValleyUser, on_delete=models.CASCADE, related_name="socials"
+    )
+    network = models.CharField(choices=Network)
+    value = models.CharField()
