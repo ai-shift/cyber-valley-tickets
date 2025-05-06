@@ -15,6 +15,7 @@ export const AuthProvider: React.FC = () => {
     staleTime: 1000 * 10,
     gcTime: 1000 * 10,
     refetchInterval: 1000 * 10,
+    refetchOnWindowFocus: true,
   });
 
   const hasError = !isLoading && isError;
