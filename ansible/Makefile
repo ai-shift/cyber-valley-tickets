@@ -1,17 +1,11 @@
 ansible-playbook = uv run ansible-playbook
 
+install-collections:
+	uv run ansible-galaxy install -r requirements.yml
+
 lint:
 	uv run yamllint *.yml vars/*.yml
 	uv run ansible-lint --fix deploy.yml
 
-deploy-staging-backend:
-	$(ansible-playbook) -e "stage=staging" -e "service_to_deploy=backend" deploy.yml
-
-deploy-staging-frontend:
-	$(ansible-playbook) -e "stage=staging" -e "service_to_deploy=frontend" deploy.yml
-
-deploy-production-backend:
-	$(ansible-playbook) -e "stage=production" -e "service_to_deploy=backend" deploy.yml
-
-deploy-production-frontend:
-	$(ansible-playbook) -e "stage=production" -e "service_to_deploy=frontend" deploy.yml
+deploy-postgres: install-collections
+	uv run ansible-playbook postgres.yml
