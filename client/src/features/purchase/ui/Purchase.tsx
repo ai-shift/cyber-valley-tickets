@@ -1,7 +1,7 @@
 import { useOrderStore } from "@/entities/order";
-import { PurchaseTicket } from "./PurchaseTicket";
-import { PurchaseEvent } from "./PurchaseEvent";
 import { ConfirmPayment } from "./ConfirmPayment";
+import { PurchaseEvent } from "./PurchaseEvent";
+import { PurchaseTicket } from "./PurchaseTicket";
 
 export const Purchase: React.FC = () => {
   const { order } = useOrderStore();
