@@ -13,6 +13,10 @@ import { getBytes32FromMultiash } from "./multihash";
 const eventManagerAddress = "0x1";
 const eventTicketAddress = "0x2";
 
+export function getCurrencySymbol(): string {
+  return "₮";
+}
+
 export async function getEventSubmitionPrice(): Promise<BigNumberish> {
   return 100;
 }
