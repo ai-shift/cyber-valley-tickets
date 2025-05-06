@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_auth_logout_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_auth_refresh_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_auth_verify_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/web3/login/": {
         parameters: {
             query?: never;
@@ -14,6 +62,22 @@ export interface paths {
         get: operations["api_auth_web3_login_retrieve"];
         put?: never;
         post: operations["api_auth_web3_login_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/web3/nonce/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_auth_web3_nonce_retrieve"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -46,6 +110,38 @@ export interface paths {
         };
         get: operations["api_events_retrieve"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ipfs/events/meta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["api_ipfs_events_meta_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ipfs/places/meta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["api_ipfs_places_meta_update"];
         post?: never;
         delete?: never;
         options?: never;
@@ -108,7 +204,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description API endpoint that allows event places to be viewed */
         get: operations["api_places_list"];
         put?: never;
         post?: never;
@@ -125,28 +220,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description API endpoint that allows event places to be viewed */
         get: operations["api_places_retrieve"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/token/refresh/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Takes a refresh type JSON web token and returns an access type JSON web
-         *     token if the refresh token is valid. */
-        post: operations["api_token_refresh_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -173,10 +249,248 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        ApiAuthWeb3LoginCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthLogoutRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthRefreshRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthVerifyRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthWeb3LoginCreateAddressErrorComponent: {
+            /**
+             * @description * `address` - address (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "address";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `max_length` - max_length
+             *     * `min_length` - min_length
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "max_length" | "min_length" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiAuthWeb3LoginCreateError: components["schemas"]["ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiAuthWeb3LoginCreateAddressErrorComponent"] | components["schemas"]["ApiAuthWeb3LoginCreateSignatureErrorComponent"] | components["schemas"]["ApiAuthWeb3LoginCreateMessageErrorComponent"] | components["schemas"]["ApiAuthWeb3LoginCreateNonceErrorComponent"];
+        ApiAuthWeb3LoginCreateErrorResponse400: components["schemas"]["ApiAuthWeb3LoginCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiAuthWeb3LoginCreateMessageErrorComponent: {
+            /**
+             * @description * `message` - message (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "message";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiAuthWeb3LoginCreateNonceErrorComponent: {
+            /**
+             * @description * `nonce` - nonce (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "nonce";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiAuthWeb3LoginCreateSignatureErrorComponent: {
+            /**
+             * @description * `signature` - signature (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "signature";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiAuthWeb3LoginCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiAuthWeb3LoginCreateError"][];
+        };
         ApiAuthWeb3LoginRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthWeb3NonceRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiIpfsEventsMetaUpdateCoverErrorComponent: {
+            /**
+             * @description * `cover` - cover (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "cover";
+            /**
+             * @description * `empty` - empty
+             *     * `invalid` - invalid
+             *     * `no_name` - no_name
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "empty" | "invalid" | "no_name" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateDescriptionErrorComponent: {
+            /**
+             * @description * `description` - description (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "description";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateError: components["schemas"]["ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateCoverErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateTitleErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateDescriptionErrorComponent"];
+        ApiIpfsEventsMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsEventsMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateTitleErrorComponent: {
+            /**
+             * @description * `title` - title (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "title";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiIpfsEventsMetaUpdateError"][];
+        };
+        ApiIpfsPlacesMetaUpdateDescriptionErrorComponent: {
+            /**
+             * @description * `description` - description (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "description";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsPlacesMetaUpdateError: components["schemas"]["ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateTitleErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"];
+        ApiIpfsPlacesMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsPlacesMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiIpfsPlacesMetaUpdateTitleErrorComponent: {
+            /**
+             * @description * `title` - title (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "title";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsPlacesMetaUpdateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiIpfsPlacesMetaUpdateError"][];
+        };
         ApiNotificationsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiNotificationsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiNotificationsSeenCreateError: components["schemas"]["ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"];
@@ -205,49 +519,6 @@ export interface components {
         };
         ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-        ApiTokenRefreshCreateError: components["schemas"]["ApiTokenRefreshCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiTokenRefreshCreateRefreshErrorComponent"];
-        ApiTokenRefreshCreateErrorResponse400: components["schemas"]["ApiTokenRefreshCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
-        ApiTokenRefreshCreateNonFieldErrorsErrorComponent: {
-            /**
-             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-             * @enum {string}
-             */
-            attr: "non_field_errors";
-            /**
-             * @description * `invalid` - invalid
-             *     * `no_active_account` - no_active_account
-             *     * `null` - null
-             * @enum {string}
-             */
-            code: "invalid" | "no_active_account" | "null";
-            detail: string;
-        };
-        ApiTokenRefreshCreateRefreshErrorComponent: {
-            /**
-             * @description * `refresh` - refresh (enum property replaced by openapi-typescript)
-             * @enum {string}
-             */
-            attr: "refresh";
-            /**
-             * @description * `blank` - blank
-             *     * `invalid` - invalid
-             *     * `null` - null
-             *     * `null_characters_not_allowed` - null_characters_not_allowed
-             *     * `required` - required
-             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-             * @enum {string}
-             */
-            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
-            detail: string;
-        };
-        ApiTokenRefreshCreateValidationError: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "validation_error";
-            errors: components["schemas"]["ApiTokenRefreshCreateError"][];
-        };
         ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
         /**
          * @description * `client_error` - Client Error
@@ -280,6 +551,11 @@ export interface components {
             readonly role: components["schemas"]["RoleEnum"];
             readonly tickets: components["schemas"]["Ticket"][];
         };
+        Error401: {
+            code: components["schemas"]["ErrorCode401Enum"];
+            detail: string;
+            attr: string | null;
+        };
         Error404: {
             code: components["schemas"]["ErrorCode404Enum"];
             detail: string;
@@ -306,6 +582,12 @@ export interface components {
             attr: string | null;
         };
         /**
+         * @description * `authentication_failed` - Authentication Failed
+         *     * `not_authenticated` - Not Authenticated
+         * @enum {string}
+         */
+        ErrorCode401Enum: "authentication_failed" | "not_authenticated";
+        /**
          * @description * `not_found` - Not Found
          * @enum {string}
          */
@@ -330,6 +612,10 @@ export interface components {
          * @enum {string}
          */
         ErrorCode500Enum: "error";
+        ErrorResponse401: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error401"][];
+        };
         ErrorResponse404: {
             type: components["schemas"]["ClientErrorEnum"];
             errors: components["schemas"]["Error404"][];
@@ -441,15 +727,31 @@ export interface components {
             eventId: number;
             readonly isRedeemed: boolean;
         };
-        TokenRefresh: {
-            readonly access: string;
-            refresh: string;
+        UploadEventMetaToIpfsRequest: {
+            /** Format: binary */
+            cover: string;
+            title: string;
+            description: string;
+        };
+        UploadPlaceMetaToIpfsRequest: {
+            title: string;
+            description: string;
         };
         /**
          * @description * `validation_error` - Validation Error
          * @enum {string}
          */
         ValidationErrorEnum: "validation_error";
+        Web3LoginModelRequest: {
+            /** @description Address of the user's EOA */
+            address: string;
+            /** @description Message signed with user's private key */
+            signature: string;
+            /** @description Original message */
+            message: string;
+            /** @description Nonce value retrieved from the server */
+            nonce: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -459,11 +761,9 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    api_auth_web3_login_retrieve: {
+    api_auth_logout_retrieve: {
         parameters: {
-            query?: {
-                format?: "html" | "json";
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -482,8 +782,225 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    "application/json": components["schemas"]["ApiAuthLogoutRetrieveErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_auth_refresh_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthRefreshRetrieveErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_auth_verify_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthVerifyRetrieveErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_auth_web3_login_retrieve: {
+        parameters: {
+            query?: {
+                format?: "html" | "json";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                };
+            };
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
                     "application/json": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
                     "text/html": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                    "text/html": components["schemas"]["ErrorResponse401"];
                 };
             };
             405: {
@@ -533,10 +1050,24 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Web3LoginModelRequest"];
+                "multipart/form-data": components["schemas"]["Web3LoginModelRequest"];
+                "application/json": components["schemas"]["Web3LoginModelRequest"];
+            };
+        };
         responses: {
-            /** @description No response body */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                };
+            };
+            /** @description No response body */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -549,6 +1080,15 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
                     "text/html": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                    "text/html": components["schemas"]["ErrorResponse401"];
                 };
             };
             405: {
@@ -589,6 +1129,75 @@ export interface operations {
             };
         };
     };
+    api_auth_web3_nonce_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        nonce?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthWeb3NonceRetrieveErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
     api_events_list: {
         parameters: {
             query?: never;
@@ -612,6 +1221,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiEventsListErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
                 };
             };
             405: {
@@ -676,12 +1293,166 @@ export interface operations {
                     "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
                 };
             };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_ipfs_events_meta_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadEventMetaToIpfsRequest"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiIpfsEventsMetaUpdateErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_ipfs_places_meta_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadPlaceMetaToIpfsRequest"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiIpfsPlacesMetaUpdateErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
                 };
             };
             405: {
@@ -741,6 +1512,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiNotificationsListErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
                 };
             };
             405: {
@@ -804,6 +1583,14 @@ export interface operations {
                     "application/json": components["schemas"]["ApiNotificationsRetrieveErrorResponse400"];
                 };
             };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -855,13 +1642,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: {
-            content: {
-                "application/x-www-form-urlencoded": components["schemas"]["Notification"];
-                "multipart/form-data": components["schemas"]["Notification"];
-                "application/json": components["schemas"]["Notification"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description No response body */
             204: {
@@ -876,6 +1657,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiNotificationsSeenCreateErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
                 };
             };
             404: {
@@ -945,6 +1734,14 @@ export interface operations {
                     "application/json": components["schemas"]["ApiPlacesListErrorResponse400"];
                 };
             };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
             405: {
                 headers: {
                     [name: string]: unknown;
@@ -1007,77 +1804,20 @@ export interface operations {
                     "application/json": components["schemas"]["ApiPlacesRetrieveErrorResponse400"];
                 };
             };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse404"];
-                };
-            };
-            405: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse405"];
-                };
-            };
-            406: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse406"];
-                };
-            };
-            415: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse415"];
-                };
-            };
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse500"];
-                };
-            };
-        };
-    };
-    api_token_refresh_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/x-www-form-urlencoded": components["schemas"]["TokenRefresh"];
-                "multipart/form-data": components["schemas"]["TokenRefresh"];
-                "application/json": components["schemas"]["TokenRefresh"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TokenRefresh"];
-                };
-            };
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiTokenRefreshCreateErrorResponse400"];
                 };
             };
             405: {
@@ -1137,6 +1877,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiUsersCurrentRetrieveErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
                 };
             };
             405: {

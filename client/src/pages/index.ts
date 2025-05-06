@@ -11,3 +11,4 @@ export { CreatePlacePage } from "./create-place";
 export { AssignStaffPage } from "./assign-staff";
 export { AccountPage } from "./account";
 export { MyEventsPage } from "./my-events";
+export { LoginPage } from "./login";
