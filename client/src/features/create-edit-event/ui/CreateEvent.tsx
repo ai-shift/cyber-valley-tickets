@@ -1,8 +1,8 @@
 import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 
-import { extractRanges } from "../lib/extractRanges";
 import { EventForm } from "@/features/event-form";
+import { extractRanges } from "../lib/extractRanges";
 import { EventDataProvider } from "./EventDataProvider";
 
 type CreateEventProps = {

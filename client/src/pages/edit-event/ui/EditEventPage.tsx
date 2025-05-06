@@ -1,5 +1,5 @@
 import { useUser } from "@/entities/user";
-import { canUserEdit, EditEvent } from "@/features/create-edit-event";
+import { EditEvent, canUserEdit } from "@/features/create-edit-event";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { Navigate, useParams } from "react-router";
 
