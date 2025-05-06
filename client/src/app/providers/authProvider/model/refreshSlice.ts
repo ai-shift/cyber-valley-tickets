@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist, createJSONStorage } from "zustand/middleware";
 
 interface RefreshState {
   hasJWT: boolean;
@@ -7,11 +7,14 @@ interface RefreshState {
 }
 
 export const useRefreshSlice = create<RefreshState>()(
-  devtools((set) => ({
-    hasJWT: true,
-    setHasJWT: (hasJWT: boolean) =>
-      set({
-        hasJWT,
-      }),
-  })),
+  persist(
+    (set) => ({
+      hasJWT: false,
+      setHasJWT: (hasJWT: boolean) =>
+        set({
+          hasJWT,
+        }),
+    }),
+    { name: "jwt" },
+  ),
 );
