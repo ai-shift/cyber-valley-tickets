@@ -1,9 +1,11 @@
+import secrets
 import time
 from pathlib import Path
 
 import ipfshttpclient
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.cache import cache
 from drf_spectacular.utils import (
     PolymorphicProxySerializer,
     extend_schema,
@@ -19,6 +21,9 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from cyber_valley.web3_auth.serializers import SIWEModelSerializer
+from cyber_valley.web3_auth.service import verify_signature
 
 from .models import Event, EventPlace
 from .serializers import (
@@ -123,3 +128,41 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
         }
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash}, status=204)
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {"nonce": {"type": "string"}},
+        }
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def ticket_nonce(request: Request) -> Response:
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+    nonce = user.address + secrets.token_hex(16)
+    cache.set(nonce, "nonce", timeout=60 * 5)
+    return Response({"nonce": nonce})
+
+
+@extend_schema(request=SIWEModelSerializer)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def verify_ticket(request: Request) -> Response:
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+
+    data = SIWEModelSerializer(data=request.data)
+    data.is_valid(raise_exception=True)
+    data = data.save()
+
+    if not cache.delete(data.nonce):
+        return Response("Nonce expired or invalid", status=400)
+
+    if not verify_signature(data):
+        return Response("Signature is not valid", status=400)
+
+    return Response("OK")
