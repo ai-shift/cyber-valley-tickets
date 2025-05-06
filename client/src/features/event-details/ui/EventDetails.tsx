@@ -6,8 +6,8 @@ import { canEdit } from "@/features/create-edit-event";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
-import { DetailsBlock } from "./DetailsBlock";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
+import { DetailsBlock } from "./DetailsBlock";
 
 type EventDetailsProps = {
   eventId: number;

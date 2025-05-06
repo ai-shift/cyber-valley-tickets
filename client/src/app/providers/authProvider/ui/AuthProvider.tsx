@@ -1,10 +1,10 @@
 import type React from "react";
 import { refresh } from "../api/refresh";
 
-import { useNavigate, Outlet } from "react-router";
-import { useRefreshSlice } from "../model/refreshSlice";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
+import { useRefreshSlice } from "../model/refreshSlice";
 
 export const AuthProvider: React.FC = () => {
   const navigate = useNavigate();
