@@ -50,4 +50,4 @@ def upload_user_socials_to_ipfs(request: Request) -> Response:
     assert not isinstance(user, AnonymousUser)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_hash = client.add_json(socials.data)
-    return Response({"cid": socials_hash}, status=204)
+    return Response({"cid": socials_hash})
