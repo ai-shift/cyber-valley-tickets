@@ -111,8 +111,8 @@ def refresh(request: Request) -> Response:
 
     # Should be ok because used the same in the original source code
     refresh = RefreshToken(raw_token)  # type: ignore[arg-type]
-    address = refresh.payload.get("address", None)
-    print(f"DEBUG {address=} {refresh.payload=}")
+    address = refresh.payload.get("user_id", None)
+    print(f"DEBUG {refresh.payload=}")
     try:
         User.objects.get(address=address)
     except User.DoesNotExist:
