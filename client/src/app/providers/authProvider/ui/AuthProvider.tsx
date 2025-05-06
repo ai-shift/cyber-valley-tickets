@@ -12,7 +12,7 @@ export const AuthProvider: React.FC = () => {
   const { isError, isLoading } = useQuery({
     queryFn: refresh,
     queryKey: ["refresh"],
-    staleTime: 1000 * 10,
+    staleTime: 0,
     gcTime: 1000 * 10,
     refetchInterval: 1000 * 10,
     refetchOnWindowFocus: true,
