@@ -9,5 +9,16 @@ export const NotificationIcon: React.FC = () => {
     error,
   } = useQuery(notificationQueries.list());
 
-  return <Link to="/notifications">{notifications?.length}</Link>;
+  return (
+    <Link
+      to="/notifications"
+      className="h-10 aspect-square border-[1px] border-primary rounded flex justify-center items-center"
+    >
+      <img
+        className="h-6"
+        src="/icons/nnotification_3.svg"
+        alt="notification"
+      />
+    </Link>
+  );
 };
