@@ -23,11 +23,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
       <Link className="flex flex-col h-full" to={`/events/${event.id}`}>
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
         <div className="flex items-center gap-3">
-          <img
-            className="h-4"
-            src="/public/icons/calendar.svg"
-            alt="calendar icon"
-          />
+          <img className="h-4" src="/icons/calendar.svg" alt="calendar icon" />
           <p className="text-sm text-accent font-light">
             {formatTimestamp(startDateTimestamp)}
           </p>
@@ -35,7 +31,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
         <div className="flex items-center gap-3">
           <img
             className="h-4"
-            src="/public/icons/event place_2.svg"
+            src="/icons/event place_2.svg"
             alt="calendar icon"
           />
           <p className="text-sm text-accent font-light">{place.title}</p>
