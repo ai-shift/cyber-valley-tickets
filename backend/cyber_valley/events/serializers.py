@@ -74,7 +74,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     ]
 )
 class StaffEventSerializer(EventSerializer):
-    cancel_date_timestamp = serializers.IntegerField(required=True)
+    cancel_date_timestamp = serializers.SerializerMethodField()
     tickets_required_until_cancel = serializers.SerializerMethodField(allow_null=False)
 
     class Meta:
@@ -82,8 +82,8 @@ class StaffEventSerializer(EventSerializer):
         fields = (
             *EventSerializer.Meta.fields,
             "tickets_bought",
-            "cancel_date_timestamp",
             "tickets_required_until_cancel",
+            "cancel_date_timestamp"
         )
 
     def to_representation(self, obj: Event) -> dict[str, Any]:
@@ -96,6 +96,10 @@ class StaffEventSerializer(EventSerializer):
 
     def get_tickets_required_until_cancel(self, obj: Event) -> int:
         return max(obj.tickets_bought - obj.place.min_tickets, 0)
+
+    def get_cancel_date_timestamp(self, obj: Event) -> int:
+        return int((obj.start_date - timedelta(days=obj.place.days_before_cancel)).timestamp()) * 1000
+
 
 
 class CreatorEventSerializer(StaffEventSerializer):
