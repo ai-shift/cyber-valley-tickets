@@ -121,7 +121,6 @@ def refresh(request: Request) -> Response:
     refresh.set_jti()
     refresh.set_exp()
     refresh.set_iat()
-    refresh.outstand()
 
     response = Response(
         status=204,
