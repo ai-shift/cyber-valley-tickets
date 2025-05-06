@@ -165,7 +165,7 @@ class SimpleJWTSettingsDict(TypedDict):
 
 SIMPLE_JWT: Final[SimpleJWTSettingsDict] = {
     "USER_ID_FIELD": "address",
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "AUTH_COOKIE": "access_token",
     "REFRESH_COOKIE": "refresh_token",

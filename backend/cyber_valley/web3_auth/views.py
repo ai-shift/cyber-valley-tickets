@@ -102,7 +102,7 @@ def login(request: Request) -> Response:
 
 @api_view(["GET"])
 def refresh(request: Request) -> Response:
-    cookie_name = settings.SIMPLE_JWT["AUTH_COOKIE"]
+    cookie_name = settings.SIMPLE_JWT["REFRESH_COOKIE"]
     raw_token = request.COOKIES.get(cookie_name)
     if not raw_token:
         return Response(
