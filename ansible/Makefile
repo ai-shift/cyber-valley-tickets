@@ -8,4 +8,7 @@ lint:
 	uv run ansible-lint --fix deploy.yml
 
 deploy-postgres: install-collections
-	uv run ansible-playbook postgres.yml
+	$(ansible-playbook) postgres.yml
+
+deploy-ganache: install-collections
+	$(ansible-playbook) ganache.yml
