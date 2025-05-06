@@ -5,7 +5,7 @@ import type * as React from "react";
 import { cn } from "@/shared/lib/utils";
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center text-white font-medium uppercase tracking-wider cursor-pointer clip-corners border-[1px] disabled:opacity-75 disabled:cursor-not-allowed",
+  "relative inline-flex items-center justify-center text-white font-medium uppercase tracking-wider cursor-pointer border-[1px] disabled:opacity-75 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
@@ -14,8 +14,7 @@ const buttonVariants = cva(
         destructive: "bg-destructive text-white shadow-xs border-destructive",
         secondary:
           "bg-primary text-secondary-foreground shadow-xs  border-primary",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        ghost: "hover:bg-primary-foreground hover:text-black",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
@@ -28,11 +27,16 @@ const buttonVariants = cva(
         default: "",
         outline: "bg-background text-primary-foreground",
       },
+      clipping: {
+        default: "clip-corners",
+        noclip: "",
+      },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
       filling: "default",
+      clipping: "default",
     },
   },
 );
@@ -42,6 +46,7 @@ function Button({
   variant,
   size,
   filling,
+  clipping,
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
@@ -53,7 +58,9 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, filling, className }))}
+      className={cn(
+        buttonVariants({ variant, size, filling, clipping, className }),
+      )}
       {...props}
     />
   );
