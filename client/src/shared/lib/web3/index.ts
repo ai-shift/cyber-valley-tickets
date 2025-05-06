@@ -128,17 +128,19 @@ async function getContext(): Promise<{
 }> {
   const provider = await getProvider();
   const signer = await provider.getSigner();
+  const eventManager = CyberValleyEventManager__factory.connect(
+    eventManagerAddress,
+    provider,
+  ).connect(signer);
+  const eventTicket = CyberValleyEventTicket__factory.connect(
+    eventTicketAddress,
+    provider,
+  ).connect(signer);
   return {
     provider,
     signer,
-    eventManager: CyberValleyEventManager__factory.connect(
-      eventManagerAddress,
-      provider,
-    ),
-    eventTicket: CyberValleyEventTicket__factory.connect(
-      eventTicketAddress,
-      provider,
-    ),
+    eventManager,
+    eventTicket,
   };
 }
 
