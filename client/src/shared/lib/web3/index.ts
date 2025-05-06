@@ -4,10 +4,10 @@ import {
   type Signer,
   ethers,
 } from "ethers";
-import type { CyberValleyEventManager } from "../typechain-types/contracts/CyberValleyEventManager";
-import type { CyberValleyEventTicket } from "../typechain-types/contracts/CyberValleyEventTicket";
-import { CyberValleyEventManager__factory } from "../typechain-types/factories/contracts/CyberValleyEventManager__factory";
-import { CyberValleyEventTicket__factory } from "../typechain-types/factories/contracts/CyberValleyEventTicket__factory";
+import type { CyberValleyEventManager } from "../../../../typechain-types/contracts/CyberValleyEventManager";
+import type { CyberValleyEventTicket } from "../../../../typechain-types/contracts/CyberValleyEventTicket";
+import { CyberValleyEventManager__factory } from "../../../../typechain-types/factories/contracts/CyberValleyEventManager__factory";
+import { CyberValleyEventTicket__factory } from "../../../../typechain-types/factories/contracts/CyberValleyEventTicket__factory";
 import { getBytes32FromMultiash } from "./multihash";
 
 const eventManagerAddress = "0x1";

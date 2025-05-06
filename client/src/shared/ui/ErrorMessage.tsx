@@ -3,9 +3,13 @@ import { errorMapper } from "../api/errorMapper";
 
 type ErrorMessageProps = {
   errors: ApiError | ApiError[];
+  className?: string;
 };
 
-export const ErrorMessage: React.FC<ErrorMessageProps> = ({ errors }) => {
+export const ErrorMessage: React.FC<ErrorMessageProps> = ({
+  errors,
+  className,
+}) => {
   const formattedErrors = new Set<string>();
 
   if (Array.isArray(errors)) {
@@ -23,7 +27,9 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ errors }) => {
   return (
     <div className="flex flex-col">
       {[...formattedErrors].map((err) => (
-        <p key={err}>{err}</p>
+        <p className={className} key={err}>
+          {err}
+        </p>
       ))}
     </div>
   );
