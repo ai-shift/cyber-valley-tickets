@@ -9,9 +9,14 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 type EventsListProps = {
   limit?: number;
   filterFn?: (event: Event, user: User) => boolean;
+  isGrid?: boolean;
 };
 
-export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
+export const EventsList: React.FC<EventsListProps> = ({
+  limit,
+  filterFn,
+  isGrid = false,
+}) => {
   const { data: events, error, isFetching } = useQuery(eventQueries.list());
   const { user } = useUser();
 
@@ -29,7 +34,7 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   }
 
   return (
-    <div>
+    <div className={isGrid ? "main_grid" : "flex flex-col gap-6 px-3"}>
       {limitedEvents.map((event) => (
         <EventCard key={event.id} event={event} user={user} />
       ))}

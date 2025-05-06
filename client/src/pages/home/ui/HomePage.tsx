@@ -14,10 +14,12 @@ export const HomePage: React.FC = () => {
       <div className="w-full h-2 bg-amber-700" />
       <section>
         <div className="flex justify-between items-center p-3">
-          <p>Upcoming events</p>
-          <Link to="/events">See more...</Link>
+          <h2 className="text-base text-primary">Upcoming events</h2>
+          <Link className="uppercase text-secondary" to="/events">
+            See all
+          </Link>
         </div>
-        <EventsList limit={3} filterFn={upcomingFilter} />
+        <EventsList isGrid limit={3} filterFn={upcomingFilter} />
       </section>
     </div>
   );

@@ -15,31 +15,36 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
   const { place, startDateTimestamp, description, title, ticketPrice, status } =
     event;
 
-  // TODO: Check if event was not closed or cancelled (i.e. approved)
+  const isInactive = event.status === "closed" || event.status === "cancelled";
   const hasTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
   const isMaster = user.role === "master";
 
   return (
-    <article className="card">
-      <Link to={`/events/${event.id}`}>
-        <div>
-          <h2>{title}</h2>
-          <p>{formatTimestamp(startDateTimestamp)}</p>
-          <p>{place.title}</p>
-          <p>{description}</p>
-          {isMaster ? (
-            <StatusBage status={status} />
-          ) : (
-            <div className="flex justify-between items-center">
-              <p>{ticketPrice}</p>
-              {hasTicket ? (
-                <Button> Show ticket</Button>
-              ) : (
-                <Button>Attend</Button>
-              )}
-            </div>
-          )}
-        </div>
+    <article className="card border-primary/40">
+      <Link
+        className="flex flex-col h-full"
+        to={isInactive ? "" : `/events/${event.id}`}
+      >
+        <h2 className="text-lg font-semibold mb-2">{title}</h2>
+        <p className="text-sm text-accent font-light">
+          {formatTimestamp(startDateTimestamp)}
+        </p>
+        <p className="text-sm text-accent font-light">{place.title}</p>
+        <p className="text-sm text-white mt-1 line-clamp-2 mb-2">
+          {description}
+        </p>
+        {isMaster ? (
+          <StatusBage status={status} />
+        ) : (
+          <div className="mt-auto flex justify-between items-center">
+            <p className="text-primary text-sm">{ticketPrice} ₮</p>
+            {hasTicket ? (
+              <Button> Show ticket</Button>
+            ) : (
+              <Button>Attend</Button>
+            )}
+          </div>
+        )}
       </Link>
     </article>
   );

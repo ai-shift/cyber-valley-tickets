@@ -1,5 +1,4 @@
 import { useUser } from "@/entities/user";
-import { useQuery } from "@tanstack/react-query";
 
 import { routes } from "../model/routes";
 import { NavLink } from "./NavLink";
@@ -10,10 +9,8 @@ type NavProps = {
 };
 
 export const Nav: React.FC<NavProps> = ({ className }) => {
-  //   const { user } = useUser();
-  //TODO: Import from the auth store
-  const user = { role: "master" };
-
+  const { user } = useUser();
+  if (!user) return;
   return (
     <nav className={cn("flex justify-around gap-3", className)}>
       {routes.map((route) => (
