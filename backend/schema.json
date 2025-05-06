@@ -804,17 +804,17 @@
                     "content": {
                         "application/x-www-form-urlencoded": {
                             "schema": {
-                                "$ref": "#/components/schemas/Web3LoginModelRequest"
+                                "$ref": "#/components/schemas/SIWEModelRequest"
                             }
                         },
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/Web3LoginModelRequest"
+                                "$ref": "#/components/schemas/SIWEModelRequest"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Web3LoginModelRequest"
+                                "$ref": "#/components/schemas/SIWEModelRequest"
                             }
                         }
                     },
@@ -4984,6 +4984,38 @@
                 "type": "string",
                 "description": "* `customer` - Customer\n* `staff` - Staff\n* `creator` - Creator\n* `master` - Master"
             },
+            "SIWEModelRequest": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "minLength": 42,
+                        "description": "Address of the user's EOA",
+                        "maxLength": 42
+                    },
+                    "signature": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Message signed with user's private key"
+                    },
+                    "message": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Original message"
+                    },
+                    "nonce": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Nonce value retrieved from the server"
+                    }
+                },
+                "required": [
+                    "address",
+                    "message",
+                    "nonce",
+                    "signature"
+                ]
+            },
             "ServerErrorEnum": {
                 "enum": [
                     "server_error"
@@ -5157,38 +5189,6 @@
                 ],
                 "type": "string",
                 "description": "* `validation_error` - Validation Error"
-            },
-            "Web3LoginModelRequest": {
-                "type": "object",
-                "properties": {
-                    "address": {
-                        "type": "string",
-                        "minLength": 42,
-                        "description": "Address of the user's EOA",
-                        "maxLength": 42
-                    },
-                    "signature": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Message signed with user's private key"
-                    },
-                    "message": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Original message"
-                    },
-                    "nonce": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Nonce value retrieved from the server"
-                    }
-                },
-                "required": [
-                    "address",
-                    "message",
-                    "nonce",
-                    "signature"
-                ]
             }
         },
         "securitySchemes": {

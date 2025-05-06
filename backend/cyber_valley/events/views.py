@@ -22,6 +22,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from cyber_valley.web3_auth.serializers import SIWEModelSerializer
+from cyber_valley.web3_auth.service import verify_signature
+
 from .models import Event, EventPlace
 from .serializers import (
     CreatorEventSerializer,
@@ -143,3 +146,23 @@ def ticket_nonce(request: Request) -> Response:
     nonce = user.address + secrets.token_hex(16)
     cache.set(nonce, "nonce", timeout=60 * 5)
     return Response({"nonce": nonce})
+
+
+@extend_schema(request=SIWEModelSerializer)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def verify_ticket(request: Request) -> Response:
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+
+    data = SIWEModelSerializer(data=request.data)
+    data.is_valid(raise_exception=True)
+    data = data.save()
+
+    if not cache.delete(data.nonce):
+        return Response("Nonce expired or invalid", status=400)
+
+    if not verify_signature(data):
+        return Response("Signature is not valid", status=400)
+
+    return Response("OK")
