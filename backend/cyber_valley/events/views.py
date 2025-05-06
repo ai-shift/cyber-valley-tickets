@@ -1,9 +1,11 @@
+import secrets
 import time
 from pathlib import Path
 
 import ipfshttpclient
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core.cache import cache
 from drf_spectacular.utils import (
     PolymorphicProxySerializer,
     extend_schema,
@@ -123,3 +125,21 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
         }
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash}, status=204)
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {"nonce": {"type": "string"}},
+        }
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def ticket_nonce(request: Request) -> Response:
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+    nonce = user.address + secrets.token_hex(16)
+    cache.set(nonce, "nonce", timeout=60 * 5)
+    return Response({"nonce": nonce})
