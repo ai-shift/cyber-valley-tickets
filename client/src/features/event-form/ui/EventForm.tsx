@@ -47,8 +47,8 @@ export const EventForm: React.FC<EventFormProps> = ({
     defaultValues: eventForEdit
       ? { ...eventForEdit }
       : {
-          title: "Title",
-          description: "Long ass description to satisfy the f*king form",
+          title: "",
+          description: "",
           ticketPrice: 0,
           place: "",
           startDate: new Date(),
@@ -74,39 +74,22 @@ export const EventForm: React.FC<EventFormProps> = ({
       >
         <FormField
           control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} {...form.register(field.name)} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Image</FormLabel>
+              <FormLabel>Event image</FormLabel>
+              <FormLabel>
+                <div className="text-center border-2 border-input bg-input/10 p-5 w-full">
+                  <h2 className="text-secondary">Upload image banner</h2>
+                  <p className="text-normal font-normal text-muted-foreground lowercase">
+                    Click to upload image (16:9 ratio recommended)
+                  </p>
+                </div>
+              </FormLabel>
               <FormControl>
                 <Input
                   type="file"
+                  hidden
                   onChange={(e) => {
                     if (e.target.files && e.target.files.length > 0) {
                       field.onChange(e.target.files[0]);
@@ -123,44 +106,72 @@ export const EventForm: React.FC<EventFormProps> = ({
             </FormItem>
           )}
         />
-        <div className="flex">
-          <FormField
-            control={form.control}
-            name="startDate"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Start date</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    date={field.value}
-                    setDate={field.onChange}
-                    disabled={bookedRanges}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="daysAmount"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Duration in days</FormLabel>
-                <FormControl>
-                  <Input
-                    inputMode="decimal"
-                    {...field}
-                    onChange={(e) =>
-                      field.onChange(handleNumericInput(e.target.value))
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter event name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Describe your event"
+                  {...field}
+                  {...form.register(field.name)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Start date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  date={field.value}
+                  setDate={field.onChange}
+                  disabled={bookedRanges}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="daysAmount"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Duration in days</FormLabel>
+              <FormControl>
+                <Input
+                  inputMode="decimal"
+                  {...field}
+                  onChange={(e) =>
+                    field.onChange(handleNumericInput(e.target.value))
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="place"
@@ -177,11 +188,9 @@ export const EventForm: React.FC<EventFormProps> = ({
           )}
         />
         {isSelected && (
-          <div className="">
+          <div className="text-secondary border-2 border-secondary p-4">
             <div>
-              <h3 className="text-[#02d7f2] font-bold mb-2">
-                {selectedPlace.title}
-              </h3>
+              <h3 className="font-bold mb-2">{selectedPlace.title}</h3>
               <ul className=" space-y-1">
                 <li>Min Tickets: {selectedPlace.minTickets}</li>
                 <li>Max Tickets: {selectedPlace.maxTickets}</li>
@@ -202,10 +211,12 @@ export const EventForm: React.FC<EventFormProps> = ({
             return (
               <FormItem>
                 <FormLabel>
-                  <span className={`${!isSelected && "text-gray-500"}`}>
-                    Ticket price{" "}
-                    {!isSelected && "(select the place to enter the price)"}
-                    {isSelected && `(minimum price ${minimumPrice})`}
+                  <span
+                    className={`${!isSelected ? "text-gray-500" : "text-secondary"}`}
+                  >
+                    Ticket price
+                    {!isSelected && " (select the place to enter the price)"}
+                    {isSelected && ` (minimum price ${minimumPrice})`}
                   </span>
                 </FormLabel>
                 <FormControl>

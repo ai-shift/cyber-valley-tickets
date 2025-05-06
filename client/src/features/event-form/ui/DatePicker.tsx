@@ -7,6 +7,7 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { useState } from "react";
 
 type DatePickerProps = {
   date: Date;
@@ -19,15 +20,17 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   setDate,
   disabled,
 }) => {
+  const [open, setOpen] = useState(false);
   return (
     <div className={cn("grid gap-2")}>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             id="date"
-            variant={"outline"}
+            clipping="noclip"
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "border-2 border-input text-primary-foreground bg-input/10 p-5 w-full",
+              "aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
               !date && "text-muted-foreground",
             )}
           >
@@ -39,7 +42,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             initialFocus
             mode="single"
             selected={date}
-            onSelect={setDate}
+            onSelect={(day, selectedDay, activeModifiers, e) => {
+              setDate(day, selectedDay, activeModifiers, e);
+              setOpen(false);
+            }}
             defaultMonth={date}
             disabled={[{ before: new Date() }, ...disabled]}
           />
