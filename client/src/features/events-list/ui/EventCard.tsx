@@ -15,16 +15,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
   const { place, startDateTimestamp, description, title, ticketPrice, status } =
     event;
 
-  const isInactive = event.status === "closed" || event.status === "cancelled";
   const hasTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
   const isMaster = user.role === "master";
 
   return (
     <article className="card border-primary/40">
-      <Link
-        className="flex flex-col h-full"
-        to={isInactive ? "" : `/events/${event.id}`}
-      >
+      <Link className="flex flex-col h-full" to={`/events/${event.id}`}>
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
         <p className="text-sm text-accent font-light">
           {formatTimestamp(startDateTimestamp)}
