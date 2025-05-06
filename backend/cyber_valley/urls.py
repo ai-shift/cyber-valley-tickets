@@ -16,16 +16,18 @@ Including another URLconf
 """
 
 from django.urls import include, path
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework import routers
-from rest_framework_simplejwt.views import (
-    TokenRefreshView,
-)
 
-from .events.views import EventPlaceViewSet, EventViewSet
+from .events.views import (
+    EventPlaceViewSet,
+    EventViewSet,
+    upload_event_meta_to_ipfs,
+    upload_place_meta_to_ipfs,
+)
 from .notifications.views import NotificationViewSet
 from .users.views import CurrentUserViewSet
-from .web3_auth.views import login
+from .web3_auth.views import login, logout, nonce, refresh, verify
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
@@ -34,9 +36,14 @@ router.register(r"notifications", NotificationViewSet, basename="Notification")
 router.register(r"users", CurrentUserViewSet, basename="users")
 
 urlpatterns = [
-    path("", SpectacularRedocView.as_view(), name="redoc"),
+    path("", SpectacularSwaggerView.as_view(), name="swagger"),
     path("api/", include(router.urls)),
+    path("api/ipfs/events/meta", upload_event_meta_to_ipfs, name="ipfs-events"),
+    path("api/ipfs/places/meta", upload_place_meta_to_ipfs, name="ipfs-events"),
     path("api/auth/web3/login/", login, name="web3_login"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/auth/web3/nonce/", nonce, name="web3_nonce"),
+    path("api/auth/verify", verify, name="jwt_verify"),
+    path("api/auth/refresh", refresh, name="jwt_refresh"),
+    path("api/auth/logout", logout, name="jwt_logout"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]

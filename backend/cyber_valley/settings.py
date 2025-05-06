@@ -102,6 +102,7 @@ SPECTACULAR_SETTINGS = {
         "ErrorCode429Enum": "drf_standardized_errors.openapi_serializers.ErrorCode429Enum.choices",
         "ErrorCode500Enum": "drf_standardized_errors.openapi_serializers.ErrorCode500Enum.choices",
     },
+    "COMPONENT_SPLIT_REQUEST": True,
 }
 
 MIDDLEWARE = [
@@ -152,7 +153,9 @@ AUTH_USER_MODEL = "users.CyberValleyUser"
 class SimpleJWTSettingsDict(TypedDict):
     USER_ID_FIELD: str
     ACCESS_TOKEN_LIFETIME: timedelta
+    REFRESH_TOKEN_LIFETIME: timedelta
     AUTH_COOKIE: str
+    REFRESH_COOKIE: str
     AUTH_COOKIE_DOMAIN: str | None
     AUTH_COOKIE_SECURE: bool
     AUTH_COOKIE_HTTP_ONLY: bool
@@ -163,7 +166,9 @@ class SimpleJWTSettingsDict(TypedDict):
 SIMPLE_JWT: Final[SimpleJWTSettingsDict] = {
     "USER_ID_FIELD": "address",
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "AUTH_COOKIE": "access_token",
+    "REFRESH_COOKIE": "refresh_token",
     "AUTH_COOKIE_DOMAIN": None,
     "AUTH_COOKIE_SECURE": False,
     "AUTH_COOKIE_HTTP_ONLY": True,
@@ -234,3 +239,15 @@ CONTRACTS_INFO: Final = (
         / "CyberValleyEventManager.json"
     ),
 )
+
+IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])
+
+ACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
