@@ -13,11 +13,8 @@ import { getBytes32FromMultiash } from "./multihash";
 const eventManagerAddress = "0x1";
 const eventTicketAddress = "0x2";
 
-export async function signMessage(
-  address: string,
-  message: string,
-): Promise<string> {
-  const { provider, signer } = await getContext();
+export async function signMessage(message: string): Promise<string> {
+  const { signer } = await getContext();
   return await signer.signMessage(message);
 }
 
@@ -30,7 +27,7 @@ export async function createPlace(
   metaCID: string,
 ): Promise<void> {
   const multihash = getBytes32FromMultiash(metaCID);
-  const { provider, eventManager } = await getContext();
+  const { eventManager } = await getContext();
   await eventManager.createEventPlace(
     maxTickets,
     minTickets,
@@ -51,7 +48,7 @@ export async function submitEventRequest(
   metaCID: string,
 ): Promise<void> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
-  const { provider, eventManager } = await getContext();
+  const { eventManager } = await getContext();
   await eventManager.submitEventRequest(
     eventPlaceId,
     ticketPrice,
@@ -72,7 +69,7 @@ export async function updateEvent(
   metaCID: string,
 ): Promise<void> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
-  const { provider, eventManager } = await getContext();
+  const { eventManager } = await getContext();
   await eventManager.updateEvent(
     eventId,
     eventPlaceId,
@@ -86,12 +83,12 @@ export async function updateEvent(
 }
 
 export async function approveEvent(eventId: BigNumberish): Promise<void> {
-  const { provider, eventManager } = await getContext();
+  const { eventManager } = await getContext();
   await eventManager.approveEvent(eventId);
 }
 
 export async function declineEvent(eventId: BigNumberish): Promise<void> {
-  const { provider, eventManager } = await getContext();
+  const { eventManager } = await getContext();
   await eventManager.declineEvent(eventId);
 }
 
@@ -100,13 +97,13 @@ export async function mintTicket(
   eventId: BigNumberish,
   socialsCID: string,
 ): Promise<void> {
-  const { provider, eventManager } = await getContext();
+  const { eventManager } = await getContext();
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
   await eventManager.mintTicket(eventId, digest, hashFunction, size);
 }
 
 export async function redeemTicket(ticketId: BigNumberish): Promise<void> {
-  const { provider, eventTicket } = await getContext();
+  const { eventTicket } = await getContext();
   await eventTicket.redeemTicket(ticketId);
 }
 
