@@ -8,8 +8,6 @@ from django.middleware import csrf
 from drf_spectacular.utils import (
     extend_schema,
 )
-from eth_account import Account
-from eth_account.messages import encode_defunct
 from rest_framework import exceptions
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated
@@ -17,9 +15,9 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from web3 import Web3
 
-from .serializers import SIWEModel, SIWEModelSerializer
+from .serializers import SIWEModelSerializer
+from .service import verify_signature
 
 User = get_user_model()
 
@@ -153,17 +151,3 @@ def logout(_request: Request) -> Response:
     response.delete_cookie(settings.SIMPLE_JWT["AUTH_COOKIE"])
     response.delete_cookie(settings.SIMPLE_JWT["REFRESH_COOKIE"])
     return response
-
-
-def verify_signature(data: SIWEModel) -> bool:
-    message_hash = encode_defunct(text=data.message)
-    try:
-        recovered_address = Account.recover_message(
-            message_hash, signature=data.signature
-        )
-        recovered_address = Web3.to_checksum_address(recovered_address)
-        if data.address.lower() == recovered_address.lower():
-            return True
-    except Exception as e:
-        print(f"Signature verification error: {e}")
-    return False
