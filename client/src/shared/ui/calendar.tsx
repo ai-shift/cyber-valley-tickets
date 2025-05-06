@@ -14,10 +14,7 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn(
-        "p-3 bg-[#001417] border-2 border-secondary rounded",
-        className,
-      )}
+      className={cn("p-3 bg-[#001417] border-2 border-secondary", className)}
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
         month: "flex flex-col gap-4",
@@ -26,13 +23,13 @@ function Calendar({
         nav: "flex items-center gap-5",
         nav_button: cn(
           buttonVariants({ clipping: "noclip" }),
-          "size-12 bg-transparent hover:opacity-100 rounded",
+          "size-12 bg-transparent hover:opacity-100",
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-x-1",
         head_row: "flex",
-        head_cell: "text-muted-foreground rounded-md w-12 font-normal text-xl",
+        head_cell: "text-muted-foreground rounded-md w-10 font-normal text-xl",
         row: "flex w-full mt-2",
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-range-end)]:rounded-r-md",
@@ -42,7 +39,7 @@ function Calendar({
         ),
         day: cn(
           buttonVariants({ variant: "ghost", clipping: "noclip" }),
-          "size-12 text-xl p-0 font-normal aria-selected:opacity-100 border-none rounded-sm disabled:opacity-20",
+          "size-10 text-xl p-0 font-normal aria-selected:opacity-100 border-none disabled:opacity-20",
         ),
         day_range_start:
           "day-range-start aria-selected:bg-primary aria-selected:text-primary-foreground",

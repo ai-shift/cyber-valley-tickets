@@ -17,6 +17,8 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   const navigate = useNavigate();
   const { setTicketOrder } = useOrderStore();
 
+  if (event.status !== "approved") return null;
+
   const ticket = user.tickets.find((ticket) => ticket.eventId === event.id);
   const hasPassed = isEventPassed(
     event.startDateTimestamp / 1000,
