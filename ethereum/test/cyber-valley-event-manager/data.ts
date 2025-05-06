@@ -7,6 +7,12 @@ import type {
   UpdateEventPlaceArgs,
 } from "./types";
 
+const multihash = {
+  digest: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  hashFunction: 18,
+  size: 32,
+};
+
 export const devTeamPercentage = 10;
 export const masterPercentage = 50;
 export const eventRequestSubmitionPrice = BigInt(100);
@@ -14,7 +20,9 @@ export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   maxTickets: 100,
   minTickets: 50,
   minPrice: 20,
+  daysBeforeCancel: 1,
   minDays: 1,
+  ...multihash,
 };
 
 export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
@@ -22,15 +30,17 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   maxTickets: 150,
   minTickets: 20,
   minPrice: 30,
+  daysBeforeCancel: 1,
   minDays: 2,
+  ...multihash,
 };
 
 export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
   eventPlaceId: defaultUpdateEventPlaceRequest.eventPlaceId,
   ticketPrice: defaultCreateEventPlaceRequest.minPrice,
   startDate: timestamp(5),
-  cancelDate: timestamp(1),
   daysAmount: defaultCreateEventPlaceRequest.minDays,
+  ...multihash,
 };
 
 export const defaultCloseEventArgs: CloseEventArgs = {

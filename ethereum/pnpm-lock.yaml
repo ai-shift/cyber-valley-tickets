@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@openzeppelin/contracts':
-        specifier: ^5.3.0
-        version: 5.3.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -36,6 +32,9 @@ importers:
       '@nomicfoundation/hardhat-toolbox':
         specifier: ^5.0.0
         version: 5.0.0(uiltj4bguvexktol2kab7tzou4)
+      '@openzeppelin/contracts':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@typechain/ethers-v6':
         specifier: ^0.5.1
         version: 0.5.1(ethers@6.13.5)(typechain@8.3.2(typescript@5.8.3))(typescript@5.8.3)
@@ -66,6 +65,9 @@ importers:
       typechain:
         specifier: ^8.3.2
         version: 8.3.2(typescript@5.8.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
 packages:
 

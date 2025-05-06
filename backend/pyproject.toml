@@ -6,12 +6,14 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "django-cors-headers>=4.7.0",
+    "django-redis>=5.4.0",
     "django-rest-framework>=0.1.0",
     "djangorestframework-camel-case>=1.4.2",
     "djangorestframework-simplejwt[crypto]>=5.5.0",
     "drf-spectacular>=0.28.0",
     "drf-standardized-errors[openapi]>=0.14.1",
     "eth-account>=0.13.7",
+    "ipfshttpclient>=0.7.0",
     "pydantic>=2.11.3",
     "pyshen",
     "returns[compatible-mypy]>=0.25.0",
@@ -124,7 +126,7 @@ untyped_calls_exclude = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["telebot.*", "telegramify_markdown.*"]
+module = ["ipfshttpclient.*"]
 follow_untyped_imports = true
 
 [mypy.plugins]

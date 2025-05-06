@@ -5,15 +5,16 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0002_cybervalleyuser_role'),
+        ("users", "0002_cybervalleyuser_role"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='cybervalleyuser',
-            name='address',
-            field=cyber_valley.users.models.AddressField(max_length=42, primary_key=True, serialize=False),
+            model_name="cybervalleyuser",
+            name="address",
+            field=cyber_valley.users.models.AddressField(
+                max_length=42, primary_key=True, serialize=False
+            ),
         ),
     ]

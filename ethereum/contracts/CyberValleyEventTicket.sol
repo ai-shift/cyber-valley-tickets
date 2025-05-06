@@ -59,9 +59,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         _;
     }
 
-    function setEventManagerAddress(
-        address _eventManagerAddress
-    ) external {
+    function setEventManagerAddress(address _eventManagerAddress) external {
         require(
             _eventManagerAddress != address(0),
             "Event manager address cannot be zero"

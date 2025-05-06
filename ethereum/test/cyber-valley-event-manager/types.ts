@@ -8,31 +8,43 @@ export type EventPlaceUpdatedEvent = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type EventUpdatedEvent = {
   id: BigNumberish;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type NewEventPlaceAvailableEvent = {
   eventPlaceId: BigNumberish;
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type NewEventRequestEvent = {
   creator: string;
   id: BigNumberish;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 export type RoleAdminChangedEvent = {
   role: string;
@@ -51,21 +63,29 @@ export type RoleRevokedEvent = {
 };
 
 // Struct types
+export type Multihash = {
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
+};
+
 export type EventPlace = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  meta: Multihash;
 };
 
 export type Event = {
   creator: string;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
   status: BigNumberish;
+  meta: Multihash;
 };
 
 // Method argument types
@@ -81,24 +101,32 @@ export type CreateEventPlaceArgs = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type SubmitEventRequestArgs = {
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type UpdateEventArgs = {
   eventId: BigNumberish;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
-  cancelDate: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type UpdateEventPlaceArgs = {
@@ -106,7 +134,11 @@ export type UpdateEventPlaceArgs = {
   maxTickets: BigNumberish;
   minTickets: BigNumberish;
   minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
 };
 
 export type CloseEventArgs = {
@@ -134,7 +166,16 @@ export const declineEventArgsToArray = (
 export const createEventPlaceArgsToArray = (
   args: CreateEventPlaceArgs,
 ): Parameters<CyberValleyEventManager["createEventPlace"]> => {
-  return [args.maxTickets, args.minTickets, args.minPrice, args.minDays];
+  return [
+    args.maxTickets,
+    args.minTickets,
+    args.minPrice,
+    args.daysBeforeCancel,
+    args.minDays,
+    args.digest,
+    args.hashFunction,
+    args.size,
+  ];
 };
 
 export const submitEventRequestArgsToArray = (
@@ -143,9 +184,11 @@ export const submitEventRequestArgsToArray = (
   return [
     args.eventPlaceId,
     args.ticketPrice,
-    args.cancelDate,
     args.startDate,
     args.daysAmount,
+    args.digest,
+    args.hashFunction,
+    args.size,
   ];
 };
 
@@ -156,9 +199,11 @@ export const updateEventArgsToArray = (
     args.eventId,
     args.eventPlaceId,
     args.ticketPrice,
-    args.cancelDate,
     args.startDate,
     args.daysAmount,
+    args.digest,
+    args.hashFunction,
+    args.size,
   ];
 };
 
@@ -170,7 +215,11 @@ export const updateEventPlaceArgsToArray = (
     args.maxTickets,
     args.minTickets,
     args.minPrice,
+    args.daysBeforeCancel,
     args.minDays,
+    args.digest,
+    args.hashFunction,
+    args.size,
   ];
 };
 

@@ -1,13 +1,20 @@
+import secrets
+from dataclasses import dataclass
 from datetime import UTC, datetime
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.middleware import csrf
+from drf_spectacular.utils import (
+    extend_schema,
+)
 from eth_account import Account
 from eth_account.messages import encode_defunct
-from pydantic import BaseModel, Field, ValidationError
-from rest_framework import exceptions
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework import exceptions, serializers
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -17,27 +24,44 @@ from web3 import Web3
 User = get_user_model()
 
 
-class Web3LoginModel(BaseModel):
-    address: str = Field(
-        description="User's externally owned account address",
-        min_length=42,
-        max_length=42,
+@dataclass
+class Web3LoginModel:
+    address: str
+    signature: str
+    message: str
+    nonce: str
+
+
+class Web3LoginModelSerializer(serializers.Serializer[Web3LoginModel]):
+    address = serializers.CharField(
+        min_length=42, max_length=42, help_text="Address of the user's EOA"
     )
-    signature: str = Field(description="Message signed with user's private key")
-    message: str = Field(description="Message that is signed")
+    signature = serializers.CharField(
+        help_text="Message signed with user's private key"
+    )
+    message = serializers.CharField(help_text="Original message")
+    nonce = serializers.CharField(help_text="Nonce value retrieved from the server")
+
+    def create(self, validated_data: dict[str, Any]) -> Web3LoginModel:
+        return Web3LoginModel(**validated_data)
 
 
-# FIXME: Add request / response OpenAPI schema
+@extend_schema(
+    request=Web3LoginModelSerializer,
+    responses={(200, "text/html"): str, (204, "applicaiton/json"): None},
+)
 @api_view(["POST", "GET"])
 @renderer_classes([JSONRenderer, TemplateHTMLRenderer])
 def login(request: Request) -> Response:
     if request.method == "GET":
         return Response(template_name="login_ethereum.html")
 
-    try:
-        data = Web3LoginModel.model_validate(request.data)
-    except ValidationError as e:
-        raise exceptions.ParseError from e
+    data = Web3LoginModelSerializer(data=request.data)
+    data.is_valid(raise_exception=True)
+    data = data.save()
+
+    if not cache.delete(data.nonce):
+        return Response("Nonce expired or invalid", status=400)
 
     if not verify_signature(data):
         raise exceptions.AuthenticationFailed
@@ -62,8 +86,94 @@ def login(request: Request) -> Response:
         httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
         samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
     )
+    response.set_cookie(
+        key=settings.SIMPLE_JWT["REFRESH_COOKIE"],
+        value=str(token),
+        expires=datetime.now(tz=UTC) + settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
+        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+
     csrf.get_token(request)
 
+    return response
+
+
+@api_view(["GET"])
+def refresh(request: Request) -> Response:
+    cookie_name = settings.SIMPLE_JWT["AUTH_COOKIE"]
+    raw_token = request.COOKIES.get(cookie_name)
+    if not raw_token:
+        return Response(
+            f"Refresh token cookie ({cookie_name}) was not provided", status=400
+        )
+
+    # Should be ok because used the same in the original source code
+    refresh = RefreshToken(raw_token)  # type: ignore[arg-type]
+    address = refresh.payload.get("address", None)
+    try:
+        User.objects.get(address=address)
+    except User.DoesNotExist:
+        return Response(status=404)
+
+    refresh.set_jti()
+    refresh.set_exp()
+    refresh.set_iat()
+    refresh.outstand()
+
+    response = Response(
+        status=204,
+    )
+
+    response.set_cookie(
+        key=settings.SIMPLE_JWT["AUTH_COOKIE"],
+        value=str(refresh.access_token),
+        expires=datetime.now(tz=UTC) + settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+    response.set_cookie(
+        key=settings.SIMPLE_JWT["REFRESH_COOKIE"],
+        value=str(refresh),
+        expires=refresh.payload["exp"],
+        secure=settings.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
+        httponly=settings.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
+        samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],
+    )
+
+    csrf.get_token(request)
+
+    return response
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def verify(_request: Request) -> Response:
+    return Response(status=200)
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {"nonce": {"type": "string"}},
+        }
+    }
+)
+@api_view(["GET"])
+def nonce(_request: Request) -> Response:
+    nonce = secrets.token_hex(16)
+    cache.set(nonce, "nonce", timeout=10)
+    return Response({"nonce": nonce})
+
+
+@api_view(["GET"])
+def logout(_request: Request) -> Response:
+    response = Response(status=200)
+    response.delete_cookie(settings.SIMPLE_JWT["AUTH_COOKIE"])
+    response.delete_cookie(settings.SIMPLE_JWT["REFRESH_COOKIE"])
     return response
 
 
