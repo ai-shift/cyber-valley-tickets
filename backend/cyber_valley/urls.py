@@ -26,7 +26,7 @@ from .events.views import (
     upload_place_meta_to_ipfs,
 )
 from .notifications.views import NotificationViewSet
-from .users.views import CurrentUserViewSet
+from .users.views import CurrentUserViewSet, upload_user_socials_to_ipfs
 from .web3_auth.views import login, logout, nonce, refresh, verify
 
 router = routers.DefaultRouter()
@@ -40,6 +40,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/ipfs/events/meta", upload_event_meta_to_ipfs, name="ipfs-events"),
     path("api/ipfs/places/meta", upload_place_meta_to_ipfs, name="ipfs-events"),
+    path("api/ipfs/users/socials", upload_user_socials_to_ipfs, name="ipfs-socials"),
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/auth/web3/nonce/", nonce, name="web3_nonce"),
     path("api/auth/verify", verify, name="jwt_verify"),

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from cyber_valley.events.serializers import TicketSerializer
 
-from .models import CyberValleyUser
+from .models import CyberValleyUser, UserSocials
 
 
 class CurrentUserSerializer(serializers.ModelSerializer[CyberValleyUser]):
@@ -12,3 +12,9 @@ class CurrentUserSerializer(serializers.ModelSerializer[CyberValleyUser]):
         model = CyberValleyUser
         fields = ("address", "role", "tickets")
         read_only_fields = fields
+
+
+class UploadSocialsSerializer(serializers.ModelSerializer[UserSocials]):
+    class Meta:
+        model = UserSocials
+        fields = ("network", "value")
