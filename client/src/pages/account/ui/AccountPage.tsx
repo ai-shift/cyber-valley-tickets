@@ -1,12 +1,18 @@
-import { useAuth } from "@/app/providers/authProvider/hooks/useAuth";
+import { useRefreshSlice } from "@/app/providers";
 import { useUser } from "@/entities/user";
+import { apiClient } from "@/shared/api";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
 
 export const AccountPage: React.FC = () => {
   const { user } = useUser();
-  const { logout } = useAuth();
+  const { setHasJWT } = useRefreshSlice();
+
+  const logout = async () => {
+    await apiClient.GET("/api/auth/logout");
+    setHasJWT(false);
+  };
 
   if (!user) return <p>Feels bad, man</p>;
 
