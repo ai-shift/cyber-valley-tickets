@@ -1,7 +1,7 @@
 import { notificationQueries } from "@/entities/notification";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { useQuery } from "@tanstack/react-query";
 import { NotificationCard } from "./NotificationCard";
-import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 
 export const NotificationsList: React.FC = () => {
   const {

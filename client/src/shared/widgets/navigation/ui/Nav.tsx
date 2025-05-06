@@ -1,8 +1,8 @@
 import { useUser } from "@/entities/user";
 
+import { cn } from "@/shared/lib/utils";
 import { routes } from "../model/routes";
 import { NavLink } from "./NavLink";
-import { cn } from "@/shared/lib/utils";
 
 type NavProps = {
   className?: string;
