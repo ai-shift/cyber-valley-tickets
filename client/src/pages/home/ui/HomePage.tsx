@@ -2,6 +2,8 @@ import { Link } from "react-router";
 
 import { EventsList, upcomingFilter } from "@/features/events-list/";
 import { NotificationIcon } from "@/features/notifications";
+import { mintERC20 } from "@/shared/lib/web3";
+import { Button } from "@/shared/ui/button";
 
 export const HomePage: React.FC = () => {
   return (
@@ -22,6 +24,15 @@ export const HomePage: React.FC = () => {
         </Link>
         <EventsList isGrid limit={3} filterFn={upcomingFilter} />
       </section>
+      <Button
+        onClick={() =>
+          mintERC20(50)
+            .then(() => alert("Minted 50 tokens"))
+            .catch(console.error)
+        }
+      >
+        Mint ERC20
+      </Button>
     </div>
   );
 };

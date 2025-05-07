@@ -2,3 +2,4 @@
 /ipfs_staging/
 /ipfs_data/
 /.dir-locals.el
+/ethereum/ignition/deployments
