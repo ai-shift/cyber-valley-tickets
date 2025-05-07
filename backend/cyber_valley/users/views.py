@@ -33,7 +33,7 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
 @extend_schema(
     request=UploadSocialsSerializer,
     responses={
-        204: {
+        200: {
             "type": "object",
             "properties": {"cid": {"type": "string"}},
             "description": "IPFS CID of stored data",
