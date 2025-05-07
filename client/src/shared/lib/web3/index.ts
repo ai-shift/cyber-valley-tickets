@@ -113,14 +113,23 @@ export async function declineEvent(eventId: BigNumberish): Promise<void> {
   await eventManager.declineEvent(eventId);
 }
 
-// TODO: @scipunch add approve call
 export async function mintTicket(
   eventId: BigNumberish,
   socialsCID: string,
 ): Promise<void> {
-  const { eventManager } = await getContext();
+  const { erc20, eventManager, signer } = await getContext();
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
-  console.log("Trying to mint ticket", eventManager, digest);
+  const balance = await erc20.balanceOf(signer);
+  const submitionPrice = getEventSubmitionPrice();
+  if (balance < submitionPrice) {
+    throw `Not enough funds. Balance ${balance}, required: ${submitionPrice}`;
+  }
+  const approveTx = await erc20.approve(
+    await eventManager.getAddress(),
+    submitionPrice,
+  );
+  await approveTx.wait();
+  console.log("Trying to mint ticket", eventManager, approveTx);
   await eventManager.mintTicket(eventId, digest, hashFunction, size);
 }
 
