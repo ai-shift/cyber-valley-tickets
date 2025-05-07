@@ -12,11 +12,11 @@ export const SocialsPage: React.FC = () => {
 
   function handleSubmit(socials: Socials) {
     setSocials(socials);
-    navigate("/purchase");
+    navigate("/purchase", { replace: true });
   }
   return (
     <PageContainer name="Socials">
-      <SocialsForm onSumbit={handleSubmit} />
+      <SocialsForm onSubmit={handleSubmit} />
     </PageContainer>
   );
 };
