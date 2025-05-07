@@ -79,12 +79,20 @@ export const EventForm: React.FC<EventFormProps> = ({
             <FormItem>
               <FormLabel>Event image</FormLabel>
               <FormLabel>
-                <div className="text-center border-2 border-input bg-input/10 p-5 w-full">
-                  <h2 className="text-secondary">Upload image banner</h2>
-                  <p className="text-normal font-normal text-muted-foreground lowercase">
-                    Click to upload image (16:9 ratio recommended)
-                  </p>
-                </div>
+                {field.value ? (
+                  <img
+                    className="w-full aspect-video object-contain"
+                    src={URL.createObjectURL(field.value)}
+                    alt="sd"
+                  />
+                ) : (
+                  <div className="text-center border-2 border-input bg-input/10 p-5 w-full aspect-video flex flex-col justify-center">
+                    <h2 className="text-secondary">Upload image banner</h2>
+                    <p className="text-normal font-normal text-muted-foreground lowercase">
+                      Click to upload image (16:9 ratio recommended)
+                    </p>
+                  </div>
+                )}
               </FormLabel>
               <FormControl>
                 <Input
@@ -99,9 +107,6 @@ export const EventForm: React.FC<EventFormProps> = ({
                   }}
                 />
               </FormControl>
-              {field.value && (
-                <img src={URL.createObjectURL(field.value)} alt="sd" />
-              )}
               <FormMessage />
             </FormItem>
           )}
