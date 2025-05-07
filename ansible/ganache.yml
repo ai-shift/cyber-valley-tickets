@@ -16,7 +16,10 @@
         image: docker.io/trufflesuite/ganache-cli
         state: started
         detach: true
+        restart_policy: always
         exposed_ports:
           - 8545
         ports:
           - 8545:8545
+        command:
+          - --debug
