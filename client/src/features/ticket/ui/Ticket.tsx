@@ -20,10 +20,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   if (event.status !== "approved") return null;
 
   const ticket = user.tickets.find((ticket) => ticket.eventId === event.id);
-  const hasPassed = isEventPassed(
-    event.startDateTimestamp / 1000,
-    event.daysAmount,
-  );
+  const hasPassed = isEventPassed(event.startDateTimestamp, event.daysAmount);
 
   function initOrder() {
     setTicketOrder({

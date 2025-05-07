@@ -14,8 +14,8 @@ export const extractRanges = (events: Event[], eventId?: number) =>
     const daysInMs = curr.daysAmount * 1000 * 60 * 60 * 24;
 
     acc.push({
-      from: fromUnixTime(curr.startDateTimestamp / 1000),
-      to: fromUnixTime((curr.startDateTimestamp + daysInMs) / 1000),
+      from: fromUnixTime(curr.startDateTimestamp),
+      to: fromUnixTime(curr.startDateTimestamp + daysInMs),
     });
     return acc;
   }, []);
