@@ -1,0 +1,6 @@
+---
+project_name: cyberpass
+app_name: cyberpass-web-app
+organization_name: cyber-pass
+repository_name: web-app
+ssh_pkey_name: id_ed25519
