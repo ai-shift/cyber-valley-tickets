@@ -22,4 +22,4 @@
         ports:
           - 8545:8545
         command:
-          - --debug
+          - --verbose
