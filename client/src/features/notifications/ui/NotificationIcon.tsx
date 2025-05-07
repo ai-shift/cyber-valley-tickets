@@ -5,7 +5,9 @@ import { Link } from "react-router";
 export const NotificationIcon: React.FC = () => {
   const { data: notifications } = useQuery(notificationQueries.list());
 
-  const hasNotifications = notifications && notifications?.length > 0;
+  const unreadNotifications = notifications?.filter((notif) => notif.seenAt);
+  const hasUnreadNotifications =
+    unreadNotifications && unreadNotifications.length > 0;
 
   return (
     <Link
@@ -17,9 +19,9 @@ export const NotificationIcon: React.FC = () => {
         src="/icons/nnotification_3.svg"
         alt="notification"
       />
-      {hasNotifications && (
+      {hasUnreadNotifications && (
         <p className="absolute flex items-center justify-center h-6 w-6 bg-red-500 text-white text-lg rounded-full text-center top-0 right-0 translate-x-3 -translate-y-2">
-          {notifications.length}
+          {unreadNotifications.length}
         </p>
       )}
     </Link>
