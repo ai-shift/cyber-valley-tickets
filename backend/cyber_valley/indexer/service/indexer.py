@@ -41,12 +41,17 @@ class NodeListenerStoppedError(Exception):
     pass
 
 
-def gather_events(
-    queue: Queue[LogReceipt],
+@retry(
+    wait=wait_fixed(1),
+    before=before_log(log, logging.INFO),
+    after=after_log(log, logging.ERROR),
+)
+def index_events(
     eth_node_host: str,
     contracts: dict[ChecksumAddress, type[Contract]],
 ) -> None:
     provider = WebSocketProvider(eth_node_host)
+    queue: Queue[LogReceipt] = Queue()
     listener_loop = pyshen.aext.create_event_loop_thread()
     listener_fut = pyshen.aext.run_coro_in_thread(
         arun_listeners(provider, queue, contracts.keys()),
@@ -89,7 +94,6 @@ async def arun_listeners(
     wait=wait_fixed(5),
     before=before_log(log, logging.INFO),
     after=after_log(log, logging.ERROR),
-    reraise=True,
 )
 async def arun_listener(
     provider: WebSocketProvider, queue: Queue[LogReceipt], contract_address: str
