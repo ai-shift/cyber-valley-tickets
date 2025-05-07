@@ -5,6 +5,7 @@ import { EventCard } from "./EventCard";
 
 import type { User } from "@/entities/user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
+import { Loader } from "@/shared/ui/Loader";
 
 type EventsListProps = {
   limit?: number;
@@ -20,7 +21,7 @@ export const EventsList: React.FC<EventsListProps> = ({
   const { data: events, error, isFetching } = useQuery(eventQueries.list());
   const { user } = useUser();
 
-  if (isFetching) return <p>Loading</p>;
+  if (isFetching) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
   if (!(events && user)) return <p>No data for some reason</p>;
 

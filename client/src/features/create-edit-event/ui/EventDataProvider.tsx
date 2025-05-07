@@ -2,6 +2,7 @@ import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { useEventsAndPlaces } from "../api/useEventsAndPlaces";
+import { Loader } from "@/shared/ui/Loader";
 
 type EventDataProviderProps = {
   children: (data: {
@@ -15,7 +16,7 @@ export const EventDataProvider: React.FC<EventDataProviderProps> = ({
 }) => {
   const { events, places, isLoading, errors } = useEventsAndPlaces();
 
-  if (isLoading) return <p>Loading…</p>;
+  if (isLoading) return <Loader />;
   if (errors.length > 0) return <ErrorMessage errors={errors} />;
   if (!events || !places) return <p>Internal error. Try again later.</p>;
 
