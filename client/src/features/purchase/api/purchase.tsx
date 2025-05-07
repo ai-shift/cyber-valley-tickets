@@ -63,6 +63,7 @@ const purchaseEvent = async (order: Order) => {
   formData.set("title", title);
   formData.set("description", description);
   formData.set("cover", image);
+  formData.set("socials_cid", socialsData.cid);
 
   const { data: eventData } = await apiClient.PUT("/api/ipfs/events/meta", {
     //@ts-ignore
