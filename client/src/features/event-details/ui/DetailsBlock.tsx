@@ -1,22 +1,32 @@
-import type { ReactNode } from "react";
+import { cn } from "@/shared/lib/utils";
+import { getCurrencySymbol } from "@/shared/lib/web3";
 
 type DetailsBlockProps = {
-  icon: ReactNode;
+  icon: string;
   title: string;
   information: string;
+  className?: string;
 };
 export const DetailsBlock: React.FC<DetailsBlockProps> = ({
   icon,
   title,
   information,
+  className,
 }) => {
   return (
-    <div className="py-2 px-5 flex-1">
+    <div
+      className={cn(
+        "border-secondary border-[1px] px-5 py-3 flex flex-col gap-4",
+        className,
+      )}
+    >
       <div className="flex justify-between itrems-center">
-        {icon}
-        <p>{title}</p>
+        <img className="h-5" src={icon} alt="title" />
+        <p className="text-muted-foreground">{title}</p>
       </div>
-      <p>{information}</p>
+      <p className="text-muted">
+        {information} {title === "Price" && getCurrencySymbol()}
+      </p>
     </div>
   );
 };

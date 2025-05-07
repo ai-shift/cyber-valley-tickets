@@ -20,5 +20,11 @@ export const StatusBage: React.FC<StatusBageProps> = ({ status }) => {
 
   const [bgColor, text] = results[status];
 
-  return <p className={`px-3 py-1 ${bgColor}`}>{text}</p>;
+  return (
+    <p
+      className={`px-3 py-1 text-black font-semibold rounded-full self-start ${bgColor}`}
+    >
+      {text}
+    </p>
+  );
 };

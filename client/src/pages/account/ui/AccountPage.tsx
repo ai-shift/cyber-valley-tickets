@@ -27,8 +27,16 @@ export const AccountPage: React.FC = () => {
           />
           <p>{user.address.slice(0, 16)}...</p>
         </div>
-        <Link to="/account/my-events">My events</Link>
-        <Button onClick={logout}>Logout</Button>
+        <div className="w-1/2 flex flex-col h-80 justify-between">
+          <Link to="/account/my-events" className="w-full block">
+            <Button size="lg" className="block w-full" variant="secondary">
+              My events
+            </Button>
+          </Link>
+          <Button filling="outline" size="lg" onClick={logout}>
+            Logout
+          </Button>
+        </div>
       </div>
     </PageContainer>
   );

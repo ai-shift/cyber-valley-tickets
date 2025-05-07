@@ -19,7 +19,7 @@ export const PageContainer: React.FC<PageContainerProps> = ({
 
   return (
     <div className="flex flex-col items-stretch justify-start">
-      <header className="flex justify-start items-center gap-5 pt-2 pb-5">
+      <header className="flex justify-start items-center gap-5 py-4 px-2">
         <button className="cursor-pointer" type="button" onClick={goBack}>
           <ArrowLeft size={30} />
         </button>

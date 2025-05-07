@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui/button";
 
 export const HomePage: React.FC = () => {
   return (
-    <div className="px-4">
+    <div className="px-6">
       <h1 className="text-shadow-md text-shadow-primary text-primary text-5xl py-4">
         Cyber Valley
       </h1>
