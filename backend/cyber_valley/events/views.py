@@ -97,6 +97,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
             "title": meta.title,
             "description": meta.description,
             "cover": cover_hash,
+            "socialsCid": meta.socials_cid
         }
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash}, status=204)

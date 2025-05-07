@@ -3866,6 +3866,9 @@
                     },
                     {
                         "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateSocialsCidErrorComponent"
                     }
                 ],
                 "discriminator": {
@@ -3874,7 +3877,8 @@
                         "non_field_errors": "#/components/schemas/ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent",
                         "cover": "#/components/schemas/ApiIpfsEventsMetaUpdateCoverErrorComponent",
                         "title": "#/components/schemas/ApiIpfsEventsMetaUpdateTitleErrorComponent",
-                        "description": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent"
+                        "description": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent",
+                        "socials_cid": "#/components/schemas/ApiIpfsEventsMetaUpdateSocialsCidErrorComponent"
                     }
                 }
             },
@@ -3912,6 +3916,38 @@
                         ],
                         "type": "string",
                         "description": "* `invalid` - invalid\n* `null` - null"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsEventsMetaUpdateSocialsCidErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "socials_cid"
+                        ],
+                        "type": "string",
+                        "description": "* `socials_cid` - socials_cid"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
                     },
                     "detail": {
                         "type": "string"
@@ -4488,13 +4524,13 @@
                         "type": "integer",
                         "nullable": true
                     },
-                    "cancelDateTimestamp": {
-                        "type": "integer",
-                        "nullable": true
-                    },
                     "ticketsRequiredUntilCancel": {
                         "type": "integer",
                         "readOnly": true,
+                        "nullable": true
+                    },
+                    "cancelDateTimestamp": {
+                        "type": "integer",
                         "nullable": true
                     }
                 },
@@ -5074,10 +5110,11 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "cancelDateTimestamp": {
-                        "type": "integer"
-                    },
                     "ticketsRequiredUntilCancel": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "cancelDateTimestamp": {
                         "type": "integer",
                         "readOnly": true
                     }
@@ -5142,11 +5179,16 @@
                     "description": {
                         "type": "string",
                         "minLength": 1
+                    },
+                    "socialsCid": {
+                        "type": "string",
+                        "minLength": 1
                     }
                 },
                 "required": [
                     "cover",
                     "description",
+                    "socialsCid",
                     "title"
                 ]
             },
