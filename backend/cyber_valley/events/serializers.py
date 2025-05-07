@@ -62,7 +62,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
         )
 
     def get_start_date_timestamp(self, obj: Event) -> int:
-        return int(obj.start_date.timestamp()) * 1000
+        return int(obj.start_date.timestamp())
 
 
 @extend_schema_serializer(
@@ -91,20 +91,15 @@ class StaffEventSerializer(EventSerializer):
         data["tickets_bought"] = obj.tickets_bought
         data["cancel_date_timestamp"] = (
             obj.created_at - timedelta(days=obj.place.days_before_cancel)
-        ).timestamp() * 1000
+        ).timestamp()
         return data
 
     def get_tickets_required_until_cancel(self, obj: Event) -> int:
         return max(obj.tickets_bought - obj.place.min_tickets, 0)
 
     def get_cancel_date_timestamp(self, obj: Event) -> int:
-        return (
-            int(
-                (
-                    obj.start_date - timedelta(days=obj.place.days_before_cancel)
-                ).timestamp()
-            )
-            * 1000
+        return int(
+            (obj.start_date - timedelta(days=obj.place.days_before_cancel)).timestamp()
         )
 
 

@@ -6,12 +6,20 @@ import {
 } from "ethers";
 import type { CyberValleyEventManager } from "../../../../typechain-types/contracts/CyberValleyEventManager";
 import type { CyberValleyEventTicket } from "../../../../typechain-types/contracts/CyberValleyEventTicket";
+import type { SimpleERC20Xylose } from "../../../../typechain-types/contracts/mocks/SimpleERC20Xylose";
 import { CyberValleyEventManager__factory } from "../../../../typechain-types/factories/contracts/CyberValleyEventManager__factory";
 import { CyberValleyEventTicket__factory } from "../../../../typechain-types/factories/contracts/CyberValleyEventTicket__factory";
+import { SimpleERC20Xylose__factory } from "../../../../typechain-types/factories/contracts/mocks/SimpleERC20Xylose__factory";
 import { getBytes32FromMultiash } from "./multihash";
 
-const eventManagerAddress = "0x1";
-const eventTicketAddress = "0x2";
+const erc20Address = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
+const eventManagerAddress = "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853";
+const eventTicketAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
+
+export async function mintERC20(amount: BigNumberish): Promise<void> {
+  const { erc20 } = await getContext();
+  await erc20.mint(amount);
+}
 
 export function getCurrencySymbol(): string {
   return "₮";
@@ -105,13 +113,23 @@ export async function declineEvent(eventId: BigNumberish): Promise<void> {
   await eventManager.declineEvent(eventId);
 }
 
-// TODO: @scipunch add approve call
 export async function mintTicket(
   eventId: BigNumberish,
   socialsCID: string,
 ): Promise<void> {
-  const { eventManager } = await getContext();
+  const { erc20, eventManager, signer } = await getContext();
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
+  const balance = await erc20.balanceOf(signer);
+  const submitionPrice = getEventSubmitionPrice();
+  if (balance < submitionPrice) {
+    throw `Not enough funds. Balance ${balance}, required: ${submitionPrice}`;
+  }
+  const approveTx = await erc20.approve(
+    await eventManager.getAddress(),
+    submitionPrice,
+  );
+  await approveTx.wait();
+  console.log("Trying to mint ticket", eventManager, approveTx);
   await eventManager.mintTicket(eventId, digest, hashFunction, size);
 }
 
@@ -125,38 +143,27 @@ async function getContext(): Promise<{
   signer: Signer;
   eventManager: CyberValleyEventManager;
   eventTicket: CyberValleyEventTicket;
+  erc20: SimpleERC20Xylose;
 }> {
   const provider = await getProvider();
   const signer = await provider.getSigner();
-  const eventManager = CyberValleyEventManager__factory.connect(
-    eventManagerAddress,
-    provider,
-  ).connect(signer);
-  const eventTicket = CyberValleyEventTicket__factory.connect(
-    eventTicketAddress,
-    provider,
-  ).connect(signer);
   return {
     provider,
     signer,
-    eventManager,
-    eventTicket,
+    eventManager: CyberValleyEventManager__factory.connect(
+      eventManagerAddress,
+      signer,
+    ),
+    eventTicket: CyberValleyEventTicket__factory.connect(
+      eventTicketAddress,
+      signer,
+    ),
+    erc20: SimpleERC20Xylose__factory.connect(erc20Address, signer),
   };
 }
 
 async function getProvider(): Promise<BrowserProvider> {
-  if (typeof window === "undefined") {
-    throw new Error("Not in a browser environment");
-  }
-
-  if (window.ethereum) {
-    return new ethers.BrowserProvider(window.ethereum);
-  }
-  if (window.coinbaseWallet) {
-    return new ethers.BrowserProvider(window.coinbaseWallet);
-  }
-  // WalletConnect or other fallback (see below)
-  throw new Error(
-    "No wallet found. Please install MetaMask or another compatible wallet.",
+  return new ethers.getDefaultProvider(
+    "https://ce9d-109-93-188-5.ngrok-free.app",
   );
 }
