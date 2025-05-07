@@ -1,0 +1,25 @@
+---
+- hosts: all
+  tasks:
+    - name: "Install packages"
+      ansible.builtin.package: "name={{ item }} state=present"
+      with_items:
+        - podman
+
+    - name: "Pull ganache image"
+      containers.podman.podman_image:
+        name: docker.io/trufflesuite/ganache-cli
+
+    - name: "Start container"
+      containers.podman.podman_container:
+        name: ganche-node
+        image: docker.io/trufflesuite/ganache-cli
+        state: started
+        detach: true
+        restart_policy: always
+        exposed_ports:
+          - 8545
+        ports:
+          - 8545:8545
+        command:
+          - --verbose

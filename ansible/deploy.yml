@@ -1,0 +1,12 @@
+---
+- name: Deploy Cyber Valley Tickets
+  hosts: all
+  become: true
+  vars_files:
+    - vars/common.yml
+
+  tasks:
+    - name: Installing podman
+      ansible.builtin.package:
+        name: "podman"
+        state: present

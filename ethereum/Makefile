@@ -8,8 +8,8 @@ compile:
 tests:
 	pnpm exec hardhat test --typecheck
 
-deploy:
-	pnpm exec truffle migrate
+deploy-test:
+	pnpm exec hardhat run scripts/deploy.js --network localhost
 
 check:
 	pnpm exec biome check --write test/
