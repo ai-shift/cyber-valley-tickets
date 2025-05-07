@@ -12,7 +12,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ route, role }) => {
   const { path, title, restrictedTo } = route;
   const { pathname } = useLocation();
 
-  const isCurrent = pathname === path;
+  const isCurrent = path === "/" ? pathname === "/" : pathname.startsWith(path);
   const icon = title.toLowerCase();
 
   const canDisplay = !restrictedTo || restrictedTo.includes(role);
