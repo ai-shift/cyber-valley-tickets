@@ -1,7 +1,7 @@
 import type { EventDto } from "@/entities/event/@x/order";
 
 export type Socials = {
-  type: "telegram" | "instagram" | "discord" | "whatsapp";
+  type: "telegram" | "instagram" | "discord" | "whatsapp" | "";
   contactInfo: string;
 };
 
