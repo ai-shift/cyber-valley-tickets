@@ -4022,6 +4022,37 @@
                     }
                 }
             },
+            "ApiIpfsPlacesMetaUpdateCoverErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "cover"
+                        ],
+                        "type": "string",
+                        "description": "* `cover` - cover"
+                    },
+                    "code": {
+                        "enum": [
+                            "empty",
+                            "invalid",
+                            "no_name",
+                            "null",
+                            "required"
+                        ],
+                        "type": "string",
+                        "description": "* `empty` - empty\n* `invalid` - invalid\n* `no_name` - no_name\n* `null` - null\n* `required` - required"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
             "ApiIpfsPlacesMetaUpdateDescriptionErrorComponent": {
                 "type": "object",
                 "properties": {
@@ -4064,6 +4095,9 @@
                     },
                     {
                         "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateCoverErrorComponent"
                     }
                 ],
                 "discriminator": {
@@ -4071,7 +4105,8 @@
                     "mapping": {
                         "non_field_errors": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent",
                         "title": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent",
-                        "description": "#/components/schemas/ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"
+                        "description": "#/components/schemas/ApiIpfsPlacesMetaUpdateDescriptionErrorComponent",
+                        "cover": "#/components/schemas/ApiIpfsPlacesMetaUpdateCoverErrorComponent"
                     }
                 }
             },
@@ -5203,9 +5238,14 @@
                     "description": {
                         "type": "string",
                         "minLength": 1
+                    },
+                    "cover": {
+                        "type": "string",
+                        "format": "binary"
                     }
                 },
                 "required": [
+                    "cover",
                     "description",
                     "title"
                 ]
