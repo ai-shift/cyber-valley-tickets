@@ -1,4 +1,3 @@
-from django.db import transaction
 import asyncio
 import logging
 from collections.abc import Iterable
@@ -19,7 +18,7 @@ from web3.contract import Contract
 from web3.exceptions import LogTopicError, MismatchedABI
 from web3.types import LogReceipt
 
-from ..models import LastProcessedBlock
+from ..models import LastProcessedBlock, LogProcessingError
 from ._sync import synchronize_event
 from .events import CyberValleyEventManager, CyberValleyEventTicket, SimpleERC20Xylose
 
@@ -65,6 +64,12 @@ def gather_events(
                 log.info("Successfully processed %s", receipt["topics"])
             case Failure(error):
                 log.error("Failed to process %s with %s", receipt["topics"], error)
+                LogProcessingError(
+                    block_number=receipt["blockNumber"],
+                    log_receipt=receipt,
+                    tx_hash=str(receipt["transactionHash"]),
+                    error=repr(error),
+                ).save()
         LastProcessedBlock(block_number=receipt["blockNumber"]).save()
     listener_fut.result()
 
