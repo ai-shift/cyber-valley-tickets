@@ -5,7 +5,7 @@ import { Link } from "react-router";
 export const NotificationIcon: React.FC = () => {
   const { data: notifications } = useQuery(notificationQueries.list());
 
-  const unreadNotifications = notifications?.filter((notif) => notif.seenAt);
+  const unreadNotifications = notifications?.filter((notif) => !notif.seenAt);
   const hasUnreadNotifications =
     unreadNotifications && unreadNotifications.length > 0;
 
