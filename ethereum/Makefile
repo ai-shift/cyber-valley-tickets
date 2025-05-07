@@ -9,7 +9,7 @@ tests:
 	pnpm exec hardhat test --typecheck
 
 deploy-test:
-	pnpm exec hardhat run scripts/deploy.js --network localhost
+	pnpm exec hardhat run scripts/deploy.js --network ser7
 
 check:
 	pnpm exec biome check --write test/

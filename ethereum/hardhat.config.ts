@@ -10,7 +10,10 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       loggingEnabled: false
-    }
+    },
+    ser7: {
+      url: "https://ce9d-109-93-188-5.ngrok-free.app"
+    },
   }
 };
 
