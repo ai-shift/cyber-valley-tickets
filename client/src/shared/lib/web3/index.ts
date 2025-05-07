@@ -10,8 +10,8 @@ import { CyberValleyEventManager__factory } from "../../../../typechain-types/fa
 import { CyberValleyEventTicket__factory } from "../../../../typechain-types/factories/contracts/CyberValleyEventTicket__factory";
 import { getBytes32FromMultiash } from "./multihash";
 
-const eventManagerAddress = "0x1";
-const eventTicketAddress = "0x2";
+const eventManagerAddress = "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853";
+const eventTicketAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
 
 export function getCurrencySymbol(): string {
   return "₮";
@@ -112,6 +112,7 @@ export async function mintTicket(
 ): Promise<void> {
   const { eventManager } = await getContext();
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
+  console.log("Trying to mint ticket", eventManager, digest);
   await eventManager.mintTicket(eventId, digest, hashFunction, size);
 }
 
@@ -128,35 +129,22 @@ async function getContext(): Promise<{
 }> {
   const provider = await getProvider();
   const signer = await provider.getSigner();
-  const eventManager = CyberValleyEventManager__factory.connect(
-    eventManagerAddress,
-    provider,
-  ).connect(signer);
-  const eventTicket = CyberValleyEventTicket__factory.connect(
-    eventTicketAddress,
-    provider,
-  ).connect(signer);
   return {
     provider,
     signer,
-    eventManager,
-    eventTicket,
+    eventManager: CyberValleyEventManager__factory.connect(
+      eventManagerAddress,
+      signer,
+    ),
+    eventTicket: CyberValleyEventTicket__factory.connect(
+      eventTicketAddress,
+      signer,
+    ),
   };
 }
 
 async function getProvider(): Promise<BrowserProvider> {
-  if (typeof window === "undefined") {
-    throw new Error("Not in a browser environment");
-  }
-
-  if (window.ethereum) {
-    return new ethers.BrowserProvider(window.ethereum);
-  }
-  if (window.coinbaseWallet) {
-    return new ethers.BrowserProvider(window.coinbaseWallet);
-  }
-  // WalletConnect or other fallback (see below)
-  throw new Error(
-    "No wallet found. Please install MetaMask or another compatible wallet.",
+  return new ethers.getDefaultProvider(
+    "https://ce9d-109-93-188-5.ngrok-free.app",
   );
 }
