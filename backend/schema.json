@@ -4942,15 +4942,14 @@
                         "readOnly": true,
                         "nullable": true
                     },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
+                    "createdAtTimestamp": {
+                        "type": "integer",
                         "readOnly": true
                     }
                 },
                 "required": [
                     "body",
-                    "createdAt",
+                    "createdAtTimestamp",
                     "id",
                     "seenAt",
                     "title"

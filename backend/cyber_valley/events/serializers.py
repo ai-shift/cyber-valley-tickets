@@ -89,9 +89,6 @@ class StaffEventSerializer(EventSerializer):
     def to_representation(self, obj: Event) -> dict[str, Any]:
         data = super().to_representation(obj)
         data["tickets_bought"] = obj.tickets_bought
-        data["cancel_date_timestamp"] = (
-            obj.created_at - timedelta(days=obj.place.days_before_cancel)
-        ).timestamp()
         return data
 
     def get_tickets_required_until_cancel(self, obj: Event) -> int:
