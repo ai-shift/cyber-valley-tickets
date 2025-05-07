@@ -16,4 +16,12 @@ class LastProcessedBlock(models.Model):
 
     class Meta:
         verbose_name = "Last Processed Block"
-        verbose_name_plural = "Last Processed Block"  # To avoid pluralization in admin
+        verbose_name_plural = "Last Processed Block"
+
+
+class LogProcessingError(models.Model):
+    block_number = models.PositiveIntegerField()
+    log_receipt = models.JSONField()
+    tx_hash = models.TextField()
+    error = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -1,4 +1,10 @@
-import type { Route } from "./link";
+import type { Role } from "@/shared/lib/RBAC";
+
+export type Route = {
+  path: string;
+  title: string;
+  restrictedTo?: Role[];
+};
 
 export const routes: Route[] = [
   {
@@ -11,12 +17,11 @@ export const routes: Route[] = [
     restrictedTo: ["master"],
   },
   {
-    path: "/profile",
-    title: "Profile",
+    path: "/events/create",
+    title: "Create",
   },
   {
-    path: "/events/create",
-    title: "Create event",
-    restrictedTo: ["master", "staff", "creator"],
+    path: "/account",
+    title: "Account",
   },
 ];

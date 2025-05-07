@@ -1,13 +1,10 @@
-import { AppContainer } from "@/shared/ui/AppContainer";
-import { QueryProvider } from "../providers/QueryProvider";
+import { AppContainer } from "@/shared/widgets/layout/AppContainer";
 import { Router } from "../routes/Router";
 
 export const App = () => {
   return (
-    <QueryProvider>
-      <AppContainer>
-        <Router />
-      </AppContainer>
-    </QueryProvider>
+    <AppContainer>
+      <Router />
+    </AppContainer>
   );
 };

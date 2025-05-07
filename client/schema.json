@@ -5,19 +5,1249 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/auth/web3/login/": {
-      "post": {
-        "operationId": "api_auth_web3_login_create",
+    "/api/auth/logout": {
+      "get": {
+        "operationId": "api_auth_logout_retrieve",
         "tags": ["api"],
         "security": [
           {
-            "jwtAuth": []
+            "cookieJWTAuth": []
           },
           {}
         ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthLogoutRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "get": {
+        "operationId": "api_auth_refresh_retrieve",
+        "tags": ["api"],
+        "security": [
+          {
+            "cookieJWTAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthRefreshRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "200": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/auth/verify": {
+      "get": {
+        "operationId": "api_auth_verify_retrieve",
+        "tags": ["api"],
+        "security": [
+          {
+            "cookieJWTAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthVerifyRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "200": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/auth/web3/login/": {
+      "get": {
+        "operationId": "api_auth_web3_login_retrieve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": ["html", "json"]
+            }
+          }
+        ],
+        "tags": ["api"],
+        "security": [
+          {
+            "cookieJWTAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginRetrieveErrorResponse400"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": ""
+          },
+          "204": {
+            "description": "No response body"
+          }
+        }
+      },
+      "post": {
+        "operationId": "api_auth_web3_login_create",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": ["html", "json"]
+            }
+          }
+        ],
+        "tags": ["api"],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Web3LoginModelRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Web3LoginModelRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Web3LoginModelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "cookieJWTAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateErrorResponse400"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": ""
+          },
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/auth/web3/nonce/": {
+      "get": {
+        "operationId": "api_auth_web3_nonce_retrieve",
+        "tags": ["api"],
+        "security": [
+          {
+            "cookieJWTAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAuthWeb3NonceRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nonce": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
           }
         }
       }
@@ -29,10 +1259,152 @@
         "tags": ["api"],
         "security": [
           {
-            "jwtAuth": []
+            "cookieJWTAuth": []
           }
         ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiEventsListErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -66,10 +1438,176 @@
         "tags": ["api"],
         "security": [
           {
-            "jwtAuth": []
+            "cookieJWTAuth": []
           }
         ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiEventsRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -86,16 +1624,701 @@
         }
       }
     },
+    "/api/ipfs/events/meta": {
+      "put": {
+        "operationId": "api_ipfs_events_meta_update",
+        "tags": ["api"],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadEventMetaToIpfsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "cookieJWTAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cid": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "IPFS CID of stored data"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/ipfs/places/meta": {
+      "put": {
+        "operationId": "api_ipfs_places_meta_update",
+        "tags": ["api"],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadPlaceMetaToIpfsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "cookieJWTAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cid": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "IPFS CID of stored data"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/ipfs/users/socials": {
+      "put": {
+        "operationId": "api_ipfs_users_socials_update",
+        "tags": ["api"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadSocialsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "cookieJWTAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiIpfsUsersSocialsUpdateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cid": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "IPFS CID of stored data"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/notifications/": {
       "get": {
         "operationId": "api_notifications_list",
         "tags": ["api"],
         "security": [
           {
-            "jwtAuth": []
+            "cookieJWTAuth": []
           }
         ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiNotificationsListErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -128,10 +2351,176 @@
         "tags": ["api"],
         "security": [
           {
-            "jwtAuth": []
+            "cookieJWTAuth": []
           }
         ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiNotificationsRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -145,17 +2534,350 @@
         }
       }
     },
-    "/api/places/": {
-      "get": {
-        "operationId": "api_places_list",
-        "description": "API endpoint that allows event places to be viewed",
+    "/api/notifications/seen/{notification_id}/": {
+      "post": {
+        "operationId": "api_notifications_seen_create",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "notificationId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
         "tags": ["api"],
         "security": [
           {
-            "jwtAuth": []
+            "cookieJWTAuth": []
           }
         ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiNotificationsSeenCreateErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/places/": {
+      "get": {
+        "operationId": "api_places_list",
+        "tags": ["api"],
+        "security": [
+          {
+            "cookieJWTAuth": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiPlacesListErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -175,7 +2897,6 @@
     "/api/places/{id}/": {
       "get": {
         "operationId": "api_places_retrieve",
-        "description": "API endpoint that allows event places to be viewed",
         "parameters": [
           {
             "in": "path",
@@ -193,10 +2914,176 @@
         "tags": ["api"],
         "security": [
           {
-            "jwtAuth": []
+            "cookieJWTAuth": []
           }
         ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiPlacesRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse404"
+                },
+                "examples": {
+                  "NotFound": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_found",
+                          "detail": "Not found.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
@@ -210,37 +3097,163 @@
         }
       }
     },
-    "/api/token/refresh/": {
-      "post": {
-        "operationId": "api_token_refresh_create",
-        "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+    "/api/users/current/": {
+      "get": {
+        "operationId": "api_users_current_retrieve",
         "tags": ["api"],
-        "requestBody": {
-          "content": {
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRefresh"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRefresh"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRefresh"
-              }
-            }
-          },
-          "required": true
-        },
+        "security": [
+          {
+            "cookieJWTAuth": []
+          }
+        ],
         "responses": {
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiUsersCurrentRetrieveErrorResponse400"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse401"
+                },
+                "examples": {
+                  "AuthenticationFailed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "authentication_failed",
+                          "detail": "Incorrect authentication credentials.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  },
+                  "NotAuthenticated": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_authenticated",
+                          "detail": "Authentication credentials were not provided.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse405"
+                },
+                "examples": {
+                  "MethodNotAllowed": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "method_not_allowed",
+                          "detail": "Method \"get\" not allowed.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse406"
+                },
+                "examples": {
+                  "NotAcceptable": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "not_acceptable",
+                          "detail": "Could not satisfy the request Accept header.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse415"
+                },
+                "examples": {
+                  "UnsupportedMediaType": {
+                    "value": {
+                      "type": "client_error",
+                      "errors": [
+                        {
+                          "code": "unsupported_media_type",
+                          "detail": "Unsupported media type \"application/json\" in request.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse500"
+                },
+                "examples": {
+                  "APIException": {
+                    "value": {
+                      "type": "server_error",
+                      "errors": [
+                        {
+                          "code": "error",
+                          "detail": "A server error occurred.",
+                          "attr": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TokenRefresh"
+                  "$ref": "#/components/schemas/CurrentUser"
                 }
               }
             },
@@ -252,6 +3265,805 @@
   },
   "components": {
     "schemas": {
+      "ApiAuthLogoutRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiAuthRefreshRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiAuthVerifyRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiAuthWeb3LoginCreateAddressErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["address"],
+            "type": "string",
+            "description": "* `address` - address"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "max_length",
+              "min_length",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `max_length` - max_length\n* `min_length` - min_length\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiAuthWeb3LoginCreateError": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateAddressErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateSignatureErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateMessageErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateNonceErrorComponent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "attr",
+          "mapping": {
+            "non_field_errors": "#/components/schemas/ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent",
+            "address": "#/components/schemas/ApiAuthWeb3LoginCreateAddressErrorComponent",
+            "signature": "#/components/schemas/ApiAuthWeb3LoginCreateSignatureErrorComponent",
+            "message": "#/components/schemas/ApiAuthWeb3LoginCreateMessageErrorComponent",
+            "nonce": "#/components/schemas/ApiAuthWeb3LoginCreateNonceErrorComponent"
+          }
+        }
+      },
+      "ApiAuthWeb3LoginCreateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateValidationError"
+          },
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "validation_error": "#/components/schemas/ApiAuthWeb3LoginCreateValidationError",
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiAuthWeb3LoginCreateMessageErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["message"],
+            "type": "string",
+            "description": "* `message` - message"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["non_field_errors"],
+            "type": "string",
+            "description": "* `non_field_errors` - non_field_errors"
+          },
+          "code": {
+            "enum": ["invalid", "null"],
+            "type": "string",
+            "description": "* `invalid` - invalid\n* `null` - null"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiAuthWeb3LoginCreateNonceErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["nonce"],
+            "type": "string",
+            "description": "* `nonce` - nonce"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiAuthWeb3LoginCreateSignatureErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["signature"],
+            "type": "string",
+            "description": "* `signature` - signature"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiAuthWeb3LoginCreateValidationError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ValidationErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ApiAuthWeb3LoginRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiAuthWeb3NonceRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiEventsListErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiEventsRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiIpfsEventsMetaUpdateCoverErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["cover"],
+            "type": "string",
+            "description": "* `cover` - cover"
+          },
+          "code": {
+            "enum": ["empty", "invalid", "no_name", "null", "required"],
+            "type": "string",
+            "description": "* `empty` - empty\n* `invalid` - invalid\n* `no_name` - no_name\n* `null` - null\n* `required` - required"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsEventsMetaUpdateDescriptionErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["description"],
+            "type": "string",
+            "description": "* `description` - description"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsEventsMetaUpdateError": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateCoverErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateTitleErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "attr",
+          "mapping": {
+            "non_field_errors": "#/components/schemas/ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent",
+            "cover": "#/components/schemas/ApiIpfsEventsMetaUpdateCoverErrorComponent",
+            "title": "#/components/schemas/ApiIpfsEventsMetaUpdateTitleErrorComponent",
+            "description": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent"
+          }
+        }
+      },
+      "ApiIpfsEventsMetaUpdateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateValidationError"
+          },
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "validation_error": "#/components/schemas/ApiIpfsEventsMetaUpdateValidationError",
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["non_field_errors"],
+            "type": "string",
+            "description": "* `non_field_errors` - non_field_errors"
+          },
+          "code": {
+            "enum": ["invalid", "null"],
+            "type": "string",
+            "description": "* `invalid` - invalid\n* `null` - null"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsEventsMetaUpdateTitleErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["title"],
+            "type": "string",
+            "description": "* `title` - title"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsEventsMetaUpdateValidationError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ValidationErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ApiIpfsPlacesMetaUpdateDescriptionErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["description"],
+            "type": "string",
+            "description": "* `description` - description"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsPlacesMetaUpdateError": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "attr",
+          "mapping": {
+            "non_field_errors": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent",
+            "title": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent",
+            "description": "#/components/schemas/ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"
+          }
+        }
+      },
+      "ApiIpfsPlacesMetaUpdateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateValidationError"
+          },
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "validation_error": "#/components/schemas/ApiIpfsPlacesMetaUpdateValidationError",
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["non_field_errors"],
+            "type": "string",
+            "description": "* `non_field_errors` - non_field_errors"
+          },
+          "code": {
+            "enum": ["invalid", "null"],
+            "type": "string",
+            "description": "* `invalid` - invalid\n* `null` - null"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsPlacesMetaUpdateTitleErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["title"],
+            "type": "string",
+            "description": "* `title` - title"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsPlacesMetaUpdateValidationError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ValidationErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ApiIpfsUsersSocialsUpdateError": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiIpfsUsersSocialsUpdateNetworkErrorComponent"
+          },
+          {
+            "$ref": "#/components/schemas/ApiIpfsUsersSocialsUpdateValueErrorComponent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "attr",
+          "mapping": {
+            "non_field_errors": "#/components/schemas/ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent",
+            "network": "#/components/schemas/ApiIpfsUsersSocialsUpdateNetworkErrorComponent",
+            "value": "#/components/schemas/ApiIpfsUsersSocialsUpdateValueErrorComponent"
+          }
+        }
+      },
+      "ApiIpfsUsersSocialsUpdateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiIpfsUsersSocialsUpdateValidationError"
+          },
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "validation_error": "#/components/schemas/ApiIpfsUsersSocialsUpdateValidationError",
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiIpfsUsersSocialsUpdateNetworkErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["network"],
+            "type": "string",
+            "description": "* `network` - network"
+          },
+          "code": {
+            "enum": ["invalid_choice", "null", "required"],
+            "type": "string",
+            "description": "* `invalid_choice` - invalid_choice\n* `null` - null\n* `required` - required"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["non_field_errors"],
+            "type": "string",
+            "description": "* `non_field_errors` - non_field_errors"
+          },
+          "code": {
+            "enum": ["invalid", "null"],
+            "type": "string",
+            "description": "* `invalid` - invalid\n* `null` - null"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiIpfsUsersSocialsUpdateValidationError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ValidationErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiIpfsUsersSocialsUpdateError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ApiIpfsUsersSocialsUpdateValueErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["value"],
+            "type": "string",
+            "description": "* `value` - value"
+          },
+          "code": {
+            "enum": [
+              "blank",
+              "invalid",
+              "null",
+              "null_characters_not_allowed",
+              "required",
+              "surrogate_characters_not_allowed"
+            ],
+            "type": "string",
+            "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiNotificationsListErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiNotificationsRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiNotificationsSeenCreateError": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "attr",
+          "mapping": {
+            "non_field_errors": "#/components/schemas/ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"
+          }
+        }
+      },
+      "ApiNotificationsSeenCreateErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApiNotificationsSeenCreateValidationError"
+          },
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "validation_error": "#/components/schemas/ApiNotificationsSeenCreateValidationError",
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiNotificationsSeenCreateNonFieldErrorsErrorComponent": {
+        "type": "object",
+        "properties": {
+          "attr": {
+            "enum": ["non_field_errors"],
+            "type": "string",
+            "description": "* `non_field_errors` - non_field_errors"
+          },
+          "code": {
+            "enum": ["invalid", "null"],
+            "type": "string",
+            "description": "* `invalid` - invalid\n* `null` - null"
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ApiNotificationsSeenCreateValidationError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ValidationErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApiNotificationsSeenCreateError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ApiPlacesListErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiPlacesRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ApiUsersCurrentRetrieveErrorResponse400": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ParseErrorResponse"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "client_error": "#/components/schemas/ParseErrorResponse"
+          }
+        }
+      },
+      "ClientErrorEnum": {
+        "enum": ["client_error"],
+        "type": "string",
+        "description": "* `client_error` - Client Error"
+      },
       "Creator": {
         "type": "object",
         "properties": {
@@ -291,9 +4103,6 @@
             "minimum": 0,
             "format": "int64"
           },
-          "startDate": {
-            "type": "integer"
-          },
           "daysAmount": {
             "type": "integer",
             "maximum": 9223372036854775807,
@@ -306,11 +4115,15 @@
             "nullable": true,
             "maxLength": 200
           },
+          "startDateTimestamp": {
+            "type": "integer",
+            "readOnly": true
+          },
           "ticketsBought": {
             "type": "integer",
             "nullable": true
           },
-          "cancelDate": {
+          "cancelDateTimestamp": {
             "type": "integer",
             "nullable": true
           },
@@ -321,18 +4134,259 @@
           }
         },
         "required": [
-          "cancelDate",
+          "cancelDateTimestamp",
           "creator",
           "daysAmount",
           "description",
           "id",
           "place",
-          "startDate",
+          "startDateTimestamp",
           "ticketPrice",
           "ticketsBought",
           "ticketsRequiredUntilCancel",
           "title"
         ]
+      },
+      "CurrentUser": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "readOnly": true
+          },
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RoleEnum"
+              }
+            ],
+            "readOnly": true
+          },
+          "tickets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ticket"
+            },
+            "readOnly": true
+          }
+        },
+        "required": ["address", "role", "tickets"]
+      },
+      "Error401": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode401Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error404": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode404Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error405": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode405Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error406": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode406Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error415": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode415Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "Error500": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ErrorCode500Enum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["attr", "code", "detail"]
+      },
+      "ErrorCode401Enum": {
+        "enum": ["authentication_failed", "not_authenticated"],
+        "type": "string",
+        "description": "* `authentication_failed` - Authentication Failed\n* `not_authenticated` - Not Authenticated"
+      },
+      "ErrorCode404Enum": {
+        "enum": ["not_found"],
+        "type": "string",
+        "description": "* `not_found` - Not Found"
+      },
+      "ErrorCode405Enum": {
+        "enum": ["method_not_allowed"],
+        "type": "string",
+        "description": "* `method_not_allowed` - Method Not Allowed"
+      },
+      "ErrorCode406Enum": {
+        "enum": ["not_acceptable"],
+        "type": "string",
+        "description": "* `not_acceptable` - Not Acceptable"
+      },
+      "ErrorCode415Enum": {
+        "enum": ["unsupported_media_type"],
+        "type": "string",
+        "description": "* `unsupported_media_type` - Unsupported Media Type"
+      },
+      "ErrorCode500Enum": {
+        "enum": ["error"],
+        "type": "string",
+        "description": "* `error` - Error"
+      },
+      "ErrorResponse401": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error401"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse404": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error404"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse405": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error405"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse406": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error406"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse415": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error415"
+            }
+          }
+        },
+        "required": ["errors", "type"]
+      },
+      "ErrorResponse500": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ServerErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error500"
+            }
+          }
+        },
+        "required": ["errors", "type"]
       },
       "EventPlace": {
         "type": "object",
@@ -396,23 +4450,75 @@
           "title"
         ]
       },
+      "NetworkEnum": {
+        "enum": ["telegram", "instagram", "discord", "whatsapp"],
+        "type": "string",
+        "description": "* `telegram` - Telegram\n* `instagram` - Instagram\n* `discord` - Discord\n* `whatsapp` - Whatsapp"
+      },
       "Notification": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
           "title": {
             "type": "string",
-            "maxLength": 200
+            "readOnly": true
           },
           "body": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "seenAt": {
             "type": "string",
             "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["body", "createdAt", "id", "seenAt", "title"]
+      },
+      "ParseError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ParseErrorCodeEnum"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "attr": {
+            "type": "string",
             "nullable": true
           }
         },
-        "required": ["body", "title"]
+        "required": ["attr", "code", "detail"]
+      },
+      "ParseErrorCodeEnum": {
+        "enum": ["parse_error"],
+        "type": "string",
+        "description": "* `parse_error` - Parse Error"
+      },
+      "ParseErrorResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ClientErrorEnum"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParseError"
+            }
+          }
+        },
+        "required": ["errors", "type"]
       },
       "RoleBasedEvent": {
         "oneOf": [
@@ -423,6 +4529,16 @@
             "$ref": "#/components/schemas/StaffEvent"
           }
         ]
+      },
+      "RoleEnum": {
+        "enum": ["customer", "staff", "creator", "master"],
+        "type": "string",
+        "description": "* `customer` - Customer\n* `staff` - Staff\n* `creator` - Creator\n* `master` - Master"
+      },
+      "ServerErrorEnum": {
+        "enum": ["server_error"],
+        "type": "string",
+        "description": "* `server_error` - Server Error"
       },
       "StaffEvent": {
         "type": "object",
@@ -453,9 +4569,6 @@
             "minimum": 0,
             "format": "int64"
           },
-          "startDate": {
-            "type": "integer"
-          },
           "daysAmount": {
             "type": "integer",
             "maximum": 9223372036854775807,
@@ -468,13 +4581,17 @@
             "nullable": true,
             "maxLength": 200
           },
+          "startDateTimestamp": {
+            "type": "integer",
+            "readOnly": true
+          },
           "ticketsBought": {
             "type": "integer",
             "maximum": 9223372036854775807,
             "minimum": 0,
             "format": "int64"
           },
-          "cancelDate": {
+          "cancelDateTimestamp": {
             "type": "integer"
           },
           "ticketsRequiredUntilCancel": {
@@ -483,13 +4600,13 @@
           }
         },
         "required": [
-          "cancelDate",
+          "cancelDateTimestamp",
           "creator",
           "daysAmount",
           "description",
           "id",
           "place",
-          "startDate",
+          "startDateTimestamp",
           "ticketPrice",
           "ticketsBought",
           "ticketsRequiredUntilCancel",
@@ -499,28 +4616,109 @@
       "StatusEnum": {
         "enum": ["submitted", "approved", "declined", "cancelled", "closed"],
         "type": "string",
-        "description": "* `submitted` - Submitted\n* `approved` - Approved\n* `declined` - Declined\n* `cancelled` - Cancelled\n* `closed` - Closed"
+        "description": "* `submitted` - submitted\n* `approved` - approved\n* `declined` - declined\n* `cancelled` - cancelled\n* `closed` - closed"
       },
-      "TokenRefresh": {
+      "Ticket": {
         "type": "object",
         "properties": {
-          "access": {
+          "id": {
             "type": "string",
             "readOnly": true
           },
-          "refresh": {
-            "type": "string",
-            "writeOnly": true
+          "eventId": {
+            "type": "integer"
+          },
+          "isRedeemed": {
+            "type": "boolean",
+            "readOnly": true
           }
         },
-        "required": ["access", "refresh"]
+        "required": ["eventId", "id", "isRedeemed"]
+      },
+      "UploadEventMetaToIpfsRequest": {
+        "type": "object",
+        "properties": {
+          "cover": {
+            "type": "string",
+            "format": "binary"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["cover", "description", "title"]
+      },
+      "UploadPlaceMetaToIpfsRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["description", "title"]
+      },
+      "UploadSocialsRequest": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "$ref": "#/components/schemas/NetworkEnum"
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["network", "value"]
+      },
+      "ValidationErrorEnum": {
+        "enum": ["validation_error"],
+        "type": "string",
+        "description": "* `validation_error` - Validation Error"
+      },
+      "Web3LoginModelRequest": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "minLength": 42,
+            "description": "Address of the user's EOA",
+            "maxLength": 42
+          },
+          "signature": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Message signed with user's private key"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Original message"
+          },
+          "nonce": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Nonce value retrieved from the server"
+          }
+        },
+        "required": ["address", "message", "nonce", "signature"]
       }
     },
     "securitySchemes": {
-      "jwtAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+      "cookieJWTAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access_token",
+        "description": "JSON Web Token authentication via cookie"
       }
     }
   }

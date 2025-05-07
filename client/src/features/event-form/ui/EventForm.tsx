@@ -1,7 +1,6 @@
-import type { EventPlace } from "@/entities/place/@x/event";
+import type { EventPlace } from "@/entities/place";
 import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
-import type { EventForm as EventFormModel } from "../../../entities/event/model/types";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,38 +19,52 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
+import type { Event, EventDto } from "@/entities/event";
+import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
   places: EventPlace[];
-  existingEvent?: EventFormModel;
+  onSumbit: (values: EventDto) => void;
+  existingEvent?: Event;
 };
 
 export const EventForm: React.FC<EventFormProps> = ({
   bookedRanges,
   places,
+  onSumbit: submitHandler,
   existingEvent,
 }) => {
-  const defaultValues = existingEvent ?? {
-    title: "Title",
-    description: "Long ass description to satisfy the f*king form",
-    ticketPrice: "",
-    place: "",
-    startDate: new Date(),
-    durationDays: "1",
-  };
-
+  const eventForEdit = existingEvent
+    ? mapEventToEventForm(existingEvent)
+    : undefined;
   const formSchema = createFormSchema(places, bookedRanges);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: eventForEdit
+      ? { ...eventForEdit }
+      : {
+          title: "",
+          description: "",
+          ticketPrice: 0,
+          place: "",
+          startDate: new Date(),
+          daysAmount: 1,
+        },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    alert(JSON.stringify(values));
+    const eventDto = mapEventFormToEventDto(values);
+    submitHandler(eventDto);
   }
+
+  const selectedPlace = places.find(
+    (place) => `${place.id}` === form.watch("place"),
+  );
+  const isSelected = !!selectedPlace;
 
   return (
     <Form {...form}>
@@ -61,39 +74,22 @@ export const EventForm: React.FC<EventFormProps> = ({
       >
         <FormField
           control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} {...form.register(field.name)} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Image</FormLabel>
+              <FormLabel>Event image</FormLabel>
+              <FormLabel>
+                <div className="text-center border-2 border-input bg-input/10 p-5 w-full">
+                  <h2 className="text-secondary">Upload image banner</h2>
+                  <p className="text-normal font-normal text-muted-foreground lowercase">
+                    Click to upload image (16:9 ratio recommended)
+                  </p>
+                </div>
+              </FormLabel>
               <FormControl>
                 <Input
                   type="file"
+                  hidden
                   onChange={(e) => {
                     if (e.target.files && e.target.files.length > 0) {
                       field.onChange(e.target.files[0]);
@@ -106,6 +102,72 @@ export const EventForm: React.FC<EventFormProps> = ({
               {field.value && (
                 <img src={URL.createObjectURL(field.value)} alt="sd" />
               )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter event name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Describe your event"
+                  {...field}
+                  {...form.register(field.name)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Start date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  date={field.value}
+                  setDate={field.onChange}
+                  disabled={bookedRanges}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="daysAmount"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Duration in days</FormLabel>
+              <FormControl>
+                <Input
+                  inputMode="decimal"
+                  {...field}
+                  onChange={(e) =>
+                    field.onChange(handleNumericInput(e.target.value))
+                  }
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -125,23 +187,36 @@ export const EventForm: React.FC<EventFormProps> = ({
             </FormItem>
           )}
         />
+        {isSelected && (
+          <div className="text-secondary border-2 border-secondary p-4">
+            <div>
+              <h3 className="font-bold mb-2">{selectedPlace.title}</h3>
+              <ul className=" space-y-1">
+                <li>Min Tickets: {selectedPlace.minTickets}</li>
+                <li>Max Tickets: {selectedPlace.maxTickets}</li>
+                <li>
+                  Cancel Days: {selectedPlace.daysBeforeCancel} days before
+                  event
+                </li>
+                <li>Min Ticket Price: {selectedPlace.minPrice} USDT</li>
+              </ul>
+            </div>
+          </div>
+        )}
         <FormField
           control={form.control}
           name="ticketPrice"
           render={({ field }) => {
-            const selectedPlace = form.watch().place;
-            const isSelected = selectedPlace !== "";
-
-            const minimumPrice =
-              places.find((place) => `${place.id}` === selectedPlace)
-                ?.minPrice ?? 0;
+            const minimumPrice = selectedPlace?.minPrice ?? 0;
             return (
               <FormItem>
                 <FormLabel>
-                  <span className={`${!isSelected && "text-gray-500"}`}>
-                    Ticket price{" "}
-                    {!isSelected && "(select the place to enter the price)"}
-                    {isSelected && `(minimum price ${minimumPrice})`}
+                  <span
+                    className={`${!isSelected ? "text-gray-500" : "text-secondary"}`}
+                  >
+                    Ticket price
+                    {!isSelected && " (select the place to enter the price)"}
+                    {isSelected && ` (minimum price ${minimumPrice})`}
                   </span>
                 </FormLabel>
                 <FormControl>
@@ -149,72 +224,16 @@ export const EventForm: React.FC<EventFormProps> = ({
                     {...field}
                     disabled={!isSelected}
                     type="text"
-                    inputMode="decimal"
-                    onChange={(e) => {
-                      const input = e.target.value;
-
-                      if (input === "") {
-                        field.onChange("");
-                        return;
-                      }
-
-                      const regex = /^\d*\.?\d{0,2}$/;
-                      if (regex.test(input)) {
-                        field.onChange(input);
-                      }
-                    }}
+                    inputMode="numeric"
+                    onChange={(e) =>
+                      field.onChange(handleNumericInput(e.target.value))
+                    }
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             );
           }}
-        />
-        <FormField
-          control={form.control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Start date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  date={field.value}
-                  setDate={field.onChange}
-                  disabled={bookedRanges}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="daysAmount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration in days</FormLabel>
-              <FormControl>
-                <Input
-                  inputMode="decimal"
-                  {...field}
-                  onChange={(e) => {
-                    const input = e.target.value;
-
-                    if (input === "") {
-                      field.onChange("");
-                      return;
-                    }
-
-                    const regex = /^[0-9]+$/;
-                    if (regex.test(input)) {
-                      field.onChange(input);
-                    }
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
         />
         <Button type="submit" variant="default">
           Submit

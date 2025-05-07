@@ -1,3 +1,2 @@
-export type { EventForm, Event } from "./model/types";
-export { EventCard } from "./ui/EventCard";
-export { eventQueries } from "./api/event.queries";
+export type { Event, EventDto, EventStatus } from "./model/types";
+export { eventQueries } from "./api/eventQueries";
