@@ -7,7 +7,7 @@ from django.core.files import File
 from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
 
-from cyber_valley.users.models import CyberValleyUser as UserType, UserSocials
+from cyber_valley.users.models import CyberValleyUser as UserType
 
 from .models import Event, EventPlace, Ticket
 
@@ -83,7 +83,7 @@ class StaffEventSerializer(EventSerializer):
             *EventSerializer.Meta.fields,
             "tickets_bought",
             "tickets_required_until_cancel",
-            "cancel_date_timestamp"
+            "cancel_date_timestamp",
         )
 
     def to_representation(self, obj: Event) -> dict[str, Any]:
@@ -98,13 +98,19 @@ class StaffEventSerializer(EventSerializer):
         return max(obj.tickets_bought - obj.place.min_tickets, 0)
 
     def get_cancel_date_timestamp(self, obj: Event) -> int:
-        return int((obj.start_date - timedelta(days=obj.place.days_before_cancel)).timestamp()) * 1000
-
+        return (
+            int(
+                (
+                    obj.start_date - timedelta(days=obj.place.days_before_cancel)
+                ).timestamp()
+            )
+            * 1000
+        )
 
 
 class CreatorEventSerializer(StaffEventSerializer):
     tickets_bought = serializers.IntegerField(allow_null=True)
-    cancel_date_timestamp = serializers.IntegerField(allow_null=True)
+    cancel_date_timestamp = serializers.SerializerMethodField(allow_null=True)
     tickets_required_until_cancel = serializers.SerializerMethodField(allow_null=True)
 
     class Meta:
