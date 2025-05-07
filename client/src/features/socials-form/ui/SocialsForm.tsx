@@ -18,11 +18,11 @@ import { formSchema } from "../model/formSchema";
 import { SelectNetwork } from "./SelectNetwork";
 
 type SocialsFormProps = {
-  onSumbit: (values: Socials) => void;
+  onSubmit: (values: Socials) => void;
 };
 
 export const SocialsForm: React.FC<SocialsFormProps> = ({
-  onSumbit: submitHandler,
+  onSubmit: submitHandler,
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
