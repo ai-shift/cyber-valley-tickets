@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -6,7 +7,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/ui/dialog";
-import { useEffect, useState } from "react";
 
 type AcceptDialogProps = {
   confirmFn: () => void;
