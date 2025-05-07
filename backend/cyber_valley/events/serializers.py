@@ -7,7 +7,7 @@ from django.core.files import File
 from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
 
-from cyber_valley.users.models import CyberValleyUser as UserType
+from cyber_valley.users.models import CyberValleyUser as UserType, UserSocials
 
 from .models import Event, EventPlace, Ticket
 
@@ -143,12 +143,14 @@ class EventMetaData:
     cover: "File[bytes]"
     title: str
     description: str
+    socials_cid: str
 
 
 class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
     cover = serializers.FileField()
     title = serializers.CharField()
     description = serializers.CharField()
+    socials_cid = serializers.CharField()
 
     def create(self, validated_data: dict[str, Any]) -> EventMetaData:
         return EventMetaData(**validated_data)
