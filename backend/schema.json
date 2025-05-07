@@ -1810,7 +1810,7 @@
                         },
                         "description": ""
                     },
-                    "204": {
+                    "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2165,7 +2165,7 @@
                         },
                         "description": ""
                     },
-                    "204": {
+                    "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2348,7 +2348,7 @@
                         },
                         "description": ""
                     },
-                    "204": {
+                    "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4531,6 +4531,7 @@
                     },
                     "cancelDateTimestamp": {
                         "type": "integer",
+                        "readOnly": true,
                         "nullable": true
                     }
                 },

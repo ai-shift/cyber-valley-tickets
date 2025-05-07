@@ -67,7 +67,7 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
 @extend_schema(
     request=UploadEventMetaToIpfsSerializer,
     responses={
-        204: {
+        200: {
             "type": "object",
             "properties": {"cid": {"type": "string"}},
             "description": "IPFS CID of stored data",
@@ -100,13 +100,13 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
             "socialsCid": meta.socials_cid,
         }
         meta_hash = client.add_json(event_meta)
-    return Response({"cid": meta_hash}, status=204)
+    return Response({"cid": meta_hash})
 
 
 @extend_schema(
     request=UploadPlaceMetaToIpfsSerializer,
     responses={
-        204: {
+        200: {
             "type": "object",
             "properties": {"cid": {"type": "string"}},
             "description": "IPFS CID of stored data",
@@ -128,7 +128,7 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
             "description": meta.description,
         }
         meta_hash = client.add_json(event_meta)
-    return Response({"cid": meta_hash}, status=204)
+    return Response({"cid": meta_hash})
 
 
 @extend_schema(
