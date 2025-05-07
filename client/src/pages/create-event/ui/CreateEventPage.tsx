@@ -17,7 +17,9 @@ export const CreateEventPage: React.FC = () => {
 
   return (
     <PageContainer name="Create event">
-      <CreateEvent onSubmit={initOrderPurchase} />
+      <div className="px-6">
+        <CreateEvent onSubmit={initOrderPurchase} />
+      </div>
     </PageContainer>
   );
 };
