@@ -8,6 +8,7 @@ import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { DetailsBlock } from "./DetailsBlock";
+import { Loader } from "@/shared/ui/Loader";
 
 type EventDetailsProps = {
   eventId: number;
@@ -20,7 +21,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     isFetching,
   } = useQuery(eventQueries.detail(eventId));
 
-  if (isFetching) return <p>Loading</p>;
+  if (isFetching) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
   if (!event || !user) return <p>GG</p>;
 
