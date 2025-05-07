@@ -135,6 +135,7 @@ def _sync_event_status_changed(
 ) -> None:
     event = Event.objects.get(id=event_data.event_id)
 
+    # TODO: Rewrite to IntEnum
     status_mapping = {
         0: "submitted",
         1: "approved",
