@@ -1,3 +1,14 @@
-export { Home } from "./home";
-export { EventsList } from "./eventsList";
-export { CreateEvent } from "./createEvent";
+export { HomePage } from "./home";
+export { EventsListPage } from "./events-list";
+export { CreateEventPage } from "./create-event";
+export { EventsDetailsPage } from "./events-details";
+export { NotificationsPage } from "./notifications";
+export { ManagePage } from "./manage";
+export { PurchasePage } from "./purchase";
+export { SocialsPage } from "./socials";
+export { EditEventPage } from "./edit-event";
+export { CreatePlacePage } from "./create-place";
+export { AssignStaffPage } from "./assign-staff";
+export { AccountPage } from "./account";
+export { MyEventsPage } from "./my-events";
+export { LoginPage } from "./login";

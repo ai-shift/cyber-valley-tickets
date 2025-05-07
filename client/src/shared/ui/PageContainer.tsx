@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { useNavigate } from "react-router";
@@ -18,11 +19,13 @@ export const PageContainer: React.FC<PageContainerProps> = ({
 
   return (
     <div className="flex flex-col items-stretch justify-start">
-      <header className="flex justify-between items-center">
-        <h2>{name}</h2>
-        <button type="button" onClick={goBack}>
-          Back
+      <header className="flex justify-start items-center gap-5 pt-2 pb-5">
+        <button className="cursor-pointer" type="button" onClick={goBack}>
+          <ArrowLeft size={30} />
         </button>
+        <h2 className="text-2xl font-semibold text-primary text-shadow-primary text-shadow-xs">
+          {name}
+        </h2>
       </header>
       <div>{children}</div>
     </div>

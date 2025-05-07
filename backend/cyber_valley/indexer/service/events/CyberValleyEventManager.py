@@ -18,7 +18,11 @@ class EventPlaceUpdated(BaseModel):
     max_tickets: int = Field(..., alias="maxTickets")
     min_tickets: int = Field(..., alias="minTickets")
     min_price: int = Field(..., alias="minPrice")
+    days_before_cancel: int = Field(..., alias="daysBeforeCancel")
     min_days: int = Field(..., alias="minDays")
+    digest: str
+    hash_function: int = Field(..., alias="hashFunction")
+    size: int
 
 
 class EventStatusChanged(BaseModel):
@@ -43,9 +47,11 @@ class EventUpdated(BaseModel):
     id: int
     event_place_id: int = Field(..., alias="eventPlaceId")
     ticket_price: int = Field(..., alias="ticketPrice")
-    cancel_date: int = Field(..., alias="cancelDate")
     start_date: int = Field(..., alias="startDate")
     days_amount: int = Field(..., alias="daysAmount")
+    digest: str
+    hash_function: int = Field(..., alias="hashFunction")
+    size: int
 
 
 class NewEventPlaceAvailable(BaseModel):
@@ -56,7 +62,11 @@ class NewEventPlaceAvailable(BaseModel):
     max_tickets: int = Field(..., alias="maxTickets")
     min_tickets: int = Field(..., alias="minTickets")
     min_price: int = Field(..., alias="minPrice")
+    days_before_cancel: int = Field(..., alias="daysBeforeCancel")
     min_days: int = Field(..., alias="minDays")
+    digest: str
+    hash_function: int = Field(..., alias="hashFunction")
+    size: int
 
 
 class NewEventRequest(BaseModel):
@@ -67,9 +77,11 @@ class NewEventRequest(BaseModel):
     creator: str
     event_place_id: int = Field(..., alias="eventPlaceId")
     ticket_price: int = Field(..., alias="ticketPrice")
-    cancel_date: int = Field(..., alias="cancelDate")
     start_date: int = Field(..., alias="startDate")
     days_amount: int = Field(..., alias="daysAmount")
+    digest: str
+    hash_function: int = Field(..., alias="hashFunction")
+    size: int
 
 
 class RoleAdminChanged(BaseModel):

@@ -9,8 +9,7 @@ from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.notifications.models import Notification
 from cyber_valley.users.models import CyberValleyUser as UserType
 
-from .events import CyberValleyEventManager, CyberValleyEventTicket
-from .indexer import (
+from ._sync import (
     _sync_event_place_updated,
     _sync_event_status_changed,
     _sync_event_updated,
@@ -19,6 +18,7 @@ from .indexer import (
     _sync_ticket_minted,
     _sync_ticket_redeemed,
 )
+from .events import CyberValleyEventManager, CyberValleyEventTicket
 
 User = get_user_model()
 

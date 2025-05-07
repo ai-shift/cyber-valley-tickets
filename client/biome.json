@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": ["typechain-types"]
   },
   "formatter": {
     "enabled": true,

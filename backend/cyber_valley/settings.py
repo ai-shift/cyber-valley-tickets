@@ -11,6 +11,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import json
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -218,9 +219,8 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EVENT_MODELS_BASE_PATH = BASE_DIR / "cyber_valley/indexer/service/events"
-ETH_NODE_HOST = os.environ.get("ETH_NODE_HOST", "localhost:8545")
+ETH_NODE_HOST = os.environ["ETH_NODE_HOST"]
 ETHEREUM_DIR: Final = BASE_DIR.parent / "ethereum"
-ETH_NETWORK_HOST: Final = "localhost:8545"
 # XXX: Order should match actual deployment flow
 CONTRACTS_INFO: Final = (
     (
@@ -239,6 +239,13 @@ CONTRACTS_INFO: Final = (
         / "CyberValleyEventManager.json"
     ),
 )
+ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
+    adr: json.loads(path.read_text())["abi"]
+    for adr, path in {
+        "0x0": CONTRACTS_INFO[1],
+        "0x1": CONTRACTS_INFO[2],
+    }.items()
+}
 
 IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])
 
