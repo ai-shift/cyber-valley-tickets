@@ -25,7 +25,11 @@ export const HomePage: React.FC = () => {
         <EventsList isGrid limit={3} filterFn={upcomingFilter} />
       </section>
       <Button
-        onClick={() => mintERC20(10).then(console.log).catch(console.error)}
+        onClick={() =>
+          mintERC20(50)
+            .then(() => alert("Minted 50 tokens"))
+            .catch(console.error)
+        }
       >
         Mint ERC20
       </Button>
