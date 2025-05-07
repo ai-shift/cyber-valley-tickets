@@ -43,11 +43,15 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     submitHandler(values);
+    form.reset();
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-3">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-7 mb-10"
+      >
         <FormField
           control={form.control}
           name="title"
@@ -86,7 +90,11 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           fieldName="daysBeforeCancel"
           title="Days before cancel"
         />
-        <Button type="submit">Submit</Button>
+        <span className="self-center">
+          <Button className="text-lg p-5" type="submit">
+            Submit
+          </Button>
+        </span>
       </form>
     </Form>
   );

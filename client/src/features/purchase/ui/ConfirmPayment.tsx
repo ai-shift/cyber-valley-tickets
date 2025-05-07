@@ -4,18 +4,18 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { purchase } from "../api/purchase";
-import { SuccessDialog } from "./SuccessDialog";
+import { OrderSuccessDialog } from "./OrderSuccessDialog";
 
 type ConfirmPaymentProps = {
   order: Order;
 };
 export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   const navigate = useNavigate();
-  const [success, setSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { mutate, error } = useMutation({
     mutationFn: purchase,
     onSuccess: () => {
-      setSuccess(true);
+      setIsSuccess(true);
     },
   });
 
@@ -64,9 +64,9 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
           </Button>
         </span>
       </div>
-      <SuccessDialog
-        open={success}
-        setOpen={setSuccess}
+      <OrderSuccessDialog
+        open={isSuccess}
+        setOpen={setIsSuccess}
         successMsg={successMessage}
         navigateFn={navigateFn}
       />
