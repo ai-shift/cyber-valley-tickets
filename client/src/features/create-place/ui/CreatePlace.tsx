@@ -9,7 +9,7 @@ export const CreatePlace: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const account = useActiveAccount();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (values: EventPlaceForm) => create(values, account),
     onSuccess: console.log,
     onError: console.error,
@@ -17,7 +17,7 @@ export const CreatePlace: React.FC = () => {
 
   return (
     <div className="px-6">
-      <PlaceForm onSubmit={mutate} />
+      <PlaceForm disableFields={isPending} onSubmit={mutate} />
       <PlaceSuccessDialog open={isSuccess} setOpen={setIsSuccess} />
     </div>
   );
