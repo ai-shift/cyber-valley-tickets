@@ -26,22 +26,30 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
     match event_data:
         case CyberValleyEventManager.EventPlaceUpdated():
             _sync_event_place_updated(event_data)
+            log.info("Event place updated")
         case CyberValleyEventManager.NewEventRequest():
             _sync_new_event_request(event_data)
+            log.info("New event request")
         case CyberValleyEventManager.EventUpdated():
             _sync_event_updated(event_data)
+            log.info("Event updated")
         case CyberValleyEventManager.NewEventPlaceAvailable():
             _sync_new_event_place_available(event_data)
+            log.info("New event place available")
         case CyberValleyEventTicket.TicketMinted():
             _sync_ticket_minted(event_data)
+            log.info("Ticket minted")
         case CyberValleyEventManager.EventStatusChanged():
             _sync_event_status_changed(event_data)
+            log.info("Event status changed")
         case CyberValleyEventTicket.TicketRedeemed():
             _sync_ticket_redeemed(event_data)
+            log.info("Ticket redeemed")
         case (
             CyberValleyEventTicket.RoleGranted() | CyberValleyEventManager.RoleGranted()
         ):
             _sync_role_granted(event_data)
+            log.info("Role granted")
         case CyberValleyEventManager.RoleAdminChanged():
             pass
         case CyberValleyEventManager.RoleRevoked():
@@ -117,6 +125,7 @@ def _sync_new_event_place_available(
         min_days=event_data.min_days,
     )
 
+
 @transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
     event = Event.objects.get(id=event_data.event_id)
@@ -139,6 +148,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
             f"has been minted for event {event.title}."
         ),
     )
+    log.info("Ticket saved %s %s", event, owner)
 
 
 def _sync_event_status_changed(

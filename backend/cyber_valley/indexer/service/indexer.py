@@ -144,7 +144,9 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
     raise EventNotRecognizedError(log_receipt)
 
 
-def _get_logs(w3: Web3, from_block: int, addresses: list[ChecksumAddress]) -> list[LogReceipt]:
+def _get_logs(
+    w3: Web3, from_block: int, addresses: list[ChecksumAddress]
+) -> list[LogReceipt]:
     return w3.eth.filter(
         {"fromBlock": from_block, "toBlock": "latest", "address": addresses}
     ).get_all_entries()
