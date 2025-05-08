@@ -43,7 +43,7 @@ export const client = createThirdwebClient({
 const eventManager = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+  address: "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f",
   abi: EventManagerABI,
 });
 

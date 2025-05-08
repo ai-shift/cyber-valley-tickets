@@ -2,7 +2,7 @@ import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
 import ERC20Module from "../ignition/modules/ERC20";
 
-const MASTER_EOA = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+const MASTER_EOA = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 const DEV_TEAM_EOA = MASTER_EOA;
 
 async function main() {
