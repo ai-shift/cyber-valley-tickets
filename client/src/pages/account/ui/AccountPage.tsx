@@ -29,11 +29,16 @@ export const AccountPage: React.FC = () => {
         </div>
         <div className="w-1/2 flex flex-col h-80 justify-between">
           <Link to="/account/my-events" className="w-full block">
-            <Button size="lg" className="block w-full" variant="secondary">
+            <Button
+              filling="outline"
+              size="lg"
+              className="block w-full"
+              variant="secondary"
+            >
               My events
             </Button>
           </Link>
-          <Button filling="outline" size="lg" onClick={logout}>
+          <Button variant="destructive" size="lg" onClick={logout}>
             Logout
           </Button>
         </div>
