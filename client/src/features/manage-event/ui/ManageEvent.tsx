@@ -53,13 +53,17 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               option="accept"
               confirmFn={() => onControll("accept")}
             >
-              <Button variant="secondary">Accept</Button>
+              <Button className="flex-1" variant="secondary">
+                Accept
+              </Button>
             </AcceptDialog>
             <AcceptDialog
               option="decline"
               confirmFn={() => onControll("decline")}
             >
-              <Button variant="destructive">Decline</Button>
+              <Button className="flex-1" variant="destructive">
+                Decline
+              </Button>
             </AcceptDialog>
           </div>
         )}
