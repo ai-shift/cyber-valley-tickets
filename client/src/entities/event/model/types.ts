@@ -11,3 +11,7 @@ export type EventDto = Pick<
   startTimeTimeStamp: number;
   place: string;
 };
+
+export type EventDtoWithId = EventDto & {
+  id: number;
+};
