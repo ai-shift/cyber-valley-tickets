@@ -5,5 +5,5 @@ export const errorMapper = (error: ApiError | Error): string[] => {
     return error.errors.map((error) => error.detail);
   }
 
-  return [error.toString()];
+  return ["Oops! Something went wrong. Try again later :)"];
 };

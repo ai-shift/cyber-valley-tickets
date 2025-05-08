@@ -16,7 +16,7 @@ export const CreatePlace: React.FC = () => {
   });
 
   return (
-    <div>
+    <div className="px-6">
       <PlaceForm onSubmit={mutate} />
       <PlaceSuccessDialog open={isSuccess} setOpen={setIsSuccess} />
     </div>
