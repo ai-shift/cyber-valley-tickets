@@ -108,14 +108,16 @@ def _sync_event_place_updated(
 def _sync_new_event_place_available(
     event_data: CyberValleyEventManager.NewEventPlaceAvailable,
 ) -> None:
-    EventPlace.objects.create(
-        id=event_data.event_place_id,
-        title=f"Event Place {event_data.event_place_id}",  # Generate a default title
-        days_before_cancel=event_data.days_before_cancel,
-        max_tickets=event_data.max_tickets,
-        min_tickets=event_data.min_tickets,
-        min_price=event_data.min_price,
-        min_days=event_data.min_days,
+    EventPlace.objects.update_or_create(
+        default={
+            "id": event_data.event_place_id,
+            "title": f"Event Place {event_data.event_place_id}",
+            "days_before_cancel": event_data.days_before_cancel,
+            "max_tickets": event_data.max_tickets,
+            "min_tickets": event_data.min_tickets,
+            "min_price": event_data.min_price,
+            "min_days": event_data.min_days,
+        }
     )
 
 
