@@ -57,7 +57,7 @@ class Command(BaseCommand):
             # --- Create Event Places ---
             self.stdout.write("Creating Event Places...")
             place1, created1 = EventPlace.objects.get_or_create(
-                id=1,
+                id=50,
                 defaults={
                     "title": "Cyber Hub Arena",
                     "max_tickets": 150,
@@ -71,7 +71,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{'Created' if created1 else 'Exists'}: {place1.title}")
 
             place2, created2 = EventPlace.objects.get_or_create(
-                id=2,
+                id=51,
                 defaults={
                     "title": "Digital Oasis Center",
                     "max_tickets": 80,
@@ -85,7 +85,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{'Created' if created2 else 'Exists'}: {place2.title}")
 
             place3, created3 = EventPlace.objects.get_or_create(
-                id=3,
+                id=52,
                 defaults={
                     "title": "The Virtual Sphere",
                     "max_tickets": 300,
