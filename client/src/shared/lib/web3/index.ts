@@ -32,7 +32,7 @@ export const client = createThirdwebClient({
 const eventManager = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f",
+  address: "0xc0C8856951bB807Cd7313F43425953dA2Cd389C4",
   // @ts-ignore: TS2322
   abi: EventManagerABI,
 });
@@ -40,7 +40,7 @@ const eventManager = getContract({
 const eventTicket = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
+  address: "0xA17D5c9551Bd04f32ee2eDb3C486C7e52E305DfF",
   // @ts-ignore: TS2322
   abi: EventTicketABI,
 });
@@ -48,7 +48,7 @@ const eventTicket = getContract({
 const erc20 = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1",
+  address: "0x6a1555771c43caB56C2044c20C9f4F47b7ca5f78",
   // @ts-ignore: TS2322
   abi: SimpleERC20XyloseABI,
 });
@@ -219,7 +219,7 @@ export async function mintTicket(
   });
   const { transactionHash } = await sendTransaction({
     account,
-    transaction: approveTransaction,
+    transaction: mintTransaction,
   });
   return transactionHash;
 }

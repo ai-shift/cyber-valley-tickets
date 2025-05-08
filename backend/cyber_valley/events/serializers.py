@@ -128,8 +128,6 @@ class CreatorEventSerializer(StaffEventSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer[Ticket]):
-    event_id = serializers.IntegerField(source="event")
-
     class Meta:
         model = Ticket
         fields = ("id", "event_id", "is_redeemed")

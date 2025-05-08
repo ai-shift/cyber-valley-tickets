@@ -2,7 +2,7 @@ import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
 import ERC20Module from "../ignition/modules/ERC20";
 
-const MASTER_EOA = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
+const MASTER_EOA = "0x208BE746165483405877FEdf863107FE705DfB8b";
 const DEV_TEAM_EOA = MASTER_EOA;
 
 async function main() {
@@ -18,10 +18,10 @@ async function main() {
       erc20: await erc20.getAddress()
     }}
   });
+  await eventTicket.setEventManagerAddress(await erc20.getAddress())
   console.log("SEX deployed to", await erc20.getAddress())
   console.log("Event ticket deployed to", await eventTicket.getAddress())
   console.log("Event manager deployed to", await eventManager.getAddress())
-
 }
 
 main().catch(console.error)
