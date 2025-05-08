@@ -2,7 +2,8 @@ import type { ApiError } from "../api/apiClient";
 import { errorMapper } from "../api/errorMapper";
 
 type ErrorMessageProps = {
-  errors: ApiError | ApiError[];
+  // TS sucks, so null is required to get rid of it's yelling
+  errors: ApiError | ApiError[] | Error | null;
   className?: string;
 };
 
@@ -19,6 +20,8 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
         formattedErrors.add(stringErrors);
       }
     }
+  } else if (errors == null) {
+    formattedErrors.add("Empty error message");
   } else {
     for (const stringErrors of errorMapper(errors)) {
       formattedErrors.add(stringErrors);

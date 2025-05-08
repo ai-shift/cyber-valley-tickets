@@ -3,6 +3,7 @@ import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { useActiveAccount } from "thirdweb/react";
 import { purchase } from "../api/purchase";
 import { OrderSuccessDialog } from "./OrderSuccessDialog";
 
@@ -12,8 +13,10 @@ type ConfirmPaymentProps = {
 export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
+  const account = useActiveAccount();
+  if (!account) return <p>Failed to connect wallet</p>;
   const { mutate, error } = useMutation({
-    mutationFn: purchase,
+    mutationFn: (order: Order) => purchase(account, order),
     onSuccess: () => {
       setIsSuccess(true);
     },
