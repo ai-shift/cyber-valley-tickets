@@ -8,6 +8,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from cyber_valley.events.models import Event, EventPlace, Ticket
+from cyber_valley.indexer.models import LastProcessedBlock, LogProcessingError
 from cyber_valley.notifications.models import Notification
 from cyber_valley.users.models import CyberValleyUser
 
@@ -33,6 +34,8 @@ class Command(BaseCommand):
             Event.objects.all().delete()
             EventPlace.objects.all().delete()
             CyberValleyUser.objects.all().delete()
+            LastProcessedBlock.objects.all().delete()
+            LogProcessingError.objects.all().delete()
             self.stdout.write("Data flushed.")
 
         with transaction.atomic():

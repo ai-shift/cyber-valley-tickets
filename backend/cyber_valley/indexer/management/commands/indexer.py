@@ -24,18 +24,17 @@ class Command(BaseCommand):
             default=None,
         )
         parser.add_argument(
-            "--sync",
+            "--no-sync",
             action="store_true",
             help="Sync blocks from last saved in db to the present one.",
-            default=True,
         )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
         pyshen.logging.setup()
-        w3 = Web3(Web3.HTTPProvider(f"http://{settings.ETH_NODE_HOST}"))
+        w3 = Web3(Web3.HTTPProvider(f"https://{settings.ETH_NODE_HOST}"))
         assert w3.is_connected()
         contracts = {
             ChecksumAddress(HexAddress(HexStr(address))): w3.eth.contract(abi=abi)
             for address, abi in settings.ETH_CONTRACT_ADDRESS_TO_ABI.items()
         }
-        index_events(settings.ETH_NODE_HOST, contracts, bool(options["sync"]))
+        index_events(settings.ETH_NODE_HOST, contracts, not bool(options["no_sync"]))
