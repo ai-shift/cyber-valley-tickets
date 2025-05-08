@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from returns.pipeline import flow
 from returns.pointfree import bind
 from returns.result import Failure, Success, safe
-from tenacity import after_log, retry, wait_fixed
+from tenacity import before_sleep_log, retry, wait_fixed
 from web3 import AsyncWeb3, Web3, WebSocketProvider
 from web3.contract import Contract
 from web3.exceptions import LogTopicError, MismatchedABI
@@ -85,7 +85,7 @@ def index_events(
 
 @retry(
     wait=wait_fixed(5),
-    after=after_log(log, logging.ERROR),
+    before_sleep=before_sleep_log(log, logging.ERROR),
 )
 async def arun_listeners(
     provider: WebSocketProvider,
@@ -96,7 +96,7 @@ async def arun_listeners(
         filter_params = LogsSubscriptionArg(address=contract_addresses)
         _subscription_id = await w3.eth.subscribe("logs", filter_params)
         async for payload in w3.socket.process_subscriptions():
-            queue.put(payload.result)
+            queue.put(payload["result"])
     raise NodeListenerStoppedError
 
 
