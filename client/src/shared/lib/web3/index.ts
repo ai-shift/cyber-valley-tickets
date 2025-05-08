@@ -199,15 +199,15 @@ export async function declineEvent(
 
 export async function mintTicket(
   account: Account,
+  ticketPrice: BigNumberish,
   eventId: BigNumberish,
   socialsCID: string,
 ): Promise<TxHash> {
-  const submitionPrice = getEventSubmitionPrice();
   // @ts-ignore: TS2345
   const approveTransaction = prepareContractCall({
-    contract: eventManager,
+    contract: erc20,
     method: "approve",
-    params: [eventManager.address, submitionPrice],
+    params: [eventManager.address, ticketPrice],
   });
   await sendTransaction({ account, transaction: approveTransaction });
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
