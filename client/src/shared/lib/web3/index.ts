@@ -116,6 +116,13 @@ export async function submitEventRequest(
 ): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
   // @ts-ignore: TS2345
+  const approveTransaction = prepareContractCall({
+    contract: erc20,
+    method: "approve",
+    params: [eventManager.address, getEventSubmitionPrice()],
+  });
+  await sendTransaction({ account, transaction: approveTransaction });
+  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "submitEventRequest",

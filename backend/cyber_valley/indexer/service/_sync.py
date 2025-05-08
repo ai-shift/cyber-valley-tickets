@@ -51,32 +51,32 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
             raise UnknownEventError(event_data)
 
 
+@transaction.atomic
 def _sync_new_event_request(
     event_data: CyberValleyEventManager.NewEventRequest,
 ) -> None:
     creator = CyberValleyUser.objects.get(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
 
-    with transaction.atomic():
-        Event.objects.create(
-            creator=creator,
-            place=place,
-            ticket_price=event_data.ticket_price,
-            tickets_bought=0,
-            start_date=datetime.fromtimestamp(event_data.start_date, tz=UTC),
-            days_amount=event_data.days_amount,
-            status="submitted",
-            title=f"Event {event_data.id}",  # Generate a default title
-            description="To be populated",  # Generate a default description
-            created_at=timezone.now(),
-            updated_at=timezone.now(),
-        )
+    Event.objects.create(
+        creator=creator,
+        place=place,
+        ticket_price=event_data.ticket_price,
+        tickets_bought=0,
+        start_date=datetime.fromtimestamp(event_data.start_date, tz=UTC),
+        days_amount=event_data.days_amount,
+        status="submitted",
+        title=f"Event {event_data.id}",  # Generate a default title
+        description="To be populated",  # Generate a default description
+        created_at=timezone.now(),
+        updated_at=timezone.now(),
+    )
 
-        Notification.objects.create(
-            user=creator,
-            title="New Event Request",
-            body=f"A new event request with id {event_data.id} has been created.",
-        )
+    Notification.objects.create(
+        user=creator,
+        title="New Event Request",
+        body=f"A new event request with id {event_data.id} has been created.",
+    )
 
 
 def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> None:

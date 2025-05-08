@@ -20,6 +20,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
     onSuccess: () => {
       setIsSuccess(true);
     },
+    onError: console.error,
   });
 
   const navigateFn = () => navigate("/", { replace: true });
