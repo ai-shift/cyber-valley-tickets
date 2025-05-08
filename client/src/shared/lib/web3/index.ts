@@ -5,15 +5,13 @@ import {
   ethers,
 } from "ethers";
 import {
-  type PreparedTransaction,
   createThirdwebClient,
   defineChain,
   getContract,
   prepareContractCall,
   sendTransaction,
 } from "thirdweb";
-import { go } from "thirdweb/chains";
-import { createWallet } from "thirdweb/wallets";
+import { type Account, createWallet } from "thirdweb/wallets";
 import type { CyberValleyEventManager } from "../../../../typechain-types/contracts/CyberValleyEventManager";
 import type { CyberValleyEventTicket } from "../../../../typechain-types/contracts/CyberValleyEventTicket";
 import type { SimpleERC20Xylose } from "../../../../typechain-types/contracts/mocks/SimpleERC20Xylose";

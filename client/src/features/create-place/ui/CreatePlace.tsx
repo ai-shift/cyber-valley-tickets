@@ -1,7 +1,7 @@
 import { type EventPlaceForm, PlaceForm } from "@/features/place-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useActiveAccount, useActiveWallet } from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 import { create } from "../api/create";
 import { PlaceSuccessDialog } from "./PlaceSuccessDialog";
 
