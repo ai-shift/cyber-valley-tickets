@@ -21,7 +21,7 @@ class LastProcessedBlock(models.Model):
 
 class LogProcessingError(models.Model):
     block_number = models.PositiveIntegerField()
-    log_receipt = models.JSONField()
+    log_receipt = models.TextField()
     tx_hash = models.TextField()
     error = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

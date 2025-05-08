@@ -1,6 +1,4 @@
-import asyncio
 import logging
-from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import partial
 from queue import Queue
@@ -13,11 +11,11 @@ from pydantic import BaseModel
 from returns.pipeline import flow
 from returns.pointfree import bind
 from returns.result import Failure, Success, safe
-from tenacity import after_log, before_log, retry, wait_fixed
+from tenacity import after_log, retry, wait_fixed
 from web3 import AsyncWeb3, Web3, WebSocketProvider
 from web3.contract import Contract
 from web3.exceptions import LogTopicError, MismatchedABI
-from web3.types import LogReceipt
+from web3.types import LogReceipt, LogsSubscriptionArg
 
 from ..models import LastProcessedBlock, LogProcessingError
 from ._sync import synchronize_event
@@ -42,29 +40,26 @@ class NodeListenerStoppedError(Exception):
     pass
 
 
-@retry(
-    wait=wait_fixed(1),
-    before=before_log(log, logging.INFO),
-    after=after_log(log, logging.ERROR),
-)
 def index_events(
     eth_node_host: str, contracts: dict[ChecksumAddress, type[Contract]], sync: bool
 ) -> None:
-    provider = WebSocketProvider(eth_node_host)
+    provider = WebSocketProvider(f"wss://{eth_node_host}")
     queue: Queue[LogReceipt] = Queue()
     listener_loop = pyshen.aext.create_event_loop_thread()
     listener_fut = pyshen.aext.run_coro_in_thread(
-        arun_listeners(provider, queue, contracts.keys()),
+        arun_listeners(provider, queue, list(contracts.keys())),
         listener_loop,
     )
     if sync:
         run_sync(
-            Web3(Web3.HTTPProvider(f"http://{settings.ETH_NODE_HOST}")),
+            Web3(Web3.HTTPProvider(f"https://{settings.ETH_NODE_HOST}")),
             queue,
             list(contracts.keys()),
         )
     deser_log = partial(parse_log, contracts=list(contracts.values()))
     while receipt := queue.get():
+        tx_hash = "0x" + receipt["transactionHash"].hex()
+        extra = {"tx_hash": tx_hash}
         result = flow(
             receipt,
             deser_log,
@@ -72,41 +67,33 @@ def index_events(
         )
         match result:
             case Success(_):
-                log.info("Successfully processed %s", receipt["topics"])
+                log.info("Successfully processed", extra=extra)
             case Failure(error):
-                log.error("Failed to process %s with %s", receipt["topics"], error)
+                log.error("Failed to process with %s", error, extra=extra)
                 LogProcessingError(
                     block_number=receipt["blockNumber"],
-                    log_receipt=receipt,
-                    tx_hash=str(receipt["transactionHash"]),
+                    log_receipt=str(receipt),
+                    tx_hash=tx_hash,
                     error=repr(error),
                 ).save()
-        LastProcessedBlock(block_number=receipt["blockNumber"]).save()
+        LastProcessedBlock.objects.update_or_create(
+            defaults={"id": 1, "block_number": receipt["blockNumber"]}
+        )
+
     listener_fut.result()
-
-
-async def arun_listeners(
-    provider: WebSocketProvider,
-    queue: Queue[LogReceipt],
-    contract_addresses: Iterable[str],
-) -> NoReturn:
-    await asyncio.gather(
-        *[arun_listener(provider, queue, address) for address in contract_addresses],
-    )
-    raise NodeListenerStoppedError
 
 
 @retry(
     wait=wait_fixed(5),
-    before=before_log(log, logging.INFO),
     after=after_log(log, logging.ERROR),
 )
-async def arun_listener(
-    provider: WebSocketProvider, queue: Queue[LogReceipt], contract_address: str
+async def arun_listeners(
+    provider: WebSocketProvider,
+    queue: Queue[LogReceipt],
+    contract_addresses: list[ChecksumAddress],
 ) -> NoReturn:
-    log.info("Strting logs listener for %s", contract_address)
     async with AsyncWeb3(provider) as w3:
-        filter_params = {"address": contract_address}
+        filter_params = LogsSubscriptionArg(address=contract_addresses)
         _subscription_id = await w3.eth.subscribe("logs", filter_params)
         async for payload in w3.socket.process_subscriptions():
             queue.put(payload.result)
@@ -147,6 +134,7 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
                         event["args"]
                     )
                 except ValueError:
+                    log.exception("Failed to deserialzie event")
                     continue
 
     raise EventNotRecognizedError(log_receipt)

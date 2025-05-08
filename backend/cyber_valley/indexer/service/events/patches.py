@@ -11,3 +11,7 @@ def validate_role(value: HexBytes) -> str:
         return _BYTES_TO_ROLE[value]
     except KeyError as e:
         raise ValueError from e
+
+
+def validate_digest(value: HexBytes) -> str:
+    return value.hex()

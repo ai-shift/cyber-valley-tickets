@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
@@ -12,6 +13,8 @@ from cyber_valley.users.models import CyberValleyUser
 
 from .events import CyberValleyEventManager, CyberValleyEventTicket
 
+log = logging.getLogger(__name__)
+
 
 @dataclass
 class UnknownEventError(Exception):
@@ -19,14 +22,14 @@ class UnknownEventError(Exception):
 
 
 @safe
-def synchronize_event(event_data: BaseModel) -> None:
+def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
     match event_data:
+        case CyberValleyEventManager.EventPlaceUpdated():
+            _sync_event_place_updated(event_data)
         case CyberValleyEventManager.NewEventRequest():
             _sync_new_event_request(event_data)
         case CyberValleyEventManager.EventUpdated():
             _sync_event_updated(event_data)
-        case CyberValleyEventManager.EventPlaceUpdated():
-            _sync_event_place_updated(event_data)
         case CyberValleyEventManager.NewEventPlaceAvailable():
             _sync_new_event_place_available(event_data)
         case CyberValleyEventTicket.TicketMinted():
@@ -35,7 +38,16 @@ def synchronize_event(event_data: BaseModel) -> None:
             _sync_event_status_changed(event_data)
         case CyberValleyEventTicket.TicketRedeemed():
             _sync_ticket_redeemed(event_data)
+        case (
+            CyberValleyEventTicket.RoleGranted() | CyberValleyEventManager.RoleGranted()
+        ):
+            _sync_role_granted(event_data)
+        case CyberValleyEventManager.RoleAdminChanged():
+            pass
+        case CyberValleyEventManager.RoleRevoked():
+            raise NotImplementedError
         case _:
+            log.error("Unknown event data %s", type(event_data))
             raise UnknownEventError(event_data)
 
 
@@ -99,6 +111,7 @@ def _sync_new_event_place_available(
     EventPlace.objects.create(
         id=event_data.event_place_id,
         title=f"Event Place {event_data.event_place_id}",  # Generate a default title
+        days_before_cancel=event_data.days_before_cancel,
         max_tickets=event_data.max_tickets,
         min_tickets=event_data.min_tickets,
         min_price=event_data.min_price,
@@ -158,3 +171,15 @@ def _sync_ticket_redeemed(event_data: CyberValleyEventTicket.TicketRedeemed) -> 
     with transaction.atomic():
         ticket.is_redeemed = True
         ticket.save()
+
+
+def _sync_role_granted(
+    event_data: CyberValleyEventManager.RoleGranted
+    | CyberValleyEventTicket.RoleGranted,
+) -> None:
+    if event_data.role == "DEFAULT_ADMIN_ROLE":
+        return
+    user = CyberValleyUser.objects.get(address=event_data.account)
+    assert user is not None
+    user.role = event_data.role
+    user.save()

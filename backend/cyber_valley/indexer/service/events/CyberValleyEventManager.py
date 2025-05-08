@@ -7,7 +7,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
-from .patches import validate_role
+from .patches import validate_digest, validate_role
 
 
 class EventPlaceUpdated(BaseModel):
@@ -49,7 +49,7 @@ class EventUpdated(BaseModel):
     ticket_price: int = Field(..., alias="ticketPrice")
     start_date: int = Field(..., alias="startDate")
     days_amount: int = Field(..., alias="daysAmount")
-    digest: str
+    digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
 
@@ -64,7 +64,7 @@ class NewEventPlaceAvailable(BaseModel):
     min_price: int = Field(..., alias="minPrice")
     days_before_cancel: int = Field(..., alias="daysBeforeCancel")
     min_days: int = Field(..., alias="minDays")
-    digest: str
+    digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
 
@@ -79,7 +79,7 @@ class NewEventRequest(BaseModel):
     ticket_price: int = Field(..., alias="ticketPrice")
     start_date: int = Field(..., alias="startDate")
     days_amount: int = Field(..., alias="daysAmount")
-    digest: str
+    digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
 
