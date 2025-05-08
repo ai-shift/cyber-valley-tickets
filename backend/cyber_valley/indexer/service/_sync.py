@@ -55,10 +55,11 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
 def _sync_new_event_request(
     event_data: CyberValleyEventManager.NewEventRequest,
 ) -> None:
-    creator = CyberValleyUser.objects.get(address=event_data.creator)
+    creator, _ = CyberValleyUser.objects.get_or_create(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
 
     Event.objects.create(
+        id=event_data.id,
         creator=creator,
         place=place,
         ticket_price=event_data.ticket_price,
@@ -83,13 +84,12 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
     event = Event.objects.get(id=event_data.id)
     place = EventPlace.objects.get(id=event_data.event_place_id)
 
-    with transaction.atomic():
-        event.place = place
-        event.ticket_price = event_data.ticket_price
-        event.start_date = datetime.fromtimestamp(event_data.start_date, tz=UTC)
-        event.days_amount = event_data.days_amount
-        event.updated_at = timezone.now()
-        event.save()
+    event.place = place
+    event.ticket_price = event_data.ticket_price
+    event.start_date = datetime.fromtimestamp(event_data.start_date, tz=UTC)
+    event.days_amount = event_data.days_amount
+    event.updated_at = timezone.now()
+    event.save()
 
 
 def _sync_event_place_updated(
@@ -97,12 +97,11 @@ def _sync_event_place_updated(
 ) -> None:
     place = EventPlace.objects.get(id=event_data.event_place_id)
 
-    with transaction.atomic():
-        place.max_tickets = event_data.max_tickets
-        place.min_tickets = event_data.min_tickets
-        place.min_price = event_data.min_price
-        place.min_days = event_data.min_days
-        place.save()
+    place.max_tickets = event_data.max_tickets
+    place.min_tickets = event_data.min_tickets
+    place.min_price = event_data.min_price
+    place.min_days = event_data.min_days
+    place.save()
 
 
 def _sync_new_event_place_available(
@@ -118,29 +117,28 @@ def _sync_new_event_place_available(
         min_days=event_data.min_days,
     )
 
-
+@transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
     event = Event.objects.get(id=event_data.event_id)
-    owner = CyberValleyUser.objects.get(address=event_data.owner)
+    owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.owner)
 
-    with transaction.atomic():
-        Ticket.objects.create(
-            event=event,
-            owner=owner,
-            id=str(event_data.ticket_id),
-        )
+    Ticket.objects.create(
+        event=event,
+        owner=owner,
+        id=str(event_data.ticket_id),
+    )
 
-        event.tickets_bought += 1
-        event.save()
+    event.tickets_bought += 1
+    event.save()
 
-        Notification.objects.create(
-            user=owner,
-            title="New Ticket Minted",
-            body=(
-                f"A new ticket with id {event_data.ticket_id} "
-                f"has been minted for event {event.title}."
-            ),
-        )
+    Notification.objects.create(
+        user=owner,
+        title="New Ticket Minted",
+        body=(
+            f"A new ticket with id {event_data.ticket_id} "
+            f"has been minted for event {event.title}."
+        ),
+    )
 
 
 def _sync_event_status_changed(
@@ -179,7 +177,6 @@ def _sync_role_granted(
 ) -> None:
     if event_data.role == "DEFAULT_ADMIN_ROLE":
         return
-    user = CyberValleyUser.objects.get(address=event_data.account)
-    assert user is not None
+    user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = event_data.role.split("_")[0].lower()
     user.save()
