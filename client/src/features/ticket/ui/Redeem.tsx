@@ -1,17 +1,39 @@
 import { Button } from "@/shared/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/shared/ui/dialog";
-import { Scanner } from "@yudiel/react-qr-scanner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from "@/shared/ui/dialog";
 
-// TODO: @scipunch add web3 bind
+import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+import { useActiveAccount } from "thirdweb/react";
+import { redeem } from "../api/redeem";
+import { DialogTitle } from "@radix-ui/react-dialog";
+
 export const Redeem: React.FC = () => {
+  const account = useActiveAccount();
+
+  function handleDetect(detected: IDetectedBarcode[]) {
+    const value = detected.at(0);
+    if (!value) return;
+    const ticketId = value.rawValue;
+    redeem(account, ticketId);
+  }
+
   return (
     <div className="flex flex-col justify-center ">
       <Dialog>
-        <DialogTrigger>
-          <Button>Redeem ticket</Button>
+        <DialogTrigger asChild>
+          <Button className="block mx-auto my-8">Redeem ticket</Button>
         </DialogTrigger>
-        <DialogContent className="p-16">
-          <Scanner onScan={(e) => console.log(e)} />
+        <DialogContent aria-describedby={undefined} className="p-16">
+          <DialogTitle className="text-center text-3xl">
+            Scan ticket
+          </DialogTitle>
+          <DialogDescription asChild>
+            <Scanner onScan={handleDetect} />
+          </DialogDescription>
         </DialogContent>
       </Dialog>
     </div>
