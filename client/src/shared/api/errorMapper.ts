@@ -6,5 +6,7 @@ export const errorMapper = (error: ApiError | EthersError): string[] => {
     return [error.shortMessage];
   }
 
-  return error.errors.map((error) => error.detail);
+  if ("errorrs" in error) return error.errors.map((error) => error.detail);
+
+  return ["Oops! Something went wrong. Try again later :)"];
 };
