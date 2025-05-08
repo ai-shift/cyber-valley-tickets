@@ -3,7 +3,7 @@ import type { DateRange } from "react-day-picker";
 
 import { fromUnixTime } from "date-fns";
 
-export const extractRanges = (events: Event[], eventId?: number) =>
+export const extractRanges = (events: Event[], eventId: number) =>
   events.reduce<DateRange[]>((acc, curr) => {
     if (curr.id === eventId) return acc;
     const isPending = curr.status === "submitted";
@@ -11,7 +11,7 @@ export const extractRanges = (events: Event[], eventId?: number) =>
 
     if (!(isPending || isApproved)) return acc;
 
-    const daysInMs = curr.daysAmount * 1000 * 60 * 60 * 24;
+    const daysInMs = curr.daysAmount * 60 * 60 * 24;
 
     acc.push({
       from: fromUnixTime(curr.startDateTimestamp),
