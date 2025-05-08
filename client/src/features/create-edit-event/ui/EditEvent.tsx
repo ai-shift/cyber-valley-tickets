@@ -25,6 +25,7 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
   const foundEvent = events.find((event) => event.id === editEventId);
   const dateRanges = extractRanges(events, Number(editEventId));
 
+  //TODO: Make proper returns
   if (!foundEvent) {
     return <p>Event you are trying to edit is not found</p>;
   }
@@ -34,7 +35,12 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
   }
 
   return (
-    <EventForm bookedRanges={dateRanges} places={places} onSumbit={onSubmit} />
+    <EventForm
+      existingEvent={foundEvent}
+      bookedRanges={dateRanges}
+      places={places}
+      onSumbit={onSubmit}
+    />
   );
 };
 

@@ -23,6 +23,8 @@ import type { Event, EventDto } from "@/entities/event";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
+import { useEffect } from "react";
+import { fromUnixTime } from "date-fns";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
@@ -37,15 +39,35 @@ export const EventForm: React.FC<EventFormProps> = ({
   onSumbit: submitHandler,
   existingEvent,
 }) => {
+  useEffect(() => {
+    if (!existingEvent?.imageUrl) return;
+
+    async function getFileFromUrl(url: string, filename: string) {
+      const response = await fetch(url);
+      const contentType = response.headers.get("Content-Type");
+      const blob = await response.blob();
+      return new File([blob], filename, { type: contentType?.toString() });
+    }
+
+    getFileFromUrl(
+      existingEvent.imageUrl,
+      `Жопа-${Math.floor(Math.random() * 1000)}`,
+    ).then((data) => form.setValue("image", data));
+  }, [existingEvent?.imageUrl]);
+
   const eventForEdit = existingEvent
     ? mapEventToEventForm(existingEvent)
     : undefined;
+
   const formSchema = createFormSchema(places, bookedRanges);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: eventForEdit
-      ? { ...eventForEdit }
+    defaultValues: existingEvent
+      ? {
+          ...eventForEdit,
+          startDate: fromUnixTime(existingEvent.startDateTimestamp),
+        }
       : {
           title: "",
           description: "",
