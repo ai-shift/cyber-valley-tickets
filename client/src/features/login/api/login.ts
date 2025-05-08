@@ -3,7 +3,7 @@ import { type Account, type Wallet, injectedProvider } from "thirdweb/wallets";
 
 export const login = async (
   wallet: Wallet,
-  connect: (wallet: Wallet) => voidf,
+  connect: (wallet: Wallet) => void,
 ) => {
   let account: Account;
   if (injectedProvider(wallet.id)) {

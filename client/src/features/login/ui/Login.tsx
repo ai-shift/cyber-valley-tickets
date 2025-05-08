@@ -10,7 +10,7 @@ import { login } from "../api/login";
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
-  const { connect, isConnecting, connectError } = useConnect();
+  const { connect, isConnecting, error: connectError } = useConnect();
   const { mutate, error, isPending } = useMutation({
     mutationFn: (wallet: Wallet) => login(wallet, connect),
     onSuccess: () => {

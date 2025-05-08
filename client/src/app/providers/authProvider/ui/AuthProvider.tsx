@@ -1,7 +1,7 @@
 import type React from "react";
 import { refresh } from "../api/refresh";
 
-import { client, cvlandChain, wallets } from "@/shared/lib/web3";
+import { client, wallets } from "@/shared/lib/web3";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
@@ -22,7 +22,7 @@ export const AuthProvider: React.FC = () => {
 
   const hasError = !isLoading && isError;
   const { setHasJWT, hasJWT } = useRefreshSlice();
-  const { accountIsLoading } = useAutoConnect({
+  useAutoConnect({
     client,
     wallets,
     onConnect: (connecting) => console.log("onConnect", connecting),
