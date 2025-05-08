@@ -1,6 +1,6 @@
-import { Scanner } from "@yudiel/react-qr-scanner";
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/shared/ui/dialog";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 // TODO: @scipunch add web3 bind
 export const Redeem: React.FC = () => {
