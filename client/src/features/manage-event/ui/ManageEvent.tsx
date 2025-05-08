@@ -1,8 +1,11 @@
 import type { EventStatus } from "@/entities/event";
 
 import { type Role, checkPermission } from "@/shared/lib/RBAC";
+import { approveEvent, declineEvent } from "@/shared/lib/web3";
 import { Button } from "@/shared/ui/button";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import { useActiveAccount } from "thirdweb/react";
 import { AcceptDialog } from "./AcceptDialog";
 
 type MaybeManageEventProps = {
@@ -12,6 +15,8 @@ type MaybeManageEventProps = {
   canEdit: boolean;
 };
 
+type ManageAction = "decline" | "accept";
+
 export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   role,
   status,
@@ -19,24 +24,28 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   canEdit,
 }) => {
   if (status !== "submitted") return;
+  const account = useActiveAccount();
+  if (!account) return <p>Failed to connect wallet</p>;
+  const { mutate } = useMutation({
+    mutationFn: async (action: ManageAction) => {
+      switch (action) {
+        case "accept":
+          return await approveEvent(account, eventId);
+        case "decline":
+          return await declineEvent(account, eventId);
+        default:
+          throw `Unknown action: ${action}`;
+      }
+    },
+    onSuccess: console.log,
+    onError: console.error,
+  });
   const navigate = useNavigate();
 
   const canControl = checkPermission(role, "event:accept/decline");
 
   function onEdit() {
     navigate(`/events/${eventId}/edit`);
-  }
-
-  //TODO: @scipunch Add fetching logic and rewrite to sepparate functions if switch is shit
-  function onControll(action: "accept" | "decline") {
-    switch (action) {
-      case "accept":
-        break;
-      case "decline":
-        break;
-      default:
-        return;
-    }
   }
 
   return (
@@ -49,21 +58,11 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
         )}
         {canControl && (
           <div className="flex justify-between gap-6">
-            <AcceptDialog
-              option="accept"
-              confirmFn={() => onControll("accept")}
-            >
-              <Button className="flex-1" variant="secondary">
-                Accept
-              </Button>
+            <AcceptDialog option="accept" confirmFn={() => mutate("accept")}>
+              <Button variant="secondary">Accept</Button>
             </AcceptDialog>
-            <AcceptDialog
-              option="decline"
-              confirmFn={() => onControll("decline")}
-            >
-              <Button className="flex-1" variant="destructive">
-                Decline
-              </Button>
+            <AcceptDialog option="decline" confirmFn={() => mutate("decline")}>
+              <Button variant="destructive">Decline</Button>
             </AcceptDialog>
           </div>
         )}

@@ -161,6 +161,7 @@ class Command(BaseCommand):
             now = timezone.now()
 
             event1, c_event1 = Event.objects.get_or_create(
+                id=51,
                 title="Grand Opening of Cyber Hub",
                 creator=master_user,  # Lookup fields
                 defaults={
@@ -179,6 +180,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{'Created' if c_event1 else 'Exists'}: {event1.title}")
 
             event2, c_event2 = Event.objects.get_or_create(
+                id=52,
                 title="Digital Marketing Summit 2024",
                 creator=master_user,  # Lookup fields
                 defaults={
@@ -197,6 +199,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{'Created' if c_event2 else 'Exists'}: {event2.title}")
 
             event3, c_event3 = Event.objects.get_or_create(
+                id=53,
                 title="Virtual Reality Expo",
                 creator=master_user,  # Lookup fields
                 defaults={
@@ -215,6 +218,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{'Created' if c_event3 else 'Exists'}: {event3.title}")
 
             event4, c_event4 = Event.objects.get_or_create(
+                id=54,
                 title="Cybersecurity Workshop",
                 creator=master_user,  # Lookup fields
                 defaults={
@@ -235,6 +239,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{'Created' if c_event4 else 'Exists'}: {event4.title}")
 
             event5, c_event5 = Event.objects.get_or_create(
+                id=55,
                 title="Networking Mixer",
                 creator=master_user,  # Lookup fields
                 defaults={
