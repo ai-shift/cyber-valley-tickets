@@ -4,14 +4,15 @@ import { wallets } from "@/shared/lib/web3";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { useMutation } from "@tanstack/react-query";
-import { useWalletImage, useWalletInfo } from "thirdweb/react";
+import { useConnect, useWalletImage, useWalletInfo } from "thirdweb/react";
 import type { Wallet } from "thirdweb/wallets";
 import { login } from "../api/login";
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
+  const { connect, isConnecting, connectError } = useConnect();
   const { mutate, error, isPending } = useMutation({
-    mutationFn: login,
+    mutationFn: (wallet: Wallet) => login(wallet, connect),
     onSuccess: () => {
       setHasJWT(true);
     },
@@ -23,13 +24,13 @@ export const Login: React.FC = () => {
         {isPending || "Connect wallet to login"}
       </h1>
       <div className="text-center space-y-5">
-        {isPending && <Loader className="h-60" />}
+        {(isPending || isConnecting) && <Loader className="h-60" />}
         <div className={cn("flex-col space-y-4", isPending && "hidden")}>
           {wallets.map((wallet) => (
             <ExternalWallet key={wallet.id} wallet={wallet} login={mutate} />
           ))}
         </div>
-        {error && (
+        {(error || connectError) && (
           <ErrorMessage
             className="capitalize text-destructive"
             errors={error}

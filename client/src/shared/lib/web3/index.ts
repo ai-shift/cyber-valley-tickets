@@ -4,7 +4,15 @@ import {
   type Signer,
   ethers,
 } from "ethers";
-import { createThirdwebClient } from "thirdweb";
+import {
+  type PreparedTransaction,
+  createThirdwebClient,
+  defineChain,
+  getContract,
+  prepareContractCall,
+  sendTransaction,
+} from "thirdweb";
+import { go } from "thirdweb/chains";
 import { createWallet } from "thirdweb/wallets";
 import type { CyberValleyEventManager } from "../../../../typechain-types/contracts/CyberValleyEventManager";
 import type { CyberValleyEventTicket } from "../../../../typechain-types/contracts/CyberValleyEventTicket";
@@ -12,11 +20,10 @@ import type { SimpleERC20Xylose } from "../../../../typechain-types/contracts/mo
 import { CyberValleyEventManager__factory } from "../../../../typechain-types/factories/contracts/CyberValleyEventManager__factory";
 import { CyberValleyEventTicket__factory } from "../../../../typechain-types/factories/contracts/CyberValleyEventTicket__factory";
 import { SimpleERC20Xylose__factory } from "../../../../typechain-types/factories/contracts/mocks/SimpleERC20Xylose__factory";
+import EventManagerABI from "./contracts/EventManager";
+import EventTicketABI from "./contracts/EventTicket";
 import { getBytes32FromMultiash } from "./multihash";
-
 const erc20Address = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
-const eventManagerAddress = "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853";
-const eventTicketAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
 
 export const wallets = [
   createWallet("io.metamask"),
@@ -26,8 +33,20 @@ export const wallets = [
   createWallet("io.zerion.wallet"),
 ];
 
+export const cvlandChain = defineChain({
+  id: 31337,
+  rpc: "https://ce9d-109-93-188-5.ngrok-free.app",
+});
+
 export const client = createThirdwebClient({
   clientId: import.meta.env.VITE_THIRDWEB_PUBLIC_CLIENT_ID,
+});
+
+const eventManager = getContract({
+  client: client,
+  chain: cvlandChain,
+  address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+  abi: EventManagerABI,
 });
 
 export async function mintERC20(amount: BigNumberish): Promise<void> {
@@ -54,25 +73,33 @@ export async function signMessage(message: string): Promise<string> {
 }
 
 export async function createPlace(
+  account: Account,
   maxTickets: BigNumberish,
   minTickets: BigNumberish,
   minPrice: BigNumberish,
   daysBeforeCancel: BigNumberish,
   minDays: BigNumberish,
   metaCID: string,
-): Promise<void> {
+): Promise<`0x${string}`> {
   const multihash = getBytes32FromMultiash(metaCID);
-  const { eventManager } = await getContext();
-  await eventManager.createEventPlace(
-    maxTickets,
-    minTickets,
-    minPrice,
-    daysBeforeCancel,
-    minDays,
-    multihash.digest,
-    multihash.hashFunction,
-    multihash.size,
-  );
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "createEventPlace",
+    params: [
+      maxTickets,
+      minTickets,
+      minPrice,
+      daysBeforeCancel,
+      minDays,
+      multihash.digest,
+      multihash.hashFunction,
+      multihash.size,
+    ],
+  });
+  console.log("acount", account, "tx", transaction);
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  console.log("tx hash", transactionHash);
+  return transactionHash;
 }
 
 export async function submitEventRequest(

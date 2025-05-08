@@ -2,7 +2,7 @@ import type { EventPlaceForm } from "@/features/place-form";
 import { apiClient } from "@/shared/api";
 import { createPlace } from "@/shared/lib/web3";
 
-export const create = async (place: EventPlaceForm) => {
+export const create = async (place: EventPlaceForm, account) => {
   const { maxTickets, minPrice, minTickets, minDays, daysBeforeCancel, title } =
     place;
 
@@ -15,9 +15,12 @@ export const create = async (place: EventPlaceForm) => {
     body: placeForm,
   });
 
+  console.log("Got places meta response", data);
   if (!data || !data.cid) throw new Error("No cid was recieved");
 
-  await createPlace(
+  console.log("Acount", account);
+  const tx = await createPlace(
+    account,
     maxTickets,
     minTickets,
     minPrice,
@@ -25,4 +28,6 @@ export const create = async (place: EventPlaceForm) => {
     minDays,
     data.cid,
   );
+  console.log("Tx sent", tx);
+  console.log("Mutate finished");
 };
