@@ -1,9 +1,19 @@
-import { getAddress, signMessage } from "@/shared/lib/web3";
+import { client } from "@/shared/lib/web3";
+import { type Account, type Wallet, injectedProvider } from "thirdweb/wallets";
 
-export const login = async () => {
-  const address = await getAddress();
+export const login = async (wallet: Wallet) => {
+  let account: Account;
+  if (injectedProvider(wallet.id)) {
+    account = await wallet.connect({ client });
+  } else {
+    account = await wallet.connect({
+      client,
+      walletConnect: { showQrModal: true },
+    });
+  }
+  const { address, signMessage } = account;
   const message = `Sign this message to authenticate with our service.\n\nAddress: ${address}\nTimestamp: ${new Date().toISOString()}`;
-  const signature = await signMessage(message);
+  const signature = await signMessage({ message });
 
   const nonceResponse = await fetch("/api/auth/web3/nonce");
   const { nonce } = await nonceResponse.json();
