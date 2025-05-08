@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from returns.pipeline import flow
 from returns.pointfree import bind
 from returns.result import Failure, Success, safe
-from tenacity import after_log, retry, wait_fixed
+from tenacity import before_sleep_log, retry, wait_fixed
 from web3 import AsyncWeb3, Web3, WebSocketProvider
 from web3.contract import Contract
 from web3.exceptions import LogTopicError, MismatchedABI
@@ -85,7 +85,7 @@ def index_events(
 
 @retry(
     wait=wait_fixed(5),
-    after=after_log(log, logging.ERROR),
+    before_sleep=before_sleep_log(log, logging.ERROR),
 )
 async def arun_listeners(
     provider: WebSocketProvider,
@@ -96,14 +96,18 @@ async def arun_listeners(
         filter_params = LogsSubscriptionArg(address=contract_addresses)
         _subscription_id = await w3.eth.subscribe("logs", filter_params)
         async for payload in w3.socket.process_subscriptions():
-            queue.put(payload.result)
+            queue.put(payload["result"])
     raise NodeListenerStoppedError
 
 
 def run_sync(
     w3: Web3, queue: Queue[LogReceipt], contract_addresses: list[ChecksumAddress]
 ) -> None:
-    for receipt in _get_logs(w3, contract_addresses):
+    try:
+        last_block = LastProcessedBlock.objects.get(id=1).block_number
+    except LastProcessedBlock.DoesNotExist:
+        last_block = 0
+    for receipt in _get_logs(w3, last_block, contract_addresses):
         queue.put(receipt)
 
 
@@ -140,7 +144,9 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
     raise EventNotRecognizedError(log_receipt)
 
 
-def _get_logs(w3: Web3, addresses: list[ChecksumAddress]) -> list[LogReceipt]:
+def _get_logs(
+    w3: Web3, from_block: int, addresses: list[ChecksumAddress]
+) -> list[LogReceipt]:
     return w3.eth.filter(
-        {"fromBlock": 0, "toBlock": "latest", "address": addresses}
+        {"fromBlock": from_block, "toBlock": "latest", "address": addresses}
     ).get_all_entries()

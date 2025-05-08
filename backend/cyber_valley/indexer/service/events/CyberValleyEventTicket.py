@@ -7,7 +7,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
-from .patches import validate_role
+from .patches import validate_digest, validate_role
 
 
 class Approval(BaseModel):
@@ -62,7 +62,7 @@ class TicketMinted(BaseModel):
     event_id: int = Field(..., alias="eventId")
     ticket_id: int = Field(..., alias="ticketId")
     owner: str
-    digest: str
+    digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
 

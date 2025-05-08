@@ -29,7 +29,13 @@ const purchaseTicket = async (account: Account, order: Order) => {
 
   if (!data || !data.cid) throw new Error("Can't fetch CID");
 
-  await mintTicket(account, order.ticket.eventId, data.cid);
+  const txHash = await mintTicket(
+    account,
+    order.ticket.ticketPrice,
+    order.ticket.eventId,
+    data.cid,
+  );
+  console.log("Tx hash", txHash);
 };
 
 const updateEvent = async (account: Account, order: Order) => {
