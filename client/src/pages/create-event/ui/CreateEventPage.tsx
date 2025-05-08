@@ -5,7 +5,6 @@ import { CreateEvent } from "@/features/create-edit-event";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { useNavigate } from "react-router";
 
-// TODO: @scipunch review
 export const CreateEventPage: React.FC = () => {
   const navigate = useNavigate();
   const { setEventOrder } = useOrderStore();

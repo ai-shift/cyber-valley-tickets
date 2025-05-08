@@ -34,7 +34,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
         <div>
           <img
             className="aspect-square h-40 mx-auto my-7"
-            src="/icons/price_2.svg"
+            src="/icons/price_1.svg"
             alt="purchase"
           />
           <h2 className="text-muted font-semibold text-lg text-center">
@@ -63,7 +63,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
       <div className="flex justify-center py-6">
         <span>
           <Button onClick={() => mutate(order)} className="mx-auto">
-            Pay with wallet
+            Confirm
           </Button>
         </span>
       </div>

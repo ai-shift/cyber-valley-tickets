@@ -33,6 +33,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     ticketPrice,
     ticketsBought,
     startDateTimestamp,
+    daysAmount,
   } = event;
 
   const editPermission = canEdit(user, event);
@@ -52,17 +53,25 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         <p className="text-xl">{description}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 px-4 py-5">
+      <div className="px-4 pt-5">
+        <DetailsBlock
+          icon="/icons/event place_2.svg"
+          title="Location"
+          information={place.title}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-3 px-4 py-3">
         <DetailsBlock
           icon="/icons/calendar.svg"
           title="Date"
           information={formatTimestamp(startDateTimestamp)}
         />
         <DetailsBlock
-          icon="/icons/event place_2.svg"
-          title="Location"
-          information={place.title}
+          icon="/icons/calendar.svg"
+          title="Duration"
+          information={`${daysAmount} day${daysAmount > 1 ? "s" : ""}`}
         />
+
         <DetailsBlock
           icon="/icons/Attendees_2.svg"
           title="Attendees"

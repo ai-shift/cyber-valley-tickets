@@ -15,6 +15,7 @@ export const AccountPage: React.FC = () => {
   };
 
   if (!user) return <p>Feels bad, man</p>;
+  const address = user.address;
 
   return (
     <PageContainer name="Account">
@@ -25,7 +26,9 @@ export const AccountPage: React.FC = () => {
             src="https://images.stockcake.com/public/8/c/4/8c46406b-e635-4ad7-9d39-5b4591616202/cyberpunk-city-avatar-stockcake.jpg"
             alt="User"
           />
-          <p>{user.address.slice(0, 16)}...</p>
+          <p className="text-lg">
+            {address.slice(0, 7)}...{address.slice(-5)}
+          </p>
         </div>
         <div className="w-1/2 h-full flex flex-col justify-between gap-20">
           <Link to="/account/my-events" className="w-full block">
