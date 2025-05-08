@@ -1,5 +1,6 @@
 import { useOrderStore } from "@/entities/order";
 import { Purchase } from "@/features/purchase";
+import { PageContainer } from "@/shared/ui/PageContainer";
 import { Navigate } from "react-router";
 
 export const PurchasePage: React.FC = () => {
@@ -9,8 +10,8 @@ export const PurchasePage: React.FC = () => {
   if (!order) return <Navigate to="/" />;
 
   return (
-    <div>
+    <PageContainer name="Payment">
       <Purchase />
-    </div>
+    </PageContainer>
   );
 };
