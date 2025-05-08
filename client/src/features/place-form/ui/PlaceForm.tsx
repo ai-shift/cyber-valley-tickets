@@ -17,15 +17,18 @@ import { Input } from "@/shared/ui/input";
 
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { formSchema } from "../model/formSchema";
+import type { UseMutateFunction } from "@tanstack/react-query";
 
 type PlaceFormProps = {
   existingPlace?: EventPlaceForm;
-  onSubmit: (values: EventPlaceForm) => void;
+  onSubmit: UseMutateFunction<void, unknown, EventPlaceForm, unknown>;
+  disableFields: boolean;
 };
 
 export const PlaceForm: React.FC<PlaceFormProps> = ({
   existingPlace,
   onSubmit: submitHandler,
+  disableFields,
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,8 +45,11 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    submitHandler(values);
-    form.reset();
+    submitHandler(values, {
+      onSuccess: () => {
+        form.reset();
+      },
+    });
   }
 
   return (
@@ -54,12 +60,13 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
       >
         <FormField
           control={form.control}
+          disabled={disableFields}
           name="title"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input placeholder="Place's name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -67,26 +74,31 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
         />
         <CustomFormComponent
           control={form.control}
+          fieldDisabled={disableFields}
           fieldName="minTickets"
           title="Minimum tickets amount"
         />
         <CustomFormComponent
           control={form.control}
+          fieldDisabled={disableFields}
           fieldName="maxTickets"
           title="Maximum tickets amount"
         />
         <CustomFormComponent
           control={form.control}
+          fieldDisabled={disableFields}
           fieldName="minDays"
           title="Minimum days"
         />
         <CustomFormComponent
           control={form.control}
+          fieldDisabled={disableFields}
           fieldName="minPrice"
           title="Minimum price"
         />
         <CustomFormComponent
           control={form.control}
+          fieldDisabled={disableFields}
           fieldName="daysBeforeCancel"
           title="Days before cancel"
         />
@@ -109,17 +121,20 @@ type CustomFormComponentProps = {
     | "minDays"
     | "daysBeforeCancel";
   title: string;
+  fieldDisabled: boolean;
 };
 
 const CustomFormComponent = ({
   control,
   fieldName,
   title,
+  fieldDisabled,
 }: CustomFormComponentProps) => {
   return (
     <FormField
       control={control}
       name={fieldName}
+      disabled={fieldDisabled}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{title}</FormLabel>
