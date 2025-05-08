@@ -103,7 +103,11 @@ async def arun_listeners(
 def run_sync(
     w3: Web3, queue: Queue[LogReceipt], contract_addresses: list[ChecksumAddress]
 ) -> None:
-    for receipt in _get_logs(w3, contract_addresses):
+    try:
+        last_block = LastProcessedBlock.objects.get(id=1).block_number
+    except LastProcessedBlock.DoesNotExist:
+        last_block = 0
+    for receipt in _get_logs(w3, last_block, contract_addresses):
         queue.put(receipt)
 
 
@@ -140,7 +144,7 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
     raise EventNotRecognizedError(log_receipt)
 
 
-def _get_logs(w3: Web3, addresses: list[ChecksumAddress]) -> list[LogReceipt]:
+def _get_logs(w3: Web3, from_block: int, addresses: list[ChecksumAddress]) -> list[LogReceipt]:
     return w3.eth.filter(
-        {"fromBlock": 0, "toBlock": "latest", "address": addresses}
+        {"fromBlock": from_block, "toBlock": "latest", "address": addresses}
     ).get_all_entries()

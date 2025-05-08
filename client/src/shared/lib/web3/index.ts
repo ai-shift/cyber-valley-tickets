@@ -190,7 +190,7 @@ export async function declineEvent(
   // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
-    method: "dclineEvent",
+    method: "declineEvent",
     params: [eventId],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
