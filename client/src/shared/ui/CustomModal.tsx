@@ -9,7 +9,7 @@ import {
 import { createPortal } from "react-dom";
 import { cn } from "../lib/utils";
 
-export const ModalContext = createContext(
+const ModalContext = createContext(
   {} as {
     open: boolean;
     onModalChange: (open: boolean) => void;
