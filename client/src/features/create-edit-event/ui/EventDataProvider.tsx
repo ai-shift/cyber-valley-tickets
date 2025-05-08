@@ -1,8 +1,8 @@
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
-import { useEventsAndPlaces } from "../api/useEventsAndPlaces";
 import { Loader } from "@/shared/ui/Loader";
+import { useEventsAndPlaces } from "../api/useEventsAndPlaces";
 
 type EventDataProviderProps = {
   children: (data: {

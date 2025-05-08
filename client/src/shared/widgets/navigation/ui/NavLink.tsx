@@ -1,7 +1,7 @@
 import type { Role } from "@/shared/lib/RBAC";
-import type { Route } from "../model/routes";
 import { useLocation } from "react-router";
 import { NavLink as Link } from "react-router";
+import type { Route } from "../model/routes";
 
 type NavLinkProps = {
   route: Route;
