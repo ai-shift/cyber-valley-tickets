@@ -10,6 +10,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   errors,
   className,
 }) => {
+  console.error("Got error", errors);
   const formattedErrors = new Set<string>();
 
   if (Array.isArray(errors)) {
