@@ -108,16 +108,14 @@ def _sync_event_place_updated(
 def _sync_new_event_place_available(
     event_data: CyberValleyEventManager.NewEventPlaceAvailable,
 ) -> None:
-    EventPlace.objects.update_or_create(
-        default={
-            "id": event_data.event_place_id,
-            "title": f"Event Place {event_data.event_place_id}",
-            "days_before_cancel": event_data.days_before_cancel,
-            "max_tickets": event_data.max_tickets,
-            "min_tickets": event_data.min_tickets,
-            "min_price": event_data.min_price,
-            "min_days": event_data.min_days,
-        }
+    EventPlace.objects.create(
+        id=event_data.event_place_id,
+        title=f"Event Place {event_data.event_place_id}",  # Generate a default title
+        days_before_cancel=event_data.days_before_cancel,
+        max_tickets=event_data.max_tickets,
+        min_tickets=event_data.min_tickets,
+        min_price=event_data.min_price,
+        min_days=event_data.min_days,
     )
 
 
@@ -183,5 +181,5 @@ def _sync_role_granted(
         return
     user = CyberValleyUser.objects.get(address=event_data.account)
     assert user is not None
-    user.role = event_data.role.split("_")[0].lower()
+    user.role = event_data.role
     user.save()
