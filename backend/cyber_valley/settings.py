@@ -242,8 +242,8 @@ CONTRACTS_INFO: Final = (
 ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
     adr: json.loads(path.read_text())["abi"]
     for adr, path in {
-        "0x0": CONTRACTS_INFO[1],
-        "0x1": CONTRACTS_INFO[2],
+        "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44": CONTRACTS_INFO[1],
+        "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f": CONTRACTS_INFO[2],
     }.items()
 }
 

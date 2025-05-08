@@ -7,13 +7,14 @@ from queue import Queue
 from typing import Any, Final, NoReturn, cast
 
 import pyshen
+from django.conf import settings
 from eth_typing import ChecksumAddress
 from pydantic import BaseModel
 from returns.pipeline import flow
 from returns.pointfree import bind
 from returns.result import Failure, Success, safe
 from tenacity import after_log, before_log, retry, wait_fixed
-from web3 import AsyncWeb3, WebSocketProvider
+from web3 import AsyncWeb3, Web3, WebSocketProvider
 from web3.contract import Contract
 from web3.exceptions import LogTopicError, MismatchedABI
 from web3.types import LogReceipt
@@ -47,8 +48,7 @@ class NodeListenerStoppedError(Exception):
     after=after_log(log, logging.ERROR),
 )
 def index_events(
-    eth_node_host: str,
-    contracts: dict[ChecksumAddress, type[Contract]],
+    eth_node_host: str, contracts: dict[ChecksumAddress, type[Contract]], sync: bool
 ) -> None:
     provider = WebSocketProvider(eth_node_host)
     queue: Queue[LogReceipt] = Queue()
@@ -57,6 +57,12 @@ def index_events(
         arun_listeners(provider, queue, contracts.keys()),
         listener_loop,
     )
+    if sync:
+        run_sync(
+            Web3(Web3.HTTPProvider(f"http://{settings.ETH_NODE_HOST}")),
+            queue,
+            list(contracts.keys()),
+        )
     deser_log = partial(parse_log, contracts=list(contracts.values()))
     while receipt := queue.get():
         result = flow(
@@ -107,6 +113,13 @@ async def arun_listener(
     raise NodeListenerStoppedError
 
 
+def run_sync(
+    w3: Web3, queue: Queue[LogReceipt], contract_addresses: list[ChecksumAddress]
+) -> None:
+    for receipt in _get_logs(w3, contract_addresses):
+        queue.put(receipt)
+
+
 @dataclass
 class EventNotRecognizedError(Exception):
     log_receipt: LogReceipt
@@ -137,3 +150,9 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
                     continue
 
     raise EventNotRecognizedError(log_receipt)
+
+
+def _get_logs(w3: Web3, addresses: list[ChecksumAddress]) -> list[LogReceipt]:
+    return w3.eth.filter(
+        {"fromBlock": 0, "toBlock": "latest", "address": addresses}
+    ).get_all_entries()
