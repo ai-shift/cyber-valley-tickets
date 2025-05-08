@@ -12,7 +12,7 @@ export const Nav: React.FC<NavProps> = ({ className }) => {
   const { user } = useUser();
   if (!user) return;
   return (
-    <nav className={cn("flex justify-around gap-3", className)}>
+    <nav className={cn("flex justify-around flex-wrap gap-3", className)}>
       {routes.map((route) => (
         <NavLink key={route.path} route={route} role={user.role} />
       ))}

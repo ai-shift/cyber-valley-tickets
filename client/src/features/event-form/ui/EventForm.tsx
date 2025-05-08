@@ -70,7 +70,7 @@ export const EventForm: React.FC<EventFormProps> = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 px-3 py-5"
+        className="grid grid-rows gap-5 px-3 py-5"
       >
         <FormField
           control={form.control}

@@ -208,3 +208,7 @@ input[type="number"] {
     transform: rotate(1turn);
   }
 }
+
+html {
+  overflow: hidden;
+}

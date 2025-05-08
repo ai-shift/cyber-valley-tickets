@@ -27,7 +27,7 @@ export const AccountPage: React.FC = () => {
           />
           <p>{user.address.slice(0, 16)}...</p>
         </div>
-        <div className="w-1/2 flex flex-col h-80 justify-between">
+        <div className="w-1/2 h-full flex flex-col justify-between gap-20">
           <Link to="/account/my-events" className="w-full block">
             <Button
               filling="outline"

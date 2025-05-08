@@ -30,7 +30,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ route, role }) => {
           src={`/icons/${isCurrent ? `${icon}_active` : icon}.svg`}
           alt={title}
         />
-        {title}
+        <p>{title}</p>
       </Link>
     )
   );
