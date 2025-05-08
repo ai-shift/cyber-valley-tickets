@@ -240,7 +240,7 @@ export const EventForm: React.FC<EventFormProps> = ({
             );
           }}
         />
-        <Button type="submit" variant="default">
+        <Button className="block mx-auto" type="submit" variant="default">
           Submit
         </Button>
       </form>
