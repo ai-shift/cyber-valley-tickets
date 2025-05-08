@@ -181,5 +181,5 @@ def _sync_role_granted(
         return
     user = CyberValleyUser.objects.get(address=event_data.account)
     assert user is not None
-    user.role = event_data.role
+    user.role = event_data.role.split("_")[0].lower()
     user.save()
