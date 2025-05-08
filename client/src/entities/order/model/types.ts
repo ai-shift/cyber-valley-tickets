@@ -1,4 +1,5 @@
 import type { EventDto } from "@/entities/event/@x/order";
+import type { EventDtoWithId } from "@/entities/event/model/types";
 
 export type Socials = {
   type: string;
@@ -6,11 +7,17 @@ export type Socials = {
 };
 
 interface BaseOrder {
-  type: "create_event" | "buy_ticket";
+  type: "create_event" | "buy_ticket" | "update_event";
   socials?: Socials;
 }
 
-interface EventOrder extends BaseOrder {
+interface UpdateEventOrder extends BaseOrder {
+  type: "update_event";
+  event: EventDtoWithId;
+  ticket?: never;
+}
+
+interface CreateEventOrder extends BaseOrder {
   type: "create_event";
   event: EventDto;
   ticket?: never;
@@ -28,4 +35,4 @@ export interface OrderTicket {
   ticketPrice: number;
 }
 
-export type Order = EventOrder | TicketOrder;
+export type Order = CreateEventOrder | TicketOrder | UpdateEventOrder;
