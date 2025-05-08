@@ -37,15 +37,19 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             # --- Create Master User ---
-            master_address = "0x7cAFfEf233EF9c30688844fC2C4048469011FFe1"
-            master_user, created = CyberValleyUser.objects.get_or_create(
-                address=master_address,
-                defaults={"role": CyberValleyUser.MASTER, "is_active": True},
-            )
-            if created:
-                self.stdout.write(f"Created Master User: {master_user.address}")
-            else:
-                self.stdout.write(f"Master User already exists: {master_user.address}")
+            masters = ("0x70997970C51812dc3A010C7d01b50e0d17dc79C8",)
+            master_user: CyberValleyUser
+            for address in masters:
+                master_user, created = CyberValleyUser.objects.get_or_create(
+                    address=address,
+                    defaults={"role": CyberValleyUser.MASTER, "is_active": True},
+                )
+                if created:
+                    self.stdout.write(f"Created Master User: {master_user.address}")
+                else:
+                    self.stdout.write(
+                        f"Master User already exists: {master_user.address}"
+                    )
 
             # --- Create Event Places ---
             self.stdout.write("Creating Event Places...")
