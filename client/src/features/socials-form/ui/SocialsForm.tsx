@@ -19,14 +19,18 @@ import { SelectNetwork } from "./SelectNetwork";
 
 type SocialsFormProps = {
   onSubmit: (values: Socials) => void;
+  existingSocials?: Socials;
 };
 
 export const SocialsForm: React.FC<SocialsFormProps> = ({
   onSubmit: submitHandler,
+  existingSocials,
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { type: "", contactInfo: "" },
+    defaultValues: existingSocials
+      ? existingSocials
+      : { type: "", contactInfo: "" },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {

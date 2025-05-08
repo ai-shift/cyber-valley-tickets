@@ -12,11 +12,14 @@ export const SocialsPage: React.FC = () => {
 
   function handleSubmit(socials: Socials) {
     setSocials(socials);
-    navigate("/purchase", { replace: true });
+    navigate("/purchase");
   }
+
+  console.log(order.socials);
+
   return (
     <PageContainer name="Socials">
-      <SocialsForm onSubmit={handleSubmit} />
+      <SocialsForm existingSocials={order.socials} onSubmit={handleSubmit} />
     </PageContainer>
   );
 };
