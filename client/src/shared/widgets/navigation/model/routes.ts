@@ -12,16 +12,16 @@ export const routes: Route[] = [
     title: "Home",
   },
   {
-    path: "/manage",
-    title: "Manage",
-    restrictedTo: ["master"],
-  },
-  {
     path: "/events/create",
     title: "Create",
   },
   {
     path: "/account",
     title: "Account",
+  },
+  {
+    path: "/manage",
+    title: "Manage",
+    restrictedTo: ["master"],
   },
 ];
