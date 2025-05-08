@@ -15,7 +15,7 @@ export const apiClient = createClient<paths>({
 });
 
 const errorMiddleware: Middleware = {
-  async onResponse({ request, response, options }) {
+  async onResponse({ response }) {
     if (!response.ok) {
       const errorData = await response.json();
       throw errorData as ApiError;

@@ -4,8 +4,11 @@ import { EventsList, upcomingFilter } from "@/features/events-list/";
 import { NotificationIcon } from "@/features/notifications";
 import { mintERC20 } from "@/shared/lib/web3";
 import { Button } from "@/shared/ui/button";
+import { useActiveAccount } from "thirdweb/react";
 
 export const HomePage: React.FC = () => {
+  const account = useActiveAccount();
+  if (!account) return <p>Connect your wallet first</p>;
   return (
     <div className="px-6">
       <h1 className="text-shadow-md text-shadow-primary text-primary text-5xl py-4">
@@ -26,7 +29,7 @@ export const HomePage: React.FC = () => {
       </section>
       <Button
         onClick={() =>
-          mintERC20(50)
+          mintERC20(account, 50)
             .then(() => alert("Minted 50 tokens"))
             .catch(console.error)
         }

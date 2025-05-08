@@ -33,7 +33,7 @@ export const Login: React.FC = () => {
         {(error || connectError) && (
           <ErrorMessage
             className="capitalize text-destructive"
-            errors={error}
+            errors={error || connectError}
           />
         )}
       </div>

@@ -1,10 +1,9 @@
-import type { EthersError } from "ethers";
 import type { ApiError } from "./apiClient";
 
-export const errorMapper = (error: ApiError | EthersError): string[] => {
-  if ("shortMessage" in error) {
-    return [error.shortMessage];
+export const errorMapper = (error: ApiError | Error): string[] => {
+  if ("errors" in error) {
+    return error.errors.map((error) => error.detail);
   }
 
-  return error.errors.map((error) => error.detail);
+  return [error.toString()];
 };
