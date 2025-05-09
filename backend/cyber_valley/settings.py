@@ -239,13 +239,6 @@ CONTRACTS_INFO: Final = (
         / "CyberValleyEventManager.json"
     ),
 )
-ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
-    adr: json.loads(path.read_text())["abi"]
-    for adr, path in {
-        "0xA17D5c9551Bd04f32ee2eDb3C486C7e52E305DfF": CONTRACTS_INFO[1],
-        "0xc0C8856951bB807Cd7313F43425953dA2Cd389C4": CONTRACTS_INFO[2],
-    }.items()
-}
 
 IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])
 
