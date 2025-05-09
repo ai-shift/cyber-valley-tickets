@@ -3,7 +3,6 @@ import logging
 from argparse import ArgumentParser
 from typing import Any, Final
 
-import pyshen
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from eth_typing import ChecksumAddress, HexAddress, HexStr
@@ -20,6 +19,7 @@ ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
         "0xc0C8856951bB807Cd7313F43425953dA2Cd389C4": settings.CONTRACTS_INFO[2],
     }.items()
 }
+
 
 class Command(BaseCommand):
     help = "Listens to smart contract events and indexes data into the database."
@@ -38,7 +38,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
-        pyshen.logging.setup()
         w3 = Web3(Web3.HTTPProvider(f"https://{settings.ETH_NODE_HOST}"))
         assert w3.is_connected()
         contracts = {

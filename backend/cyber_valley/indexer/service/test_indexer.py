@@ -22,6 +22,7 @@ ProcessStarter = Generator[None]
 
 ETHEREUM_DIR: Final = settings.BASE_DIR.parent / "ethereum"
 
+
 @pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
     printer_session("Starting hardhat node")

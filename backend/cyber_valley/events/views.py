@@ -22,9 +22,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from cyber_valley.web3_auth.serializers import SIWEModelSerializer
-from cyber_valley.web3_auth.service import verify_signature
-
 from .models import Event, EventPlace
 from .serializers import (
     CreatorEventSerializer,
