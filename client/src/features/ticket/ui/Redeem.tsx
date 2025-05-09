@@ -6,10 +6,10 @@ import {
   DialogTrigger,
 } from "@/shared/ui/dialog";
 
+import { DialogTitle } from "@radix-ui/react-dialog";
 import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import { useActiveAccount } from "thirdweb/react";
 import { redeem } from "../api/redeem";
-import { DialogTitle } from "@radix-ui/react-dialog";
 
 export const Redeem: React.FC = () => {
   const account = useActiveAccount();

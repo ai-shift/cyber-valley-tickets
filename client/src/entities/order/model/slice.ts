@@ -1,9 +1,8 @@
-import type { EventDto } from "@/entities/event/@x/order";
+import type { EventDto, EventDtoWithId } from "@/entities/event/@x/order";
 import type { Order, OrderTicket, Socials } from "./types";
 
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type { EventDtoWithId } from "@/entities/event/model/types";
 
 interface OrderState {
   order: Order | null;
