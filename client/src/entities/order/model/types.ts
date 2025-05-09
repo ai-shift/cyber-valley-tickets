@@ -6,6 +6,12 @@ export type Socials = {
   contactInfo: string;
 };
 
+export interface OrderTicket {
+  eventId: number;
+  eventTitle: string;
+  ticketPrice: number;
+}
+
 interface BaseOrder {
   type: "create_event" | "buy_ticket" | "update_event";
   socials?: Socials;
@@ -27,12 +33,6 @@ interface TicketOrder extends BaseOrder {
   type: "buy_ticket";
   event?: never;
   ticket: OrderTicket;
-}
-
-export interface OrderTicket {
-  eventId: number;
-  eventTitle: string;
-  ticketPrice: number;
 }
 
 export type Order = CreateEventOrder | TicketOrder | UpdateEventOrder;

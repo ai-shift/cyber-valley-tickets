@@ -1,5 +1,5 @@
 import { eventQueries } from "@/entities/event";
-import { placesQueries } from "@/entities/place/api/placesQueries";
+import { placesQueries } from "@/entities/place/";
 import { useQueries } from "@tanstack/react-query";
 
 export const useEventsAndPlaces = () => {

@@ -1,1 +1,1 @@
-export type { EventDto } from "../index";
+export type { EventDto, EventDtoWithId } from "../index";

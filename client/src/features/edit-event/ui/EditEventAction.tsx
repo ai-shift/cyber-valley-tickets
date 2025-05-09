@@ -2,6 +2,7 @@ import type { EventDto } from "@/entities/event";
 import { useOrderStore } from "@/entities/order";
 import { useUser } from "@/entities/user";
 import { EditEvent, canUserEdit } from "@/features/create-edit-event";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { useNavigate } from "react-router";
 
 type EditEventActionProps = {
@@ -15,7 +16,8 @@ export const EditEventAction: React.FC<EditEventActionProps> = ({
   const { user } = useUser();
   const { setEventOrder } = useOrderStore();
 
-  if (!user) return <p>I hate this</p>;
+  if (!user)
+    return <ErrorMessage errors={new Error("No user found, login please!")} />;
 
   function onSubmit(values: EventDto) {
     setEventOrder({ ...values, id: numbericId });

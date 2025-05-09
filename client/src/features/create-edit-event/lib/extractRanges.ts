@@ -3,7 +3,7 @@ import type { DateRange } from "react-day-picker";
 
 import { fromUnixTime } from "date-fns";
 
-export const extractRanges = (events: Event[], eventId: number) =>
+export const extractRanges = (events: Event[], eventId?: number) =>
   events.reduce<DateRange[]>((acc, curr) => {
     if (curr.id === eventId) return acc;
     const isPending = curr.status === "submitted";

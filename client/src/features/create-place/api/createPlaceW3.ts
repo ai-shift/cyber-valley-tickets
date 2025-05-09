@@ -3,7 +3,10 @@ import { apiClient } from "@/shared/api";
 import { createPlace } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
-export const create = async (place: EventPlaceForm, account?: Account) => {
+export const createPlaceW3 = async (
+  place: EventPlaceForm,
+  account?: Account,
+) => {
   if (!account) throw "Account should be defined";
   const { maxTickets, minPrice, minTickets, minDays, daysBeforeCancel, title } =
     place;
