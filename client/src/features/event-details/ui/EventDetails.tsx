@@ -67,7 +67,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={formatTimestamp(startDateTimestamp)}
         />
         <DetailsBlock
-          icon="/icons/calendar.svg"
+          icon="/icons/duration_2.svg"
           title="Duration"
           information={`${daysAmount} day${daysAmount > 1 ? "s" : ""}`}
         />
