@@ -37,6 +37,11 @@ DEBUG = bool(os.environ.get("DJANGO_DEBUG", None))
 if DEBUG:
     log.warning("!!! RUNNING IN DEBUG MODE !!!")
 
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+ALLOWED_HOSTS = ["cvland-tickets.aishift.co"]
+
 CORS_ALLOWED_ORIGINS = (
     (
         "http://localhost:5173",
