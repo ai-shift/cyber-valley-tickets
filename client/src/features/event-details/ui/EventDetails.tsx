@@ -13,6 +13,7 @@ import { DetailsBlock } from "./DetailsBlock";
 type EventDetailsProps = {
   eventId: number;
 };
+
 export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   const { user } = useUser();
   const {
@@ -23,7 +24,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
 
   if (isFetching) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
-  if (!event || !user) return <p>GG</p>;
+  if (!event || !user) return <ErrorMessage errors={error} />;
 
   const {
     imageUrl,
@@ -67,7 +68,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={formatTimestamp(startDateTimestamp)}
         />
         <DetailsBlock
-          icon="/icons/calendar.svg"
+          icon="/icons/duration_2.svg"
           title="Duration"
           information={`${daysAmount} day${daysAmount > 1 ? "s" : ""}`}
         />

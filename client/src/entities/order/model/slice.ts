@@ -1,4 +1,4 @@
-import type { EventDto } from "@/entities/event/@x/order";
+import type { EventDto, EventDtoWithId } from "@/entities/event/@x/order";
 import type { Order, OrderTicket, Socials } from "./types";
 
 import type { EventDtoWithId } from "@/entities/event/model/types";

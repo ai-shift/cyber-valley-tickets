@@ -1,6 +1,7 @@
 import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { EventForm } from "@/features/event-form";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { extractRanges } from "../lib/extractRanges";
 import { EventDataProvider } from "./EventDataProvider";
 
@@ -25,13 +26,20 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
   const foundEvent = events.find((event) => event.id === editEventId);
   const dateRanges = extractRanges(events, Number(editEventId));
 
-  //TODO: Make proper returns
   if (!foundEvent) {
-    return <p>Event you are trying to edit is not found</p>;
+    return (
+      <ErrorMessage
+        errors={new Error("Event you are trying to edit is not found")}
+      />
+    );
   }
 
   if (canEdit && !canEdit(foundEvent)) {
-    return <p>You have no permission to edit this event</p>;
+    return (
+      <ErrorMessage
+        errors={new Error("You have no permissions to edit this event")}
+      />
+    );
   }
 
   return (
