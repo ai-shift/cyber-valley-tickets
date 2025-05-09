@@ -21,7 +21,7 @@
       delegate_to: localhost
       become: false
       environment:
-        VITE_API_HOST: "{{ domain_name }}"
+        VITE_API_HOST: "https://{{ domain_name }}"
         VITE_THIRDWEB_PUBLIC_CLIENT_ID: "{{ lookup(
           'ansible.builtin.env',
           'VITE_THIRDWEB_PUBLIC_CLIENT_ID',
