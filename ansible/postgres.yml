@@ -18,15 +18,13 @@
         - acl
 
   tasks:
-    - name: "Find out if PostgreSQL is initialized"
-      ansible.builtin.stat:
-        path: "/var/lib/pgsql/data/pg_hba.conf"
-      register: postgres_data
+    - name: "Install postgres config"
+      template:
+        src: templates/postgres-pg_hba.conf.j2
+        dest: /etc/postgresql/15/main/pg_hba.conf
 
-    - name: "Start and enable services"
-      service: "name={{ item }} state=started enabled=yes"
-      with_items:
-        - postgresql
+    - name: "Apply config"
+      service: name=postgresql state=restarted
 
     - name: "Create app database"
       postgresql_db:
@@ -49,10 +47,6 @@
         login_db: "{{ db_name }}"
         roles: "{{ db_user }}"
         grant_option: no
-        privs: all
+        privs: ALL
       become: yes
       become_user: postgres
-
-  handlers:
-    - name: restart postgres
-      service: name=postgresql state=restarted
