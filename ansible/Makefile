@@ -17,3 +17,6 @@ deploy-backend: install-collections
 
 deploy-indexer: install-collections
 	$(ansible-playbook) indexer.yml
+
+deploy-frontend: install-collections
+	$(ansible-playbook) frontend.yml
