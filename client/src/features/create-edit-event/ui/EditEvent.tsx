@@ -1,9 +1,9 @@
 import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { EventForm } from "@/features/event-form";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { extractRanges } from "../lib/extractRanges";
 import { EventDataProvider } from "./EventDataProvider";
-import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 
 type EditEventProps = {
   editEventId: number;
