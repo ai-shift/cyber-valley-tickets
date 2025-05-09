@@ -1,16 +1,20 @@
-import ipfshttpclient
 import logging
+from contextlib import suppress
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from typing import Protocol
 
-from django.db import transaction
+import base58
+import ipfshttpclient
+from django.conf import settings
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 from pydantic import BaseModel
 from returns.result import safe
 
 from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.notifications.models import Notification
-from cyber_valley.users.models import CyberValleyUser
+from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 from .events import CyberValleyEventManager, CyberValleyEventTicket
 
@@ -60,13 +64,23 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
             raise UnknownEventError(event_data)
 
 
-# TODO: Add IPFS fetching
 @transaction.atomic
 def _sync_new_event_request(
     event_data: CyberValleyEventManager.NewEventRequest,
 ) -> None:
     creator, _ = CyberValleyUser.objects.get_or_create(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
+
+    cid = _multihash2cid(event_data)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        data = client.get_json(cid)
+        log.info("data=%s", data)
+        socials = client.get_json(data["socialsCid"])
+
+    with suppress(IntegrityError):
+        UserSocials.objects.create(
+            user=creator, network=socials["network"], value=socials["value"]
+        )
 
     Event.objects.create(
         id=event_data.id,
@@ -77,8 +91,9 @@ def _sync_new_event_request(
         start_date=datetime.fromtimestamp(event_data.start_date, tz=UTC),
         days_amount=event_data.days_amount,
         status="submitted",
-        title=f"Event {event_data.id}",  # Generate a default title
-        description="To be populated",  # Generate a default description
+        title=data["title"],
+        description=data["description"],
+        image_url=f"{settings.IPFS_PUBLIC_HOST}/ipfs/{data['cover']}",
         created_at=timezone.now(),
         updated_at=timezone.now(),
     )
@@ -90,53 +105,79 @@ def _sync_new_event_request(
     )
 
 
-# TODO: Add IPFS fetching
 def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> None:
     event = Event.objects.get(id=event_data.id)
     place = EventPlace.objects.get(id=event_data.event_place_id)
-    with ipfshttpclient.connect() as client:
-        pass
+
+    cid = _multihash2cid(event_data)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        data = client.get_json(cid)
+        socials = client.get_json(data["socialsCid"])
+
+    with suppress(IntegrityError):
+        UserSocials.objects.create(
+            user=event.creator, network=socials["network"], value=socials["value"]
+        )
 
     event.place = place
     event.ticket_price = event_data.ticket_price
     event.start_date = datetime.fromtimestamp(event_data.start_date, tz=UTC)
     event.days_amount = event_data.days_amount
     event.updated_at = timezone.now()
+    event.title = data["title"]
+    event.description = data["description"]
+    event.image_url = f"{settings.IPFS_PUBLIC_HOST}/ipfs/{data['cover']}"
     event.save()
 
 
-# TODO: Add IPFS fetching
 def _sync_event_place_updated(
     event_data: CyberValleyEventManager.EventPlaceUpdated,
 ) -> None:
     place = EventPlace.objects.get(id=event_data.event_place_id)
 
+    cid = _multihash2cid(event_data)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        data = client.get_json(cid)
+
     place.max_tickets = event_data.max_tickets
     place.min_tickets = event_data.min_tickets
     place.min_price = event_data.min_price
     place.min_days = event_data.min_days
+    place.title = data["title"]
     place.save()
 
 
-# TODO: Add IPFS fetching
 def _sync_new_event_place_available(
     event_data: CyberValleyEventManager.NewEventPlaceAvailable,
 ) -> None:
+    cid = _multihash2cid(event_data)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        data = client.get_json(cid)
     EventPlace.objects.create(
         id=event_data.event_place_id,
-        title=f"Event Place {event_data.event_place_id}",  # Generate a default title
         days_before_cancel=event_data.days_before_cancel,
         max_tickets=event_data.max_tickets,
         min_tickets=event_data.min_tickets,
         min_price=event_data.min_price,
         min_days=event_data.min_days,
+        title=data["title"],
     )
+
 
 # TODO: Add IPFS fetching
 @transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
     event = Event.objects.get(id=event_data.event_id)
     owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.owner)
+
+    cid = _multihash2cid(event_data)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials = client.get_json(cid)
+
+    with suppress(IntegrityError):
+        UserSocials.objects.create(
+            user=event.creator, network=socials["network"], value=socials["value"]
+        )
 
     Ticket.objects.create(
         event=event,
@@ -149,7 +190,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
 
     Notification.objects.create(
         user=owner,
-        title="New Ticket Minted",
+        title="Your ticket minted",
         body=(
             f"A new ticket with id {event_data.ticket_id} "
             f"has been minted for event {event.title}."
@@ -197,3 +238,24 @@ def _sync_role_granted(
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = event_data.role.split("_")[0].lower()
     user.save()
+
+
+class MultihashLike(Protocol):
+    digest: str
+    hash_function: int
+    size: int
+
+
+def _multihash2cid(multihash: MultihashLike) -> None | str:
+    digest, hash_function, size = (
+        multihash.digest,
+        multihash.hash_function,
+        multihash.size,
+    )
+    if size == 0:
+        return None
+
+    hash_bytes = bytes.fromhex(digest)
+    multihash_bytes = bytes([hash_function, size]) + hash_bytes
+
+    return base58.b58encode(multihash_bytes).decode("utf-8")
