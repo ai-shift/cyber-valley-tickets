@@ -8,12 +8,12 @@
 
     - name: "Pull ganache image"
       containers.podman.podman_image:
-        name: docker.io/trufflesuite/ganache-cli
+        name: docker.io/trufflesuite/ganache:v7.9.2
 
     - name: "Start container"
       containers.podman.podman_container:
         name: ganche-node
-        image: docker.io/trufflesuite/ganache-cli
+        image: docker.io/trufflesuite/ganache:v7.9.2
         state: started
         detach: true
         restart_policy: always
