@@ -20,3 +20,6 @@ deploy-indexer: install-collections
 
 deploy-frontend: install-collections
 	$(ansible-playbook) frontend.yml
+
+deploy-nginx: install-collections
+	$(ansible-playbook) nginx.yml
