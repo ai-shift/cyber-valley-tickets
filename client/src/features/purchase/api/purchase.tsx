@@ -5,9 +5,9 @@ import {
 } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
+import type { EventDto } from "@/entities/event";
 import type { Order } from "@/entities/order";
 import { apiClient } from "@/shared/api";
-import type { EventDto } from "@/entities/event";
 
 export const purchase = async (account: Account, order: Order) => {
   const pickFetch: {
