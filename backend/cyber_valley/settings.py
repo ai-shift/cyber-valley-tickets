@@ -11,11 +11,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import json
+import logging
 import os
 from datetime import timedelta
 from pathlib import Path
 from typing import Final, Literal, TypedDict
+
+import pyshen
+
+pyshen.logging.setup()
+log = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,16 +30,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-=&%g+smwgj&9(3b3z+sy0@()xz7=l=e!9+lk1q3&n)a2!7w9s-"  # noqa: S105
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", None))
+if DEBUG:
+    log.warning("!!! RUNNING IN DEBUG MODE !!!")
 
-ALLOWED_HOSTS: list[str] = ["127.0.0.1", "localhost"]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+CORS_ALLOWED_ORIGINS = (
+    (
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    )
+    if DEBUG
+    else ("https://cvland-tickets.aishift.co",)
+)
 CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
@@ -140,13 +150,24 @@ WSGI_APPLICATION = "cyber_valley.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ["DB_NAME"],
+            "USER": os.environ["DB_USER"],
+            "PASSWORD": os.environ["DB_PASSWORD"],
+            "HOST": os.environ.get("DB_HOST", "localhost"),
+            "PORT": int(os.environ.get("DB_PORT", "5432")),
+        }
+    }
 
 AUTH_USER_MODEL = "users.CyberValleyUser"
 
