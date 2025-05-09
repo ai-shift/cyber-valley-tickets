@@ -1,3 +1,4 @@
+import ipfshttpclient
 import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -59,6 +60,7 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
             raise UnknownEventError(event_data)
 
 
+# TODO: Add IPFS fetching
 @transaction.atomic
 def _sync_new_event_request(
     event_data: CyberValleyEventManager.NewEventRequest,
@@ -88,9 +90,12 @@ def _sync_new_event_request(
     )
 
 
+# TODO: Add IPFS fetching
 def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> None:
     event = Event.objects.get(id=event_data.id)
     place = EventPlace.objects.get(id=event_data.event_place_id)
+    with ipfshttpclient.connect() as client:
+        pass
 
     event.place = place
     event.ticket_price = event_data.ticket_price
@@ -100,6 +105,7 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
     event.save()
 
 
+# TODO: Add IPFS fetching
 def _sync_event_place_updated(
     event_data: CyberValleyEventManager.EventPlaceUpdated,
 ) -> None:
@@ -112,6 +118,7 @@ def _sync_event_place_updated(
     place.save()
 
 
+# TODO: Add IPFS fetching
 def _sync_new_event_place_available(
     event_data: CyberValleyEventManager.NewEventPlaceAvailable,
 ) -> None:
@@ -125,7 +132,7 @@ def _sync_new_event_place_available(
         min_days=event_data.min_days,
     )
 
-
+# TODO: Add IPFS fetching
 @transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
     event = Event.objects.get(id=event_data.event_id)
