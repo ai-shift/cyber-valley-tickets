@@ -224,18 +224,18 @@ ETH_NODE_HOST = os.environ["ETH_NODE_HOST"]
 # XXX: Order should match actual deployment flow
 CONTRACTS_INFO: Final = (
     (
-        ETHEREUM_DIR
-        / "artifacts/contracts/mocks/SimpleERC20Xylose.sol"
+        BASE_DIR
+        / "ethereum_artifacts/contracts/mocks/SimpleERC20Xylose.sol"
         / "SimpleERC20Xylose.json"
     ),
     (
-        ETHEREUM_DIR
-        / "artifacts/contracts/CyberValleyEventTicket.sol/"
+        BASE_DIR
+        / "ethereum_artifacts/contracts/CyberValleyEventTicket.sol/"
         / "CyberValleyEventTicket.json"
     ),
     (
-        ETHEREUM_DIR
-        / "artifacts/contracts/CyberValleyEventManager.sol"
+        BASE_DIR
+        / "ethereum_artifacts/contracts/CyberValleyEventManager.sol"
         / "CyberValleyEventManager.json"
     ),
 )
