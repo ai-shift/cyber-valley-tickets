@@ -11,14 +11,14 @@ import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import { useActiveAccount } from "thirdweb/react";
 import { redeem } from "../api/redeem";
 
+// TODO: Add error handling
 export const Redeem: React.FC = () => {
   const account = useActiveAccount();
 
   function handleDetect(detected: IDetectedBarcode[]) {
     const value = detected.at(0);
     if (!value) return;
-    const ticketId = value.rawValue;
-    redeem(account, ticketId);
+    redeem(account, value.rawValue);
   }
 
   return (
