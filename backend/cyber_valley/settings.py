@@ -40,7 +40,8 @@ if DEBUG:
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-ALLOWED_HOSTS = ["cvland-tickets.aishift.co"]
+ALLOWED_HOSTS = ["localhost"] if DEBUG else ["cvland-tickets.aishift.co"]
+
 
 CORS_ALLOWED_ORIGINS = (
     (
@@ -267,6 +268,7 @@ CONTRACTS_INFO: Final = (
 )
 
 IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])
+IPFS_PUBLIC_HOST = os.environ["IPFS_PUBLIC_HOST"]
 
 ACHES = {
     "default": {

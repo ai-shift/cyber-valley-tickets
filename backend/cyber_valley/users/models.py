@@ -65,3 +65,9 @@ class UserSocials(models.Model):
     )
     network = models.CharField(choices=Network)
     value = models.CharField()
+
+    class Meta:
+        unique_together = ("user", "network", "value")
+
+    def __str__(self) -> str:
+        return f"{self.user.address} - {self.network} - {self.value}"
