@@ -12,6 +12,13 @@ from cyber_valley.indexer.service.indexer import index_events
 
 log = logging.getLogger(__name__)
 
+ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
+    adr: json.loads(path.read_text())["abi"]
+    for adr, path in {
+        "0xA17D5c9551Bd04f32ee2eDb3C486C7e52E305DfF": settings.CONTRACTS_INFO[1],
+        "0xc0C8856951bB807Cd7313F43425953dA2Cd389C4": settings.CONTRACTS_INFO[2],
+    }.items()
+}
 
 class Command(BaseCommand):
     help = "Listens to smart contract events and indexes data into the database."
@@ -35,6 +42,6 @@ class Command(BaseCommand):
         assert w3.is_connected()
         contracts = {
             ChecksumAddress(HexAddress(HexStr(address))): w3.eth.contract(abi=abi)
-            for address, abi in settings.ETH_CONTRACT_ADDRESS_TO_ABI.items()
+            for address, abi in ETH_CONTRACT_ADDRESS_TO_ABI.items()
         }
         index_events(settings.ETH_NODE_HOST, contracts, not bool(options["no_sync"]))
