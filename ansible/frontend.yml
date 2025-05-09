@@ -6,7 +6,7 @@
 
   vars:
     frontend_src: "../client"
-    frontend_dest: "/www"
+    frontend_dest: "/var/www/{{ domain_name }}"
 
   vars_files:
     - vars/common.yml
@@ -21,7 +21,7 @@
       delegate_to: localhost
       become: false
       environment:
-        VITE_API_HOST: "{{ api_host }}"
+        VITE_API_HOST: "{{ domain_name }}"
         VITE_THIRDWEB_PUBLIC_CLIENT_ID: "{{ lookup(
           'ansible.builtin.env',
           'VITE_THIRDWEB_PUBLIC_CLIENT_ID',
@@ -33,27 +33,11 @@
 
     - name: "Create dest directory"
       ansible.builtin.file:
-        path: /www
+        path: "{{ frontend_dest }}"
         state: directory
         mode: "0644"
 
-    - name: "Deploy"
-      block:
-        - name: "Copy dotenv"
-          ansible.builtin.copy:
-            src: "{{ dotenv_src }}"
-            dest: "{{ dotenv_dest }}"
-            mode: '0600'
-
-        - name: "Distribute"
-          ansible.posix.synchronize:
-            src: "{{ frontend_src }}/dist"
-            dest: "{{ frontend_dest }}"
-
-      always:
-        - name: "Remove dotenv"
-          ansible.builtin.file:
-            path: "{{ dotenv_dest }}"
-            state: absent
-          when: true
-          check_mode: false
+    - name: "Distribute"
+      ansible.posix.synchronize:
+        src: "{{ frontend_src }}/dist/"
+        dest: "{{ frontend_dest }}"
