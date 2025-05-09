@@ -1,4 +1,4 @@
-/.env
+/.env*
 /ipfs_staging/
 /ipfs_data/
 /.dir-locals.el

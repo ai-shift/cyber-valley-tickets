@@ -1,5 +1,6 @@
 ipfs_container_name := "cyber-valley-ipfs"
 valkey_container_name := "cyber-valley-valkey"
+python := .venv/bin/python
 
 format:
 	uv run ruff format
@@ -10,30 +11,28 @@ lint: format
 
 pre-commit: lint
 
-run: run-ipfs-node run-valkey
-	uv run python manage.py runserver
-
-generate-requirements:
-	uv export --no-hashes --format requirements-txt > requirements.txt
+run: run-ipfs-node run-valkey run-server
 
 make-migrations:
-	uv run manage.py makemigrations
+	$(python) manage.py makemigrations
 
 migrate: make-migrations
-	uv run manage.py migrate
+	$(python) manage.py migrate
 
 seed-db: migrate
-	uv run manage.py seed_db --flush
+	$(python) manage.py seed_db --flush
 
 open-api-schema:
-	uv run manage.py spectacular --format openapi-json --validate > schema.json
-
-indexer:
-	uv run manage.py indexer
+	$(python) manage.py spectacular --format openapi-json --validate > schema.json
 
 tests:
-	uv run pytest -vvv -s
+	$(python) pytest -vvv -s
 
+run-indexer: migrate
+	$(python) manage.py indexer
+
+run-server: migrate
+	$(python) manage.py runserver
 
 run-ipfs-node:
 	test -n "$(IPFS_STAGING)" || exit 1
@@ -57,3 +56,9 @@ run-valkey:
 		--name $(valkey_container_name) \
 		-p 6379:6379 \
 		valkey/valkey:8.1.1
+
+podman-build:
+	cp -r ../ethereum/artifacts ./ethereum_artifacts
+	test -n "$(BACKEND_IMAGE)" || exit 1
+	podman build --tag $(BACKEND_IMAGE) .
+	rm -rf ./ethereum_artifacts
