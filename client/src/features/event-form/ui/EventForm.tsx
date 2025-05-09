@@ -21,11 +21,11 @@ import { PlaceSelect } from "./PlaceSelect";
 
 import type { Event, EventDto } from "@/entities/event";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { getCurrencySymbol } from "@/shared/lib/web3";
 import { fromUnixTime } from "date-fns";
 import { useEffect } from "react";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
-import { getCurrencySymbol } from "@/shared/lib/web3";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
