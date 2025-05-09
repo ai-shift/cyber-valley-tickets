@@ -16,8 +16,8 @@ import {
 import { Input } from "@/shared/ui/input";
 
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
-import { formSchema } from "../model/formSchema";
 import type { UseMutateFunction } from "@tanstack/react-query";
+import { formSchema } from "../model/formSchema";
 
 type PlaceFormProps = {
   existingPlace?: EventPlaceForm;

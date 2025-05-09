@@ -1,7 +1,7 @@
 import type { EventDto } from "@/entities/event";
 import { useOrderStore } from "@/entities/order";
 import { useUser } from "@/entities/user";
-import { canUserEdit, EditEvent } from "@/features/create-edit-event";
+import { EditEvent, canUserEdit } from "@/features/create-edit-event";
 import { useNavigate } from "react-router";
 
 type EditEventActionProps = {
