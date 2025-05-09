@@ -6,3 +6,6 @@ check:
 
 compile: check
 	pnpm exec tsc
+
+openapi-types:
+	pnpm exec openapi-typescript ../backend/schema.json -o ./src/shared/api/apiTypes.d.ts
