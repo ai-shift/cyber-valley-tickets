@@ -1,6 +1,0 @@
----
-git_branch: staging
-dotenv_path: ../.env.staging
-static_path: /www/stage-media
-api_host: https://test.cyberpass.tech
-target_frontend_path: /www/cyberpass-staging
