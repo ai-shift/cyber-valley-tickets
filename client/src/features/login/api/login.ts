@@ -16,11 +16,12 @@ export const login = async (
   }
   console.log("Client", client);
   const { address, signMessage } = account;
-  const message = `Sign this message to authenticate with our service.\n\nAddress: ${address}\nTimestamp: ${new Date().toISOString()}`;
-  const signature = await signMessage({ message });
 
   const nonceResponse = await fetch("/api/auth/web3/nonce");
   const { nonce } = await nonceResponse.json();
+
+  const message = `Sign this message to authenticate with our service.\n\nAddress: ${address}\nTimestamp: ${new Date().toISOString()}`;
+  const signature = await signMessage({ message });
 
   const response = await fetch("/api/auth/web3/login/", {
     method: "POST",
