@@ -58,7 +58,7 @@ run-valkey:
 		valkey/valkey:8.1.1
 
 podman-build:
-	cp -r ../ethereum/artifacts ./ethereum_artifacts
+	cp -r ../ethereum/artifacts ./ethereum_artifacts_temp
 	test -n "$(BACKEND_IMAGE)" || exit 1
 	podman build --tag $(BACKEND_IMAGE) .
-	rm -rf ./ethereum_artifacts
+	rm -rf ./ethereum_artifacts_temp

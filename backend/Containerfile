@@ -27,7 +27,7 @@ RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY /cyber_valley cyber_valley
-COPY /ethereum_artifacts ethereum_artifacts
+COPY /ethereum_artifacts_temp ethereum_artifacts
 COPY manage.py .
 COPY Makefile .
 COPY --from=builder /app/.venv .venv
