@@ -39,7 +39,7 @@
             detach: true
             restart_policy: always
             command:
-              - runserver
+              - run-server
             expose:
               - 8000
             ports:

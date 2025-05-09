@@ -39,7 +39,7 @@
             detach: true
             restart_policy: always
             command:
-              - indexer
+              - run-indexer
             env_file: "{{ dotenv_dest }}"
       always:
         - name: "Remove dotenv"
