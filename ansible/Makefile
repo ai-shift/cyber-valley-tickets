@@ -12,3 +12,6 @@ deploy-postgres: install-collections
 
 deploy-ganache: install-collections
 	$(ansible-playbook) ganache.yml
+
+deploy-backend: install-collections
+	$(ansible-playbook) backend.yml
