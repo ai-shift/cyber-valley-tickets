@@ -1,6 +1,0 @@
----
-git_branch: main
-dotenv_path: ../.env.production
-static_path: /www/mirvr-media
-api_host: https://mirvr.cyberpass.tech
-target_frontend_path: /www/cyberpass-production
