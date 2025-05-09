@@ -42,8 +42,7 @@
               - run-server
             expose:
               - 8000
-            ports:
-              - 8000:8000
+            network: host
             env_file: "{{ dotenv_dest }}"
       always:
         - name: "Remove dotenv"
@@ -52,3 +51,8 @@
             state: absent
           when: true
           check_mode: false
+
+    - name: "Prune dangling images and containers"
+      containers.podman.podman_prune:
+        image: true
+        container: true
