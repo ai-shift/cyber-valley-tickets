@@ -150,7 +150,7 @@ def ticket_nonce(request: Request) -> Response:
 
 
 @extend_schema(request=SIWEModelSerializer)
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def verify_ticket(request: Request) -> Response:
     user = request.user
