@@ -5,7 +5,7 @@ import threading
 from collections.abc import Callable, Generator
 from contextlib import AbstractContextManager, contextmanager, suppress
 from functools import partial
-from typing import Any
+from typing import Any, Final
 
 import pytest
 from django.conf import settings
@@ -20,6 +20,7 @@ from .events import CyberValleyEventManager
 
 ProcessStarter = Generator[None]
 
+ETHEREUM_DIR: Final = settings.BASE_DIR.parent / "ethereum"
 
 @pytest.fixture(autouse=True)
 def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
@@ -32,7 +33,7 @@ def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
     # This shit can't be killed from python. DIE ANYWAY
     subprocess.run("pkill -f node.*hardhat.*.js", shell=True, check=False)  # noqa: S602 S607
     # Seems like hardhat node caches some stuff which should be cleaned
-    (settings.ETHEREUM_DIR / "cache/solidity-files-cache.json").unlink(missing_ok=True)
+    (ETHEREUM_DIR / "cache/solidity-files-cache.json").unlink(missing_ok=True)
     printer_session("Hardhat node terminated")
 
 
@@ -87,7 +88,7 @@ def _execute(
 ) -> ProcessStarter:
     proc = subprocess.Popen(  # noqa: S602
         command,
-        cwd=settings.ETHEREUM_DIR,
+        cwd=ETHEREUM_DIR,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         shell=True,
