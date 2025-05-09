@@ -133,16 +133,16 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/events/tickets/nonce/vefiry": {
+  "/api/events/tickets/nonce/{nonce}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    get: operations["api_events_tickets_nonce_retrieve_2"];
     put?: never;
-    post: operations["api_events_tickets_nonce_vefiry_create"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -436,137 +436,6 @@ export interface components {
     ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsTicketsNonceRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsTicketsNonceVefiryCreateAddressErrorComponent: {
-      /**
-       * @description * `address` - address (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "address";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `max_length` - max_length
-       *     * `min_length` - min_length
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "max_length"
-        | "min_length"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiEventsTicketsNonceVefiryCreateError:
-      | components["schemas"]["ApiEventsTicketsNonceVefiryCreateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiEventsTicketsNonceVefiryCreateAddressErrorComponent"]
-      | components["schemas"]["ApiEventsTicketsNonceVefiryCreateSignatureErrorComponent"]
-      | components["schemas"]["ApiEventsTicketsNonceVefiryCreateMessageErrorComponent"]
-      | components["schemas"]["ApiEventsTicketsNonceVefiryCreateNonceErrorComponent"];
-    ApiEventsTicketsNonceVefiryCreateErrorResponse400:
-      | components["schemas"]["ApiEventsTicketsNonceVefiryCreateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiEventsTicketsNonceVefiryCreateMessageErrorComponent: {
-      /**
-       * @description * `message` - message (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "message";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiEventsTicketsNonceVefiryCreateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiEventsTicketsNonceVefiryCreateNonceErrorComponent: {
-      /**
-       * @description * `nonce` - nonce (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "nonce";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiEventsTicketsNonceVefiryCreateSignatureErrorComponent: {
-      /**
-       * @description * `signature` - signature (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "signature";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiEventsTicketsNonceVefiryCreateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiEventsTicketsNonceVefiryCreateError"][];
-    };
     ApiIpfsEventsMetaUpdateCoverErrorComponent: {
       /**
        * @description * `cover` - cover (enum property replaced by openapi-typescript)
@@ -1769,20 +1638,16 @@ export interface operations {
       };
     };
   };
-  api_events_tickets_nonce_vefiry_create: {
+  api_events_tickets_nonce_retrieve_2: {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        nonce: string;
+      };
       cookie?: never;
     };
-    requestBody: {
-      content: {
-        "application/x-www-form-urlencoded": components["schemas"]["SIWEModelRequest"];
-        "multipart/form-data": components["schemas"]["SIWEModelRequest"];
-        "application/json": components["schemas"]["SIWEModelRequest"];
-      };
-    };
+    requestBody?: never;
     responses: {
       /** @description No response body */
       200: {
@@ -1796,7 +1661,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiEventsTicketsNonceVefiryCreateErrorResponse400"];
+          "application/json": components["schemas"]["ApiEventsTicketsNonceRetrieveErrorResponse400"];
         };
       };
       401: {
@@ -1805,6 +1670,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse404"];
         };
       };
       405: {

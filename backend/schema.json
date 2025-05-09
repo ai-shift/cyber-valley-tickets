@@ -1818,32 +1818,22 @@
                 }
             }
         },
-        "/api/events/tickets/nonce/vefiry": {
-            "post": {
-                "operationId": "api_events_tickets_nonce_vefiry_create",
+        "/api/events/tickets/nonce/{nonce}": {
+            "get": {
+                "operationId": "api_events_tickets_nonce_retrieve_2",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "nonce",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
                 "tags": [
                     "api"
                 ],
-                "requestBody": {
-                    "content": {
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/SIWEModelRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/SIWEModelRequest"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/SIWEModelRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
                 "security": [
                     {
                         "cookieJWTAuth": []
@@ -1854,7 +1844,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateErrorResponse400"
+                                    "$ref": "#/components/schemas/ApiEventsTicketsNonceRetrieveErrorResponse400"
                                 }
                             }
                         },
@@ -1886,6 +1876,30 @@
                                                 {
                                                     "code": "not_authenticated",
                                                     "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse404"
+                                },
+                                "examples": {
+                                    "NotFound": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_found",
+                                                    "detail": "Not found.",
                                                     "attr": null
                                                 }
                                             ]
@@ -3982,228 +3996,6 @@
                         "client_error": "#/components/schemas/ParseErrorResponse"
                     }
                 }
-            },
-            "ApiEventsTicketsNonceVefiryCreateAddressErrorComponent": {
-                "type": "object",
-                "properties": {
-                    "attr": {
-                        "enum": [
-                            "address"
-                        ],
-                        "type": "string",
-                        "description": "* `address` - address"
-                    },
-                    "code": {
-                        "enum": [
-                            "blank",
-                            "invalid",
-                            "max_length",
-                            "min_length",
-                            "null",
-                            "null_characters_not_allowed",
-                            "required",
-                            "surrogate_characters_not_allowed"
-                        ],
-                        "type": "string",
-                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `max_length` - max_length\n* `min_length` - min_length\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
-                    },
-                    "detail": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "attr",
-                    "code",
-                    "detail"
-                ]
-            },
-            "ApiEventsTicketsNonceVefiryCreateError": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateNonFieldErrorsErrorComponent"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateAddressErrorComponent"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateSignatureErrorComponent"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateMessageErrorComponent"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateNonceErrorComponent"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "attr",
-                    "mapping": {
-                        "non_field_errors": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateNonFieldErrorsErrorComponent",
-                        "address": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateAddressErrorComponent",
-                        "signature": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateSignatureErrorComponent",
-                        "message": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateMessageErrorComponent",
-                        "nonce": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateNonceErrorComponent"
-                    }
-                }
-            },
-            "ApiEventsTicketsNonceVefiryCreateErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateValidationError"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "validation_error": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateValidationError",
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
-            "ApiEventsTicketsNonceVefiryCreateMessageErrorComponent": {
-                "type": "object",
-                "properties": {
-                    "attr": {
-                        "enum": [
-                            "message"
-                        ],
-                        "type": "string",
-                        "description": "* `message` - message"
-                    },
-                    "code": {
-                        "enum": [
-                            "blank",
-                            "invalid",
-                            "null",
-                            "null_characters_not_allowed",
-                            "required",
-                            "surrogate_characters_not_allowed"
-                        ],
-                        "type": "string",
-                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
-                    },
-                    "detail": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "attr",
-                    "code",
-                    "detail"
-                ]
-            },
-            "ApiEventsTicketsNonceVefiryCreateNonFieldErrorsErrorComponent": {
-                "type": "object",
-                "properties": {
-                    "attr": {
-                        "enum": [
-                            "non_field_errors"
-                        ],
-                        "type": "string",
-                        "description": "* `non_field_errors` - non_field_errors"
-                    },
-                    "code": {
-                        "enum": [
-                            "invalid",
-                            "null"
-                        ],
-                        "type": "string",
-                        "description": "* `invalid` - invalid\n* `null` - null"
-                    },
-                    "detail": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "attr",
-                    "code",
-                    "detail"
-                ]
-            },
-            "ApiEventsTicketsNonceVefiryCreateNonceErrorComponent": {
-                "type": "object",
-                "properties": {
-                    "attr": {
-                        "enum": [
-                            "nonce"
-                        ],
-                        "type": "string",
-                        "description": "* `nonce` - nonce"
-                    },
-                    "code": {
-                        "enum": [
-                            "blank",
-                            "invalid",
-                            "null",
-                            "null_characters_not_allowed",
-                            "required",
-                            "surrogate_characters_not_allowed"
-                        ],
-                        "type": "string",
-                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
-                    },
-                    "detail": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "attr",
-                    "code",
-                    "detail"
-                ]
-            },
-            "ApiEventsTicketsNonceVefiryCreateSignatureErrorComponent": {
-                "type": "object",
-                "properties": {
-                    "attr": {
-                        "enum": [
-                            "signature"
-                        ],
-                        "type": "string",
-                        "description": "* `signature` - signature"
-                    },
-                    "code": {
-                        "enum": [
-                            "blank",
-                            "invalid",
-                            "null",
-                            "null_characters_not_allowed",
-                            "required",
-                            "surrogate_characters_not_allowed"
-                        ],
-                        "type": "string",
-                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
-                    },
-                    "detail": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "attr",
-                    "code",
-                    "detail"
-                ]
-            },
-            "ApiEventsTicketsNonceVefiryCreateValidationError": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "$ref": "#/components/schemas/ValidationErrorEnum"
-                    },
-                    "errors": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ApiEventsTicketsNonceVefiryCreateError"
-                        }
-                    }
-                },
-                "required": [
-                    "errors",
-                    "type"
-                ]
             },
             "ApiIpfsEventsMetaUpdateCoverErrorComponent": {
                 "type": "object",
