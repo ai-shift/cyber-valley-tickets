@@ -149,21 +149,13 @@ def ticket_nonce(request: Request) -> Response:
     return Response({"nonce": nonce})
 
 
-@extend_schema(request=SIWEModelSerializer)
-@api_view(["POST"])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def verify_ticket(request: Request) -> Response:
+def verify_ticket(request: Request, nonce: str) -> Response:
     user = request.user
     assert not isinstance(user, AnonymousUser)
 
-    data = SIWEModelSerializer(data=request.data)
-    data.is_valid(raise_exception=True)
-    data = data.save()
-
-    if not cache.delete(data.nonce):
+    if not cache.delete(nonce):
         return Response("Nonce expired or invalid", status=400)
 
-    if not verify_signature(data):
-        return Response("Signature is not valid", status=400)
-
-    return Response("OK")
+    return Response(status=204)

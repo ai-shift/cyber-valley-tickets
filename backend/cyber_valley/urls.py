@@ -41,7 +41,7 @@ urlpatterns = [
     path("", SpectacularSwaggerView.as_view(), name="swagger"),
     path("api/", include(router.urls)),
     path("api/events/tickets/nonce", ticket_nonce, name="ticket-nonce"),
-    path("api/events/tickets/nonce/vefiry", verify_ticket, name="verify-ticket"),
+    path("api/events/tickets/nonce/<str:nonce>", verify_ticket, name="verify-ticket"),
     path("api/ipfs/events/meta", upload_event_meta_to_ipfs, name="ipfs-events"),
     path("api/ipfs/places/meta", upload_place_meta_to_ipfs, name="ipfs-events"),
     path("api/ipfs/users/socials", upload_user_socials_to_ipfs, name="ipfs-socials"),
