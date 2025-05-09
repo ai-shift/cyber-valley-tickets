@@ -4,6 +4,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
@@ -27,10 +28,15 @@ export const PlaceSelect: React.FC<PlaceSelectProps> = ({
         <SelectValue placeholder="Place">{selectedTite}</SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {places.map((place) => (
-          <SelectItem key={place.id} value={`${place.id}`}>
-            <PlaceCard place={place} />
-          </SelectItem>
+        {places.map((place, i) => (
+          <div key={place.id}>
+            <SelectItem value={`${place.id}`}>
+              <PlaceCard place={place} />
+            </SelectItem>
+            {i !== places.length - 1 && (
+              <SelectSeparator className="bg-secondary" />
+            )}
+          </div>
         ))}
       </SelectContent>
     </Select>
@@ -44,13 +50,13 @@ type PlaceCardProps = {
 const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
   const { title, minTickets, maxTickets, daysBeforeCancel, minPrice } = place;
   return (
-    <div>
-      <h2>{title}</h2>
-      <p>
+    <div className=" space-y-3 p-3 rounded">
+      <h2 className="text-xl">{title}</h2>
+      <p className="text-muted text-md">
         {minTickets} &lt;&lt; tickets &lt;&lt; {maxTickets}
       </p>
-      <p>Cancel: {daysBeforeCancel}</p>
-      <p>Min price: {minPrice}</p>
+      <p className="text-muted text-md">Cancel: {daysBeforeCancel}</p>
+      <p className="text-muted text-md">Min price: {minPrice}</p>
     </div>
   );
 };

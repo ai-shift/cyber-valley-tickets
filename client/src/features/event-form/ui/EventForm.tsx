@@ -25,6 +25,7 @@ import { fromUnixTime } from "date-fns";
 import { useEffect } from "react";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
+import { getCurrencySymbol } from "@/shared/lib/web3";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
@@ -217,15 +218,18 @@ export const EventForm: React.FC<EventFormProps> = ({
         {isSelected && (
           <div className="text-secondary border-2 border-secondary p-4">
             <div>
-              <h3 className="font-bold mb-2">{selectedPlace.title}</h3>
-              <ul className=" space-y-1">
+              <h3 className="font-bold mb-2 text-lg">{selectedPlace.title}</h3>
+              <ul className=" space-y-1 text-md text-muted">
                 <li>Min Tickets: {selectedPlace.minTickets}</li>
                 <li>Max Tickets: {selectedPlace.maxTickets}</li>
                 <li>
                   Cancel Days: {selectedPlace.daysBeforeCancel} days before
                   event
                 </li>
-                <li>Min Ticket Price: {selectedPlace.minPrice} USDT</li>
+                <li>
+                  Min Ticket Price: {selectedPlace.minPrice}{" "}
+                  {getCurrencySymbol()}
+                </li>
               </ul>
             </div>
           </div>
@@ -243,7 +247,8 @@ export const EventForm: React.FC<EventFormProps> = ({
                   >
                     Ticket price
                     {!isSelected && " (select the place to enter the price)"}
-                    {isSelected && ` (minimum price ${minimumPrice})`}
+                    {isSelected &&
+                      ` (minimum price ${minimumPrice} ${getCurrencySymbol()})`}
                   </span>
                 </FormLabel>
                 <FormControl>
