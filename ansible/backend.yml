@@ -40,6 +40,10 @@
             restart_policy: always
             command:
               - runserver
+            expose:
+              - 8000
+            ports:
+              - 8000:8000
             env_file: "{{ dotenv_dest }}"
       always:
         - name: "Remove dotenv"
