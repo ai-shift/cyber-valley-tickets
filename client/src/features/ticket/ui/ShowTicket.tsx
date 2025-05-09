@@ -1,12 +1,20 @@
+import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/shared/ui/dialog";
-import QRCode from "react-qr-code";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shared/ui/dialog";
+import { Suspense } from "react";
 import type { Ticket } from "../model/types";
+import { TicketQR } from "./TicketQR";
 
 type ShowTicketProps = {
   ticket: Ticket;
   hasPassed: boolean;
 };
+
 export const ShowTicket: React.FC<ShowTicketProps> = ({
   ticket,
   hasPassed,
@@ -21,9 +29,10 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         )}
       </DialogTrigger>
       <DialogContent className="w-11/12 sm:max-w-96">
-        <div className="flex justify-center items-center py-20">
-          <QRCode size={256} value={`${ticket.id}`} />
-        </div>
+        <DialogTitle>Ticket QR code</DialogTitle>
+        <Suspense fallback={<Loader />}>
+          <TicketQR ticket={ticket} />
+        </Suspense>
       </DialogContent>
     </Dialog>
   );
