@@ -220,7 +220,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EVENT_MODELS_BASE_PATH = BASE_DIR / "cyber_valley/indexer/service/events"
 ETH_NODE_HOST = os.environ["ETH_NODE_HOST"]
-ETHEREUM_DIR: Final = BASE_DIR.parent / "ethereum"
+
 # XXX: Order should match actual deployment flow
 CONTRACTS_INFO: Final = (
     (
