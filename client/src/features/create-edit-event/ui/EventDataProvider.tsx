@@ -18,7 +18,10 @@ export const EventDataProvider: React.FC<EventDataProviderProps> = ({
 
   if (isLoading) return <Loader />;
   if (errors.length > 0) return <ErrorMessage errors={errors} />;
-  if (!events || !places) return <p>Internal error. Try again later.</p>;
+  if (!events || !places)
+    return (
+      <ErrorMessage errors={new Error("Internal error. Try again later.")} />
+    );
 
   return <>{children({ events, places })}</>;
 };
