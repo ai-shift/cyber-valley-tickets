@@ -1,0 +1,50 @@
+---
+- hosts: all
+  vars:
+    image_name: "{{ lookup('ansible.builtin.env', 'BACKEND_IMAGE', default=undef()) }}"
+    dotenv_src: ../.env.production
+    dotenv_dest: ".env"
+
+  tasks:
+    - name: "Install packages"
+      ansible.builtin.package: "name={{ item }} state=present"
+      with_items:
+        - podman
+
+    - name: "Build image"
+      delegate_to: localhost
+      command:
+        chdir: "../backend"
+        cmd: "make podman-build"
+
+    - name: "Transfer image"
+      delegate_to: localhost
+      shell: >-
+        podman save {{ image_name }}
+        | ssh {{ inventory_hostname }} podman load
+
+    - name: "Start container"
+      block:
+        - name: "Copy dotenv"
+          ansible.builtin.copy:
+            src: "{{ dotenv_src }}"
+            dest: "{{ dotenv_dest }}"
+            mode: '0600'
+
+        - name: "Start container"
+          containers.podman.podman_container:
+            name: "{{ image_name }}"
+            image: "{{ image_name }}"
+            state: started
+            detach: true
+            restart_policy: always
+            command:
+              - indexer
+            env_file: "{{ dotenv_dest }}"
+      always:
+        - name: "Remove dotenv"
+          ansible.builtin.file:
+            path: "{{ dotenv_dest }}"
+            state: absent
+          when: true
+          check_mode: false

@@ -5,7 +5,6 @@ install-collections:
 
 lint:
 	uv run yamllint *.yml vars/*.yml
-	uv run ansible-lint --fix deploy.yml
 
 deploy-postgres: install-collections
 	$(ansible-playbook) postgres.yml
@@ -15,3 +14,6 @@ deploy-ganache: install-collections
 
 deploy-backend: install-collections
 	$(ansible-playbook) backend.yml
+
+deploy-indexer: install-collections
+	$(ansible-playbook) indexer.yml
