@@ -23,3 +23,6 @@ deploy-frontend: install-collections
 
 deploy-nginx: install-collections
 	$(ansible-playbook) nginx.yml
+
+deploy-valkey: install-collections
+	$(ansible-playbook) valkey.yml

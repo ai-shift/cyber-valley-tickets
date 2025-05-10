@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: "Install packages"
+      ansible.builtin.package: "name={{ item }} state=present"
+      with_items:
+        - podman
+
+    - name: "Pull valkey image"
+      containers.podman.podman_image:
+        name: docker.io/valkey/valkey:8.1.1
+
+    - name: "Start container"
+      containers.podman.podman_container:
+        name: cvland-valkey
+        image: docker.io/valkey/valkey:8.1.1
+        state: started
+        detach: true
+        restart_policy: always
+        exposed_ports:
+          - 6379
+        network: host
