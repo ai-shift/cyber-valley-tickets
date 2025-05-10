@@ -19,4 +19,5 @@
         restart_policy: always
         exposed_ports:
           - 6379
-        network: host
+        ports:
+          - 6379:6379
