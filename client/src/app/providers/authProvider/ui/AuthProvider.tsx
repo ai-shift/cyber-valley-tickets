@@ -10,13 +10,10 @@ import { useRefreshSlice } from "../model/refreshSlice";
 
 export const AuthProvider: React.FC = () => {
   const navigate = useNavigate();
-  //TODO: get mss from env
   const { isError, isLoading } = useQuery({
     queryFn: refresh,
     queryKey: ["refresh"],
-    staleTime: 0,
-    gcTime: 1000 * 10,
-    refetchInterval: 1000 * 10,
+    refetchInterval: 1000 * 60 * 3,
     refetchOnWindowFocus: true,
   });
 
