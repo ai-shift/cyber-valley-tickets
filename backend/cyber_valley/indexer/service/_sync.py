@@ -59,6 +59,8 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
             pass
         case CyberValleyEventManager.RoleRevoked():
             raise NotImplementedError
+        case CyberValleyEventTicket.Transfer():
+            pass
         case _:
             log.error("Unknown event data %s", type(event_data))
             raise UnknownEventError(event_data)
@@ -82,7 +84,7 @@ def _sync_new_event_request(
             user=creator, network=socials["network"], value=socials["value"]
         )
 
-    Event.objects.create(
+    event = Event.objects.create(
         id=event_data.id,
         creator=creator,
         place=place,
@@ -100,11 +102,19 @@ def _sync_new_event_request(
 
     Notification.objects.create(
         user=creator,
-        title="New Event Request",
-        body=f"A new event request with id {event_data.id} has been created.",
+        title="Event request sent",
+        body=f"Title: {event.title}",
     )
+    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    for user in masters:
+        Notification.objects.create(
+            user=user,
+            title="New event request",
+            body=f"Title: {event.title}",
+        )
 
 
+@transaction.atomic
 def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> None:
     event = Event.objects.get(id=event_data.id)
     place = EventPlace.objects.get(id=event_data.event_place_id)
@@ -129,7 +139,16 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
     event.image_url = f"{settings.IPFS_PUBLIC_HOST}/ipfs/{data['cover']}"
     event.save()
 
+    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    for user in (*masters, event.creator):
+        Notification.objects.create(
+            user=user,
+            title="Event updated",
+            body=f"Title: {event.title}",
+        )
 
+
+@transaction.atomic
 def _sync_event_place_updated(
     event_data: CyberValleyEventManager.EventPlaceUpdated,
 ) -> None:
@@ -146,14 +165,23 @@ def _sync_event_place_updated(
     place.title = data["title"]
     place.save()
 
+    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    for user in masters:
+        Notification.objects.create(
+            user=user,
+            title="Event place updated",
+            body=f"Title: {place.title}",
+        )
 
+
+@transaction.atomic
 def _sync_new_event_place_available(
     event_data: CyberValleyEventManager.NewEventPlaceAvailable,
 ) -> None:
     cid = _multihash2cid(event_data)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
-    EventPlace.objects.create(
+    place = EventPlace.objects.create(
         id=event_data.event_place_id,
         days_before_cancel=event_data.days_before_cancel,
         max_tickets=event_data.max_tickets,
@@ -162,9 +190,15 @@ def _sync_new_event_place_available(
         min_days=event_data.min_days,
         title=data["title"],
     )
+    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    for user in masters:
+        Notification.objects.create(
+            user=user,
+            title="New event place is available",
+            body=f"Title: {place.title}",
+        )
 
 
-# TODO: Add IPFS fetching
 @transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
     event = Event.objects.get(id=event_data.event_id)
@@ -196,7 +230,6 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
             f"has been minted for event {event.title}."
         ),
     )
-    log.info("Ticket saved %s %s", event, owner)
 
 
 def _sync_event_status_changed(
@@ -216,19 +249,38 @@ def _sync_event_status_changed(
     new_status = status_mapping.get(event_data.status)
     assert new_status is not None
 
-    with transaction.atomic():
-        event.status = new_status
-        event.save()
+    event.status = new_status
+    event.save()
+
+    Notification.objects.create(
+        user=event.creator,
+        title="Event status updated",
+        body=f"Event {event.title}. New status: {new_status}",
+    )
+    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    for user in masters:
+        Notification.objects.create(
+            user=user,
+            title="Event status updated",
+            body=f"Event {event.title}. New status: {new_status}",
+        )
 
 
+@transaction.atomic
 def _sync_ticket_redeemed(event_data: CyberValleyEventTicket.TicketRedeemed) -> None:
     ticket = Ticket.objects.get(id=event_data.ticket_id)
 
-    with transaction.atomic():
-        ticket.is_redeemed = True
-        ticket.save()
+    ticket.is_redeemed = True
+    ticket.save()
+
+    Notification.objects.create(
+        user=ticket.owner,
+        title="Ticket redeemed",
+        body=f"Event {ticket.event.title}",
+    )
 
 
+@transaction.atomic
 def _sync_role_granted(
     event_data: CyberValleyEventManager.RoleGranted
     | CyberValleyEventTicket.RoleGranted,
@@ -238,6 +290,14 @@ def _sync_role_granted(
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = event_data.role.split("_")[0].lower()
     user.save()
+
+    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    for user in masters:
+        Notification.objects.create(
+            user=user,
+            title="Role granted",
+            body=f"{user.role} granted to {user.address}",
+        )
 
 
 class MultihashLike(Protocol):
