@@ -28,6 +28,7 @@ export const HomePage: React.FC = () => {
         <EventsList isGrid limit={3} filterFn={upcomingFilter} />
       </section>
       <Button
+        className="mt-8"
         onClick={() =>
           mintERC20(account, 50)
             .then(() => alert("Minted 50 tokens"))
