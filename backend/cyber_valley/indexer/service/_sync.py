@@ -110,7 +110,7 @@ def _sync_new_event_request(
         Notification.objects.create(
             user=user,
             title="New event request",
-            body=f"Title: {event.title}",
+            body=f"Title: {event.title}. From {socials['network']}: {socials['value']}",
         )
 
 
@@ -290,11 +290,17 @@ def _sync_role_granted(
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = event_data.role.split("_")[0].lower()
     user.save()
-
+    Notification.objects.create(
+        user=user,
+        title="Role granted",
+        body=f"{user.role} granted to you",
+    )
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    for user in masters:
+    for master in masters:
+        if user.address == master.address:
+            continue
         Notification.objects.create(
-            user=user,
+            user=master,
             title="Role granted",
             body=f"{user.role} granted to {user.address}",
         )
