@@ -79,7 +79,7 @@ def _sync_new_event_request(
         log.info("data=%s", data)
         socials = client.get_json(data["socialsCid"])
 
-    with suppress(IntegrityError):
+    with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
             user=creator, network=socials["network"], value=socials["value"]
         )
@@ -124,7 +124,7 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
         data = client.get_json(cid)
         socials = client.get_json(data["socialsCid"])
 
-    with suppress(IntegrityError):
+    with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
             user=event.creator, network=socials["network"], value=socials["value"]
         )
@@ -208,7 +208,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials = client.get_json(cid)
 
-    with suppress(IntegrityError):
+    with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
             user=event.creator, network=socials["network"], value=socials["value"]
         )
