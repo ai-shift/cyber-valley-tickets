@@ -43,7 +43,7 @@ class NodeListenerStoppedError(Exception):
 def index_events(
     eth_node_host: str, contracts: dict[ChecksumAddress, type[Contract]], sync: bool
 ) -> None:
-    provider = WebSocketProvider(f"wss://{eth_node_host}")
+    provider = WebSocketProvider(f"ws://{eth_node_host}")
     queue: Queue[LogReceipt] = Queue()
     listener_loop = pyshen.aext.create_event_loop_thread()
     listener_fut = pyshen.aext.run_coro_in_thread(
@@ -52,7 +52,7 @@ def index_events(
     )
     if sync:
         run_sync(
-            Web3(Web3.HTTPProvider(f"https://{settings.ETH_NODE_HOST}")),
+            Web3(Web3.HTTPProvider(f"http://{settings.ETH_NODE_HOST}")),
             queue,
             list(contracts.keys()),
         )

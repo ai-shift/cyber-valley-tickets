@@ -38,7 +38,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
-        w3 = Web3(Web3.HTTPProvider(f"https://{settings.ETH_NODE_HOST}"))
+        w3 = Web3(Web3.HTTPProvider(f"http://{settings.ETH_NODE_HOST}"))
         assert w3.is_connected()
         contracts = {
             ChecksumAddress(HexAddress(HexStr(address))): w3.eth.contract(abi=abi)
