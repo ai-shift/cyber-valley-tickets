@@ -26,7 +26,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
     def get_queryset(self) -> QuerySet[Notification, Notification]:
         user = self.request.user
         assert user.is_authenticated  # XXX: Required for the MyPy check
-        return Notification.objects.filter(user=user)
+        return Notification.objects.filter(user=user).order_by("-created_at")
 
     @extend_schema(responses={204: OpenApiResponse()})
     @action(detail=False, methods=["post"], url_path="seen/(?P<notification_id>[^/.]+)")
