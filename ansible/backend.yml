@@ -34,7 +34,7 @@
 
         - name: "Start container"
           containers.podman.podman_container:
-            name: "{{ image_name }}"
+            name: "{{ image_name }}-api"
             image: "{{ image_name }}"
             state: started
             detach: true
