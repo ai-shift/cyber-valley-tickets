@@ -15,8 +15,8 @@ log = logging.getLogger(__name__)
 ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
     adr: json.loads(path.read_text())["abi"]
     for adr, path in {
-        "0xA17D5c9551Bd04f32ee2eDb3C486C7e52E305DfF": settings.CONTRACTS_INFO[1],
-        "0xc0C8856951bB807Cd7313F43425953dA2Cd389C4": settings.CONTRACTS_INFO[2],
+        "0xea7E3dA37B67097Be45051753142688BFB779f0C": settings.CONTRACTS_INFO[1],
+        "0xDFf575f11Ee33f2540f7e9F45cD88D2d7cA74f34": settings.CONTRACTS_INFO[2],
     }.items()
 }
 
