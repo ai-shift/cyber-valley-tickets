@@ -21,8 +21,8 @@ export const wallets = [
 ];
 
 export const cvlandChain = defineChain({
-  id: 31337,
-  rpc: "https://ce9d-109-93-188-5.ngrok-free.app",
+  id: 1337,
+  rpc: "https://8f16-3-8-190-75.ngrok-free.app",
 });
 
 export const client = createThirdwebClient({
