@@ -1,5 +1,5 @@
 dev:
-	pnpm exec vite
+	pnpm exec vite --host
 
 check:
 	pnpm exec biome check --write .
