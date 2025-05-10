@@ -1,5 +1,6 @@
 import { eventQueries } from "@/entities/event";
 import { useUser } from "@/entities/user";
+import { cn } from "@/shared/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
 import { canEdit } from "@/features/create-edit-event";
@@ -66,6 +67,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           icon="/icons/calendar.svg"
           title="Date"
           information={formatTimestamp(startDateTimestamp)}
+          className={cn(editPermission || "col-span-2")}
         />
         <DetailsBlock
           icon="/icons/duration_2.svg"
@@ -73,11 +75,13 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${daysAmount} day${daysAmount > 1 ? "s" : ""}`}
         />
 
-        <DetailsBlock
-          icon="/icons/Attendees_2.svg"
-          title="Attendees"
-          information={`${ticketsBought}`}
-        />
+        {editPermission && (
+          <DetailsBlock
+            icon="/icons/Attendees_2.svg"
+            title="Attendees"
+            information={`${ticketsBought}`}
+          />
+        )}
         <DetailsBlock
           icon="/icons/price_2.svg"
           title="Price"
