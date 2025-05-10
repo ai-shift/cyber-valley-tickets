@@ -7,5 +7,6 @@ export const notificationQueries = {
       queryKey: ["notifications", "list"],
       queryFn: getNotifications,
       select: (queryData) => queryData?.data,
+      refetchInterval: 5 * 1000,
     }),
 };
