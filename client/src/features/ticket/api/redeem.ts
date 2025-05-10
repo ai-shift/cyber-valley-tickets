@@ -12,7 +12,7 @@ export const redeem = async (
   const ticketId = Number(parts[0]);
   const nonce = parts[1];
 
-  if (!Number.isNaN(ticketId)) {
+  if (Number.isNaN(ticketId)) {
     throw new Error(`Invalid ticket id: ${parts}`);
   }
   if (!nonce) {
