@@ -61,7 +61,8 @@ export const EventForm: React.FC<EventFormProps> = ({
     : undefined;
 
   const formSchema = createFormSchema(places, bookedRanges);
-
+  const addDays = (date: Date, days: number) =>
+    new Date(date.setDate(date.getDate() + days));
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingEvent
@@ -73,8 +74,10 @@ export const EventForm: React.FC<EventFormProps> = ({
           title: "",
           description: "",
           ticketPrice: 0,
-          place: "",
-          startDate: new Date(),
+          place: places[0] ? `${places[0].id}` : "",
+          startDate: places[0]
+            ? addDays(new Date(), places[0].daysBeforeCancel + 2)
+            : new Date(),
           daysAmount: 1,
         },
   });
