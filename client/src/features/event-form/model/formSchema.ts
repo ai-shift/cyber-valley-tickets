@@ -40,18 +40,14 @@ export function createFormSchema(
         });
       }
 
-      const maxDays = bookedRanges.reduce<number>((acc, curr) => {
-        const startDate = data.startDate;
-        const endDate = curr.from;
-        if (endDate === undefined) return acc;
-        const diff = endDate.getTime() - startDate.getTime();
-        if (diff < 0) return acc;
-        const dayDiff = Math.round(diff / (24 * 60 * 60 * 1000));
-        if (dayDiff < acc) return dayDiff;
-        return acc;
-      }, 999);
-
-      if (+data.daysAmount > maxDays) {
+      if (
+        !isDateAvailable(
+          data.startDate,
+          data.daysAmount,
+          place ? place.daysBeforeCancel : 1,
+          bookedRanges,
+        )
+      ) {
         ctx.addIssue({
           path: ["daysAmount"],
           message: "Event overlaps with other event",
@@ -60,3 +56,27 @@ export function createFormSchema(
       }
     });
 }
+
+export const isDateAvailable = (
+  startDate: Date,
+  daysAmount: number | string,
+  daysBeforeCancel: number,
+  bookedRanges: DateRange[],
+): boolean => {
+  if (addDays(new Date(), daysBeforeCancel + 2) > startDate) {
+    return false;
+  }
+  const maxDays = bookedRanges.reduce<number>((acc, curr) => {
+    const endDate = curr.from;
+    if (endDate === undefined) return acc;
+    const diff = endDate.getTime() - startDate.getTime();
+    if (diff < 0) return acc;
+    const dayDiff = Math.round(diff / (24 * 60 * 60 * 1000));
+    if (dayDiff < acc) return dayDiff;
+    return acc;
+  }, 999);
+  return Number(daysAmount) <= maxDays;
+};
+
+export const addDays = (date: Date, days: number): Date =>
+  new Date(date.setDate(date.getDate() + days));

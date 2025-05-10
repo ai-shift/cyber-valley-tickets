@@ -25,7 +25,11 @@ import { getCurrencySymbol } from "@/shared/lib/web3";
 import { fromUnixTime } from "date-fns";
 import { useEffect } from "react";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
-import { createFormSchema } from "../model/formSchema";
+import {
+  addDays,
+  createFormSchema,
+  isDateAvailable,
+} from "../model/formSchema";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
@@ -61,8 +65,23 @@ export const EventForm: React.FC<EventFormProps> = ({
     : undefined;
 
   const formSchema = createFormSchema(places, bookedRanges);
-  const addDays = (date: Date, days: number) =>
-    new Date(date.setDate(date.getDate() + days));
+
+  const currentDaysAmount = places[0] ? places[0].minDays : 1;
+  const currentDaysBeforedCancel = places[0] ? places[0].daysBeforeCancel : 1;
+  const getFirstAvailableDate = (date: Date): Date => {
+    let initial = new Date(date);
+    while (
+      !isDateAvailable(
+        initial,
+        currentDaysAmount,
+        currentDaysBeforedCancel,
+        bookedRanges,
+      )
+    ) {
+      initial = addDays(initial, 1);
+    }
+    return initial;
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingEvent
@@ -75,10 +94,8 @@ export const EventForm: React.FC<EventFormProps> = ({
           description: "",
           ticketPrice: 0,
           place: places[0] ? `${places[0].id}` : "",
-          startDate: places[0]
-            ? addDays(new Date(), places[0].daysBeforeCancel + 2)
-            : new Date(),
-          daysAmount: 1,
+          startDate: getFirstAvailableDate(new Date()),
+          daysAmount: currentDaysAmount,
         },
   });
 
