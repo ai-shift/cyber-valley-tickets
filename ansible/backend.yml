@@ -4,7 +4,8 @@
     image_name: "{{ lookup('ansible.builtin.env', 'BACKEND_IMAGE', default=undef()) }}"
     dotenv_src: ../.env.production
     dotenv_dest: ".env"
-
+  vars_files:
+    - vars/common.yml
   tasks:
     - name: "Install packages"
       ansible.builtin.package: "name={{ item }} state=present"
@@ -38,12 +39,15 @@
             state: started
             detach: true
             restart_policy: always
+            recreate: true
             command:
               - run-server
             expose:
               - 8000
             network: host
             env_file: "{{ dotenv_dest }}"
+            volume:
+              - "{{ ipfs_data_volume }}:/ipfs/data"
       always:
         - name: "Remove dotenv"
           ansible.builtin.file:
@@ -55,4 +59,3 @@
     - name: "Prune dangling images and containers"
       containers.podman.podman_prune:
         image: true
-        container: true
