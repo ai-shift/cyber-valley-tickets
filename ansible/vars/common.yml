@@ -3,3 +3,5 @@ domain_name: cvland-tickets.aishift.co
 dotenv_src: ../.env.production
 dotenv_dest: ".env"
 letsencrypt_email: tech@aishift.co
+ipfs_data_volume: ipfs-data
+ipfs_staging_volume: ipfs-staging

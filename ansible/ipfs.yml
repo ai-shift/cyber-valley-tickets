@@ -1,0 +1,37 @@
+---
+- hosts: all
+  vars_files:
+    - vars/common.yml
+  tasks:
+    - name: "Install packages"
+      ansible.builtin.package: "name={{ item }} state=present"
+      with_items:
+        - podman
+
+    - name: "Pull valkey image"
+      containers.podman.podman_image:
+        name: docker.io/ipfs/go-ipfs:v0.7.0
+
+    - name: "Create volumes"
+      containers.podman.podman_volume:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "{{ ipfs_data_volume }}"
+        - "{{ ipfs_staging_volume }}"
+
+    - name: "Start container"
+      containers.podman.podman_container:
+        name: cvland-ipfs
+        image: docker.io/ipfs/go-ipfs:v0.7.0
+        state: started
+        detach: true
+        restart_policy: always
+        volume:
+          - "{{ ipfs_data_volume }}:/data/ipfs"
+          - "{{ ipfs_staging_volume }}:/export"
+        exposed_ports:
+          - 5001 # API
+          - 8080 # Gateway
+          - 4001 # Swarm
+        network: host
