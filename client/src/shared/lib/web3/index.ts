@@ -32,7 +32,7 @@ export const client = createThirdwebClient({
 const eventManager = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0xc0C8856951bB807Cd7313F43425953dA2Cd389C4",
+  address: "0xDFf575f11Ee33f2540f7e9F45cD88D2d7cA74f34",
   // @ts-ignore: TS2322
   abi: EventManagerABI,
 });
@@ -40,7 +40,7 @@ const eventManager = getContract({
 const eventTicket = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0xA17D5c9551Bd04f32ee2eDb3C486C7e52E305DfF",
+  address: "0xea7E3dA37B67097Be45051753142688BFB779f0C",
   // @ts-ignore: TS2322
   abi: EventTicketABI,
 });
@@ -48,7 +48,7 @@ const eventTicket = getContract({
 const erc20 = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0x6a1555771c43caB56C2044c20C9f4F47b7ca5f78",
+  address: "0x82DC358728283e9dc82fdDD7ebbB6fAf1dbcBDF9",
   // @ts-ignore: TS2322
   abi: SimpleERC20XyloseABI,
 });
