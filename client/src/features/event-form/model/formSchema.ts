@@ -20,13 +20,9 @@ export function createFormSchema(
         .refine((val) => val.size <= 10 * 1024 * 1024, {
           message: "File size must be less than 10MB.",
         })
-        .refine(
-          (val) =>
-            ["image/jpeg", "image/png", "application/pdf"].includes(val?.type),
-          {
-            message: "Only .jpg, .png, and .pdf files are allowed.",
-          },
-        ),
+        .refine((val) => ["image/jpeg", "image/png"].includes(val?.type), {
+          message: "Only .jpg and .png files are allowed.",
+        }),
       place: z.string().min(1, "Place is required"),
       ticketPrice: z.number().refine((val) => val >= 1, "Price is too small"),
       startDate: z.date().min(new Date(), "Can't change the past"),
