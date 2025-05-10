@@ -26,3 +26,6 @@ deploy-nginx: install-collections
 
 deploy-valkey: install-collections
 	$(ansible-playbook) valkey.yml
+
+deploy-ipfs: install-collections
+	$(ansible-playbook) ipfs.yml
