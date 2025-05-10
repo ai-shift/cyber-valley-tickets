@@ -1,3 +1,5 @@
+import { keccak256 } from "@ethersproject/keccak256";
+import { toUtf8Bytes } from "@ethersproject/strings";
 import type { BigNumberish } from "ethers";
 import {
   createThirdwebClient,
@@ -11,6 +13,8 @@ import EventManagerABI from "./contracts/EventManager";
 import EventTicketABI from "./contracts/EventTicket";
 import SimpleERC20XyloseABI from "./contracts/SimpleERC20Xylose";
 import { getBytes32FromMultiash } from "./multihash";
+
+const STAFF_ROLE = keccak256(toUtf8Bytes("STAFF_ROLE"));
 
 export const wallets = [
   createWallet("io.metamask"),
@@ -233,6 +237,20 @@ export async function redeemTicket(
     contract: eventTicket,
     method: "redeemTicket",
     params: [ticketId],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function assignStaff(
+  account: Account,
+  address: string,
+): Promise<TxHash> {
+  // @ts-ignore: TS2345
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "grantRole",
+    params: [STAFF_ROLE, address],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;
