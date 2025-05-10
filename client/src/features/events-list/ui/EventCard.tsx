@@ -16,6 +16,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
     event;
 
   const hasTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
+  const ticketWasNotRedeemed = hasTicket && !hasTicket.isRedeemed;
   const isMaster = user.role === "master";
 
   return (
@@ -45,7 +46,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
           <div className="mt-auto flex justify-between items-center">
             <p className="text-primary text-sm">{ticketPrice} ₮</p>
             {hasTicket ? (
-              <Button> Show ticket</Button>
+              ticketWasNotRedeemed ? (
+                <Button>Show ticket</Button>
+              ) : (
+                <Button>Ticket redeemed</Button>
+              )
             ) : (
               <Button>Attend</Button>
             )}
