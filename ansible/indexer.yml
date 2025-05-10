@@ -36,6 +36,7 @@
             name: "{{ image_name }}"
             image: "{{ image_name }}"
             state: started
+            recreate: true
             detach: true
             restart_policy: always
             command:
