@@ -12,7 +12,7 @@
 
     - name: "Start container"
       containers.podman.podman_container:
-        name: ganche-node
+        name: ganache-node
         image: docker.io/trufflesuite/ganache:v7.9.2
         state: started
         detach: true
