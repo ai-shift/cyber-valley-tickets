@@ -11,12 +11,9 @@ export const NotificationsList: React.FC = () => {
     error,
   } = useQuery(notificationQueries.list());
 
-  if (isFetching)
-    return (
-      <div className="flex w-full aspect-square items-center justify-center">
-        <Loader />
-      </div>
-    );
+  if (!notifications && isFetching) {
+    return <Loader />;
+  }
   if (error) return <ErrorMessage errors={error} />;
   if (!notifications) return <p>No data for some reason</p>;
 
