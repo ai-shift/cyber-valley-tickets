@@ -59,23 +59,26 @@ export function createFormSchema(
 
 export const isDateAvailable = (
   startDate: Date,
-  daysAmount: number | string,
+  daysAmountStr: number | string,
   daysBeforeCancel: number,
   bookedRanges: DateRange[],
 ): boolean => {
-  if (addDays(new Date(), daysBeforeCancel + 2) < startDate) {
+  const daysAmount = Number(daysAmountStr);
+  if (Number.isNaN(daysAmount)) {
+    throw new Error("Days amount is NaN");
+  }
+  if (addDays(new Date(), daysBeforeCancel + 2) > startDate) {
     return false;
   }
-  const maxDays = bookedRanges.reduce<number>((acc, curr) => {
-    const endDate = curr.from;
-    if (endDate === undefined) return acc;
-    const diff = endDate.getTime() - startDate.getTime();
-    if (diff < 0) return acc;
-    const dayDiff = Math.round(diff / (24 * 60 * 60 * 1000));
-    if (dayDiff < acc) return dayDiff;
-    return acc;
-  }, 999);
-  return Number(daysAmount) <= maxDays;
+  const hasOverlap = (date: Date, range: DateRange) =>
+    range.from != null &&
+    range.to != null &&
+    date >= range.from &&
+    date <= range.to;
+  const endDate = addDays(startDate, daysAmount);
+  return !bookedRanges.find(
+    (range) => hasOverlap(startDate, range) || hasOverlap(endDate, range),
+  );
 };
 
 export const addDays = (date: Date, days: number): Date =>
