@@ -63,7 +63,7 @@ export const isDateAvailable = (
   daysBeforeCancel: number,
   bookedRanges: DateRange[],
 ): boolean => {
-  if (addDays(new Date(), daysBeforeCancel + 2) > startDate) {
+  if (addDays(new Date(), daysBeforeCancel + 2) < startDate) {
     return false;
   }
   const maxDays = bookedRanges.reduce<number>((acc, curr) => {
