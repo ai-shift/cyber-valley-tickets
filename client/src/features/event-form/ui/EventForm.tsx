@@ -92,7 +92,7 @@ export const EventForm: React.FC<EventFormProps> = ({
       : {
           title: "",
           description: "",
-          ticketPrice: 0,
+          ticketPrice: places[0] ? places[0].minPrice : 0,
           place: places[0] ? `${places[0].id}` : "",
           startDate: getFirstAvailableDate(new Date()),
           daysAmount: currentDaysAmount,
