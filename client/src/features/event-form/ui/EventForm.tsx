@@ -38,6 +38,7 @@ type EventFormProps = {
   existingEvent?: Event;
 };
 
+// FIXME: Calculate booked ranges inside of the form component
 export const EventForm: React.FC<EventFormProps> = ({
   bookedRanges,
   places,
