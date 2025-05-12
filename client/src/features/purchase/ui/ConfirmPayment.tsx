@@ -26,8 +26,8 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   const navigateFn = () => navigate("/", { replace: true });
   const successMessage =
     order.type === "buy_ticket"
-      ? "Your will recieve your ticket within 15 minutes."
-      : "Your order will be published within 15 minutes.";
+      ? "Your will recieve your ticket within several minutes."
+      : "Your order will be published within several minutes.";
 
   return (
     <article className="card border-primary/30">
