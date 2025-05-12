@@ -32,7 +32,10 @@ export function createFormSchema(
     })
     .superRefine((data, ctx) => {
       const place = places.find((p) => `${p.id}` === data.place);
-      if (place && +data.ticketPrice < place.minPrice) {
+      if (place == null) {
+        throw new Error(`Place was not found for ${data.place}`);
+      }
+      if (+data.ticketPrice < place.minPrice) {
         ctx.addIssue({
           path: ["ticketPrice"],
           message: "Ticket price should be bigger than minimum",
@@ -44,7 +47,7 @@ export function createFormSchema(
         !isDateAvailable(
           data.startDate,
           data.daysAmount,
-          place ? place.daysBeforeCancel : 1,
+          place.daysBeforeCancel,
           bookedRanges,
         )
       ) {
@@ -59,14 +62,10 @@ export function createFormSchema(
 
 export const isDateAvailable = (
   startDate: Date,
-  daysAmountStr: number | string,
+  daysAmount: number,
   daysBeforeCancel: number,
   bookedRanges: DateRange[],
 ): boolean => {
-  const daysAmount = Number(daysAmountStr);
-  if (Number.isNaN(daysAmount)) {
-    throw new Error("Days amount is NaN");
-  }
   if (addDays(new Date(), daysBeforeCancel + 2) > startDate) {
     return false;
   }
