@@ -27,6 +27,7 @@
         state: started
         detach: true
         restart_policy: always
+        kernel_memory: 300m
         volume:
           - "{{ ipfs_data_volume }}:/data/ipfs"
           - "{{ ipfs_staging_volume }}:/export"
@@ -35,3 +36,9 @@
           - 8080 # Gateway
           - 4001 # Swarm
         network: host
+
+    - name: "Add letsencrypt cronjob for cert renewal"
+      cron:
+        name: letsencrypt_renewal
+        special_time: daily
+        job: podman restart cvland-ipfs
