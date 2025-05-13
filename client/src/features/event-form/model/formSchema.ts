@@ -20,13 +20,9 @@ export function createFormSchema(
         .refine((val) => val.size <= 10 * 1024 * 1024, {
           message: "File size must be less than 10MB.",
         })
-        .refine(
-          (val) =>
-            ["image/jpeg", "image/png", "application/pdf"].includes(val?.type),
-          {
-            message: "Only .jpg, .png, and .pdf files are allowed.",
-          },
-        ),
+        .refine((val) => ["image/jpeg", "image/png"].includes(val?.type), {
+          message: "Only .jpg and .png files are allowed.",
+        }),
       place: z.string().min(1, "Place is required"),
       ticketPrice: z.number().refine((val) => val >= 1, "Price is too small"),
       startDate: z.date().min(new Date(), "Can't change the past"),
@@ -36,7 +32,10 @@ export function createFormSchema(
     })
     .superRefine((data, ctx) => {
       const place = places.find((p) => `${p.id}` === data.place);
-      if (place && +data.ticketPrice < place.minPrice) {
+      if (place == null) {
+        throw new Error(`Place was not found for ${data.place}`);
+      }
+      if (+data.ticketPrice < place.minPrice) {
         ctx.addIssue({
           path: ["ticketPrice"],
           message: "Ticket price should be bigger than minimum",
@@ -44,18 +43,14 @@ export function createFormSchema(
         });
       }
 
-      const maxDays = bookedRanges.reduce<number>((acc, curr) => {
-        const startDate = data.startDate;
-        const endDate = curr.from;
-        if (endDate === undefined) return acc;
-        const diff = endDate.getTime() - startDate.getTime();
-        if (diff < 0) return acc;
-        const dayDiff = Math.round(diff / (24 * 60 * 60 * 1000));
-        if (dayDiff < acc) return dayDiff;
-        return acc;
-      }, 999);
-
-      if (+data.daysAmount > maxDays) {
+      if (
+        !isDateAvailable(
+          data.startDate,
+          data.daysAmount,
+          place.daysBeforeCancel,
+          bookedRanges,
+        )
+      ) {
         ctx.addIssue({
           path: ["daysAmount"],
           message: "Event overlaps with other event",
@@ -64,3 +59,26 @@ export function createFormSchema(
       }
     });
 }
+
+export const isDateAvailable = (
+  startDate: Date,
+  daysAmount: number,
+  daysBeforeCancel: number,
+  bookedRanges: DateRange[],
+): boolean => {
+  if (addDays(new Date(), daysBeforeCancel + 2) > startDate) {
+    return false;
+  }
+  const hasOverlap = (date: Date, range: DateRange) =>
+    range.from != null &&
+    range.to != null &&
+    date >= range.from &&
+    date <= range.to;
+  const endDate = addDays(startDate, daysAmount);
+  return !bookedRanges.find(
+    (range) => hasOverlap(startDate, range) || hasOverlap(endDate, range),
+  );
+};
+
+export const addDays = (date: Date, days: number): Date =>
+  new Date(date.setDate(date.getDate() + days));

@@ -25,7 +25,11 @@ import { getCurrencySymbol } from "@/shared/lib/web3";
 import { fromUnixTime } from "date-fns";
 import { useEffect } from "react";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
-import { createFormSchema } from "../model/formSchema";
+import {
+  addDays,
+  createFormSchema,
+  isDateAvailable,
+} from "../model/formSchema";
 
 type EventFormProps = {
   bookedRanges: DateRange[];
@@ -34,6 +38,7 @@ type EventFormProps = {
   existingEvent?: Event;
 };
 
+// FIXME: Calculate booked ranges inside of the form component
 export const EventForm: React.FC<EventFormProps> = ({
   bookedRanges,
   places,
@@ -62,6 +67,22 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   const formSchema = createFormSchema(places, bookedRanges);
 
+  const currentDaysAmount = places[0] ? places[0].minDays : 1;
+  const currentDaysBeforedCancel = places[0] ? places[0].daysBeforeCancel : 1;
+  const getFirstAvailableDate = (date: Date): Date => {
+    let initial = new Date(date);
+    while (
+      !isDateAvailable(
+        initial,
+        currentDaysAmount,
+        currentDaysBeforedCancel,
+        bookedRanges,
+      )
+    ) {
+      initial = addDays(initial, 1);
+    }
+    return initial;
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingEvent
@@ -72,10 +93,10 @@ export const EventForm: React.FC<EventFormProps> = ({
       : {
           title: "",
           description: "",
-          ticketPrice: 0,
-          place: "",
-          startDate: new Date(),
-          daysAmount: 1,
+          ticketPrice: places[0] ? places[0].minPrice : 0,
+          place: places[0] ? `${places[0].id}` : "",
+          startDate: getFirstAvailableDate(new Date()),
+          daysAmount: currentDaysAmount,
         },
   });
 
