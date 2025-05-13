@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from argparse import ArgumentParser
 from typing import Any, Final
 
@@ -15,8 +16,8 @@ log = logging.getLogger(__name__)
 ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
     adr: json.loads(path.read_text())["abi"]
     for adr, path in {
-        "0xea7E3dA37B67097Be45051753142688BFB779f0C": settings.CONTRACTS_INFO[1],
-        "0xDFf575f11Ee33f2540f7e9F45cD88D2d7cA74f34": settings.CONTRACTS_INFO[2],
+        os.environ["EVENT_TICKET_ADDRESS"]: settings.CONTRACTS_INFO[1],
+        os.environ["EVENT_MANAGER_ADDRESS"]: settings.CONTRACTS_INFO[2],
     }.items()
 }
 
@@ -38,10 +39,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
-        w3 = Web3(Web3.HTTPProvider(f"http://{settings.ETH_NODE_HOST}"))
+        w3 = Web3(Web3.HTTPProvider(settings.HTTP_ETH_NODE_HOST))
         assert w3.is_connected()
         contracts = {
             ChecksumAddress(HexAddress(HexStr(address))): w3.eth.contract(abi=abi)
             for address, abi in ETH_CONTRACT_ADDRESS_TO_ABI.items()
         }
-        index_events(settings.ETH_NODE_HOST, contracts, not bool(options["no_sync"]))
+        index_events(contracts, not bool(options["no_sync"]))

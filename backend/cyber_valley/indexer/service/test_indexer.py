@@ -57,7 +57,7 @@ def run_hardhat_test(printer_session: Printer) -> HardhatTestRunner:
 
 @pytest.fixture
 def w3() -> Web3:
-    w3 = Web3(Web3.HTTPProvider(f"http://{settings.ETH_NODE_HOST}"))
+    w3 = Web3(Web3.HTTPProvider(settings.HTTP_ETH_NODE_HOST))
     assert w3.is_connected()
     return w3
 

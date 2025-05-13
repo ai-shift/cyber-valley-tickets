@@ -26,7 +26,7 @@ export const wallets = [
 
 export const cvlandChain = defineChain({
   id: 1337,
-  rpc: "https://8f16-3-8-190-75.ngrok-free.app",
+  rpc: import.meta.env.VITE_HTTP_ETH_NODE_HOST,
 });
 
 export const client = createThirdwebClient({
@@ -36,7 +36,7 @@ export const client = createThirdwebClient({
 const eventManager = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0xDFf575f11Ee33f2540f7e9F45cD88D2d7cA74f34",
+  address: import.meta.env.VITE_EVENT_MANAGER_ADDRESS,
   // @ts-ignore: TS2322
   abi: EventManagerABI,
 });
@@ -44,7 +44,7 @@ const eventManager = getContract({
 const eventTicket = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0xea7E3dA37B67097Be45051753142688BFB779f0C",
+  address: import.meta.env.VITE_EVENT_TICKET_ADDRESS,
   // @ts-ignore: TS2322
   abi: EventTicketABI,
 });
@@ -52,7 +52,7 @@ const eventTicket = getContract({
 const erc20 = getContract({
   client: client,
   chain: cvlandChain,
-  address: "0x82DC358728283e9dc82fdDD7ebbB6fAf1dbcBDF9",
+  address: import.meta.env.VITE_ERC20_ADDRESS,
   // @ts-ignore: TS2322
   abi: SimpleERC20XyloseABI,
 });
