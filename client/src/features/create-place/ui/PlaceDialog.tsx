@@ -19,7 +19,7 @@ export const PlaceDialog: React.FC<PlaceDialogProps> = ({
   const messages: { [P in ModalStatus]: string } = {
     error:
       "Some error occured during transation. Please check your wallet for more information.",
-    success: "New place will appear within 15 minutes.",
+    success: "New place will appear within several minutes.",
     "": "",
   };
 
