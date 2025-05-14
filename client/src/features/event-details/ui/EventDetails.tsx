@@ -10,6 +10,7 @@ import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { DetailsBlock } from "./DetailsBlock";
+import { StatusBage } from "@/features/events-list/ui/StatusBage";
 
 type EventDetailsProps = {
   eventId: number;
@@ -36,20 +37,23 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     ticketsBought,
     startDateTimestamp,
     daysAmount,
+    status,
   } = event;
 
   const editPermission = canEdit(user, event);
 
   return (
     <div className="flex flex-col">
-      <img
-        className="aspect-16/9 object-cover object-center"
-        src={
-          imageUrl ??
-          "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
-        }
-        alt={title}
-      />
+      <div className="relative">
+        <img
+          className="aspect-video object-cover object-center"
+          src={imageUrl ?? "/event_default.jpg"}
+          alt={title}
+        />
+        <div className="absolute top-3 right-2">
+          <StatusBage status={status} />
+        </div>
+      </div>
       <div className="bg-secondary py-10 px-4 text-black space-y-8">
         <h2 className="font-semibold text-3xl">{title}</h2>
         <p className="text-xl">{description}</p>
@@ -78,8 +82,8 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         {editPermission && (
           <DetailsBlock
             icon="/icons/Attendees_2.svg"
-            title="Attendees"
-            information={`${ticketsBought}`}
+            title="Tickets"
+            information={`${place.maxTickets - Number(ticketsBought)}`}
           />
         )}
         <DetailsBlock
