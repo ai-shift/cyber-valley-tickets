@@ -25,7 +25,7 @@ export const HomePage: React.FC = () => {
           <h2 className="text-base text-primary">Upcoming events</h2>
           <p className="uppercase text-secondary">See all</p>
         </Link>
-        <EventsList isGrid limit={3} filterFn={upcomingFilter} />
+        <EventsList limit={3} filterFn={upcomingFilter} />
       </section>
       <Button
         className="mt-8"
