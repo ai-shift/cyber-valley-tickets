@@ -2,7 +2,6 @@ import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 
 import { EventForm } from "@/features/event-form";
-import { extractRanges } from "../lib/extractRanges";
 import { EventDataProvider } from "./EventDataProvider";
 
 type CreateEventProps = {
@@ -19,10 +18,7 @@ const CreateEventWithData: React.FC<CreateEventWithData> = ({
   events,
   places,
 }) => {
-  const dateRanges = extractRanges(events);
-  return (
-    <EventForm bookedRanges={dateRanges} places={places} onSumbit={onSubmit} />
-  );
+  return <EventForm events={events} places={places} onSumbit={onSubmit} />;
 };
 
 export const CreateEvent: React.FC<CreateEventProps> = ({ onSubmit }) => {

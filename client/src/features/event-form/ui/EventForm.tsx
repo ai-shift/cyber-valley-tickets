@@ -1,5 +1,5 @@
+import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
-import type { DateRange } from "react-day-picker";
 import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,70 +19,44 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
-import type { Event, EventDto } from "@/entities/event";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { fromUnixTime } from "date-fns";
-import { useEffect } from "react";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
-import {
-  addDays,
-  createFormSchema,
-  isDateAvailable,
-} from "../model/formSchema";
+import { createFormSchema } from "../model/formSchema";
+import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
+import { useFetchImage } from "../hooks/useFetchImage";
+import { assertIsDefined } from "@/shared/lib/assert";
+import { getPlaceDefaults } from "../lib/getPlaceDefaults";
+import { useEffect } from "react";
 
 type EventFormProps = {
-  bookedRanges: DateRange[];
+  events: Event[];
   places: EventPlace[];
   onSumbit: (values: EventDto) => void;
   existingEvent?: Event;
 };
 
-// FIXME: Calculate booked ranges inside of the form component
 export const EventForm: React.FC<EventFormProps> = ({
-  bookedRanges,
+  events,
   places,
   onSumbit: submitHandler,
   existingEvent,
 }) => {
-  useEffect(() => {
-    if (!existingEvent?.imageUrl) return;
-
-    async function getFileFromUrl(url: string, filename: string) {
-      const response = await fetch(url);
-      const contentType = response.headers.get("Content-Type");
-      const blob = await response.blob();
-      return new File([blob], filename, { type: contentType?.toString() });
-    }
-
-    getFileFromUrl(
-      existingEvent.imageUrl,
-      `Жопа-${Math.floor(Math.random() * 1000)}`,
-    ).then((data) => form.setValue("image", data));
-  }, [existingEvent?.imageUrl]);
+  if (!places[0])
+    return (
+      <ErrorMessage errors={new Error("No availible places to create event")} />
+    );
 
   const eventForEdit = existingEvent
     ? mapEventToEventForm(existingEvent)
     : undefined;
 
-  const formSchema = createFormSchema(places, bookedRanges);
+  const eventIdsToExclude = existingEvent ? [existingEvent.id] : undefined;
 
-  const currentDaysAmount = places[0] ? places[0].minDays : 1;
-  const currentDaysBeforedCancel = places[0] ? places[0].daysBeforeCancel : 1;
-  const getFirstAvailableDate = (date: Date): Date => {
-    let initial = new Date(date);
-    while (
-      !isDateAvailable(
-        initial,
-        currentDaysAmount,
-        currentDaysBeforedCancel,
-        bookedRanges,
-      )
-    ) {
-      initial = addDays(initial, 1);
-    }
-    return initial;
-  };
+  const formSchema = createFormSchema(places, events);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingEvent
@@ -93,22 +67,43 @@ export const EventForm: React.FC<EventFormProps> = ({
       : {
           title: "",
           description: "",
-          ticketPrice: places[0] ? places[0].minPrice : 0,
-          place: places[0] ? `${places[0].id}` : "",
-          startDate: getFirstAvailableDate(new Date()),
-          daysAmount: currentDaysAmount,
+          ...getPlaceDefaults(places[0], events, eventIdsToExclude),
         },
   });
+
+  useFetchImage(form, existingEvent);
+
+  const selectedPlace = places.find(
+    (place) => `${place?.id}` === form.watch("place"),
+  );
+  const isSelected = !!selectedPlace;
+
+  assertIsDefined(selectedPlace);
+  const placeRanges = extractBookedRangesForPlace(
+    events,
+    selectedPlace,
+    eventIdsToExclude,
+  );
+
+  useEffect(() => {
+    const updatedValues = getPlaceDefaults(
+      selectedPlace,
+      events,
+      eventIdsToExclude,
+    );
+
+    form.reset((values) => ({
+      ...values,
+      ...updatedValues,
+    }));
+  }, [selectedPlace, events, eventIdsToExclude, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const eventDto = mapEventFormToEventDto(values);
     submitHandler(eventDto);
   }
 
-  const selectedPlace = places.find(
-    (place) => `${place.id}` === form.watch("place"),
-  );
-  const isSelected = !!selectedPlace;
+  //   console.log(events.filter((event) => event.place.id === selectedPlace.id));
 
   return (
     <Form {...form}>
@@ -187,42 +182,6 @@ export const EventForm: React.FC<EventFormProps> = ({
         />
         <FormField
           control={form.control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormLabel>Start date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  date={field.value}
-                  setDate={field.onChange}
-                  disabled={bookedRanges}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="daysAmount"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormLabel>Duration in days</FormLabel>
-              <FormControl>
-                <Input
-                  inputMode="decimal"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="place"
           render={({ field }) => (
             <FormItem>
@@ -255,6 +214,43 @@ export const EventForm: React.FC<EventFormProps> = ({
             </div>
           </div>
         )}
+        <FormField
+          control={form.control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Start date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  place={selectedPlace}
+                  date={field.value}
+                  setDate={field.onChange}
+                  disabled={placeRanges}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="daysAmount"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Duration in days</FormLabel>
+              <FormControl>
+                <Input
+                  inputMode="decimal"
+                  {...field}
+                  onChange={(e) =>
+                    field.onChange(handleNumericInput(e.target.value))
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="ticketPrice"

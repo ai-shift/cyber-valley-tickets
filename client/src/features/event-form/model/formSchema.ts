@@ -1,12 +1,13 @@
 import type { EventPlace } from "@/entities/place";
 import type { EventFormOutput } from "./types";
-
 import type { DateRange } from "react-day-picker";
+import type { Event } from "@/entities/event";
 import { type ZodType, z } from "zod";
+import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
 
 export function createFormSchema(
   places: EventPlace[],
-  bookedRanges: DateRange[],
+  events: Event[],
 ): ZodType<EventFormOutput> {
   return z
     .object({
@@ -43,6 +44,8 @@ export function createFormSchema(
         });
       }
 
+      const bookedRanges = extractBookedRangesForPlace(events, place);
+
       if (
         !isDateAvailable(
           data.startDate,
@@ -66,19 +69,23 @@ export const isDateAvailable = (
   daysBeforeCancel: number,
   bookedRanges: DateRange[],
 ): boolean => {
-  if (addDays(new Date(), daysBeforeCancel + 2) > startDate) {
+  if (addDays(new Date(), daysBeforeCancel + 1) > startDate) {
     return false;
   }
   const hasOverlap = (date: Date, range: DateRange) =>
     range.from != null &&
     range.to != null &&
-    date >= range.from &&
-    date <= range.to;
-  const endDate = addDays(startDate, daysAmount);
-  return !bookedRanges.find(
-    (range) => hasOverlap(startDate, range) || hasOverlap(endDate, range),
-  );
+    date.getDate() >= range.from.getDate() &&
+    date.getDate() <= range.to.getDate();
+
+  return !bookedRanges.find((range) => {
+    for (let i = 0; i < daysAmount; i++) {
+      if (hasOverlap(addDays(startDate, i), range)) return true;
+    }
+  });
 };
 
-export const addDays = (date: Date, days: number): Date =>
-  new Date(date.setDate(date.getDate() + days));
+export const addDays = (date: Date, days: number): Date => {
+  const copyDate = new Date(date);
+  return new Date(copyDate.setDate(date.getDate() + days));
+};
