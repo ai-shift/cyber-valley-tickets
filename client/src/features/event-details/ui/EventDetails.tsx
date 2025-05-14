@@ -20,10 +20,10 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   const {
     data: event,
     error,
-    isFetching,
+    isLoading,
   } = useQuery(eventQueries.detail(eventId));
 
-  if (isFetching) return <Loader />;
+  if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
   if (!event || !user) return <ErrorMessage errors={error} />;
 
