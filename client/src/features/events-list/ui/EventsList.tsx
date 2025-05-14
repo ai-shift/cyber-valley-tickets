@@ -10,18 +10,13 @@ import { Loader } from "@/shared/ui/Loader";
 type EventsListProps = {
   limit?: number;
   filterFn?: (event: Event, user: User) => boolean;
-  isGrid?: boolean;
 };
 
-export const EventsList: React.FC<EventsListProps> = ({
-  limit,
-  filterFn,
-  isGrid = false,
-}) => {
-  const { data: events, error, isFetching } = useQuery(eventQueries.list());
+export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
+  const { data: events, error, isLoading } = useQuery(eventQueries.list());
   const { user } = useUser();
 
-  if (isFetching) return <Loader />;
+  if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
   if (!(events && user)) return <p>No data for some reason</p>;
 
@@ -35,7 +30,7 @@ export const EventsList: React.FC<EventsListProps> = ({
   }
 
   return (
-    <div className={isGrid ? "main_grid" : "flex flex-col gap-6 px-3"}>
+    <div className={"flex flex-col gap-6 px-3"}>
       {limitedEvents.map((event) => (
         <EventCard key={event.id} event={event} user={user} />
       ))}
