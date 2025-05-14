@@ -2,7 +2,6 @@ import type { Event } from "@/entities/event";
 import type { User } from "@/entities/user";
 
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
-import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
 import { StatusBage } from "./StatusBage";
 
@@ -11,51 +10,44 @@ type EventCardProps = {
   user: User;
 };
 
-export const EventCard: React.FC<EventCardProps> = ({ event, user }) => {
-  const { place, startDateTimestamp, description, title, ticketPrice, status } =
+export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const { place, startDateTimestamp, description, title, status, imageUrl } =
     event;
 
-  const hasTicket = user.tickets.find((ticket) => ticket.eventId === event.id);
-  const ticketWasNotRedeemed = hasTicket && !hasTicket.isRedeemed;
-  const isMaster = user.role === "master";
-
   return (
-    <article className="card border-primary/40">
+    <article className="relative">
+      <div className="absolute top-3 right-2 ">
+        <StatusBage status={status} />
+      </div>
       <Link className="flex flex-col h-full" to={`/events/${event.id}`}>
-        <h2 className="text-lg font-semibold mb-2">{title}</h2>
-        <div className="flex items-center gap-3">
-          <img className="h-4" src="/icons/calendar.svg" alt="calendar icon" />
-          <p className="text-sm text-accent font-light">
-            {formatTimestamp(startDateTimestamp)}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <img
-            className="h-4"
-            src="/icons/event place_2.svg"
-            alt="calendar icon"
-          />
-          <p className="text-sm text-accent font-light">{place.title}</p>
-        </div>
-        <p className="text-sm text-white mt-1 line-clamp-2 mb-2">
-          {description}
-        </p>
-        {isMaster ? (
-          <StatusBage status={status} />
-        ) : (
-          <div className="mt-auto flex justify-between items-center">
-            <p className="text-primary text-sm">{ticketPrice} ₮</p>
-            {hasTicket ? (
-              ticketWasNotRedeemed ? (
-                <Button>Show ticket</Button>
-              ) : (
-                <Button>Ticket redeemed</Button>
-              )
-            ) : (
-              <Button>Attend</Button>
-            )}
+        <img
+          className="aspect-video object-cover"
+          src={imageUrl ?? "event_default.jpg"}
+          alt={title}
+        />
+        <div className="flex justify-between items-center">
+          <div className="py-1">
+            <h2 className="text-lg font-semibold">{title}</h2>
+            <p className="text-sm text-white line-clamp-1">{description}</p>
+            <div className="grid grid-cols-[auto_1fr] items-center gap-y-1 gap-x-3 py-2">
+              <img
+                className="h-4"
+                src="/icons/calendar.svg"
+                alt="calendar icon"
+              />
+              <p className="text-sm text-accent font-light">
+                {formatTimestamp(startDateTimestamp)}
+              </p>
+              <img
+                className="h-4"
+                src="/icons/event place_2.svg"
+                alt="calendar icon"
+              />
+              <p className="text-sm text-accent font-light">{place.title}</p>
+            </div>
           </div>
-        )}
+          <img className="h-10" src="/icons/chevrone_right.svg" alt="" />
+        </div>
       </Link>
     </article>
   );
