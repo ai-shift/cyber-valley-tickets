@@ -7,11 +7,11 @@ import { NotificationCard } from "./NotificationCard";
 export const NotificationsList: React.FC = () => {
   const {
     data: notifications,
-    isFetching,
+    isLoading,
     error,
   } = useQuery(notificationQueries.list());
 
-  if (!notifications && isFetching) {
+  if (isLoading) {
     return <Loader />;
   }
   if (error) return <ErrorMessage errors={error} />;
@@ -20,7 +20,7 @@ export const NotificationsList: React.FC = () => {
   if (notifications.length === 0) return <p>You have no notifications</p>;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 px-3">
       {notifications.map((notification) => (
         <NotificationCard
           key={notification.title}

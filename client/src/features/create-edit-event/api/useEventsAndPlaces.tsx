@@ -7,7 +7,7 @@ export const useEventsAndPlaces = () => {
     queries: [placesQueries.list(), eventQueries.list()],
   });
 
-  const isLoading = placesResult.isFetching || eventsResult.isFetching;
+  const isLoading = placesResult.isLoading || eventsResult.isLoading;
   const errors = [placesResult.error, eventsResult.error].filter(
     (error) => error !== null,
   );
