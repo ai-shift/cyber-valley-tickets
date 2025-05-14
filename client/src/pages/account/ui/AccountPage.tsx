@@ -18,7 +18,7 @@ export const AccountPage: React.FC = () => {
   const address = user.address;
 
   return (
-    <PageContainer name="Account">
+    <PageContainer hasBackIcon={false} name="Account">
       <div className="flex flex-col items-center gap-10">
         <div className="py-10 flex gap-20 items-center">
           <img
