@@ -2,7 +2,6 @@ import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { EventForm } from "@/features/event-form";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
-import { extractRanges } from "../lib/extractRanges";
 import { EventDataProvider } from "./EventDataProvider";
 
 type EditEventProps = {
@@ -24,7 +23,6 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
   places,
 }) => {
   const foundEvent = events.find((event) => event.id === editEventId);
-  const dateRanges = extractRanges(events, Number(editEventId));
 
   if (!foundEvent) {
     return (
@@ -45,7 +43,7 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
   return (
     <EventForm
       existingEvent={foundEvent}
-      bookedRanges={dateRanges}
+      events={events}
       places={places}
       onSumbit={onSubmit}
     />

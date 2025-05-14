@@ -1,3 +1,4 @@
+import type { EventPlace } from "@/entities/place";
 import type { DateRange } from "react-day-picker";
 import type { SelectSingleEventHandler } from "react-day-picker";
 
@@ -8,19 +9,46 @@ import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { useState } from "react";
+import { addDays, isDateAvailable } from "../model/formSchema";
 
 type DatePickerProps = {
   date: Date;
   setDate: SelectSingleEventHandler;
   disabled: DateRange[];
+  place: EventPlace;
 };
 
 export const DatePicker: React.FC<DatePickerProps> = ({
   date,
   setDate,
-  disabled,
+  disabled: disabledRanges,
+  place,
 }) => {
   const [open, setOpen] = useState(false);
+
+  console.log(disabledRanges);
+
+  const disabledDays = () => {
+    const disabled = [];
+
+    for (let i = 0; i <= 255; i++) {
+      const date = addDays(new Date(), i);
+      if (
+        !isDateAvailable(
+          date,
+          place.minDays,
+          place.daysBeforeCancel,
+          disabledRanges,
+        )
+      )
+        disabled.push(date);
+    }
+
+    return disabled;
+  };
+
+  //   console.log(disabledDays());
+
   return (
     <div className={cn("grid gap-2")}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -47,7 +75,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               setOpen(false);
             }}
             defaultMonth={date}
-            disabled={[{ before: new Date() }, ...disabled]}
+            disabled={[...disabledDays()]}
           />
         </PopoverContent>
       </Popover>
