@@ -15,7 +15,7 @@ export const CreateEventPage: React.FC = () => {
   }
 
   return (
-    <PageContainer name="Create event">
+    <PageContainer hasBackIcon={false} name="Create event">
       <div className="px-6">
         <CreateEvent onSubmit={initOrderPurchase} />
       </div>
