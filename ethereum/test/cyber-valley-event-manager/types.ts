@@ -10,6 +10,7 @@ export type EventPlaceUpdatedEvent = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  available: boolean;
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
@@ -20,17 +21,6 @@ export type EventUpdatedEvent = {
   ticketPrice: BigNumberish;
   startDate: BigNumberish;
   daysAmount: BigNumberish;
-  digest: string;
-  hashFunction: BigNumberish;
-  size: BigNumberish;
-};
-export type NewEventPlaceAvailableEvent = {
-  eventPlaceId: BigNumberish;
-  maxTickets: BigNumberish;
-  minTickets: BigNumberish;
-  minPrice: BigNumberish;
-  daysBeforeCancel: BigNumberish;
-  minDays: BigNumberish;
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
@@ -103,6 +93,7 @@ export type CreateEventPlaceArgs = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  available: boolean;
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
@@ -136,6 +127,7 @@ export type UpdateEventPlaceArgs = {
   minPrice: BigNumberish;
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
+  available: boolean;
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
@@ -172,6 +164,7 @@ export const createEventPlaceArgsToArray = (
     args.minPrice,
     args.daysBeforeCancel,
     args.minDays,
+    args.available,
     args.digest,
     args.hashFunction,
     args.size,
@@ -217,6 +210,7 @@ export const updateEventPlaceArgsToArray = (
     args.minPrice,
     args.daysBeforeCancel,
     args.minDays,
+    args.available,
     args.digest,
     args.hashFunction,
     args.size,

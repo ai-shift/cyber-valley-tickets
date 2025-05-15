@@ -116,8 +116,8 @@ export async function createEventPlace(
   assert(receipt != null);
   const event = receipt.logs
     .filter((e): e is EventLog => "fragment" in e && "args" in e)
-    .find((e) => e.fragment?.name === "NewEventPlaceAvailable");
-  assert(event != null, "NewEventPlaceAvailable wasn't emitted");
+    .find((e) => e.fragment?.name === "EventPlaceUpdated");
+  assert(event != null, "EventPlaceUpdated wasn't emitted");
   return { tx, eventPlaceId: event.args.eventPlaceId };
 }
 
