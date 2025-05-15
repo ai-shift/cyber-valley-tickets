@@ -14,6 +14,13 @@ class CurrentUserSerializer(serializers.ModelSerializer[CyberValleyUser]):
         read_only_fields = fields
 
 
+class StaffSerializer(serializers.ModelSerializer[CyberValleyUser]):
+    class Meta:
+        model = CyberValleyUser
+        fields = ("address",)
+        read_only_fields = fields
+
+
 class UploadSocialsSerializer(serializers.ModelSerializer[UserSocials]):
     class Meta:
         model = UserSocials
