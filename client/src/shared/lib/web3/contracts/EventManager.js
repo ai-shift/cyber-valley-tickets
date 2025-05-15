@@ -107,6 +107,12 @@ export default [
       },
       {
         indexed: false,
+        internalType: "bool",
+        name: "available",
+        type: "bool",
+      },
+      {
+        indexed: false,
         internalType: "bytes32",
         name: "digest",
         type: "bytes32",
@@ -212,67 +218,6 @@ export default [
       },
     ],
     name: "EventUpdated",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "eventPlaceId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint16",
-        name: "maxTickets",
-        type: "uint16",
-      },
-      {
-        indexed: false,
-        internalType: "uint16",
-        name: "minTickets",
-        type: "uint16",
-      },
-      {
-        indexed: false,
-        internalType: "uint16",
-        name: "minPrice",
-        type: "uint16",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "daysBeforeCancel",
-        type: "uint8",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "minDays",
-        type: "uint8",
-      },
-      {
-        indexed: false,
-        internalType: "bytes32",
-        name: "digest",
-        type: "bytes32",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "hashFunction",
-        type: "uint8",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "size",
-        type: "uint8",
-      },
-    ],
-    name: "NewEventPlaceAvailable",
     type: "event",
   },
   {
@@ -530,6 +475,11 @@ export default [
         type: "uint8",
       },
       {
+        internalType: "bool",
+        name: "_available",
+        type: "bool",
+      },
+      {
         internalType: "bytes32",
         name: "digest",
         type: "bytes32",
@@ -623,6 +573,11 @@ export default [
         internalType: "uint8",
         name: "minDays",
         type: "uint8",
+      },
+      {
+        internalType: "bool",
+        name: "available",
+        type: "bool",
       },
       {
         components: [
@@ -1034,6 +989,11 @@ export default [
         internalType: "uint8",
         name: "_minDays",
         type: "uint8",
+      },
+      {
+        internalType: "bool",
+        name: "_available",
+        type: "bool",
       },
       {
         internalType: "bytes32",
