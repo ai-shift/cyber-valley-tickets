@@ -1,4 +1,5 @@
 import type { EventPlace } from "@/entities/place";
+import { pluralDays } from "@/shared/lib/pluralDays";
 
 import {
   Select,
@@ -48,15 +49,19 @@ type PlaceCardProps = {
 };
 
 const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
-  const { title, minTickets, maxTickets, daysBeforeCancel, minPrice } = place;
+  const { title, minTickets, maxTickets, daysBeforeCancel, minPrice, minDays } =
+    place;
   return (
     <div className=" space-y-3 p-3 rounded">
       <h2 className="text-xl">{title}</h2>
       <p className="text-muted text-md">
         {minTickets} &lt;&lt; tickets &lt;&lt; {maxTickets}
       </p>
-      <p className="text-muted text-md">Cancel: {daysBeforeCancel}</p>
       <p className="text-muted text-md">Min price: {minPrice}</p>
+      <p className="text-muted text-md">
+        Min dutration: {minDays} {pluralDays(minDays)}
+      </p>
+      <p className="text-muted text-md">Cancel: {daysBeforeCancel}</p>
     </div>
   );
 };

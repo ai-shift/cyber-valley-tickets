@@ -1,6 +1,4 @@
-import type { EventPlace } from "@/entities/place";
 import type { DateRange } from "react-day-picker";
-import type { SelectSingleEventHandler } from "react-day-picker";
 
 import { format } from "date-fns";
 
@@ -8,36 +6,61 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addDays, isDateAvailable } from "../model/formSchema";
 
 type DatePickerProps = {
   date: Date;
-  setDate: SelectSingleEventHandler;
+  setDate: (date: Date | undefined) => void;
+  selectedDuration: number;
   disabled: DateRange[];
-  place: EventPlace;
+  daysBeforeCancel: number;
 };
 
 export const DatePicker: React.FC<DatePickerProps> = ({
   date,
   setDate,
+  selectedDuration,
   disabled: disabledRanges,
-  place,
+  daysBeforeCancel,
 }) => {
   const [open, setOpen] = useState(false);
+  const prevAvailible = useRef<Date>(new Date());
 
-  console.log(disabledRanges);
+  useEffect(() => {
+    const getFirstAvailableDate = (): Date => {
+      let initial = new Date();
+      while (
+        !isDateAvailable(
+          initial,
+          selectedDuration,
+          daysBeforeCancel,
+          disabledRanges,
+        )
+      ) {
+        initial = addDays(initial, 1);
+      }
+      return initial;
+    };
+    const availible = getFirstAvailableDate();
+
+    if (prevAvailible.current.getDate() === availible.getDate()) {
+      return;
+    }
+    setDate(availible);
+    prevAvailible.current = availible;
+  }, [selectedDuration, daysBeforeCancel, disabledRanges, setDate]);
 
   const disabledDays = () => {
     const disabled = [];
 
-    for (let i = 0; i <= 255; i++) {
+    for (let i = 0; i <= 225; i++) {
       const date = addDays(new Date(), i);
       if (
         !isDateAvailable(
           date,
-          place.minDays,
-          place.daysBeforeCancel,
+          selectedDuration,
+          daysBeforeCancel,
           disabledRanges,
         )
       )
@@ -46,8 +69,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
     return disabled;
   };
-
-  //   console.log(disabledDays());
 
   return (
     <div className={cn("grid gap-2")}>
@@ -70,12 +91,12 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             initialFocus
             mode="single"
             selected={date}
-            onSelect={(day, selectedDay, activeModifiers, e) => {
-              setDate(day, selectedDay, activeModifiers, e);
+            onSelect={(day) => {
+              setDate(day);
               setOpen(false);
             }}
             defaultMonth={date}
-            disabled={[...disabledDays()]}
+            disabled={[{ before: new Date() }, ...disabledDays()]}
           />
         </PopoverContent>
       </Popover>
