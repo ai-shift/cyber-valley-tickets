@@ -41,11 +41,11 @@ describe("CyberValleyEventManager", () => {
       createEventPlaceArgsToArray(defaultCreateEventPlaceRequest),
     );
 
-    it("should emit NewEventPlaceAvailable", async () => {
+    it("should emit EventPlaceUpdated", async () => {
       const { eventManager, master } = await loadFixture(deployContract);
       const { tx } = await createValidEventPlace(eventManager, master);
       await expect(tx)
-        .to.emit(eventManager, "NewEventPlaceAvailable")
+        .to.emit(eventManager, "EventPlaceUpdated")
         .withArgs(
           0,
           ...createEventPlaceArgsToArray(defaultCreateEventPlaceRequest),
@@ -71,7 +71,7 @@ describe("CyberValleyEventManager", () => {
       updateEventPlaceArgsToArray(defaultUpdateEventPlaceRequest),
     );
 
-    it("should emit NewEventPlaceAvailable", async () => {
+    it("should emit EventPlaceUpdated", async () => {
       const { eventManager, master } = await loadFixture(deployContract);
       const tx = await createAndUpdateEventPlace(eventManager, master, {});
       await expect(tx)

@@ -22,6 +22,7 @@ export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   minPrice: 20,
   daysBeforeCancel: 1,
   minDays: 1,
+  available: true,
   ...multihash,
 };
 
@@ -32,6 +33,7 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   minPrice: 30,
   daysBeforeCancel: 1,
   minDays: 2,
+  available: true,
   ...multihash,
 };
 
