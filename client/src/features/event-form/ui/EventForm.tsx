@@ -36,7 +36,7 @@ import { pluralDays } from "@/shared/lib/pluralDays";
 type EventFormProps = {
   events: Event[];
   places: EventPlace[];
-  onSumbit: (values: EventDto) => Promise<void>;
+  onSumbit: (values: EventDto) => void;
   existingEvent?: Event;
 };
 
