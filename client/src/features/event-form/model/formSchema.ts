@@ -14,9 +14,9 @@ export function createFormSchema(
       title: z.string().min(1, "Title is required"),
       description: z.string().min(10, "This is too short for description"),
       image: z
-        .instanceof(File)
+        .instanceof(File, { message: "Event must have an image" })
         .refine((val) => val instanceof File, {
-          message: "File is required.",
+          message: "Event must have an image",
         })
         .refine((val) => val.size <= 10 * 1024 * 1024, {
           message: "File size must be less than 10MB.",
@@ -46,6 +46,16 @@ export function createFormSchema(
 
       const bookedRanges = extractBookedRangesForPlace(events, place);
 
+      console.log(bookedRanges);
+
+      if (data.daysAmount < place.minDays) {
+        ctx.addIssue({
+          path: ["daysAmount"],
+          message: "Event length can't be less then minimal",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
       if (
         !isDateAvailable(
           data.startDate,
@@ -69,14 +79,17 @@ export const isDateAvailable = (
   daysBeforeCancel: number,
   bookedRanges: DateRange[],
 ): boolean => {
-  if (addDays(new Date(), daysBeforeCancel + 1) > startDate) {
+  if (
+    setToMidday(addDays(new Date(), daysBeforeCancel + 1)) >
+    setToMidday(startDate)
+  ) {
     return false;
   }
   const hasOverlap = (date: Date, range: DateRange) =>
     range.from != null &&
     range.to != null &&
-    date.getDate() >= range.from.getDate() &&
-    date.getDate() <= range.to.getDate();
+    setToMidday(date) >= setToMidday(range.from) &&
+    setToMidday(date) <= setToMidday(range.to);
 
   return !bookedRanges.find((range) => {
     for (let i = 0; i < daysAmount; i++) {
@@ -88,4 +101,8 @@ export const isDateAvailable = (
 export const addDays = (date: Date, days: number): Date => {
   const copyDate = new Date(date);
   return new Date(copyDate.setDate(date.getDate() + days));
+};
+
+export const setToMidday = (date: Date): Date => {
+  return new Date(date.setHours(12, 0, 0, 0));
 };

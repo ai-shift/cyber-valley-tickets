@@ -4,6 +4,7 @@ import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import useFormPersist from "react-hook-form-persist";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -30,13 +31,16 @@ import { useFetchImage } from "../hooks/useFetchImage";
 import { assertIsDefined } from "@/shared/lib/assert";
 import { getPlaceDefaults } from "../lib/getPlaceDefaults";
 import { useEffect } from "react";
+import { pluralDays } from "@/shared/lib/pluralDays";
 
 type EventFormProps = {
   events: Event[];
   places: EventPlace[];
-  onSumbit: (values: EventDto) => void;
+  onSumbit: (values: EventDto) => Promise<void>;
   existingEvent?: Event;
 };
+
+const STORAGE_KEY = "event-form";
 
 export const EventForm: React.FC<EventFormProps> = ({
   events,
@@ -57,18 +61,28 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   const formSchema = createFormSchema(places, events);
 
+  const defaults = sessionStorage.getItem(STORAGE_KEY);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: existingEvent
-      ? {
-          ...eventForEdit,
-          startDate: fromUnixTime(existingEvent.startDateTimestamp),
-        }
-      : {
-          title: "",
-          description: "",
-          ...getPlaceDefaults(places[0], events, eventIdsToExclude),
-        },
+    defaultValues: defaults
+      ? JSON.parse(defaults)
+      : existingEvent
+        ? {
+            ...eventForEdit,
+            startDate: fromUnixTime(existingEvent.startDateTimestamp),
+          }
+        : {
+            title: "",
+            description: "",
+            ...getPlaceDefaults(places[0], events, eventIdsToExclude),
+          },
+  });
+
+  useFormPersist(STORAGE_KEY, {
+    watch: form.watch,
+    setValue: form.setValue,
+    exclude: ["image"],
   });
 
   useFetchImage(form, existingEvent);
@@ -102,8 +116,6 @@ export const EventForm: React.FC<EventFormProps> = ({
     const eventDto = mapEventFormToEventDto(values);
     submitHandler(eventDto);
   }
-
-  //   console.log(events.filter((event) => event.place.id === selectedPlace.id));
 
   return (
     <Form {...form}>
@@ -170,11 +182,7 @@ export const EventForm: React.FC<EventFormProps> = ({
             <FormItem>
               <FormLabel>Event description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Describe your event"
-                  {...field}
-                  {...form.register(field.name)}
-                />
+                <Textarea placeholder="Describe your event" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -203,35 +211,21 @@ export const EventForm: React.FC<EventFormProps> = ({
                 <li>Min Tickets: {selectedPlace.minTickets}</li>
                 <li>Max Tickets: {selectedPlace.maxTickets}</li>
                 <li>
-                  Cancel Days: {selectedPlace.daysBeforeCancel} days before
-                  event
-                </li>
-                <li>
                   Min Ticket Price: {selectedPlace.minPrice}{" "}
                   {getCurrencySymbol()}
+                </li>
+                <li>
+                  Minimum duration: {selectedPlace.minDays}{" "}
+                  {pluralDays(selectedPlace.minDays)}
+                </li>
+                <li>
+                  Cancel: {selectedPlace.daysBeforeCancel}{" "}
+                  {pluralDays(selectedPlace.daysBeforeCancel)} before event
                 </li>
               </ul>
             </div>
           </div>
         )}
-        <FormField
-          control={form.control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormLabel>Start date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  place={selectedPlace}
-                  date={field.value}
-                  setDate={field.onChange}
-                  disabled={placeRanges}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="daysAmount"
@@ -245,6 +239,25 @@ export const EventForm: React.FC<EventFormProps> = ({
                   onChange={(e) =>
                     field.onChange(handleNumericInput(e.target.value))
                   }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Start date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  daysBeforeCancel={selectedPlace.daysBeforeCancel}
+                  selectedDuration={form.watch("daysAmount")}
+                  date={field.value}
+                  setDate={field.onChange}
+                  disabled={placeRanges}
                 />
               </FormControl>
               <FormMessage />
