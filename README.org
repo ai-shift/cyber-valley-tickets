@@ -148,7 +148,7 @@ end note
 
 Adds a new event place
 
-*Emits* ~NewEventPlaceAvailable~
+*Emits* ~EventPlaceUpdated~
 
 #+begin_src plantuml :file ./img/event-place.png
 class EventPlace {
@@ -174,7 +174,7 @@ Master -> TicketsApp: New event place data
 TicketsApp -> SmartContract: createEventPlace(maxTickets, minTickets, minPrice, minDays)
 activate SmartContract
 SmartContract -> SmartContract: _validateEventPlace(place)
-SmartContract -->> TicketsApp: Emits NewEventPlaceAvailable
+SmartContract -->> TicketsApp: Emits EventPlaceUpdated
 deactivate SmartContract
 #+end_src
 
@@ -620,7 +620,7 @@ Event --> EventStatus
 
 Adds a new event place
 
-*Emits* ~NewEventPlaceAvailable~
+*Emits* ~EventPlaceUpdated~
 
 Validations:
 -   =eventPlace.maxTickets >= eventPlace.minTickets=, "Max tickets must be greater or equal min tickets"
