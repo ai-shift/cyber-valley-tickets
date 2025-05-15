@@ -21,6 +21,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 minPrice;
         uint8 daysBeforeCancel;
         uint8 minDays;
+        bool available;
         CyberValley.Multihash meta;
     }
 
@@ -44,17 +45,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         CyberValley.Multihash meta;
     }
 
-    event NewEventPlaceAvailable(
-        uint256 eventPlaceId,
-        uint16 maxTickets,
-        uint16 minTickets,
-        uint16 minPrice,
-        uint8 daysBeforeCancel,
-        uint8 minDays,
-        bytes32 digest,
-        uint8 hashFunction,
-        uint8 size
-    );
     event EventPlaceUpdated(
         uint256 eventPlaceId,
         uint16 maxTickets,
@@ -62,6 +52,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 minPrice,
         uint8 daysBeforeCancel,
         uint8 minDays,
+        bool available,
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
@@ -146,6 +137,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 _minPrice,
         uint8 _daysBeforeCancel,
         uint8 _minDays,
+        bool _available,
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
@@ -161,17 +153,19 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             minPrice: _minPrice,
             daysBeforeCancel: _daysBeforeCancel,
             minDays: _minDays,
+            available: _available,
             meta: meta
         });
         _validateEventPlace(place);
         eventPlaces.push(place);
-        emit NewEventPlaceAvailable(
+        emit EventPlaceUpdated(
             eventPlaces.length - 1,
             _maxTickets,
             _minTickets,
             _minPrice,
             _daysBeforeCancel,
             _minDays,
+            _available,
             digest,
             hashFunction,
             size
@@ -185,6 +179,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 _minPrice,
         uint8 _daysBeforeCancel,
         uint8 _minDays,
+        bool _available,
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
@@ -201,6 +196,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             minPrice: _minPrice,
             daysBeforeCancel: _daysBeforeCancel,
             minDays: _minDays,
+            available: _available,
             meta: meta
         });
         _validateEventPlace(place);
@@ -212,6 +208,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             _minPrice,
             _daysBeforeCancel,
             _minDays,
+            _available,
             digest,
             hashFunction,
             size
