@@ -58,7 +58,8 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
         case CyberValleyEventManager.RoleAdminChanged():
             pass
         case CyberValleyEventManager.RoleRevoked():
-            raise NotImplementedError
+            _sync_role_revoked(event_data)
+            log.info("Ticket redeemed")
         case CyberValleyEventTicket.Transfer():
             pass
         case _:
@@ -303,6 +304,31 @@ def _sync_role_granted(
             user=master,
             title="Role granted",
             body=f"{user.role} granted to {user.address}",
+        )
+
+
+@transaction.atomic
+def _sync_role_revoked(
+    event_data: CyberValleyEventManager.RoleRevoked
+    | CyberValleyEventTicket.RoleRevoked,
+) -> None:
+    assert event_data.role == "STAFF"
+    user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
+    user.role = event_data.role
+    user.save()
+    Notification.objects.create(
+        user=user,
+        title="Role revoked",
+        body=f"{user.role} revoked from your account",
+    )
+    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    for master in masters:
+        if user.address == master.address:
+            continue
+        Notification.objects.create(
+            user=master,
+            title="Role revoked",
+            body=f"{user.role} revoked from {user.address}",
         )
 
 
