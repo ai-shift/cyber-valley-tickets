@@ -88,6 +88,7 @@ export async function createPlace(
   minPrice: BigNumberish,
   daysBeforeCancel: BigNumberish,
   minDays: BigNumberish,
+  available: boolean,
   metaCID: string,
 ): Promise<TxHash> {
   const multihash = getBytes32FromMultiash(metaCID);
@@ -101,6 +102,41 @@ export async function createPlace(
       minPrice,
       daysBeforeCancel,
       minDays,
+      available,
+      multihash.digest,
+      multihash.hashFunction,
+      multihash.size,
+    ],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+
+export async function updatePlace(
+  account: Account,
+  placeId: BigNumberish,
+  maxTickets: BigNumberish,
+  minTickets: BigNumberish,
+  minPrice: BigNumberish,
+  daysBeforeCancel: BigNumberish,
+  minDays: BigNumberish,
+  available: BigNumberish,
+  metaCID: string,
+): Promise<TxHash> {
+  const multihash = getBytes32FromMultiash(metaCID);
+  // @ts-ignore: TS2345
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "updateEventPlace",
+    params: [
+      placeId,
+      maxTickets,
+      minTickets,
+      minPrice,
+      daysBeforeCancel,
+      minDays,
+      available,
       multihash.digest,
       multihash.hashFunction,
       multihash.size,
