@@ -15,8 +15,6 @@ export const SocialsPage: React.FC = () => {
     navigate("/purchase");
   }
 
-  console.log(order.socials);
-
   return (
     <PageContainer name="Socials">
       <SocialsForm existingSocials={order.socials} onSubmit={handleSubmit} />
