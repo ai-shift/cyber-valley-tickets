@@ -255,3 +255,17 @@ export async function assignStaff(
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;
 }
+
+export async function removeStaff(
+  account: Account,
+  address: string,
+): Promise<TxHash> {
+  // @ts-ignore: TS2345
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "grantRole",
+    params: [STAFF_ROLE, address],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
