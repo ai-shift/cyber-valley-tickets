@@ -1,4 +1,5 @@
 import ipfshttpclient
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from drf_spectacular.utils import (
     extend_schema,
@@ -16,7 +17,9 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import CyberValleyUser
-from .serializers import CurrentUserSerializer, UploadSocialsSerializer
+from .serializers import CurrentUserSerializer, StaffSerializer, UploadSocialsSerializer
+
+User = get_user_model()
 
 
 class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
@@ -27,6 +30,16 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     def current(self, request: Request) -> Response:
         assert request.user.is_authenticated
         serializer = CurrentUserSerializer(request.user)
+        return Response(serializer.data)
+
+    @extend_schema(responses=StaffSerializer(many=True))
+    @action(detail=False, methods=["get"], name="Current user")
+    def staff(self, request: Request) -> Response:
+        assert request.user.is_authenticated
+        if request.user.role != CyberValleyUser.MASTER:
+            return Response("Available only to master", status=401)
+        staff = User.objects.filter(role=CyberValleyUser.STAFF)
+        serializer = CurrentUserSerializer(staff, many=True)
         return Response(serializer.data)
 
 
