@@ -2,8 +2,8 @@ import { type EventPlaceForm, PlaceForm } from "@/features/place-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
-import { createPlaceW3 } from "../api/createPlaceW3";
-import { type ModalStatus, PlaceDialog } from "./PlaceDialog";
+import { upsertPlaceW3 } from "../api/upsertPlaceW3";
+import { type ModalStatus, type ModalType, PlaceDialog } from "./PlaceDialog";
 import type { EventPlace } from "@/entities/place";
 
 type PlaceEditorProps = {
@@ -12,11 +12,15 @@ type PlaceEditorProps = {
 
 export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [status, setStatus] = useState<ModalStatus>("");
+  const [status, setStatus] = useState<ModalStatus>("idle");
+  const [mode] = useState<ModalType>(() =>
+    placeForEdit?.id ? "edit" : "create",
+  );
   const account = useActiveAccount();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (values: EventPlaceForm) => createPlaceW3(values, account),
+    mutationFn: (values: EventPlaceForm) =>
+      upsertPlaceW3(values, account, placeForEdit?.id),
     onSuccess: () => {
       setStatus("success");
       setIsOpen(true);
@@ -38,7 +42,8 @@ export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
         open={isOpen}
         setOpen={setIsOpen}
         status={status}
-        clearStatus={() => setStatus("")}
+        clearStatus={() => setStatus("idle")}
+        mode={mode}
       />
     </div>
   );
