@@ -73,13 +73,11 @@ def _sync_new_event_request(
 ) -> None:
     creator, _ = CyberValleyUser.objects.get_or_create(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
-
     cid = _multihash2cid(event_data)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
         log.info("data=%s", data)
         socials = client.get_json(data["socialsCid"])
-
     with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
             user=creator, network=socials["network"], value=socials["value"]
