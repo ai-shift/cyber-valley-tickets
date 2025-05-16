@@ -15,7 +15,7 @@ export const RemoveStaffIcon: React.FC<RemoveStaffIconProps> = ({
       type="button"
       onClick={deleteHandler}
     >
-      <img className="h-full" src="/icons/manage_4.svg" alt="edit_button" />
+      <img className="h-full" src="/icons/staff bin_2.svg" alt="edit_button" />
     </button>
   );
 };
