@@ -112,7 +112,6 @@ export async function createPlace(
   return transactionHash;
 }
 
-
 export async function updatePlace(
   account: Account,
   placeId: BigNumberish,
