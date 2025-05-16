@@ -19,6 +19,7 @@ export const formSchema: ZodType<EventPlaceForm> = z
     minPrice: numberField(1, 65536, "Minimum price"),
     minDays: numberField(1, 256, "Minimum days limit"),
     daysBeforeCancel: numberField(1, 65536, "Period before cancellation"),
+    available: z.boolean(),
   })
   .refine(({ maxTickets, minTickets }) => maxTickets > minTickets, {
     message: "Minimum tickets amount can't be bigger then maximum",
