@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router";
 
 import {
   AccountPage,
-  AssignStaffPage,
   CreateEventPage,
   CreatePlacePage,
   EditEventPage,
@@ -54,16 +53,12 @@ export const Router = () => {
                     element={<CreatePlacePage />}
                   />
                   <Route
-                    path="/manage/place/update/:placeId"
+                    path="/manage/place/update"
                     element={<UpdatePlacePage />}
                   />
                 </Route>
                 <Route path="/manage/staff">
                   <Route index element={<ManageStaffPage />} />
-                  <Route
-                    path="/manage/staff/assign"
-                    element={<AssignStaffPage />}
-                  />
                 </Route>
               </Route>
 
