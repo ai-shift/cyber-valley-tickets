@@ -33,7 +33,7 @@ export const StaffForm: React.FC = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 p-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 p-5">
         <FormField
           control={form.control}
           name="address"
@@ -47,7 +47,7 @@ export const StaffForm: React.FC = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="mx-auto block">
+        <Button type="submit" className="w-full">
           Submit
         </Button>
       </form>
