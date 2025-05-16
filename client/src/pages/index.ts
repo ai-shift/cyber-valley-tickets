@@ -9,7 +9,6 @@ export { ManagePlacesPage } from "./manage/place";
 export { CreatePlacePage } from "./manage/place/create";
 export { UpdatePlacePage } from "./manage/place/update";
 export { ManageStaffPage } from "./manage/staff";
-export { AssignStaffPage } from "./manage/staff/assign";
 export { AccountPage } from "./account";
 export { MyEventsPage } from "./account/my-events";
 export { PurchasePage } from "./purchase";
