@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
-import { getCurrentUser } from "./getCurrentUser";
+import { getCurrentUser, getUsersStaff } from "./userApi";
 
 export const userQueries = {
   current: () =>
@@ -8,4 +9,15 @@ export const userQueries = {
       queryFn: getCurrentUser,
       select: (queryData) => queryData?.data,
     }),
+  staff: () =>
+    queryOptions({
+      queryKey: ["user", "list", "staff"],
+      queryFn: getUsersStaff,
+      select: (queryData) => queryData?.data,
+    }),
+};
+
+export const useUser = () => {
+  const { data: user, isLoading } = useQuery(userQueries.current());
+  return { user, isLoading };
 };

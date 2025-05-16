@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router";
 
 import {
   AccountPage,
-  AssignStaffPage,
   CreateEventPage,
   CreatePlacePage,
   EditEventPage,
@@ -15,6 +14,9 @@ import {
   NotificationsPage,
   PurchasePage,
   SocialsPage,
+  ManagePlacesPage,
+  ManageStaffPage,
+  UpdatePlacePage,
 } from "@/pages";
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { QueryProvider } from "../providers";
@@ -44,14 +46,20 @@ export const Router = () => {
 
               <Route path="/manage">
                 <Route index element={<ManagePage />} />
-                <Route
-                  path="/manage/create-place"
-                  element={<CreatePlacePage />}
-                />
-                <Route
-                  path="/manage/assign-staff"
-                  element={<AssignStaffPage />}
-                />
+                <Route path="/manage/place">
+                  <Route index element={<ManagePlacesPage />} />
+                  <Route
+                    path="/manage/place/create"
+                    element={<CreatePlacePage />}
+                  />
+                  <Route
+                    path="/manage/place/update"
+                    element={<UpdatePlacePage />}
+                  />
+                </Route>
+                <Route path="/manage/staff">
+                  <Route index element={<ManageStaffPage />} />
+                </Route>
               </Route>
 
               <Route path="/notifications" element={<NotificationsPage />} />
