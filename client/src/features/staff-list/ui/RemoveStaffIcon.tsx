@@ -1,3 +1,6 @@
+import { removeStaff } from "@/shared/lib/web3";
+import { useActiveAccount } from "thirdweb/react";
+
 type RemoveStaffIconProps = {
   staffAdress: string;
 };
@@ -5,8 +8,11 @@ type RemoveStaffIconProps = {
 export const RemoveStaffIcon: React.FC<RemoveStaffIconProps> = ({
   staffAdress,
 }) => {
-  function deleteHandler() {
-    //TODO: deleteStaffAddress
+  const account = useActiveAccount();
+
+  async function deleteHandler() {
+    if (!account) throw new Error("Account should be connected");
+    await removeStaff(account, staffAdress);
   }
 
   return (
