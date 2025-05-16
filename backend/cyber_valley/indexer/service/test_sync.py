@@ -153,6 +153,10 @@ def test_sync_event_updated(event: Event) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
+            "daysAmount": 7,
+            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
@@ -174,6 +178,10 @@ def test_sync_event_updated_event_not_found(event_place: EventPlace) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
+            "daysAmount": 7,
+            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
@@ -191,6 +199,9 @@ def test_sync_event_updated_event_place_not_found(event: Event) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
+            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
@@ -207,6 +218,11 @@ def test_sync_event_place_updated(event_place: EventPlace) -> None:
             "minTickets": 15,
             "minPrice": 75,
             "minDays": 10,
+            "available": True,
+            "daysBeforeCancel": 5,
+            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
@@ -228,6 +244,11 @@ def test_sync_event_place_updated_event_place_not_found() -> None:
             "minTickets": 15,
             "minPrice": 75,
             "minDays": 10,
+            "available": True,
+            "daysBeforeCancel": 5,
+            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
@@ -237,13 +258,18 @@ def test_sync_event_place_updated_event_place_not_found() -> None:
 
 @pytest.mark.django_db
 def test_sync_new_event_place_available() -> None:
-    event_data = CyberValleyEventManager.NewEventPlaceAvailable.model_validate(
+    event_data = CyberValleyEventManager.EventPlaceUpdated.model_validate(
         {
             "eventPlaceId": 2,
             "maxTickets": 150,
             "minTickets": 15,
             "minPrice": 75,
             "minDays": 10,
+            "available": True,
+            "daysBeforeCancel": 5,
+            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
