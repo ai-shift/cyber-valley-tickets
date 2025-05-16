@@ -120,7 +120,7 @@ export async function updatePlace(
   minPrice: BigNumberish,
   daysBeforeCancel: BigNumberish,
   minDays: BigNumberish,
-  available: BigNumberish,
+  available: boolean,
   metaCID: string,
 ): Promise<TxHash> {
   const multihash = getBytes32FromMultiash(metaCID);
