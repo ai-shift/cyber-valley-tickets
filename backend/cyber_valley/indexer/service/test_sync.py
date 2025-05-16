@@ -68,7 +68,6 @@ def event(user: UserType, event_place: EventPlace) -> Event:
 # TODO: Save data in IPFS
 @pytest.mark.django_db(transaction=True)
 def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None:
-    print(1)
     event_data = CyberValleyEventManager.NewEventRequest.model_validate(
         {
             "id": 1,
@@ -87,22 +86,18 @@ def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None
             "size": 32,
         }
     )
-    print(2)
     _sync_new_event_request(event_data)
-    print(3)
     event = Event.objects.get(title=f"Event {event_data.id}")
     assert event.creator == user
     assert event.place == event_place
     assert event.ticket_price == event_data.ticket_price
     assert event.days_amount == event_data.days_amount
-    print(4)
     notification = Notification.objects.get(user=user)
     assert notification.title == "New Event Request"
     assert (
         notification.body
         == f"A new event request with id {event_data.id} has been created."
     )
-    print(5)
     # Check only the values that are set by the sync function
     assert event.tickets_bought == 0
     assert event.status == "submitted"
