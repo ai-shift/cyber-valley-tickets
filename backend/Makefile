@@ -37,9 +37,11 @@ run-server: migrate
 run-ipfs-node:
 	test -n "$(IPFS_STAGING)" || exit 1
 	test -n "$(IPFS_DATA)" || exit 1
-	docker stop $(ipfs_container_name) || true
-	docker rm $(ipfs_container_name) || true
-	docker run --rm -d \
+	mkdir -p $$IPFS_STAGING
+	mkdir -p $$IPFS_DATA
+	podman stop $(ipfs_container_name) || true
+	podman rm $(ipfs_container_name) || true
+	podman run --rm -d \
 		--name $(ipfs_container_name) \
 		-v $$IPFS_STAGING:/export \
 		-v $$IPFS_DATA:/data/ipfs \
@@ -47,15 +49,15 @@ run-ipfs-node:
 		-p 4001:4001/udp \
 		-p 127.0.0.1:8080:8080 \
 		-p 127.0.0.1:5001:5001 \
-		ipfs/go-ipfs:v0.7.0
+		docker.io/ipfs/go-ipfs:v0.7.0
 
 run-valkey:
-	docker stop $(valkey_container_name) || true
-	docker rm $(valkey_container_name) || true
-	docker run --rm -d \
+	podman stop $(valkey_container_name) || true
+	podman rm $(valkey_container_name) || true
+	podman run --rm -d \
 		--name $(valkey_container_name) \
 		-p 6379:6379 \
-		valkey/valkey:8.1.1
+		docker.io/valkey/valkey:8.1.1
 
 podman-build:
 	cp -r ../ethereum/artifacts ./ethereum_artifacts_temp
