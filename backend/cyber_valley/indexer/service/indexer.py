@@ -7,7 +7,7 @@ from typing import Any, Final, NoReturn, cast
 import pyshen
 from django.conf import settings
 from eth_typing import ChecksumAddress
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from returns.pipeline import flow
 from returns.pointfree import bind
 from returns.result import Failure, Success, safe
@@ -135,8 +135,7 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
                     return cast(type[BaseModel], event_model).model_validate(
                         event["args"]
                     )
-                except ValueError:
-                    log.exception("Failed to deserialzie event")
+                except (ValueError, ValidationError):
                     continue
 
     raise EventNotRecognizedError(log_receipt)
