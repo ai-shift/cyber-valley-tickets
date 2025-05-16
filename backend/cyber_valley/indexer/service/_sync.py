@@ -38,9 +38,9 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
         case CyberValleyEventManager.EventUpdated():
             _sync_event_updated(event_data)
             log.info("Event updated")
-        case CyberValleyEventManager.NewEventPlaceAvailable():
-            _sync_new_event_place_available(event_data)
-            log.info("New event place available")
+        case CyberValleyEventManager.EventPlaceUpdated():
+            _sync_event_place_updated(event_data)
+            log.info("Event place created or updated")
         case CyberValleyEventTicket.TicketMinted():
             _sync_ticket_minted(event_data)
             log.info("Ticket minted")
@@ -177,7 +177,7 @@ def _sync_event_place_updated(
 
 @transaction.atomic
 def _sync_new_event_place_available(
-    event_data: CyberValleyEventManager.NewEventPlaceAvailable,
+    event_data: CyberValleyEventManager.EventPlaceUpdated,
 ) -> None:
     cid = _multihash2cid(event_data)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]

@@ -20,7 +20,8 @@ class EventPlaceUpdated(BaseModel):
     min_price: int = Field(..., alias="minPrice")
     days_before_cancel: int = Field(..., alias="daysBeforeCancel")
     min_days: int = Field(..., alias="minDays")
-    digest: str
+    available: bool = Field(..., alias="available")
+    digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
 
@@ -49,21 +50,6 @@ class EventUpdated(BaseModel):
     ticket_price: int = Field(..., alias="ticketPrice")
     start_date: int = Field(..., alias="startDate")
     days_amount: int = Field(..., alias="daysAmount")
-    digest: Annotated[str, BeforeValidator(validate_digest)]
-    hash_function: int = Field(..., alias="hashFunction")
-    size: int
-
-
-class NewEventPlaceAvailable(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    event_place_id: int = Field(..., alias="eventPlaceId")
-    max_tickets: int = Field(..., alias="maxTickets")
-    min_tickets: int = Field(..., alias="minTickets")
-    min_price: int = Field(..., alias="minPrice")
-    days_before_cancel: int = Field(..., alias="daysBeforeCancel")
-    min_days: int = Field(..., alias="minDays")
     digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
