@@ -1,8 +1,3 @@
-export type EventPlaceForm = {
-  title: string;
-  maxTickets: number;
-  minTickets: number;
-  minPrice: number;
-  minDays: number;
-  daysBeforeCancel: number;
-};
+import type { EventPlace } from "@/entities/place";
+
+export type EventPlaceForm = Omit<EventPlace, "id" | "isUsed">;
