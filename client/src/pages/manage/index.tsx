@@ -7,15 +7,15 @@ export const ManagePage: React.FC = () => {
       <div className="flex flex-col gap-7 px-5 py-9">
         <Link
           className="card border-primary/30 text-center text-xl py-5"
-          to="/manage/create-place"
+          to="/manage/place"
         >
-          Create new place
+          Manage places
         </Link>
         <Link
           className="card border-primary/30 text-center text-xl py-5"
-          to="/manage/assign-staff"
+          to="/manage/staff"
         >
-          Assign new staff
+          Manage staff
         </Link>
       </div>
     </PageContainer>
