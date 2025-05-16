@@ -17,6 +17,7 @@ import {
   ManagePlacesPage,
   ManageStaffPage,
   UpdatePlacePage,
+  Page404,
 } from "@/pages";
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { QueryProvider } from "../providers";
@@ -74,6 +75,7 @@ export const Router = () => {
             <Route path="/socials" element={<SocialsPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<Page404 />} />
         </Routes>
       </QueryProvider>
     </BrowserRouter>
