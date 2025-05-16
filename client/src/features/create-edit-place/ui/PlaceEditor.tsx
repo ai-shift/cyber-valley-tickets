@@ -4,8 +4,13 @@ import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 import { createPlaceW3 } from "../api/createPlaceW3";
 import { type ModalStatus, PlaceDialog } from "./PlaceDialog";
+import type { EventPlace } from "@/entities/place";
 
-export const CreatePlace: React.FC = () => {
+type PlaceEditorProps = {
+  placeForEdit?: EventPlace;
+};
+
+export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<ModalStatus>("");
   const account = useActiveAccount();
@@ -24,7 +29,11 @@ export const CreatePlace: React.FC = () => {
 
   return (
     <div className="px-6">
-      <PlaceForm disableFields={isPending} onSubmit={mutate} />
+      <PlaceForm
+        existingPlace={placeForEdit}
+        disableFields={isPending}
+        onSubmit={mutate}
+      />
       <PlaceDialog
         open={isOpen}
         setOpen={setIsOpen}
