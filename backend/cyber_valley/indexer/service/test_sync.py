@@ -4,6 +4,7 @@ import secrets
 import pytest
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from hexbytes import HexBytes
 
 from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.notifications.models import Notification
@@ -64,8 +65,10 @@ def event(user: UserType, event_place: EventPlace) -> Event:
     )
 
 
-@pytest.mark.django_db
+# TODO: Save data in IPFS
+@pytest.mark.django_db(transaction=True)
 def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None:
+    print(1)
     event_data = CyberValleyEventManager.NewEventRequest.model_validate(
         {
             "id": 1,
@@ -75,24 +78,31 @@ def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 5,
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     )
-
+    print(2)
     _sync_new_event_request(event_data)
-
+    print(3)
     event = Event.objects.get(title=f"Event {event_data.id}")
     assert event.creator == user
     assert event.place == event_place
     assert event.ticket_price == event_data.ticket_price
     assert event.days_amount == event_data.days_amount
-
+    print(4)
     notification = Notification.objects.get(user=user)
     assert notification.title == "New Event Request"
     assert (
         notification.body
         == f"A new event request with id {event_data.id} has been created."
     )
-
+    print(5)
     # Check only the values that are set by the sync function
     assert event.tickets_bought == 0
     assert event.status == "submitted"
@@ -109,6 +119,13 @@ def test_sync_new_event_request_user_not_found(event_place: EventPlace) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 5,
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
@@ -127,6 +144,13 @@ def test_sync_new_event_request_event_place_not_found(user: UserType) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 5,
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     )
 
@@ -153,8 +177,11 @@ def test_sync_event_updated(event: Event) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
-            "daysAmount": 7,
-            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
             "hashFunction": 18,
             "size": 32,
         }
@@ -178,8 +205,11 @@ def test_sync_event_updated_event_not_found(event_place: EventPlace) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
-            "daysAmount": 7,
-            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
             "hashFunction": 18,
             "size": 32,
         }
@@ -199,7 +229,11 @@ def test_sync_event_updated_event_place_not_found(event: Event) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
-            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
             "hashFunction": 18,
             "size": 32,
         }
@@ -220,7 +254,11 @@ def test_sync_event_place_updated(event_place: EventPlace) -> None:
             "minDays": 10,
             "available": True,
             "daysBeforeCancel": 5,
-            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
             "hashFunction": 18,
             "size": 32,
         }
@@ -246,7 +284,11 @@ def test_sync_event_place_updated_event_place_not_found() -> None:
             "minDays": 10,
             "available": True,
             "daysBeforeCancel": 5,
-            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
             "hashFunction": 18,
             "size": 32,
         }
@@ -267,7 +309,11 @@ def test_sync_new_event_place_available() -> None:
             "minDays": 10,
             "available": True,
             "daysBeforeCancel": 5,
-            "digest": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
             "hashFunction": 18,
             "size": 32,
         }
