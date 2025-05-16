@@ -1,13 +1,15 @@
 import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
 import { Button } from "@/shared/ui/button";
 
-export type ModalStatus = "success" | "error" | "";
+export type ModalStatus = "success" | "error" | "idle";
+export type ModalType = "edit" | "create";
 
 type PlaceDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   status: ModalStatus;
   clearStatus: () => void;
+  mode: ModalType;
 };
 
 export const PlaceDialog: React.FC<PlaceDialogProps> = ({
@@ -15,12 +17,13 @@ export const PlaceDialog: React.FC<PlaceDialogProps> = ({
   setOpen,
   status,
   clearStatus,
+  mode,
 }) => {
   const messages: { [P in ModalStatus]: string } = {
     error:
       "Some error occured during transation. Please check your wallet for more information.",
-    success: "New place will appear within several minutes.",
-    "": "",
+    success: `Place will be ${mode}ed within several minutes.`,
+    idle: "",
   };
 
   return (
@@ -33,7 +36,7 @@ export const PlaceDialog: React.FC<PlaceDialogProps> = ({
             alt="purchase"
           />
           <h2 className="text-muted font-semibold text-lg text-center">
-            {status === "success" ? "Place created!" : "Creation failed!"}
+            {status === "success" ? `Place ${mode}ed!` : "Someting went wrong!"}
           </h2>
           <p className="text-muted/70 text-md text-center">
             {messages[status]}
