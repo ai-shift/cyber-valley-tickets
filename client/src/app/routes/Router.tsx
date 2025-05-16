@@ -22,6 +22,7 @@ import {
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { QueryProvider } from "../providers";
 import { AuthProvider } from "../providers";
+import { RestrictedTo } from "../providers/restrictToProvider/RestrictedTo";
 
 export const Router = () => {
   return (
@@ -45,7 +46,10 @@ export const Router = () => {
                 <Route path="/events/create" element={<CreateEventPage />} />
               </Route>
 
-              <Route path="/manage">
+              <Route
+                path="/manage"
+                element={<RestrictedTo userRole="master" />}
+              >
                 <Route index element={<ManagePage />} />
                 <Route path="/manage/place">
                   <Route index element={<ManagePlacesPage />} />
