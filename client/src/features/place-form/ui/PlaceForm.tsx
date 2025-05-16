@@ -18,9 +18,11 @@ import { Input } from "@/shared/ui/input";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import type { UseMutateFunction } from "@tanstack/react-query";
 import { formSchema } from "../model/formSchema";
+import type { EventPlace } from "@/entities/place";
+import { Switch } from "@/shared/ui/switch";
 
 type PlaceFormProps = {
-  existingPlace?: EventPlaceForm;
+  existingPlace?: EventPlace;
   onSubmit: UseMutateFunction<void, unknown, EventPlaceForm, unknown>;
   disableFields: boolean;
 };
@@ -41,6 +43,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           daysBeforeCancel: 1,
           minDays: 1,
           minPrice: 1,
+          available: true,
         },
   });
 
@@ -102,6 +105,25 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           fieldName="daysBeforeCancel"
           title="Days before cancel"
         />
+        <FormField
+          control={form.control}
+          name={"available"}
+          disabled={disableFields}
+          render={({ field }) => (
+            <FormItem className="flex justify-between items-center">
+              <FormLabel>Available</FormLabel>
+              <FormControl>
+                <Switch
+                  className="h-12"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <span className="self-center">
           <Button className="text-lg p-5" type="submit">
             Submit
