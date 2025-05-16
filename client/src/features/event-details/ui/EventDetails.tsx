@@ -4,13 +4,13 @@ import { cn } from "@/shared/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
 import { canEdit } from "@/features/create-edit-event";
+import { StatusBage } from "@/features/events-list/ui/StatusBage";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { DetailsBlock } from "./DetailsBlock";
-import { StatusBage } from "@/features/events-list/ui/StatusBage";
 
 type EventDetailsProps = {
   eventId: number;
