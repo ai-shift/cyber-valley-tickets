@@ -296,10 +296,10 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
 
     #  begin-region -- RoleGranted
     role_to_count = {
-        "MASTER_ROLE": 22,
-        "STAFF_ROLE": 11,
-        "DEFAULT_ADMIN_ROLE": 22,
-        "EVENT_MANAGER_ROLE": 11,
+        "MASTER_ROLE": 20,
+        "STAFF_ROLE": 10,
+        "DEFAULT_ADMIN_ROLE": 20,
+        "EVENT_MANAGER_ROLE": 10,
     }
     for role, count in role_to_count.items():
         role_granted_events = [
@@ -324,52 +324,64 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
             "maxTickets": 100,
             "minTickets": 50,
             "minPrice": 20,
+            "daysBeforeCancel": 1,
             "minDays": 1,
             "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
         {
             "eventPlaceId": 0,
             "maxTickets": 100,
             "minTickets": 50,
             "minPrice": 20,
+            "daysBeforeCancel": 1,
             "minDays": 2,
             "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
         {
             "eventPlaceId": 0,
             "maxTickets": 100,
             "minTickets": 50,
             "minPrice": 30,
+            "daysBeforeCancel": 1,
             "minDays": 1,
             "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
+        },
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "daysBeforeCancel": 5,
+            "minDays": 1,
+            "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
     ]
-    expected_counts = [9, 1, 1]
+    expected_counts = [7, 1, 1, 1]
     assert len(expected) == len(expected_counts)
     for event in new_place_available_events:
         expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
     assert sum(expected_counts) == 0
     _cleanup_asserted_events(events, new_place_available_events)
-    #  end-region   -- EventPlaceUpdated
-
-    #  begin-region -- EventPlaceUpdated
-    event_place_updated_events = [
-        event
-        for event in events
-        if isinstance(event, CyberValleyEventManager.EventPlaceUpdated)
-    ]
-    expected = CyberValleyEventManager.EventPlaceUpdated.model_validate(
-        {
-            "eventPlaceId": 0,
-            "maxTickets": 150,
-            "minTickets": 20,
-            "minPrice": 30,
-            "minDays": 2,
-            "available": True,
-        }
-    )
-    assert all(event == expected for event in event_place_updated_events)
-    _cleanup_asserted_events(events, event_place_updated_events)
     #  end-region   -- EventPlaceUpdated
 
     #  begin-region -- NewEventRequest
@@ -381,21 +393,29 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
     expected = [
         {
             "id": 0,
-            "creator": MatchesAnyStr(),
+            "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
             "eventPlaceId": 0,
             "ticketPrice": 20,
-            "cancelDate": MatchesAnyInt(),
-            "startDate": MatchesAnyInt(),
+            "startDate": 1747872000,
             "daysAmount": 1,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
         {
             "id": 0,
-            "creator": MatchesAnyStr(),
+            "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
             "eventPlaceId": 0,
             "ticketPrice": 20,
-            "cancelDate": MatchesAnyInt(),
-            "startDate": MatchesAnyInt(),
+            "startDate": 1747872000,
             "daysAmount": 4,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
     ]
     expected_counts = [2, 3]
