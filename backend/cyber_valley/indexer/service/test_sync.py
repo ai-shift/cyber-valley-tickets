@@ -330,7 +330,7 @@ def test_sync_ticket_minted_event_not_found(user: UserType) -> None:
             "owner": user.address,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
-            "size": multihash.size
+            "size": multihash.size,
         }
     )
     with pytest.raises(Event.DoesNotExist):
