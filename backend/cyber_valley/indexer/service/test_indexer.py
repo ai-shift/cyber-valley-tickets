@@ -782,8 +782,14 @@ def test_close_event(events_factory: EventsFactory) -> None:
             "maxTickets": 100,
             "minTickets": 50,
             "minPrice": 20,
+            "daysBeforeCancel": 1,
             "minDays": 1,
             "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
     ]
     expected_counts = [7]
@@ -803,12 +809,16 @@ def test_close_event(events_factory: EventsFactory) -> None:
     expected = [
         {
             "id": 0,
-            "creator": MatchesAnyStr(),
+            "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
             "eventPlaceId": 0,
             "ticketPrice": 20,
-            "cancelDate": MatchesAnyInt(),
-            "startDate": MatchesAnyInt(),
+            "startDate": 1747872000,
             "daysAmount": 1,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     ]
     expected_counts = [1]
@@ -827,11 +837,19 @@ def test_close_event(events_factory: EventsFactory) -> None:
     expected = CyberValleyEventManager.EventPlaceUpdated.model_validate(
         {
             "eventPlaceId": 0,
-            "maxTickets": 150,
-            "minTickets": 20,
-            "minPrice": 30,
-            "minDays": 2,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "minDays": 1,
+            "daysBeforeCancel": 1,
             "available": True,
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     )
     assert all(event == expected for event in event_place_updated_events)
