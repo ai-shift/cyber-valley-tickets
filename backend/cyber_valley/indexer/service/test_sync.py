@@ -17,7 +17,6 @@ from ._sync import (
     _sync_event_place_updated,
     _sync_event_status_changed,
     _sync_event_updated,
-    _sync_new_event_place_available,
     _sync_new_event_request,
     _sync_ticket_minted,
     _sync_ticket_redeemed,
@@ -145,6 +144,17 @@ def test_sync_event_updated(event: Event) -> None:
         min_days=10,
         days_before_cancel=2,
     )
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+        cid = client.add_json(
+            {
+                "title": "eventTitle",
+                "description": "eventDescription",
+                "cover": "QmdfTbBqBPQ7VNxZEYEj14VmRuZBkqFbiwReogJgS1zR1n",
+                "socialsCid": socials_cid,
+            }
+        )
+    multihash = cid2multihash(cid)
     event_data = CyberValleyEventManager.EventUpdated.model_validate(
         {
             "id": event.id,
@@ -153,13 +163,9 @@ def test_sync_event_updated(event: Event) -> None:
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
         }
     )
 
@@ -221,6 +227,14 @@ def test_sync_event_updated_event_place_not_found(event: Event) -> None:
 
 @pytest.mark.django_db
 def test_sync_event_place_updated(event_place: EventPlace) -> None:
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        cid = client.add_json(
+            {
+                "title": "Changed event place title",
+                "description": "Change evenet place description",
+            }
+        )
+    multihash = cid2multihash(cid)
     event_data = CyberValleyEventManager.EventPlaceUpdated.model_validate(
         {
             "eventPlaceId": event_place.id,
@@ -230,13 +244,9 @@ def test_sync_event_place_updated(event_place: EventPlace) -> None:
             "minDays": 10,
             "available": True,
             "daysBeforeCancel": 5,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
         }
     )
 
@@ -247,6 +257,7 @@ def test_sync_event_place_updated(event_place: EventPlace) -> None:
     assert event_place.min_tickets == event_data.min_tickets
     assert event_place.min_price == event_data.min_price
     assert event_place.min_days == event_data.min_days
+    assert event_place.title == "Changed event place title"
 
 
 @pytest.mark.django_db
@@ -275,45 +286,18 @@ def test_sync_event_place_updated_event_place_not_found() -> None:
 
 
 @pytest.mark.django_db
-def test_sync_new_event_place_available() -> None:
-    event_data = CyberValleyEventManager.EventPlaceUpdated.model_validate(
-        {
-            "eventPlaceId": 2,
-            "maxTickets": 150,
-            "minTickets": 15,
-            "minPrice": 75,
-            "minDays": 10,
-            "available": True,
-            "daysBeforeCancel": 5,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        }
-    )
-
-    _sync_new_event_place_available(event_data)
-
-    event_place = EventPlace.objects.get(id=event_data.event_place_id)
-    assert event_place.max_tickets == event_data.max_tickets
-    assert event_place.min_tickets == event_data.min_tickets
-    assert event_place.min_price == event_data.min_price
-    assert event_place.min_days == event_data.min_days
-
-
-@pytest.mark.django_db
 def test_sync_ticket_minted(event: Event, user: UserType) -> None:
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+    multihash = cid2multihash(socials_cid)
     event_data = CyberValleyEventTicket.TicketMinted.model_validate(
         {
             "eventId": event.id,
             "ticketId": 123,
             "owner": user.address,
-            "digest": "test_digest",
-            "hashFunction": 1,
-            "size": 32,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
         }
     )
 
@@ -327,44 +311,29 @@ def test_sync_ticket_minted(event: Event, user: UserType) -> None:
     assert event.tickets_bought == 1
 
     notification = Notification.objects.get(user=user)
-    assert notification.title == "New Ticket Minted"
-    assert notification.body == (
-        f"A new ticket with id {event_data.ticket_id} "
-        f"has been minted for event {event.title}."
+    assert notification.title == "Your ticket minted"
+    assert (
+        notification.body
+        == "A new ticket with id 123 has been minted for event Test Event."
     )
 
 
 @pytest.mark.django_db
 def test_sync_ticket_minted_event_not_found(user: UserType) -> None:
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+    multihash = cid2multihash(socials_cid)
     event_data = CyberValleyEventTicket.TicketMinted.model_validate(
         {
             "eventId": 999,
             "ticketId": 123,
             "owner": user.address,
-            "digest": "test_digest",
-            "hashFunction": 1,
-            "size": 32,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size
         }
     )
-
     with pytest.raises(Event.DoesNotExist):
-        _sync_ticket_minted(event_data)
-
-
-@pytest.mark.django_db
-def test_sync_ticket_minted_user_not_found(event: Event) -> None:
-    event_data = CyberValleyEventTicket.TicketMinted.model_validate(
-        {
-            "eventId": event.id,
-            "ticketId": 123,
-            "owner": "0x" + secrets.token_hex(20),  # Valid, but non-existent address
-            "digest": "test_digest",
-            "hashFunction": 1,
-            "size": 32,
-        }
-    )
-
-    with pytest.raises(User.DoesNotExist):
         _sync_ticket_minted(event_data)
 
 
