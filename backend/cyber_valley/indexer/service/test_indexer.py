@@ -651,10 +651,10 @@ def test_update_event(events_factory: EventsFactory) -> None:
 
     #  begin-region -- RoleGranted
     role_to_count = {
-        "MASTER_ROLE": 16,
-        "STAFF_ROLE": 8,
-        "DEFAULT_ADMIN_ROLE": 16,
-        "EVENT_MANAGER_ROLE": 8,
+        "MASTER_ROLE": 18,
+        "STAFF_ROLE": 9,
+        "DEFAULT_ADMIN_ROLE": 18,
+        "EVENT_MANAGER_ROLE": 9,
     }
     for role, count in role_to_count.items():
         role_granted_events = [
@@ -679,11 +679,31 @@ def test_update_event(events_factory: EventsFactory) -> None:
             "maxTickets": 100,
             "minTickets": 50,
             "minPrice": 20,
+            "daysBeforeCancel": 1,
             "minDays": 1,
             "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
+        },
+        {
+            "eventPlaceId": 0,
+            "maxTickets": 150,
+            "minTickets": 20,
+            "minPrice": 30,
+            "daysBeforeCancel": 1,
+            "minDays": 2,
+            "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
     ]
-    expected_counts = [6]
+    expected_counts = [6, 3]
     assert len(expected) == len(expected_counts)
     for event in new_place_available_events:
         expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
@@ -700,11 +720,19 @@ def test_update_event(events_factory: EventsFactory) -> None:
     expected = CyberValleyEventManager.EventPlaceUpdated.model_validate(
         {
             "eventPlaceId": 0,
-            "maxTickets": 150,
-            "minTickets": 20,
-            "minPrice": 30,
-            "minDays": 2,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "minDays": 1,
+            "daysBeforeCancel": 1,
             "available": True,
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     )
     assert all(event == expected for event in event_place_updated_events)
