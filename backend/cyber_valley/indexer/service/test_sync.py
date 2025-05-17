@@ -1,6 +1,9 @@
 import datetime
 import secrets
+from dataclasses import dataclass
 
+import base58
+import ipfshttpclient
 import pytest
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -65,9 +68,19 @@ def event(user: UserType, event_place: EventPlace) -> Event:
     )
 
 
-# TODO: Save data in IPFS
 @pytest.mark.django_db(transaction=True)
 def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None:
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+        cid = client.add_json(
+            {
+                "title": "eventTitle",
+                "description": "eventDescription",
+                "cover": "QmdfTbBqBPQ7VNxZEYEj14VmRuZBkqFbiwReogJgS1zR1n",
+                "socialsCid": socials_cid,
+            }
+        )
+    multihash = cid2multihash(cid)
     event_data = CyberValleyEventManager.NewEventRequest.model_validate(
         {
             "id": 1,
@@ -77,27 +90,20 @@ def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None
             "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 5,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
         }
     )
     _sync_new_event_request(event_data)
-    event = Event.objects.get(title=f"Event {event_data.id}")
+    event = Event.objects.get(id=event_data.id)
     assert event.creator == user
     assert event.place == event_place
     assert event.ticket_price == event_data.ticket_price
     assert event.days_amount == event_data.days_amount
     notification = Notification.objects.get(user=user)
-    assert notification.title == "New Event Request"
-    assert (
-        notification.body
-        == f"A new event request with id {event_data.id} has been created."
-    )
+    assert notification.title == "Event request sent"
+    assert notification.body == "Title: eventTitle"
     # Check only the values that are set by the sync function
     assert event.tickets_bought == 0
     assert event.status == "submitted"
@@ -441,3 +447,19 @@ def test_sync_ticket_redeemed_ticket_not_found() -> None:
 
     with pytest.raises(Ticket.DoesNotExist):
         _sync_ticket_redeemed(event_data)
+
+
+@dataclass
+class Multihash:
+    digest: HexBytes
+    hash_function: int
+    size: int
+
+
+def cid2multihash(cid: str) -> Multihash:
+    decoded = base58.b58decode(cid)
+    return Multihash(
+        digest=HexBytes.fromhex(decoded[2:].hex()),
+        hash_function=decoded[0],
+        size=decoded[1],
+    )
