@@ -1,12 +1,24 @@
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill=""
-    stroke="#00BFFF"
-    stroke-width="2"
-    class="lucide lucide-chevron-right-icon lucide-chevron-right"
-    >
-    <path d="m9 18 6-6-6-6" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <filter id="drop-shadow-filter-0" bx:preset="drop-shadow 1 0 0 7 0.54 #27c6fbb8" color-interpolation-filters="sRGB" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7"></feGaussianBlur>
+      <feOffset dx="0" dy="0"></feOffset>
+      <feComponentTransfer result="offsetblur">
+        <feFuncA id="spread-ctrl" type="linear" slope="1.08"></feFuncA>
+      </feComponentTransfer>
+      <feFlood flood-color="#27c6fbb8"></feFlood>
+      <feComposite in2="offsetblur" operator="in"></feComposite>
+      <feMerge>
+        <feMergeNode></feMergeNode>
+        <feMergeNode in="SourceGraphic"></feMergeNode>
+      </feMerge>
+    </filter>
+  </defs>
+  <g>
+    <g transform="matrix(1, 0, 0, 1, -8.386513, -0.472488)" style="filter: url(#drop-shadow-filter-0);">
+      <path d="M 127.497 408.735 L 127.497 91.408 L 424.153 248.045 L 424.153 252.099 L 127.497 408.735 Z" style="fill-opacity: 0.9; fill: rgba(216, 216, 216, 0); stroke: rgb(0, 191, 255); stroke-width: 17px; paint-order: fill; filter: none;"></path>
+      <path d="M 119.031 386.928 L 151.377 404.949 L 92.62 437.684 L 92.62 386.928 Z" style="stroke: rgb(0, 191, 255); paint-order: stroke; fill: rgb(0, 191, 255); stroke-width: 1px; filter: none;"></path>
+      <path d="M 119.721 114.017 L 152.067 95.996 L 93.31 63.261 L 93.31 114.017 L 119.721 114.017 Z" style="stroke: rgb(0, 191, 255); paint-order: stroke; fill: rgb(0, 191, 255); stroke-width: 1px; filter: none;"></path>
+    </g>
+  </g>
 </svg>
