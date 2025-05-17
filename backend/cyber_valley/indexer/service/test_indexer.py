@@ -911,8 +911,14 @@ def test_cancel_event(events_factory: EventsFactory) -> None:
             "maxTickets": 100,
             "minTickets": 50,
             "minPrice": 20,
+            "daysBeforeCancel": 1,
             "minDays": 1,
             "available": True,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         },
     ]
     expected_counts = [6]
@@ -932,12 +938,16 @@ def test_cancel_event(events_factory: EventsFactory) -> None:
     expected = [
         {
             "id": 0,
-            "creator": MatchesAnyStr(),
+            "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
             "eventPlaceId": 0,
             "ticketPrice": 20,
-            "cancelDate": MatchesAnyInt(),
-            "startDate": MatchesAnyInt(),
+            "startDate": 1747872000,
             "daysAmount": 1,
+            "digest": (
+                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     ]
     expected_counts = [1]
@@ -956,11 +966,19 @@ def test_cancel_event(events_factory: EventsFactory) -> None:
     expected = CyberValleyEventManager.EventPlaceUpdated.model_validate(
         {
             "eventPlaceId": 0,
-            "maxTickets": 150,
-            "minTickets": 20,
-            "minPrice": 30,
-            "minDays": 2,
+            "maxTickets": 100,
+            "minTickets": 50,
+            "minPrice": 20,
+            "minDays": 1,
+            "daysBeforeCancel": 1,
             "available": True,
+            "digest": HexBytes(
+                bytes.fromhex(
+                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                )
+            ),
+            "hashFunction": 18,
+            "size": 32,
         }
     )
     assert all(event == expected for event in event_place_updated_events)
@@ -975,9 +993,8 @@ def test_cancel_event(events_factory: EventsFactory) -> None:
     ]
     expected = [
         {"eventId": 0, "status": 1},
-        {"eventId": 0, "status": 3},
     ]
-    expected_counts = [1, 1]
+    expected_counts = [1]
     for event in event_status_changed_events:
         expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
     assert sum(expected_counts) == 0
