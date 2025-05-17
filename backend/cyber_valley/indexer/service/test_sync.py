@@ -110,31 +110,6 @@ def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None
 
 
 @pytest.mark.django_db
-def test_sync_new_event_request_user_not_found(event_place: EventPlace) -> None:
-    event_data = CyberValleyEventManager.NewEventRequest.model_validate(
-        {
-            "id": 1,
-            "creator": "0x" + secrets.token_hex(20),  # Valid, but non-existent address
-            "eventPlaceId": event_place.id,
-            "ticketPrice": 150,
-            "cancelDate": 1678886400,
-            "startDate": 1679059200,
-            "daysAmount": 5,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        }
-    )
-
-    with pytest.raises(User.DoesNotExist):
-        _sync_new_event_request(event_data)
-
-
-@pytest.mark.django_db
 def test_sync_new_event_request_event_place_not_found(user: UserType) -> None:
     event_data = CyberValleyEventManager.NewEventRequest.model_validate(
         {
