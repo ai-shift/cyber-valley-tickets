@@ -1,6 +1,5 @@
 import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
-import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,18 +19,19 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
+import { assertIsDefined } from "@/shared/lib/assert";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { pluralDays } from "@/shared/lib/pluralDays";
 import { getCurrencySymbol } from "@/shared/lib/web3";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { fromUnixTime } from "date-fns";
+import { useEffect } from "react";
+import type { z } from "zod";
+import { useFetchImage } from "../hooks/useFetchImage";
+import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
+import { getPlaceDefaults } from "../lib/getPlaceDefaults";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
-import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
-import { ErrorMessage } from "@/shared/ui/ErrorMessage";
-import { useFetchImage } from "../hooks/useFetchImage";
-import { assertIsDefined } from "@/shared/lib/assert";
-import { getPlaceDefaults } from "../lib/getPlaceDefaults";
-import { useEffect } from "react";
-import { pluralDays } from "@/shared/lib/pluralDays";
 
 type EventFormProps = {
   events: Event[];

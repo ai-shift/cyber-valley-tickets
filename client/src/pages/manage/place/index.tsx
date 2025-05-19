@@ -1,6 +1,6 @@
 import { PlacesList } from "@/features/places-list";
-import { Button } from "@/shared/ui/button";
 import { PageContainer } from "@/shared/ui/PageContainer";
+import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
 
 export const ManagePlacesPage: React.FC = () => {

@@ -1,9 +1,9 @@
-import type { EventPlace } from "@/entities/place";
-import type { EventFormOutput } from "./types";
-import type { DateRange } from "react-day-picker";
 import type { Event } from "@/entities/event";
+import type { EventPlace } from "@/entities/place";
+import type { DateRange } from "react-day-picker";
 import { type ZodType, z } from "zod";
 import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
+import type { EventFormOutput } from "./types";
 
 export function createFormSchema(
   places: EventPlace[],

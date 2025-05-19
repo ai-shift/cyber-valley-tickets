@@ -1,6 +1,6 @@
 import type { Event } from "@/entities/event";
-import type { DateRange } from "react-day-picker";
 import type { EventPlace } from "@/entities/place";
+import type { DateRange } from "react-day-picker";
 
 import { fromUnixTime } from "date-fns";
 import { addDays } from "../model/formSchema";

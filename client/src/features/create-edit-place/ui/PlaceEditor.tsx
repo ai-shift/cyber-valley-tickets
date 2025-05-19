@@ -1,10 +1,10 @@
+import type { EventPlace } from "@/entities/place";
 import { type EventPlaceForm, PlaceForm } from "@/features/place-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 import { upsertPlaceW3 } from "../api/upsertPlaceW3";
 import { type ModalStatus, type ModalType, PlaceDialog } from "./PlaceDialog";
-import type { EventPlace } from "@/entities/place";
 
 type PlaceEditorProps = {
   placeForEdit?: EventPlace;
