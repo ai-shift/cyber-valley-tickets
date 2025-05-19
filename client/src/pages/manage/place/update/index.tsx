@@ -1,7 +1,7 @@
 import type { EventPlace } from "@/entities/place";
 import { PlaceEditor } from "@/features/create-edit-place";
 import { PageContainer } from "@/shared/ui/PageContainer";
-import { useLocation, type Location, Navigate } from "react-router";
+import { type Location, Navigate, useLocation } from "react-router";
 
 export const UpdatePlacePage: React.FC = () => {
   const { state: place }: Location<EventPlace | undefined> = useLocation();

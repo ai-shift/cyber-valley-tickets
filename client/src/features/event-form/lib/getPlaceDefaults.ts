@@ -1,9 +1,9 @@
-import type { EventPlace } from "@/entities/place";
-import { isDateAvailable } from "../model/formSchema";
-import { addDays } from "date-fns";
-import { extractBookedRangesForPlace } from "./extractBookedRangesForPlace";
 import type { Event } from "@/entities/event";
+import type { EventPlace } from "@/entities/place";
+import { addDays } from "date-fns";
+import { isDateAvailable } from "../model/formSchema";
 import type { EventFormOutput } from "../model/types";
+import { extractBookedRangesForPlace } from "./extractBookedRangesForPlace";
 
 type PartialPlace = Pick<
   EventFormOutput,

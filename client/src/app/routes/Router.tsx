@@ -10,14 +10,14 @@ import {
   HomePage,
   LoginPage,
   ManagePage,
-  MyEventsPage,
-  NotificationsPage,
-  PurchasePage,
-  SocialsPage,
   ManagePlacesPage,
   ManageStaffPage,
-  UpdatePlacePage,
+  MyEventsPage,
+  NotificationsPage,
   Page404,
+  PurchasePage,
+  SocialsPage,
+  UpdatePlacePage,
 } from "@/pages";
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { QueryProvider } from "../providers";

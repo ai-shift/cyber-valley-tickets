@@ -15,11 +15,11 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 
+import type { EventPlace } from "@/entities/place";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { Switch } from "@/shared/ui/switch";
 import type { UseMutateFunction } from "@tanstack/react-query";
 import { formSchema } from "../model/formSchema";
-import type { EventPlace } from "@/entities/place";
-import { Switch } from "@/shared/ui/switch";
 
 type PlaceFormProps = {
   existingPlace?: EventPlace;
