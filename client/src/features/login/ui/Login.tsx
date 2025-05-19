@@ -1,16 +1,22 @@
 import { useRefreshSlice } from "@/app/providers";
 import { cn } from "@/shared/lib/utils";
-import { wallets } from "@/shared/lib/web3";
+import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
+import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useConnect, useWalletImage, useWalletInfo } from "thirdweb/react";
+import { createWallet, injectedProvider } from "thirdweb/wallets";
 import type { Wallet } from "thirdweb/wallets";
 import { login } from "../api/login";
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
   const { connect, isConnecting, error: connectError } = useConnect();
+
+  const installedWallets = injectedSupportedWalletIds
+    .filter((wallet) => injectedProvider(wallet) != null)
+    .map((wallet) => createWallet(wallet));
 
   const { mutate, error, isPending } = useMutation({
     mutationFn: (wallet: Wallet) => login(wallet, connect),
@@ -20,16 +26,22 @@ export const Login: React.FC = () => {
   });
 
   return (
-    <div className="flex flex-col h-full justify-center items-center">
-      <h1 className="text-2xl mb-8">
-        {isPending || "Connect wallet to login"}
-      </h1>
+    <div className="flex flex-col h-full items-center">
+      <div className="h-1/5 w-full" />
+      <h1 className="text-2xl">{isPending || "Connect wallet to login"}</h1>
+      <div className="h-1/5 w-full" />
       <div className="text-center space-y-5">
         {(isPending || isConnecting) && <Loader className="h-60" />}
         <div className={cn("flex-col space-y-4", isPending && "hidden")}>
-          {wallets.map((wallet) => (
+          {installedWallets.map((wallet) => (
             <ExternalWallet key={wallet.id} wallet={wallet} login={mutate} />
           ))}
+          <Button
+            type="button"
+            onClick={() => mutate(createWallet("walletConnect"))}
+          >
+            {installedWallets.length > 0 ? "Other wallets" : "Connect wallet"}
+          </Button>
         </div>
         {(error || connectError) && (
           <ErrorMessage
