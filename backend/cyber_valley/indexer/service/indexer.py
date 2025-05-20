@@ -1,4 +1,5 @@
 import logging
+import pickle
 from dataclasses import dataclass
 from functools import partial
 from queue import Queue
@@ -48,12 +49,14 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
         arun_listeners(provider, queue, list(contracts.keys())),
         listener_loop,
     )
+    w3 = Web3(Web3.HTTPProvider(settings.HTTP_ETH_NODE_HOST))
     if sync:
         run_sync(
-            Web3(Web3.HTTPProvider(settings.HTTP_ETH_NODE_HOST)),
+            w3,
             queue,
             list(contracts.keys()),
         )
+    try_fix_errors(queue)
     deser_log = partial(parse_log, contracts=list(contracts.values()))
     while receipt := queue.get():
         tx_hash = "0x" + receipt["transactionHash"].hex()
@@ -66,11 +69,15 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
         match result:
             case Success(_):
                 log.info("Successfully processed", extra=extra)
+                deleted, _ = LogProcessingError.objects.filter(tx_hash=tx_hash).delete()
+                if deleted:
+                    log.info("Successfully fixed error for %s", tx_hash)
+
             case Failure(error):
                 log.error("Failed to process with %s", error, extra=extra)
                 LogProcessingError(
                     block_number=receipt["blockNumber"],
-                    log_receipt=str(receipt),
+                    log_receipt=str(pickle.dumps(receipt, 0)),
                     tx_hash=tx_hash,
                     error=repr(error),
                 ).save()
@@ -107,6 +114,14 @@ def run_sync(
         from_block = 0
     for receipt in _get_logs(w3, from_block, contract_addresses):
         queue.put(receipt)
+
+
+def try_fix_errors(queue: Queue[LogReceipt]) -> None:
+    errors = LogProcessingError.objects.all()
+    log.info("Got %s errors to fix", len(errors))
+    for error in errors:
+        log.info("Attempting to fix error from %s", error.tx_hash)
+        queue.put(pickle.loads(error.log_receipt.encode()))  # noqa: S301
 
 
 @dataclass
