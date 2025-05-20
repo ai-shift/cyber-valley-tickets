@@ -31,7 +31,7 @@ class Command(BaseCommand):
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:  # noqa: PLR0915
         self.stdout.write("Seeding database...")
 
-        if options["flush"] or options["flush-only"]:
+        if options["flush"] or options["flush_only"]:
             self.stdout.write("Flushing existing data...")
             # Order matters due to foreign keys
             Notification.objects.all().delete()
