@@ -77,7 +77,7 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
                 log.error("Failed to process with %s", error, extra=extra)
                 LogProcessingError(
                     block_number=receipt["blockNumber"],
-                    log_receipt=pickle.dumps(receipt, 0).decode(),
+                    log_receipt=pickle.dumps(receipt),
                     tx_hash=tx_hash,
                     error=repr(error),
                 ).save()
@@ -121,7 +121,7 @@ def try_fix_errors(queue: Queue[LogReceipt]) -> None:
     log.info("Got %s errors to fix", len(errors))
     for error in errors:
         log.info("Attempting to fix error from %s", error.tx_hash)
-        queue.put(pickle.loads(error.log_receipt.encode()))  # noqa: S301
+        queue.put(pickle.loads(error.log_receipt))  # noqa: S301
 
 
 @dataclass
