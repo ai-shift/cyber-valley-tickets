@@ -20,8 +20,8 @@ class LastProcessedBlock(models.Model):
 
 
 class LogProcessingError(models.Model):
+    tx_hash = models.TextField(primary_key=True)
     block_number = models.PositiveIntegerField()
     log_receipt = models.BinaryField()
-    tx_hash = models.TextField()
     error = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
