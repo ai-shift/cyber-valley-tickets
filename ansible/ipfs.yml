@@ -36,9 +36,3 @@
           - 8080 # Gateway
           - 4001 # Swarm
         network: host
-
-    - name: "Add letsencrypt cronjob for cert renewal"
-      cron:
-        name: letsencrypt_renewal
-        special_time: daily
-        job: podman restart cvland-ipfs
