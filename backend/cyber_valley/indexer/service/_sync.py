@@ -162,6 +162,8 @@ def _sync_event_place_updated(
             "min_tickets": event_data.min_tickets,
             "min_price": event_data.min_price,
             "min_days": event_data.min_days,
+            "days_before_cacnel": event_data.days_before_cancel,
+            "available": event_data.available,
             "title": data["title"],
         }
     )
