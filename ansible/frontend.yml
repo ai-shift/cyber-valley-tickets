@@ -22,10 +22,7 @@
       become: false
       environment:
         VITE_API_HOST: "https://{{ domain_name }}"
-        VITE_THIRDWEB_PUBLIC_CLIENT_ID: "{{ lookup(
-          'ansible.builtin.env',
-          'VITE_THIRDWEB_PUBLIC_CLIENT_ID',
-          default=undef()) }}"
+        VITE_THIRDWEB_PUBLIC_CLIENT_ID: "{{ lookup('env', 'VITE_THIRDWEB_PUBLIC_CLIENT_ID', default=undef()) }}"
       ansible.builtin.command:
         cmd: npm run build
         chdir: "{{ frontend_src }}"
