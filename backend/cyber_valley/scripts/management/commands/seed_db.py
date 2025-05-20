@@ -22,11 +22,16 @@ class Command(BaseCommand):
             action="store_true",
             help="Flush existing data before seeding.",
         )
+        parser.add_argument(
+            "--flush-only",
+            action="store_true",
+            help="Removes existing data without adding mocks",
+        )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:  # noqa: PLR0915
         self.stdout.write("Seeding database...")
 
-        if options["flush"]:
+        if options["flush"] or options["flush-only"]:
             self.stdout.write("Flushing existing data...")
             # Order matters due to foreign keys
             Notification.objects.all().delete()
@@ -37,6 +42,9 @@ class Command(BaseCommand):
             LastProcessedBlock.objects.all().delete()
             LogProcessingError.objects.all().delete()
             self.stdout.write("Data flushed.")
+
+        if options["flush-only"]:
+            return
 
         with transaction.atomic():
             # --- Create Master User ---
