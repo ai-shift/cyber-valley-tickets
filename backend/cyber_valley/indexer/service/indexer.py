@@ -49,7 +49,6 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
         listener_loop,
     )
     if sync:
-        log.info("Starting sync job")
         run_sync(
             Web3(Web3.HTTPProvider(settings.HTTP_ETH_NODE_HOST)),
             queue,
@@ -105,7 +104,7 @@ def run_sync(
     try:
         last_block = LastProcessedBlock.objects.get(id=1).block_number
     except LastProcessedBlock.DoesNotExist:
-        last_block = w3.eth.block_number
+        last_block = 0
     for receipt in _get_logs(w3, last_block, contract_addresses):
         queue.put(receipt)
 
