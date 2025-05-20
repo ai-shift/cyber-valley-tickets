@@ -151,24 +151,26 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
 def _sync_event_place_updated(
     event_data: CyberValleyEventManager.EventPlaceUpdated,
 ) -> None:
-    place = EventPlace.objects.get(id=event_data.event_place_id)
-
     cid = _multihash2cid(event_data)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
 
-    place.max_tickets = event_data.max_tickets
-    place.min_tickets = event_data.min_tickets
-    place.min_price = event_data.min_price
-    place.min_days = event_data.min_days
-    place.title = data["title"]
-    place.save()
+    place, created = EventPlace.objects.update_or_create(
+        {
+            "id": event_data.event_place_id,
+            "max_tickets": event_data.max_tickets,
+            "min_tickets": event_data.min_tickets,
+            "min_price": event_data.min_price,
+            "min_days": event_data.min_days,
+            "title": data["title"],
+        }
+    )
 
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
     for user in masters:
         Notification.objects.create(
             user=user,
-            title="Event place updated",
+            title=f"Event place {'created' if created else 'updated'}",
             body=f"Title: {place.title}",
         )
 
