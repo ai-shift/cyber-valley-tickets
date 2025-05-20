@@ -77,7 +77,7 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
                 log.error("Failed to process with %s", error, extra=extra)
                 LogProcessingError(
                     block_number=receipt["blockNumber"],
-                    log_receipt=str(pickle.dumps(receipt, 0)),
+                    log_receipt=pickle.dumps(receipt, 0).decode(),
                     tx_hash=tx_hash,
                     error=repr(error),
                 ).save()
