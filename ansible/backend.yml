@@ -25,36 +25,34 @@
         | ssh {{ inventory_hostname }} podman load
 
     - name: "Start container"
-      block:
-        - name: "Copy dotenv"
-          ansible.builtin.copy:
-            src: "{{ dotenv_src }}"
-            dest: "{{ dotenv_dest }}"
-            mode: '0600'
-
-        - name: "Start container"
-          containers.podman.podman_container:
-            name: "{{ image_name }}-api"
-            image: "{{ image_name }}"
-            state: started
-            detach: true
-            restart_policy: always
-            recreate: true
-            command:
-              - run-server
-            expose:
-              - 8000
-            network: host
-            env_file: "{{ dotenv_dest }}"
-            volume:
-              - "{{ ipfs_data_volume }}:/ipfs/data"
-      always:
-        - name: "Remove dotenv"
-          ansible.builtin.file:
-            path: "{{ dotenv_dest }}"
-            state: absent
-          when: true
-          check_mode: false
+      containers.podman.podman_container:
+        name: "{{ image_name }}-api"
+        image: "{{ image_name }}"
+        state: started
+        detach: true
+        restart_policy: always
+        recreate: true
+        command:
+          - run-server
+        expose:
+          - 8000
+        network: host
+        env:
+          IPFS_DATA: "{{ lookup('env', 'IPFS_DATA', default=undef()) }}"
+          IPFS_PUBLIC_HOST: "{{ lookup('env', 'IPFS_PUBLIC_HOST', default=undef()) }}"
+          DB_USER: "{{ lookup('env', 'DB_USER', default=undef()) }}"
+          DB_NAME: "{{ lookup('env', 'DB_NAME', default=undef()) }}"
+          DB_PASSWORD: "{{ lookup('env', 'DB_PASSWORD', default=undef()) }}"
+          HTTP_ETH_NODE_HOST: "{{ lookup('env', 'HTTP_ETH_NODE_HOST', default=undef()) }}"
+          WS_ETH_NODE_HOST: "{{ lookup('env', 'WS_ETH_NODE_HOST', default=undef()) }}"
+          VALKEY_HOST: "{{ lookup('env', 'VALKEY_HOST', default=undef()) }}"
+          EVENT_MANAGER_ADDRESS: "{{ lookup('env', 'EVENT_MANAGER_ADDRESS', default=undef()) }}"
+          EVENT_TICKET_ADDRESS: "{{ lookup('env', 'EVENT_TICKET_ADDRESS', default=undef()) }}"
+          ERC20_ADDRESS: "{{ lookup('env', 'ERC20_ADDRESS', default=undef()) }}"
+          DJANGO_SECRET_KEY: "{{ lookup('env', 'DJANGO_SECRET_KEY', default=undef()) }}"
+          PYTHONUNBUFFERED: "{{ lookup('env', 'PYTHONUNBUFFERED', default=undef()) }}"
+        volume:
+          - "{{ ipfs_data_volume }}:/ipfs/data"
 
     - name: "Prune dangling images and containers"
       containers.podman.podman_prune:
