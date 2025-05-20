@@ -1,5 +1,7 @@
 ---
 - hosts: all
+  vars_files:
+    - "./vars/common.yml"
   tasks:
     - name: "Install packages"
       ansible.builtin.package: "name={{ item }} state=present"
