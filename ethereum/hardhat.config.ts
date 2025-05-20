@@ -14,8 +14,8 @@ const config: HardhatUserConfig = {
     ser7: {
       url: "https://ce9d-109-93-188-5.ngrok-free.app"
     },
-    ec2: {
-      url: "http://3.8.190.75:8545"
+    cvlandTest: {
+      url: "https://cvland-tickets.aishift.co/ganache"
     },
   }
 };

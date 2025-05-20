@@ -9,7 +9,7 @@ tests:
 	pnpm exec hardhat test --typecheck
 
 deploy-test:
-	pnpm exec hardhat run scripts/deploy.js --network ec2
+	pnpm exec hardhat run scripts/deploy.js --network cvlandTest
 
 check:
 	pnpm exec biome check --write test/
