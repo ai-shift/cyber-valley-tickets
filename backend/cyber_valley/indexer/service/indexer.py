@@ -75,12 +75,14 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
 
             case Failure(error):
                 log.error("Failed to process with %s", error, extra=extra)
-                LogProcessingError(
-                    block_number=receipt["blockNumber"],
-                    log_receipt=pickle.dumps(receipt),
-                    tx_hash=tx_hash,
-                    error=repr(error),
-                ).save()
+                LogProcessingError.objects.update_or_create(
+                    {
+                        "block_number": receipt["blockNumber"],
+                        "log_receipt": pickle.dumps(receipt),
+                        "tx_hash": tx_hash,
+                        "error": repr(error),
+                    }
+                )
         LastProcessedBlock.objects.update_or_create(
             defaults={"id": 1, "block_number": receipt["blockNumber"]}
         )
