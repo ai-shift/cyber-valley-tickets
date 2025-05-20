@@ -16,7 +16,7 @@ run: run-ipfs-node run-valkey run-server
 make-migrations:
 	$(python) manage.py makemigrations
 
-migrate: make-migrations
+migrate:
 	$(python) manage.py migrate
 
 seed-db: migrate
