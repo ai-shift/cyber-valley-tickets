@@ -1,3 +1,5 @@
+include ../.env.production
+
 ansible-playbook = uv run ansible-playbook
 
 install-collections:
