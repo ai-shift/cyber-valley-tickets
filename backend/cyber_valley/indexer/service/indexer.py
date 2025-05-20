@@ -102,10 +102,10 @@ def run_sync(
     w3: Web3, queue: Queue[LogReceipt], contract_addresses: list[ChecksumAddress]
 ) -> None:
     try:
-        last_block = LastProcessedBlock.objects.get(id=1).block_number
+        from_block = LastProcessedBlock.objects.get(id=1).block_number
     except LastProcessedBlock.DoesNotExist:
-        last_block = 0
-    for receipt in _get_logs(w3, last_block, contract_addresses):
+        from_block = 0
+    for receipt in _get_logs(w3, from_block, contract_addresses):
         queue.put(receipt)
 
 
@@ -144,6 +144,8 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
 def _get_logs(
     w3: Web3, from_block: int, addresses: list[ChecksumAddress]
 ) -> list[LogReceipt]:
+    to_block = w3.eth.block_number
+    log.info("Getting logs for %s - %s blocks", from_block, to_block)
     return w3.eth.filter(
-        {"fromBlock": from_block, "toBlock": "latest", "address": addresses}
+        {"fromBlock": from_block, "toBlock": to_block, "address": addresses}
     ).get_all_entries()
