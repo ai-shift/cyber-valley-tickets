@@ -43,7 +43,7 @@ class Command(BaseCommand):
             LogProcessingError.objects.all().delete()
             self.stdout.write("Data flushed.")
 
-        if options["flush-only"]:
+        if options["flush_only"]:
             return
 
         with transaction.atomic():
