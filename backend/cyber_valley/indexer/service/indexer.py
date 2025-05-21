@@ -74,7 +74,11 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
                     log.info("Successfully fixed error for %s", tx_hash)
 
             case Failure(error):
-                log.error("Failed to process with %s", error, extra=extra)
+                log.error(
+                    "Failed to process with %s",
+                    repr(error),
+                    extra=extra,
+                )
                 LogProcessingError.objects.update_or_create(
                     {
                         "block_number": receipt["blockNumber"],
@@ -135,7 +139,10 @@ class EventNotRecognizedError(Exception):
 def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseModel:
     for contract in contracts:
         event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
-        assert len(event_names) == len(set(event_names))
+        duplicated_event_names = {
+            name for name in event_names if event_names.count(name) > 1
+        }
+        assert not duplicated_event_names, f"{duplicated_event_names=}"
         for event_name in event_names:
             try:
                 event = getattr(contract.events, event_name).process_log(log_receipt)
@@ -147,7 +154,9 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
                     event_model = getattr(module, event["event"])
                 except AttributeError:
                     continue
-                assert issubclass(event_model, BaseModel)
+                assert issubclass(event_model, BaseModel), (
+                    f"Excpected BaseModel got {type(event_model)}"
+                )
                 try:  # Some events have the same names e.g. Transfer or Approval
                     return cast(type[BaseModel], event_model).model_validate(
                         event["args"]
