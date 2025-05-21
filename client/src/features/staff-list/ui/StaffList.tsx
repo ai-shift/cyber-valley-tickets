@@ -16,7 +16,7 @@ export const StaffList: React.FC = () => {
     );
 
   return (
-    <ul className="flex flex-col gap-3 py-5">
+    <ul className="divide-y divide-secondary/60 py-2">
       {users.map((user) => (
         <ManageItem
           key={user.address}
