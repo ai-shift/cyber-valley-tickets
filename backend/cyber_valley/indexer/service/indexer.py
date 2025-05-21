@@ -1,5 +1,6 @@
 import logging
 import pickle
+import traceback
 from dataclasses import dataclass
 from functools import partial
 from queue import Queue
@@ -76,7 +77,7 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
             case Failure(error):
                 log.error(
                     "Failed to process with %s",
-                    repr(error),
+                    traceback.format_exception(error),
                     extra=extra,
                 )
                 LogProcessingError.objects.update_or_create(

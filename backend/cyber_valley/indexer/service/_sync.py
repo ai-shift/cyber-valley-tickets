@@ -156,16 +156,16 @@ def _sync_event_place_updated(
         data = client.get_json(cid)
 
     place, created = EventPlace.objects.update_or_create(
-        {
-            "id": event_data.event_place_id,
+        id=event_data.event_place_id,
+        title=data["title"],
+        defaults={
             "max_tickets": event_data.max_tickets,
             "min_tickets": event_data.min_tickets,
             "min_price": event_data.min_price,
             "min_days": event_data.min_days,
             "days_before_cancel": event_data.days_before_cancel,
             "available": event_data.available,
-            "title": data["title"],
-        }
+        },
     )
 
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
