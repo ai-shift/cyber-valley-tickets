@@ -298,7 +298,7 @@ export async function removeStaff(
   // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
-    method: "grantRole",
+    method: "revokeRole",
     params: [STAFF_ROLE, address],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
