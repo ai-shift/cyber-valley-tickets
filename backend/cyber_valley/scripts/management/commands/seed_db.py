@@ -48,7 +48,10 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             # --- Create Master User ---
-            masters = ("0x70997970C51812dc3A010C7d01b50e0d17dc79C8",)
+            masters = (
+                "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+                "0x2789023F36933E208675889869c7d3914A422921",
+            )
             master_user: CyberValleyUser
             for address in masters:
                 master_user, created = CyberValleyUser.objects.get_or_create(
