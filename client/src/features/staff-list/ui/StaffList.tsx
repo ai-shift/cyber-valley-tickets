@@ -22,7 +22,7 @@ export const StaffList: React.FC = () => {
           key={user.address}
           title={user.address}
           render={() => [
-            <RemoveStaffIcon key={user.address} staffAdress={user.address} />,
+            <RemoveStaffIcon key={user.address} staffAddress={user.address} />,
           ]}
         />
       ))}
