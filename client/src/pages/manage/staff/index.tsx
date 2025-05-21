@@ -6,8 +6,8 @@ export const ManageStaffPage: React.FC = () => {
   return (
     <PageContainer name="Manage staff">
       <section className=" px-5 py-9">
-	<StaffForm />
-	<StaffList />
+        <StaffForm />
+        <StaffList />
       </section>
     </PageContainer>
   );
