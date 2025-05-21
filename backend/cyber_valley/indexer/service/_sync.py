@@ -225,7 +225,7 @@ def _sync_event_status_changed(
     }
 
     new_status = status_mapping.get(event_data.status)
-    assert new_status is not None
+    assert new_status is not None, f"Unexpected status {event_data}"
 
     event.status = new_status
     event.save()
@@ -289,14 +289,15 @@ def _sync_role_revoked(
     event_data: CyberValleyEventManager.RoleRevoked
     | CyberValleyEventTicket.RoleRevoked,
 ) -> None:
-    assert event_data.role == "STAFF"
+    role = event_data.role.split("_")[0].lower()
+    assert role == "staff", f"Got unexpected {role=}"
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
-    user.role = event_data.role
+    user.role = CyberValleyUser.CUSTOMER
     user.save()
     Notification.objects.create(
         user=user,
         title="Role revoked",
-        body=f"{user.role} revoked from your account",
+        body="Staff role was revoked",
     )
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
     for master in masters:
@@ -305,7 +306,7 @@ def _sync_role_revoked(
         Notification.objects.create(
             user=master,
             title="Role revoked",
-            body=f"{user.role} revoked from {user.address}",
+            body=f"Staff role was revoked from {user.address}",
         )
 
 
