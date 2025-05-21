@@ -1,6 +1,8 @@
+include ../.env
 ipfs_container_name := "cyber-valley-ipfs"
 valkey_container_name := "cyber-valley-valkey"
 python := .venv/bin/python
+VIRTUALIZER ?= podman
 
 format:
 	uv run ruff format
@@ -39,9 +41,9 @@ run-ipfs-node:
 	test -n "$(IPFS_DATA)" || exit 1
 	mkdir -p $$IPFS_STAGING
 	mkdir -p $$IPFS_DATA
-	podman stop $(ipfs_container_name) || true
-	podman rm $(ipfs_container_name) || true
-	podman run --rm -d \
+	$(VIRTUALIZER) stop $(ipfs_container_name) || true
+	$(VIRTUALIZER) rm $(ipfs_container_name) || true
+	$(VIRTUALIZER) run --rm -d \
 		--name $(ipfs_container_name) \
 		-v $$IPFS_STAGING:/export \
 		-v $$IPFS_DATA:/data/ipfs \
@@ -52,9 +54,9 @@ run-ipfs-node:
 		docker.io/ipfs/go-ipfs:v0.7.0
 
 run-valkey:
-	podman stop $(valkey_container_name) || true
-	podman rm $(valkey_container_name) || true
-	podman run --rm -d \
+	$(VIRTUALIZER) stop $(valkey_container_name) || true
+	$(VIRTUALIZER) rm $(valkey_container_name) || true
+	$(VIRTUALIZER) run --rm -d \
 		--name $(valkey_container_name) \
 		-p 6379:6379 \
 		docker.io/valkey/valkey:8.1.1
