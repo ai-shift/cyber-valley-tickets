@@ -92,6 +92,6 @@ class RoleRevoked(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    role: str
+    role: Annotated[str, BeforeValidator(validate_role)]
     account: str
     sender: str
