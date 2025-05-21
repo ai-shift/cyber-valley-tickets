@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 type NavigateUpdatePlaceProps = {
   place: EventPlace;
 };
+
 export const NavigateUpdatePlace: React.FC<NavigateUpdatePlaceProps> = ({
   place,
 }) => {
