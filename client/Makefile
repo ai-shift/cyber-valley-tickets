@@ -3,6 +3,12 @@ include ../.env
 dev:
 	pnpm exec vite --host
 
+preview:
+	pnpm exec vite preview
+
+build:
+	pnpm build
+
 check:
 	pnpm exec biome check --write .
 
