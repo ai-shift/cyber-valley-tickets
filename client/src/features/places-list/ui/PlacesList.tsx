@@ -16,7 +16,7 @@ export const PlacesList: React.FC = () => {
     );
 
   return (
-    <ul className="flex flex-col gap-3 py-5">
+    <ul className="divide-y divide-secondary/60 py-2">
       {places.map((place) => (
         <ManageItem
           key={place.id}

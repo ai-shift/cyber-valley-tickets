@@ -5,7 +5,7 @@ type ManageItemProps = {
 
 export const ManageItem: React.FC<ManageItemProps> = ({ title, render }) => {
   return (
-    <li className="card border-primary/30 flex justify-between items-center">
+    <li className="flex py-5 justify-between items-center">
       <h3 className=" text-lg">{title}</h3>
       <ul className="flex flex-row gap-3">
         {render().map((node, index) => (
