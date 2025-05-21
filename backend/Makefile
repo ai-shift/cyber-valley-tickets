@@ -1,4 +1,4 @@
-include ../.env
+-include ../.env
 ipfs_container_name := "cyber-valley-ipfs"
 valkey_container_name := "cyber-valley-valkey"
 python := .venv/bin/python
