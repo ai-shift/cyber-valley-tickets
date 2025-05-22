@@ -99,17 +99,6 @@ export async function submitEventRequest(
   metaCID: string,
 ): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
-  const erc20Balance = await balanceOf({
-    contract: erc20,
-    address: account.address,
-  });
-  const balanceAfterPayment = erc20Balance - getEventSubmitionPrice();
-  if (balanceAfterPayment < 0) {
-    throw {
-      cause: "Insufficient balance",
-      data: -1n * balanceAfterPayment,
-    };
-  }
   const approveTransaction = prepareContractCall({
     contract: erc20,
     method: "approve",
@@ -249,4 +238,23 @@ export async function removeStaff(
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;
+}
+
+export async function hasEnoughtTokens(account: Account): Promise<{
+  enoughTokens: boolean;
+  balanceAfterPayment: bigint;
+}> {
+  const erc20Balance = await balanceOf({
+    contract: erc20,
+    address: account.address,
+  });
+  const balanceAfterPayment = erc20Balance - getEventSubmitionPrice();
+  return {
+    enoughTokens: balanceAfterPayment < 0,
+    balanceAfterPayment: babs(balanceAfterPayment),
+  };
+}
+
+function babs(x: bigint): bigint {
+  return x < 0 ? -x : x;
 }
