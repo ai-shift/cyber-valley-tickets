@@ -59,7 +59,7 @@ function PaymentFailed() {
         alt="purchase"
       />
       <h2 className="text-muted font-semibold text-lg text-center">
-        Errors during transaction
+        Error during transaction
       </h2>
       <p className="text-muted/70 text-md text-center">
         Check your wallet for the details or try again later.
@@ -77,11 +77,10 @@ function PaymentSucceed() {
         alt="purchase"
       />
       <h2 className="text-muted font-semibold text-lg text-center">
-        Connect Your Wallet
+        Transaction successfully sent
       </h2>
       <p className="text-muted/70 text-md text-center">
-        Connect your Web3 wallet to complete the purchase. You'll be prompted to
-        confirm the transaction.
+        You'll get an updated soon via notification on the home page.
       </p>
     </div>
   );
