@@ -1,0 +1,9 @@
+---
+- name: "Start podman containers with cron"
+  hosts: all
+  tasks:
+    - name: "Podman restart containers"
+      ansible.builtin.cron:
+        name: "Podman restart containers"
+        minute: "5"
+        job: "podman start --filter restart-policy=always --all"
