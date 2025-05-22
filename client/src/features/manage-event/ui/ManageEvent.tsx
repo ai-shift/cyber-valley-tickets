@@ -30,9 +30,9 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     mutationFn: async (action: ManageAction) => {
       switch (action) {
         case "accept":
-          return await approveEvent(account, eventId);
+          return await approveEvent(account, BigInt(eventId));
         case "decline":
-          return await declineEvent(account, eventId);
+          return await declineEvent(account, BigInt(eventId));
         default:
           throw `Unknown action: ${action}`;
       }

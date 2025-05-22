@@ -29,5 +29,5 @@ export const redeem = async (
     throw error;
   }
 
-  await redeemTicket(account, ticketId);
+  await redeemTicket(account, BigInt(ticketId));
 };

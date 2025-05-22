@@ -31,8 +31,8 @@ const purchaseTicket = async (account: Account, order: Order) => {
 
   const txHash = await mintTicket(
     account,
-    order.ticket.ticketPrice,
-    order.ticket.eventId,
+    BigInt(order.ticket.ticketPrice),
+    BigInt(order.ticket.eventId),
     data.cid,
   );
   console.log("Tx hash", txHash);
@@ -55,10 +55,10 @@ const updateEvent = async (account: Account, order: Order) => {
 
   await updateEventContract(
     account,
-    id,
-    place,
+    BigInt(id),
+    BigInt(place),
     ticketPrice,
-    startTimeTimeStamp,
+    BigInt(startTimeTimeStamp),
     daysAmount,
     eventData.cid,
   );
@@ -81,9 +81,9 @@ const purchaseEvent = async (account: Account, order: Order) => {
 
   await submitEventRequest(
     account,
-    place,
+    BigInt(place),
     ticketPrice,
-    startTimeTimeStamp,
+    BigInt(startTimeTimeStamp),
     daysAmount,
     eventData.cid,
   );

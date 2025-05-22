@@ -1,71 +1,18 @@
-import { keccak256 } from "@ethersproject/keccak256";
-import { toUtf8Bytes } from "@ethersproject/strings";
-import type { BigNumberish } from "ethers";
-import {
-  createThirdwebClient,
-  defineChain,
-  getContract,
-  prepareContractCall,
-  sendTransaction,
-} from "thirdweb";
-import { type Account, createWallet } from "thirdweb/wallets";
-import EventManagerABI from "./contracts/EventManager";
-import EventTicketABI from "./contracts/EventTicket";
-import SimpleERC20XyloseABI from "./contracts/SimpleERC20Xylose";
+import { prepareContractCall, sendTransaction } from "thirdweb";
+import { balanceOf } from "thirdweb/extensions/erc20";
+import type { Account } from "thirdweb/wallets";
 import { getBytes32FromMultiash } from "./multihash";
-
-const STAFF_ROLE = keccak256(toUtf8Bytes("STAFF_ROLE"));
-
-export const wallets = [
-  createWallet("io.metamask"),
-  createWallet("com.coinbase.wallet"),
-  createWallet("me.rainbow"),
-  createWallet("io.rabby"),
-  createWallet("io.zerion.wallet"),
-];
-
-export const cvlandChain = defineChain({
-  id: 1337,
-  rpc: import.meta.env.VITE_HTTP_ETH_NODE_HOST,
-});
-
-export const client = createThirdwebClient({
-  clientId: import.meta.env.VITE_THIRDWEB_PUBLIC_CLIENT_ID,
-});
-
-const eventManager = getContract({
-  client: client,
-  chain: cvlandChain,
-  address: import.meta.env.VITE_EVENT_MANAGER_ADDRESS,
-  // @ts-ignore: TS2322
-  abi: EventManagerABI,
-});
-
-const eventTicket = getContract({
-  client: client,
-  chain: cvlandChain,
-  address: import.meta.env.VITE_EVENT_TICKET_ADDRESS,
-  // @ts-ignore: TS2322
-  abi: EventTicketABI,
-});
-
-const erc20 = getContract({
-  client: client,
-  chain: cvlandChain,
-  address: import.meta.env.VITE_ERC20_ADDRESS,
-  // @ts-ignore: TS2322
-  abi: SimpleERC20XyloseABI,
-});
+import { STAFF_ROLE, erc20, eventManager, eventTicket } from "./state";
+export { client, wallets, cvlandChain } from "./state";
 
 export async function mintERC20(
   account: Account,
-  amount: BigNumberish,
+  amount: bigint,
 ): Promise<TxHash> {
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: erc20,
     method: "mint",
-    params: [amount],
+    params: [BigInt(amount)],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;
@@ -75,24 +22,23 @@ export function getCurrencySymbol(): string {
   return "₮";
 }
 
-export function getEventSubmitionPrice(): BigNumberish {
-  return 100;
+export function getEventSubmitionPrice(): bigint {
+  return 100n;
 }
 
 export type TxHash = `0x${string}`;
 
 export async function createPlace(
   account: Account,
-  maxTickets: BigNumberish,
-  minTickets: BigNumberish,
-  minPrice: BigNumberish,
-  daysBeforeCancel: BigNumberish,
-  minDays: BigNumberish,
+  maxTickets: number,
+  minTickets: number,
+  minPrice: number,
+  daysBeforeCancel: number,
+  minDays: number,
   available: boolean,
   metaCID: string,
 ): Promise<TxHash> {
   const multihash = getBytes32FromMultiash(metaCID);
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "createEventPlace",
@@ -114,22 +60,21 @@ export async function createPlace(
 
 export async function updatePlace(
   account: Account,
-  placeId: BigNumberish,
-  maxTickets: BigNumberish,
-  minTickets: BigNumberish,
-  minPrice: BigNumberish,
-  daysBeforeCancel: BigNumberish,
-  minDays: BigNumberish,
+  placeId: bigint,
+  maxTickets: number,
+  minTickets: number,
+  minPrice: number,
+  daysBeforeCancel: number,
+  minDays: number,
   available: boolean,
   metaCID: string,
 ): Promise<TxHash> {
   const multihash = getBytes32FromMultiash(metaCID);
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "updateEventPlace",
     params: [
-      placeId,
+      BigInt(placeId),
       maxTickets,
       minTickets,
       minPrice,
@@ -147,21 +92,30 @@ export async function updatePlace(
 
 export async function submitEventRequest(
   account: Account,
-  eventPlaceId: BigNumberish,
-  ticketPrice: BigNumberish,
-  startDate: BigNumberish,
-  daysAmount: BigNumberish,
+  eventPlaceId: bigint,
+  ticketPrice: number,
+  startDate: bigint,
+  daysAmount: number,
   metaCID: string,
 ): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
-  // @ts-ignore: TS2345
+  const erc20Balance = await balanceOf({
+    contract: erc20,
+    address: account.address,
+  });
+  const balanceAfterPayment = erc20Balance - getEventSubmitionPrice();
+  if (balanceAfterPayment < 0) {
+    throw {
+      cause: "Insufficient balance",
+      data: -1n * balanceAfterPayment,
+    };
+  }
   const approveTransaction = prepareContractCall({
     contract: erc20,
     method: "approve",
     params: [eventManager.address, getEventSubmitionPrice()],
   });
   await sendTransaction({ account, transaction: approveTransaction });
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "submitEventRequest",
@@ -181,15 +135,14 @@ export async function submitEventRequest(
 
 export async function updateEvent(
   account: Account,
-  eventId: BigNumberish,
-  eventPlaceId: BigNumberish,
-  ticketPrice: BigNumberish,
-  startDate: BigNumberish,
-  daysAmount: BigNumberish,
+  eventId: bigint,
+  eventPlaceId: bigint,
+  ticketPrice: number,
+  startDate: bigint,
+  daysAmount: number,
   metaCID: string,
 ): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "updateEvent",
@@ -210,9 +163,8 @@ export async function updateEvent(
 
 export async function approveEvent(
   account: Account,
-  eventId: BigNumberish,
+  eventId: bigint,
 ): Promise<TxHash> {
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "approveEvent",
@@ -224,9 +176,8 @@ export async function approveEvent(
 
 export async function declineEvent(
   account: Account,
-  eventId: BigNumberish,
+  eventId: bigint,
 ): Promise<TxHash> {
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "declineEvent",
@@ -238,11 +189,10 @@ export async function declineEvent(
 
 export async function mintTicket(
   account: Account,
-  ticketPrice: BigNumberish,
-  eventId: BigNumberish,
+  ticketPrice: bigint,
+  eventId: bigint,
   socialsCID: string,
 ): Promise<TxHash> {
-  // @ts-ignore: TS2345
   const approveTransaction = prepareContractCall({
     contract: erc20,
     method: "approve",
@@ -250,7 +200,6 @@ export async function mintTicket(
   });
   await sendTransaction({ account, transaction: approveTransaction });
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
-  // @ts-ignore: TS2345
   const mintTransaction = prepareContractCall({
     contract: eventManager,
     method: "mintTicket",
@@ -265,9 +214,8 @@ export async function mintTicket(
 
 export async function redeemTicket(
   account: Account,
-  ticketId: BigNumberish,
+  ticketId: bigint,
 ): Promise<TxHash> {
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventTicket,
     method: "redeemTicket",
@@ -281,7 +229,6 @@ export async function assignStaff(
   account: Account,
   address: string,
 ): Promise<TxHash> {
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "grantRole",
@@ -295,7 +242,6 @@ export async function removeStaff(
   account: Account,
   address: string,
 ): Promise<TxHash> {
-  // @ts-ignore: TS2345
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "revokeRole",

@@ -2,7 +2,7 @@ import bs58 from "bs58";
 
 /**
  * @typedef {Object} Multihash
- * @property {string} digest The digest output of hash function in hex with prepended '0x'
+ * @property {`0x${string}`} digest The digest output of hash function in hex with prepended '0x'
  * @property {number} hashFunction The hash function code for the function used
  * @property {number} size The length of digest
  */
