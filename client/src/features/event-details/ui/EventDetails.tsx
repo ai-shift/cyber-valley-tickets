@@ -82,7 +82,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         {editPermission && (
           <DetailsBlock
             icon="/icons/Attendees_2.svg"
-            title="Tickets"
+            title="Tickets available"
             information={`${place.maxTickets - Number(ticketsBought)}`}
           />
         )}
