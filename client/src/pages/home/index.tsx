@@ -30,7 +30,7 @@ export const HomePage: React.FC = () => {
       <Button
         className="mt-8"
         onClick={() =>
-          mintERC20(account, 50)
+          mintERC20(account, 50n)
             .then(() => alert("Minted 50 tokens"))
             .catch(console.error)
         }

@@ -11,8 +11,6 @@
         update_cache: true
         name:
           - podman
-          - containers-storage
-          - cron
 
     - name: "Extend bash profile"
       ansible.builtin.blockinfile:

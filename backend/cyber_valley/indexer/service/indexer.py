@@ -62,6 +62,7 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
     while receipt := queue.get():
         tx_hash = "0x" + receipt["transactionHash"].hex()
         extra = {"tx_hash": tx_hash}
+        log.info("Starting processing", extra=extra)
         result = flow(
             receipt,
             deser_log,
@@ -81,10 +82,10 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
                     extra=extra,
                 )
                 LogProcessingError.objects.update_or_create(
-                    {
+                    tx_hash=tx_hash,
+                    defaults={
                         "block_number": receipt["blockNumber"],
                         "log_receipt": pickle.dumps(receipt),
-                        "tx_hash": tx_hash,
                         "error": repr(error),
                     }
                 )
@@ -172,7 +173,9 @@ def _get_logs(
     w3: Web3, from_block: int, addresses: list[ChecksumAddress]
 ) -> list[LogReceipt]:
     to_block = w3.eth.block_number
-    log.info("Getting logs for %s - %s blocks", from_block, to_block)
-    return w3.eth.filter(
+    log.info("Getting logs for %s-%s blocks", from_block, to_block)
+    entries = w3.eth.filter(
         {"fromBlock": from_block, "toBlock": to_block, "address": addresses}
     ).get_all_entries()
+    log.info("Retreived %s logs", len(entries))
+    return entries

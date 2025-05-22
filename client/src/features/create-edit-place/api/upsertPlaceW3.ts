@@ -33,7 +33,7 @@ export const upsertPlaceW3 = async (
   if (editPlaceId) {
     await updatePlace(
       account,
-      editPlaceId,
+      BigInt(editPlaceId),
       maxTickets,
       minTickets,
       minPrice,
