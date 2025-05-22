@@ -31,3 +31,6 @@ deploy-valkey: install-collections
 
 deploy-ipfs: install-collections
 	$(ansible-playbook) ipfs.yml
+
+deploy-podman-cron-restart: install-collections
+	$(ansible-playbook) podman-cron-start.yml
