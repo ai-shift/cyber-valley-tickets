@@ -31,7 +31,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
 
   return (
     <article className="card border-primary/30">
-      {error && <PaymentFailed />}
+      {error && <PaymentFailed cause={error} />}
       <div className="flex justify-center py-6">
         <span>
           <Button onClick={() => mutate(order)} className="mx-auto">
@@ -49,7 +49,11 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   );
 };
 
-function PaymentFailed() {
+type PaymentFailedProps = {
+  cause: { reason: string };
+};
+
+function PaymentFailed({ cause }: PaymentFailedProps) {
   return (
     <div>
       <img
@@ -60,9 +64,7 @@ function PaymentFailed() {
       <h2 className="text-muted font-semibold text-lg text-center">
         Error during transaction
       </h2>
-      <p className="text-muted/70 text-md text-center">
-        Check your wallet for the details or try again later.
-      </p>
+      <p className="text-muted/70 text-md text-center">{cause.reason}</p>
     </div>
   );
 }
