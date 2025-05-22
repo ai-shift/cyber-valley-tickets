@@ -24,7 +24,6 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
     onError: console.error,
   });
 
-  const navigateFn = () => navigate("/", { replace: true });
   const successMessage =
     order.type === "buy_ticket"
       ? "Your will recieve your ticket within several minutes."
@@ -44,7 +43,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
         open={isSuccess}
         setOpen={setIsSuccess}
         successMsg={successMessage}
-        navigateFn={navigateFn}
+        navigateFn={() => navigate("/", { replace: true })}
       />
     </article>
   );
