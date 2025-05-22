@@ -8,6 +8,9 @@ install-collections:
 lint:
 	uv run yamllint *.yml vars/*.yml
 
+deploy-setup-debian: install-collections
+	ansible-playbook setup-debian.yml
+
 deploy-postgres: install-collections
 	$(ansible-playbook) postgres.yml
 
