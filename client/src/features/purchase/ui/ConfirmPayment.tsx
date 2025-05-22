@@ -32,7 +32,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
 
   return (
     <article className="card border-primary/30">
-      {error ? <PaymentFailed /> : <PaymentSucceed />}
+      {error && <PaymentFailed />}
       <div className="flex justify-center py-6">
         <span>
           <Button onClick={() => mutate(order)} className="mx-auto">
@@ -63,24 +63,6 @@ function PaymentFailed() {
       </h2>
       <p className="text-muted/70 text-md text-center">
         Check your wallet for the details or try again later.
-      </p>
-    </div>
-  );
-}
-
-function PaymentSucceed() {
-  return (
-    <div>
-      <img
-        className="aspect-square h-40 mx-auto my-7"
-        src="/icons/price_2.svg"
-        alt="purchase"
-      />
-      <h2 className="text-muted font-semibold text-lg text-center">
-        Transaction successfully sent
-      </h2>
-      <p className="text-muted/70 text-md text-center">
-        You'll get an updated soon via notification on the home page.
       </p>
     </div>
   );
