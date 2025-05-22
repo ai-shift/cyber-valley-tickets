@@ -157,8 +157,8 @@ def _sync_event_place_updated(
 
     place, created = EventPlace.objects.update_or_create(
         id=event_data.event_place_id,
-        title=data["title"],
         defaults={
+            "title": data["title"],
             "max_tickets": event_data.max_tickets,
             "min_tickets": event_data.min_tickets,
             "min_price": event_data.min_price,
