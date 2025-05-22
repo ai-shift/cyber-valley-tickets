@@ -1,5 +1,8 @@
 ---
-- hosts: all
+- name: "Deploy IPFS"
+  become: true
+  become_user: root
+  hosts: all
   vars_files:
     - vars/common.yml
   tasks:
