@@ -13,7 +13,7 @@ export const purchase = async (account: Account, order: Order) => {
   const pickFetch: {
     [K in typeof order.type]: (account: Account, order: Order) => Promise<void>;
   } = {
-    create_event: purchaseEvent,
+    create_event: createEvent,
     buy_ticket: purchaseTicket,
     update_event: updateEvent,
   };
@@ -64,7 +64,7 @@ const updateEvent = async (account: Account, order: Order) => {
   );
 };
 
-const purchaseEvent = async (account: Account, order: Order) => {
+const createEvent = async (account: Account, order: Order) => {
   if (order.type !== "create_event")
     throw new Error("There is no event in the order");
   if (!order.socials) throw new Error("There is no socials in the order");
