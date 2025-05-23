@@ -212,7 +212,11 @@ export const EventForm: React.FC<EventFormProps> = ({
                 <li>Max Tickets: {selectedPlace.maxTickets}</li>
                 <li>
                   Min Ticket Price: {selectedPlace.minPrice}{" "}
-                  {getCurrencySymbol()}
+                  <img
+                    src={getCurrencySymbol()}
+                    className="h-6 aspect-square inline"
+                    alt="currency"
+                  />
                 </li>
                 <li>
                   Minimum duration: {selectedPlace.minDays}{" "}
@@ -277,8 +281,16 @@ export const EventForm: React.FC<EventFormProps> = ({
                   >
                     Ticket price
                     {!isSelected && " (select the place to enter the price)"}
-                    {isSelected &&
-                      ` (minimum price ${minimumPrice} ${getCurrencySymbol()})`}
+                    {isSelected && (
+                      <>
+                        {` (minimum price ${minimumPrice} `}
+                        <img
+                          src={getCurrencySymbol()}
+                          className="h-6 aspect-square inline"
+                          alt="currency"
+                        />
+                      </>
+                    )}
                   </span>
                 </FormLabel>
                 <FormControl>

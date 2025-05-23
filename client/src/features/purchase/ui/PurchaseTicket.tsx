@@ -5,8 +5,6 @@ type PurchaseTicketProps = {
   ticket: OrderTicket;
 };
 export const PurchaseTicket: React.FC<PurchaseTicketProps> = ({ ticket }) => {
-  const currency = getCurrencySymbol();
-
   return (
     <article className="card border-primary/30">
       <h2 className="text-2xl py-2">{ticket.eventTitle}</h2>
@@ -14,7 +12,12 @@ export const PurchaseTicket: React.FC<PurchaseTicketProps> = ({ ticket }) => {
       <div className="flex justify-between items-center text-lg">
         <p>Total:</p>
         <p>
-          {ticket.ticketPrice} {currency}
+          {ticket.ticketPrice}{" "}
+          <img
+            src={getCurrencySymbol()}
+            className="h-6 aspect-square inline"
+            alt="currency"
+          />
         </p>
       </div>
     </article>
