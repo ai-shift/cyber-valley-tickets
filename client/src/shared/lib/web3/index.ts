@@ -5,6 +5,8 @@ import { getBytes32FromMultiash } from "./multihash";
 import { STAFF_ROLE, erc20, eventManager, eventTicket } from "./state";
 export { client, wallets, cvlandChain } from "./state";
 
+export type TransactionError = { data: { reason: string } };
+
 export async function mintERC20(
   account: Account,
   amount: bigint,
