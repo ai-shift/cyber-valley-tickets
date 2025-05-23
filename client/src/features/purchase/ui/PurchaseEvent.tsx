@@ -9,7 +9,6 @@ export const PurchaseEvent: React.FC<PurchaseEventProps> = ({
   event,
   type,
 }) => {
-  const currency = getCurrencySymbol();
   const createEventFee = getEventSubmitionPrice();
 
   return (
@@ -20,7 +19,12 @@ export const PurchaseEvent: React.FC<PurchaseEventProps> = ({
         <div className="flex justify-between items-center text-lg">
           <p>Total:</p>
           <p>
-            {createEventFee} {currency}
+            {createEventFee}{" "}
+            <img
+              src={getCurrencySymbol()}
+              className="h-6 aspect-square inline"
+              alt="currency"
+            />
           </p>
         </div>
       ) : (

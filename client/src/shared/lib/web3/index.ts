@@ -19,7 +19,7 @@ export async function mintERC20(
 }
 
 export function getCurrencySymbol(): string {
-  return "₮";
+  return "/icons/tether.svg";
 }
 
 export function getEventSubmitionPrice(): bigint {
