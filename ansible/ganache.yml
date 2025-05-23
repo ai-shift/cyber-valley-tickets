@@ -1,17 +1,18 @@
 ---
-- hosts: all
+- hosts: "{{ variable_host | default('all') }}"
   vars_files:
     - "./vars/common.yml"
   tasks:
     - name: "Install packages"
-      ansible.builtin.package: "name={{ item }} state=present"
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
       with_items:
         - podman
 
     - name: "Pull ganache image"
       containers.podman.podman_image:
         name: docker.io/trufflesuite/ganache:v7.9.2
-
 
     - name: "Create volumes"
       containers.podman.podman_volume:
