@@ -1,3 +1,4 @@
+import type { components } from "@/shared/api/apiTypes";
 import {
   Select,
   SelectContent,
@@ -7,7 +8,20 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 
-const networks = ["Telegram", "WhatsApp", "X", "Discord"];
+type NetworkEnum = components["schemas"]["NetworkEnum"];
+const networks: NetworkEnum[] = [
+  "telegram",
+  "whatsapp",
+  "instagram",
+  "discord",
+];
+
+const networkTitles: { [K in NetworkEnum]: string } = {
+  telegram: "Telegram",
+  instagram: "Instagram",
+  whatsapp: "WhatsApp",
+  discord: "Discord",
+};
 
 type SelectNetworkProps = {
   networkName: string;
@@ -27,7 +41,7 @@ export const SelectNetwork: React.FC<SelectNetworkProps> = ({
         <SelectGroup>
           {networks.map((network) => (
             <SelectItem key={network} value={network}>
-              {network}
+              {networkTitles[network]}
             </SelectItem>
           ))}
         </SelectGroup>
