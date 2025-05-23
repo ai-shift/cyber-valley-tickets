@@ -1,5 +1,4 @@
 import type { Order } from "@/entities/order";
-import type { TransactionError } from "@/shared/lib/web3";
 import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -51,10 +50,14 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
 };
 
 type PaymentFailedProps = {
-  cause: TransactionError;
+  cause: Error;
 };
 
 function PaymentFailed({ cause }: PaymentFailedProps) {
+  let errorMessage = "Unexpected failure of transaction sending";
+  if (cause.message.includes("Not enough tokens")) {
+    errorMessage = "Not enough tokens";
+  }
   return (
     <div>
       <img
@@ -65,7 +68,7 @@ function PaymentFailed({ cause }: PaymentFailedProps) {
       <h2 className="text-muted font-semibold text-lg text-center">
         Error during transaction
       </h2>
-      <p className="text-muted/70 text-md text-center">{cause.data.reason}</p>
+      <p className="text-muted/70 text-md text-center">{errorMessage}</p>
     </div>
   );
 }
