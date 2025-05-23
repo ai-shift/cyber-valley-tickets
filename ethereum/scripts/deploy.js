@@ -19,9 +19,9 @@ async function main() {
     }}
   });
   await eventTicket.setEventManagerAddress(await erc20.getAddress())
-  console.log("SEX deployed to", await erc20.getAddress())
-  console.log("Event ticket deployed to", await eventTicket.getAddress())
-  console.log("Event manager deployed to", await eventManager.getAddress())
+  console.log(`ERC20_ADDRESS=${await erc20.getAddress()}`)
+  console.log(`EVENT_TICKET_ADDRESS=${await eventTicket.getAddress()}`)
+  console.log(`EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`)
 }
 
 main().catch(console.error)
