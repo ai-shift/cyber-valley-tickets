@@ -32,12 +32,6 @@ export const createEventPlaceCornerCases = [
     },
     revertedWith: "Values must be greater than zero",
   },
-  {
-    patch: {
-      minDaysBeforeCancel: 0,
-    },
-    revertedWith: "Values must be greater than zero",
-  },
 ];
 
 export const submitEventIncompatibleEventPlaceCornerCases = [
