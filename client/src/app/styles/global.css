@@ -261,19 +261,3 @@ html {
       -0.04em -0.025em 0 var(--primary);
   }
 }
-
-.safari-asshole-height {
-  /* equivalent to 100dvh in major browsers */
-  height: calc(
-    100vh -
-    env(safe-area-inset-bottom, 0) -
-    env(safe-area-inset-top, 0)
-  );
-}
-
-@supports (-webkit-touch-callout: none) {
-  .safari-asshole-height {
-    /* for ios safari 15, safe-area-inset-bottom is 0, so a special fix apply here */
-    height: -webkit-fill-available;
-  }
-}
