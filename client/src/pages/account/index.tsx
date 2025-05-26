@@ -1,21 +1,22 @@
 import { useRefreshSlice } from "@/app/providers";
-import { useUser } from "@/entities/user";
 import { apiClient } from "@/shared/api";
+import { mintERC20 } from "@/shared/lib/web3";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
+import { useActiveAccount } from "thirdweb/react";
 
 export const AccountPage: React.FC = () => {
-  const { user } = useUser();
   const { setHasJWT } = useRefreshSlice();
+  const account = useActiveAccount();
 
   const logout = async () => {
     await apiClient.GET("/api/auth/logout");
     setHasJWT(false);
   };
 
-  if (!user) return <p>Feels bad, man</p>;
-  const address = user.address;
+  if (!account) return <p>Feels bad, man</p>;
+  const address = account.address;
 
   return (
     <PageContainer hasBackIcon={false} name="Account">
@@ -31,6 +32,16 @@ export const AccountPage: React.FC = () => {
           </p>
         </div>
         <div className="w-1/2 h-full flex flex-col justify-between gap-20">
+          <Button
+            className="mt-8"
+            onClick={() =>
+              mintERC20(account, 50n)
+                .then(() => alert("Minted 50 tokens"))
+                .catch(console.error)
+            }
+          >
+            Mint ERC20
+          </Button>
           <Link to="/account/my-events" className="w-full block">
             <Button
               filling="outline"
