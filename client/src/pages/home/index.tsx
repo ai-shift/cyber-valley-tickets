@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 import { EventsList, upcomingFilter } from "@/features/events-list/";
 import { NotificationIcon } from "@/features/notifications";
@@ -8,6 +8,7 @@ import { useActiveAccount } from "thirdweb/react";
 
 export const HomePage: React.FC = () => {
   const account = useActiveAccount();
+  const navigate = useNavigate();
   if (!account) return <p>Connect your wallet first</p>;
   return (
     <div className="px-6">
@@ -20,12 +21,14 @@ export const HomePage: React.FC = () => {
         <NotificationIcon />
       </div>
       <div className="w-full h-[1px] bg-primary/30" />
-      <section>
-        <Link className="flex justify-between items-center h-16" to="/events">
-          <h2 className="text-base text-primary">Upcoming events</h2>
-          <p className="uppercase text-secondary">See all</p>
-        </Link>
-        <EventsList limit={3} filterFn={upcomingFilter} />
+      <Button
+        onClick={() => navigate("/events/create")}
+        className="w-full text-center text-2xl mt-8 h-32 card"
+      >
+        Become SHAMAN
+      </Button>
+      <section className="mt-8">
+        <EventsList filterFn={upcomingFilter} />
       </section>
       <Button
         className="mt-8"
