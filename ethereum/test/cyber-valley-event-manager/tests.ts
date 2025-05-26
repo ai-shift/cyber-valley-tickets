@@ -31,7 +31,7 @@ import {
 import {
   createEventPlaceCornerCases,
   submitEventDateRangeOverlapCornerCases,
-  submitEventIncompatibleEventPlaceCornerCases,
+  submitEventCases,
 } from "./corner-cases";
 
 describe("CyberValleyEventManager", () => {
@@ -157,7 +157,7 @@ describe("CyberValleyEventManager", () => {
       await expect(tx).to.be.revertedWith("Not enough tokens");
     });
 
-    submitEventIncompatibleEventPlaceCornerCases.forEach(
+    submitEventCases.forEach(
       ({ eventPlacePatch, eventRequestPatch, revertsWith }, idx) =>
         it(`eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
           const { eventManager, ERC20, master, creator } =
