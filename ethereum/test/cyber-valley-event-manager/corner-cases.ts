@@ -34,7 +34,7 @@ export const createEventPlaceCornerCases = [
   },
 ];
 
-export const submitEventIncompatibleEventPlaceCornerCases = [
+export const submitEventCases = [
   {
     eventPlacePatch: {
       minPrice: 30,
