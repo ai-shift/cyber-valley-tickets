@@ -12,10 +12,6 @@ export const routes: Route[] = [
     title: "Home",
   },
   {
-    path: "/events/create",
-    title: "Create",
-  },
-  {
     path: "/account",
     title: "Account",
   },
