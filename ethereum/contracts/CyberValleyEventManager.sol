@@ -261,7 +261,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 creator: msg.sender,
                 eventPlaceId: eventPlaceId,
                 ticketPrice: ticketPrice,
-                startDate: startDate,
+                startDate: floorTimestampToDate(startDate),
                 daysAmount: daysAmount,
                 status: EventStatus.Submitted,
                 customers: new address[](0),
@@ -332,7 +332,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         Event storage evt = events[eventId];
         evt.eventPlaceId = eventPlaceId;
         evt.ticketPrice = ticketPrice;
-        evt.startDate = startDate;
+        evt.startDate = floorTimestampToDate(startDate);
         evt.daysAmount = daysAmount;
         evt.meta = CyberValley.Multihash({
             digest: digest,
@@ -364,7 +364,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Days amount is less than allowed"
         );
         require(
-            block.timestamp + SECONDS_IN_DAY * (place.daysBeforeCancel + 1) <=
+            floorTimestampToDate(block.timestamp) +
+                SECONDS_IN_DAY *
+                (place.daysBeforeCancel) <=
                 evt.startDate,
             "Not enough time to avoid cancelling"
         );
@@ -372,7 +374,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         // in the `DateOverlapChecker`
         // Written when BUCKET_SIZE == 256
         require(
-            evt.startDate - block.timestamp <= SECONDS_IN_DAY * BUCKET_SIZE,
+            evt.startDate - floorTimestampToDate(block.timestamp) <=
+                SECONDS_IN_DAY * BUCKET_SIZE,
             "Requested event is too far in the future"
         );
         require(
@@ -476,5 +479,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Failed to transfer tokens to creator"
         );
         emit EventStatusChanged(eventId, evt.status);
+    }
+
+    function floorTimestampToDate(
+        uint256 timestamp
+    ) internal pure returns (uint256) {
+        return (timestamp / SECONDS_IN_DAY) * SECONDS_IN_DAY;
     }
 }
