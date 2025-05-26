@@ -19,9 +19,9 @@ async function main() {
     }}
   });
   await eventTicket.setEventManagerAddress(await erc20.getAddress())
-  console.log(`ERC20_ADDRESS=${await erc20.getAddress()}`)
-  console.log(`EVENT_TICKET_ADDRESS=${await eventTicket.getAddress()}`)
-  console.log(`EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`)
+  console.log(`export PUBLIC_ERC20_ADDRESS=${await erc20.getAddress()}`)
+  console.log(`export PUBLIC_EVENT_TICKET_ADDRESS=${await eventTicket.getAddress()}`)
+  console.log(`export PUBLIC_EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`)
 }
 
 main().catch(console.error)
