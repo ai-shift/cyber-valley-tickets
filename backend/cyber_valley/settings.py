@@ -246,7 +246,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EVENT_MODELS_BASE_PATH = BASE_DIR / "cyber_valley/indexer/service/events"
-HTTP_ETH_NODE_HOST = os.environ["HTTP_ETH_NODE_HOST"]
+HTTP_ETH_NODE_HOST = os.environ["PUBLIC_HTTP_ETH_NODE_HOST"]
 WS_ETH_NODE_HOST = os.environ["WS_ETH_NODE_HOST"]
 
 # XXX: Order should match actual deployment flow

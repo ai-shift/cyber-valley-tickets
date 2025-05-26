@@ -16,8 +16,8 @@ log = logging.getLogger(__name__)
 ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
     adr: json.loads(path.read_text())["abi"]
     for adr, path in {
-        os.environ["EVENT_TICKET_ADDRESS"]: settings.CONTRACTS_INFO[1],
-        os.environ["EVENT_MANAGER_ADDRESS"]: settings.CONTRACTS_INFO[2],
+        os.environ["PUBLIC_EVENT_TICKET_ADDRESS"]: settings.CONTRACTS_INFO[1],
+        os.environ["PUBLIC_EVENT_MANAGER_ADDRESS"]: settings.CONTRACTS_INFO[2],
     }.items()
 }
 

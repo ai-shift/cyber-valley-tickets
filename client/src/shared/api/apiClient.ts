@@ -11,7 +11,7 @@ export type ApiError = components["schemas"][
   | "ErrorResponse500"];
 
 export const apiClient = createClient<paths>({
-  baseUrl: import.meta.env.VITE_API_HOST,
+  baseUrl: import.meta.env.PUBLIC_API_HOST,
 });
 
 const errorMiddleware: Middleware = {

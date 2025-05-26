@@ -15,17 +15,17 @@ export const wallets = [
 
 export const cvlandChain = defineChain({
   id: 1337,
-  rpc: import.meta.env.VITE_HTTP_ETH_NODE_HOST,
+  rpc: import.meta.env.PUBLIC_HTTP_ETH_NODE_HOST,
 });
 
 export const client = createThirdwebClient({
-  clientId: import.meta.env.VITE_THIRDWEB_PUBLIC_CLIENT_ID,
+  clientId: import.meta.env.PUBLIC_THIRDWEB_PUBLIC_CLIENT_ID,
 });
 
 export const eventManager = getContract({
   client,
   chain: cvlandChain,
-  address: import.meta.env.VITE_EVENT_MANAGER_ADDRESS,
+  address: import.meta.env.PUBLIC_EVENT_MANAGER_ADDRESS,
   abi: [
     {
       inputs: [
@@ -1063,7 +1063,7 @@ export const eventManager = getContract({
 export const eventTicket = getContract({
   client: client,
   chain: cvlandChain,
-  address: import.meta.env.VITE_EVENT_TICKET_ADDRESS,
+  address: import.meta.env.PUBLIC_EVENT_TICKET_ADDRESS,
   abi: [
     {
       inputs: [
@@ -1975,7 +1975,7 @@ export const eventTicket = getContract({
 export const erc20 = getContract({
   client: client,
   chain: cvlandChain,
-  address: import.meta.env.VITE_ERC20_ADDRESS,
+  address: import.meta.env.PUBLIC_ERC20_ADDRESS,
   abi: [
     {
       inputs: [],
