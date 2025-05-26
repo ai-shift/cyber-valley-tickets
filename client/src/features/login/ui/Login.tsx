@@ -18,6 +18,10 @@ export const Login: React.FC = () => {
     .filter((wallet) => injectedProvider(wallet) != null)
     .map((wallet) => createWallet(wallet));
 
+  if (installedWallets.length < 1) {
+    console.log("Installed wallets wasn't found");
+  }
+
   const { mutate, error, isPending } = useMutation({
     mutationFn: (wallet: Wallet) => login(wallet, connect),
     onSuccess: () => {
