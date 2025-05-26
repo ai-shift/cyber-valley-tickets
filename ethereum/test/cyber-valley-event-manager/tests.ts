@@ -159,7 +159,7 @@ describe("CyberValleyEventManager", () => {
 
     submitEventIncompatibleEventPlaceCornerCases.forEach(
       ({ eventPlacePatch, eventRequestPatch, revertsWith }, idx) =>
-        it(`reverts on incompatibale data eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
+        it(`eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
           const { eventManager, ERC20, master, creator } =
             await loadFixture(deployContract);
           await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
@@ -177,7 +177,11 @@ describe("CyberValleyEventManager", () => {
             eventPlaceId,
             ...eventRequestPatch,
           });
-          await expect(tx).to.be.revertedWith(revertsWith);
+	  if (revertsWith == null) {
+	    await expect(tx).to.not.be.reverted;
+	  } else {
+	    await expect(tx).to.be.revertedWith(revertsWith);
+	  }
         }),
     );
 
