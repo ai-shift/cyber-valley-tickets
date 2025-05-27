@@ -51,6 +51,7 @@ class Command(BaseCommand):
             masters = (
                 "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
                 "0x2789023F36933E208675889869c7d3914A422921",
+                "0xfbD27ea5950E976259C25Ba62002423e773c761f"
             )
             master_user: CyberValleyUser
             for address in masters:
