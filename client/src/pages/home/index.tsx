@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 
-import { EventsList, upcomingFilter } from "@/features/events-list/";
+import { EventsList, uniteFilter } from "@/features/events-list/";
 import { NotificationIcon } from "@/features/notifications";
 import { Button } from "@/shared/ui/button";
 
@@ -24,7 +24,7 @@ export const HomePage: React.FC = () => {
         Become SHAMAN
       </Button>
       <section className="mt-8">
-        <EventsList filterFn={upcomingFilter} />
+        <EventsList filterFn={uniteFilter} />
       </section>
     </div>
   );
