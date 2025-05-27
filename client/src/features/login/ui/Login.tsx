@@ -56,8 +56,12 @@ export const Login: React.FC = () => {
             {installedWallets.length > 0 ? "Other wallets" : "Connect wallet"}
           </Button>
         </div>
-        {!gotError && loginStatus === "connectWallet" && <p>Wallet should pop-up right now</p>}
-        {!gotError && loginStatus === "signMessage" && <p>Sign message in your wallet</p>}
+        {!gotError && loginStatus === "connectWallet" && (
+          <p>Wallet should pop-up right now</p>
+        )}
+        {!gotError && loginStatus === "signMessage" && (
+          <p>Sign message in your wallet</p>
+        )}
         {!gotError && loginStatus === "fetchingJWT" && (
           <p>Acquiring your session token...</p>
         )}
