@@ -57,6 +57,8 @@ export const EventForm: React.FC<EventFormProps> = ({
     ? mapEventToEventForm(existingEvent)
     : undefined;
 
+  // TODO: Investigate why `useMemo` is required
+  // Without it component failes with maximum useState call
   const eventIdsToExclude = useMemo(
     () => (existingEvent == null ? undefined : [existingEvent.id]),
     [existingEvent],
