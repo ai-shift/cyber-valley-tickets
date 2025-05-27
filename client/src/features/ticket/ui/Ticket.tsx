@@ -21,6 +21,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
 
   const ticket = user.tickets.find((ticket) => ticket.eventId === event.id);
   const hasPassed = isEventPassed(event.startDateTimestamp, event.daysAmount);
+  const isCreator = user.address === event.creator.address;
 
   function initOrder() {
     setTicketOrder({
@@ -32,6 +33,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   }
 
   if (user.role === "master" || user.role === "staff") return <Redeem />;
+  if (isCreator) return;
 
   return (
     <div className="flex flex-col justify-center items-center">
