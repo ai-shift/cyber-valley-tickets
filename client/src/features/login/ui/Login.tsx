@@ -5,14 +5,16 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { useConnect, useWalletImage, useWalletInfo } from "thirdweb/react";
 import { createWallet, injectedProvider } from "thirdweb/wallets";
 import type { Wallet } from "thirdweb/wallets";
-import { login } from "../api/login";
+import { type LoginStatus, login } from "../api/login";
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
   const { connect, isConnecting, error: connectError } = useConnect();
+  const [loginStatus, setLoginStatus] = useState<null | LoginStatus>(null);
 
   const installedWallets = injectedSupportedWalletIds
     .filter((wallet) => injectedProvider(wallet) != null)
@@ -23,17 +25,24 @@ export const Login: React.FC = () => {
   }
 
   const { mutate, error, isPending } = useMutation({
-    mutationFn: (wallet: Wallet) => login(wallet, connect),
+    mutationFn: (wallet: Wallet) =>
+      login(wallet, connect, (s) => setLoginStatus(s)),
     onSuccess: () => {
       setHasJWT(true);
     },
   });
 
+  const gotError = error || connectError;
+
   return (
     <div className="flex flex-col h-full items-center">
       <div className="h-1/5 w-full" />
-      <h1 className="text-2xl">{isPending || "Connect wallet to login"}</h1>
-      <div className="h-1/5 w-full" />
+      {isPending || (
+        <>
+          <h1 className="text-2xl">Connect wallet to login</h1>
+          <div className="h-1/5 w-full" />
+        </>
+      )}
       <div className="text-center space-y-5">
         {(isPending || isConnecting) && <Loader className="h-60" />}
         <div className={cn("flex-col space-y-4", isPending && "hidden")}>
@@ -47,7 +56,12 @@ export const Login: React.FC = () => {
             {installedWallets.length > 0 ? "Other wallets" : "Connect wallet"}
           </Button>
         </div>
-        {(error || connectError) && (
+        {!gotError && loginStatus === "connectWallet" && <p>Wallet should pop-up right now</p>}
+        {!gotError && loginStatus === "signMessage" && <p>Sign message in your wallet</p>}
+        {!gotError && loginStatus === "fetchingJWT" && (
+          <p>Acquiring your session token...</p>
+        )}
+        {gotError && (
           <ErrorMessage
             className="capitalize text-destructive"
             errors={error || connectError}
