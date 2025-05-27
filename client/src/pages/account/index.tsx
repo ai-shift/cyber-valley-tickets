@@ -1,16 +1,11 @@
 import { useRefreshSlice } from "@/app/providers";
 import { apiClient } from "@/shared/api";
-import { client } from "@/shared/lib/web3";
 import { mintERC20 } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { Button } from "@/shared/ui/button";
 import { Link } from "react-router";
-import {
-  AccountAvatar,
-  AccountProvider,
-  useActiveAccount,
-} from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 
 export const AccountPage: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
@@ -27,19 +22,12 @@ export const AccountPage: React.FC = () => {
   return (
     <PageContainer hasBackIcon={false} name="Account">
       <div className="flex flex-col items-center gap-10">
-        <div className="h-20 my-10 flex gap-5 items-center">
-          <AccountProvider address={address} client={client}>
-            <AccountAvatar
-              loadingComponent={<Loader />}
-              fallbackComponent={
-                <img
-                  className="rounded-full h-24"
-                  src="https://images.stockcake.com/public/8/c/4/8c46406b-e635-4ad7-9d39-5b4591616202/cyberpunk-city-avatar-stockcake.jpg"
-                  alt="User"
-                />
-              }
-            />
-          </AccountProvider>
+        <div className="my-10 flex gap-5 items-center">
+          <img
+            className="rounded-full h-20 aspect-square"
+            src={`https://effigy.im/a/${address}.svg`}
+            alt="User"
+          />
           <p className="text-lg">
             {address.slice(0, 7)}...{address.slice(-5)}
           </p>
