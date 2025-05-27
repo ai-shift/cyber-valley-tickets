@@ -47,7 +47,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     navigate(`/events/${eventId}/edit`);
   }
 
-  if (status !== "submitted") return;
+  if (status !== "submitted" && !canEdit && !canControl) return;
   if (!account) return <Loader />;
 
   return (
