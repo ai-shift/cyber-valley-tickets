@@ -1,4 +1,5 @@
 import type { Order } from "@/entities/order";
+import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -16,7 +17,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const account = useActiveAccount();
   if (!account) return <p>Failed to connect wallet</p>;
-  const { mutate, error } = useMutation({
+  const { mutate, error, isPending } = useMutation({
     mutationFn: (order: Order) => purchase(account, order),
     onSuccess: () => {
       setIsSuccess(true);
@@ -32,6 +33,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   return (
     <article className="card border-primary/30">
       {error && <PaymentFailed cause={error} />}
+      {isPending && <Loader />}
       <div className="flex justify-center py-6">
         <span>
           <Button onClick={() => mutate(order)} className="mx-auto">
