@@ -1,7 +1,7 @@
 import type { EventStatus } from "@/entities/event";
-
 import { type Role, checkPermission } from "@/shared/lib/RBAC";
 import { approveEvent, declineEvent } from "@/shared/lib/web3";
+import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
@@ -23,11 +23,10 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   eventId,
   canEdit,
 }) => {
-  if (status !== "submitted") return;
   const account = useActiveAccount();
-  if (!account) return <p>Failed to connect wallet</p>;
   const { mutate } = useMutation({
     mutationFn: async (action: ManageAction) => {
+      if (account == null) throw new Error("Got null account");
       switch (action) {
         case "accept":
           return await approveEvent(account, BigInt(eventId));
@@ -47,6 +46,9 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   function onEdit() {
     navigate(`/events/${eventId}/edit`);
   }
+
+  if (status !== "submitted") return;
+  if (!account) return <Loader />;
 
   return (
     <div className="flex flex-col items-center justify-center gap-7 py-10">
