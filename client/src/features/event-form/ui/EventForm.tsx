@@ -25,7 +25,7 @@ import { pluralDays } from "@/shared/lib/pluralDays";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { fromUnixTime } from "date-fns";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import type { z } from "zod";
 import { useFetchImage } from "../hooks/useFetchImage";
 import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
@@ -57,7 +57,10 @@ export const EventForm: React.FC<EventFormProps> = ({
     ? mapEventToEventForm(existingEvent)
     : undefined;
 
-  const eventIdsToExclude = existingEvent ? [existingEvent.id] : undefined;
+  const eventIdsToExclude = useMemo(
+    () => (existingEvent == null ? undefined : [existingEvent.id]),
+    [existingEvent],
+  );
 
   const formSchema = createFormSchema(places, events);
 
