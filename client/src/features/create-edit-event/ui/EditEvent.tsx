@@ -32,6 +32,7 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
     );
   }
 
+  // TODO: Why do we need the first part
   if (canEdit && !canEdit(foundEvent)) {
     return (
       <ErrorMessage
