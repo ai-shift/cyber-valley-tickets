@@ -21,7 +21,7 @@ export const AccountPage: React.FC = () => {
     setHasJWT(false);
   };
 
-  if (!account) return <p>Feels bad, man</p>;
+  if (!account) return <Loader />;
   const address = account.address;
 
   return (
