@@ -1,6 +1,7 @@
 import { cn } from "@/shared/lib/utils";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 
+// TODO: Propagate hard coded price logic to the caller side
 type DetailsBlockProps = {
   icon: string;
   title: string;
@@ -25,7 +26,17 @@ export const DetailsBlock: React.FC<DetailsBlockProps> = ({
         <p className="text-muted-foreground">{title}</p>
       </div>
       <p className="text-muted">
-        {information} {title === "Price" && getCurrencySymbol()}
+        {information}{" "}
+        {title === "Price" && (
+          <>
+            {" "}
+            <img
+              src={getCurrencySymbol()}
+              className="h-6 aspect-square inline"
+              alt="currency"
+            />
+          </>
+        )}
       </p>
     </div>
   );
