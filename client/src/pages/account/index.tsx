@@ -12,6 +12,9 @@ export const AccountPage: React.FC = () => {
   const account = useActiveAccount();
 
   const logout = async () => {
+    if (!confirm("Logout?")) {
+      return;
+    }
     await apiClient.GET("/api/auth/logout");
     setHasJWT(false);
   };
