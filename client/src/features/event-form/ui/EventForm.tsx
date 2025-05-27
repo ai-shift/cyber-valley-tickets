@@ -57,8 +57,6 @@ export const EventForm: React.FC<EventFormProps> = ({
     ? mapEventToEventForm(existingEvent)
     : undefined;
 
-  // TODO: Investigate why `useMemo` is required
-  // Without it component failes with maximum useState call
   const eventIdsToExclude = useMemo(
     () => (existingEvent == null ? undefined : [existingEvent.id]),
     [existingEvent],
@@ -70,13 +68,13 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: defaults
-      ? JSON.parse(defaults)
-      : existingEvent
-        ? {
-            ...eventForEdit,
-            startDate: fromUnixTime(existingEvent.startDateTimestamp),
-          }
+    defaultValues: existingEvent
+      ? {
+          ...eventForEdit,
+          startDate: fromUnixTime(existingEvent.startDateTimestamp),
+        }
+      : defaults
+        ? JSON.parse(defaults)
         : {
             title: "",
             description: "",
