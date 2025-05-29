@@ -1,4 +1,5 @@
 import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
+import { Success } from "@/shared/ui/Success";
 import { Button } from "@/shared/ui/button";
 
 type OrderSuccessDialogProps = {
@@ -7,6 +8,7 @@ type OrderSuccessDialogProps = {
   navigateFn: () => void;
   successMsg: string;
 };
+
 export const OrderSuccessDialog: React.FC<OrderSuccessDialogProps> = ({
   open,
   setOpen,
@@ -17,11 +19,7 @@ export const OrderSuccessDialog: React.FC<OrderSuccessDialogProps> = ({
     <CustomModal open={open} setOpen={setOpen}>
       <CustomModalWindow>
         <div className="flex flex-col gap-3">
-          <img
-            className="aspect-square h-40 mx-auto my-7"
-            src="/icons/price_3.svg"
-            alt="purchase"
-          />
+          <Success />
           <h2 className="text-muted font-semibold text-lg text-center">
             Payment successful!
           </h2>
