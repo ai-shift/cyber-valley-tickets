@@ -1,4 +1,5 @@
 import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
+import { Success } from "@/shared/ui/Success";
 import { Button } from "@/shared/ui/button";
 
 export type ModalStatus = "success" | "error" | "idle";
@@ -30,11 +31,13 @@ export const PlaceDialog: React.FC<PlaceDialogProps> = ({
     <CustomModal open={open} setOpen={setOpen}>
       <CustomModalWindow>
         <div className="flex flex-col gap-3">
-          <img
-            className="aspect-square h-40 mx-auto my-7"
-            src={`/icons/${status === "success" ? "price_3" : "price_1"}.svg`}
-            alt="purchase"
-          />
+          <div className="aspect-square h-40 mx-auto my-7">
+            {status === "success" ? (
+              <Success />
+            ) : (
+              <img src="/icons/price_1.svg" alt="purchase" />
+            )}
+          </div>
           <h2 className="text-muted font-semibold text-lg text-center">
             {status === "success" ? `Place ${mode}ed!` : "Someting went wrong!"}
           </h2>
