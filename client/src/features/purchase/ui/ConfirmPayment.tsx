@@ -1,12 +1,12 @@
 import type { Order } from "@/entities/order";
 import { Loader } from "@/shared/ui/Loader";
+import { SuccessDialog } from "@/shared/ui/SuccessDialog";
 import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { purchase } from "../api/purchase";
-import { OrderSuccessDialog } from "./OrderSuccessDialog";
 
 export type ConfirmPaymentProps = {
   order: Order;
@@ -41,11 +41,12 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
           </Button>
         </span>
       </div>
-      <OrderSuccessDialog
+      <SuccessDialog
         open={isSuccess}
         setOpen={setIsSuccess}
-        successMsg={successMessage}
-        navigateFn={() => navigate("/", { replace: true })}
+        title="Payment successful!"
+        body={successMessage}
+        onConfirm={() => navigate("/", { replace: true })}
       />
     </article>
   );

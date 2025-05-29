@@ -2,18 +2,20 @@ import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
 import { Success } from "@/shared/ui/Success";
 import { Button } from "@/shared/ui/button";
 
-type OrderSuccessDialogProps = {
+type SuccessDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  navigateFn: () => void;
-  successMsg: string;
+  onConfirm: () => void;
+  title: string;
+  body: string;
 };
 
-export const OrderSuccessDialog: React.FC<OrderSuccessDialogProps> = ({
+export const SuccessDialog: React.FC<SuccessDialogProps> = ({
   open,
   setOpen,
-  navigateFn,
-  successMsg,
+  onConfirm,
+  title,
+  body,
 }) => {
   return (
     <CustomModal open={open} setOpen={setOpen}>
@@ -21,13 +23,13 @@ export const OrderSuccessDialog: React.FC<OrderSuccessDialogProps> = ({
         <div className="flex flex-col gap-3">
           <Success />
           <h2 className="text-muted font-semibold text-lg text-center">
-            Payment successful!
+            {title}
           </h2>
-          <p className="text-muted/70 text-md text-center">{successMsg}</p>
+          <p className="text-muted/70 text-md text-center">{body}</p>
           <Button
             variant="secondary"
             className="mx-auto block"
-            onClick={() => navigateFn()}
+            onClick={onConfirm}
           >
             Understand
           </Button>
