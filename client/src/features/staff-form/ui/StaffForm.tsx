@@ -1,4 +1,5 @@
 import { assignStaff } from "@/shared/lib/web3";
+import { SuccessDialog } from "@/shared/ui/SuccessDialog";
 import { Button } from "@/shared/ui/button";
 import {
   Form,
@@ -10,6 +11,7 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useActiveAccount } from "thirdweb/react";
 import type { z } from "zod";
@@ -23,11 +25,13 @@ export const StaffForm: React.FC = () => {
     },
   });
   const account = useActiveAccount();
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     (async () => {
       if (!account) throw new Error("Account should be connected");
       await assignStaff(account, values.address);
+      setIsSuccess(true);
     })();
   };
 
@@ -50,6 +54,13 @@ export const StaffForm: React.FC = () => {
         <Button type="submit" className="w-full">
           Submit
         </Button>
+        <SuccessDialog
+          open={isSuccess}
+          setOpen={setIsSuccess}
+          title="Transaction sent!"
+          body="Staff role will be granted soon"
+          onConfirm={() => {}}
+        />
       </form>
     </Form>
   );
