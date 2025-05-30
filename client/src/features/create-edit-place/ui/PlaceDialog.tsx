@@ -1,6 +1,4 @@
-import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
-import { Success } from "@/shared/ui/Success";
-import { Button } from "@/shared/ui/button";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 
 export type ModalStatus = "success" | "error" | "idle";
 export type ModalType = "edit" | "create";
@@ -28,34 +26,16 @@ export const PlaceDialog: React.FC<PlaceDialogProps> = ({
   };
 
   return (
-    <CustomModal open={open} setOpen={setOpen}>
-      <CustomModalWindow>
-        <div className="flex flex-col gap-3">
-          <div className="aspect-square h-40 mx-auto my-7">
-            {status === "success" ? (
-              <Success />
-            ) : (
-              <img src="/icons/price_1.svg" alt="purchase" />
-            )}
-          </div>
-          <h2 className="text-muted font-semibold text-lg text-center">
-            {status === "success" ? `Place ${mode}ed!` : "Someting went wrong!"}
-          </h2>
-          <p className="text-muted/70 text-md text-center">
-            {messages[status]}
-          </p>
-          <Button
-            variant={status === "success" ? "secondary" : "destructive"}
-            className="mx-auto block"
-            onClick={() => {
-              clearStatus();
-              setOpen(false);
-            }}
-          >
-            Understand
-          </Button>
-        </div>
-      </CustomModalWindow>
-    </CustomModal>
+    <ResultDialog
+      open={open}
+      setOpen={setOpen}
+      title={status === "success" ? `Place ${mode}ed!` : "Someting went wrong!"}
+      body={messages[status]}
+      onConfirm={() => {
+        clearStatus();
+        setOpen(false);
+      }}
+      failure={status !== "success"}
+    />
   );
 };
