@@ -1,4 +1,5 @@
 import { userQueries } from "@/entities/user";
+import { formatAddress } from "@/shared/lib/formatAddress";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
@@ -20,7 +21,7 @@ export const StaffList: React.FC = () => {
       {users.map((user) => (
         <ManageItem
           key={user.address}
-          title={user.address}
+          title={formatAddress(user.address as `0x${string}`)}
           render={() => [
             <RemoveStaffIcon key={user.address} staffAddress={user.address} />,
           ]}
