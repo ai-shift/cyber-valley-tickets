@@ -60,7 +60,7 @@ export const CustomModalWindow: React.FC<WindowProps> = ({
     <div className="fixed top-0 left-0 w-full h-screen bg-black/50 z-40 transition-all duration-500">
       <div
         className={cn(
-          "fixed top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%] bg-background border-white py-16 px-8 border-[1px] w-[95%]  sm:max-w-1/2 lg:max-w-1/3 transition-all duration-500",
+          "fixed top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%] bg-background border-white py-8 px-8 border-[1px] w-[95%]  sm:max-w-1/2 lg:max-w-1/3 transition-all duration-500",
           className,
         )}
       >

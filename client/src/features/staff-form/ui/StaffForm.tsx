@@ -1,5 +1,5 @@
 import { assignStaff } from "@/shared/lib/web3";
-import { SuccessDialog } from "@/shared/ui/SuccessDialog";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import {
   Form,
@@ -32,6 +32,7 @@ export const StaffForm: React.FC = () => {
       if (!account) throw new Error("Account should be connected");
       await assignStaff(account, values.address);
       setIsSuccess(true);
+      form.reset();
     })();
   };
 
@@ -54,12 +55,14 @@ export const StaffForm: React.FC = () => {
         <Button type="submit" className="w-full">
           Submit
         </Button>
-        <SuccessDialog
+        <ResultDialog
           open={isSuccess}
           setOpen={setIsSuccess}
           title="Transaction sent!"
           body="Staff role will be granted soon"
-          onConfirm={() => {}}
+          onConfirm={() => {
+            setIsSuccess(false);
+          }}
         />
       </form>
     </Form>

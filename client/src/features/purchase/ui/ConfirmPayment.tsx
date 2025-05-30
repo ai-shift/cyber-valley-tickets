@@ -1,6 +1,6 @@
 import type { Order } from "@/entities/order";
 import { Loader } from "@/shared/ui/Loader";
-import { SuccessDialog } from "@/shared/ui/SuccessDialog";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -41,7 +41,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
           </Button>
         </span>
       </div>
-      <SuccessDialog
+      <ResultDialog
         open={isSuccess}
         setOpen={setIsSuccess}
         title="Payment successful!"

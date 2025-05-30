@@ -1,33 +1,42 @@
+import animationData from "@/lotties/vagina.json";
 import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
-import { Success } from "@/shared/ui/Success";
 import { Button } from "@/shared/ui/button";
+import Lottie from "lottie-react";
 
-type SuccessDialogProps = {
+type ResultDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   onConfirm: () => void;
   title: string;
   body: string;
+  failure?: boolean;
 };
 
-export const SuccessDialog: React.FC<SuccessDialogProps> = ({
+export const ResultDialog: React.FC<ResultDialogProps> = ({
   open,
   setOpen,
   onConfirm,
   title,
   body,
+  failure,
 }) => {
   return (
     <CustomModal open={open} setOpen={setOpen}>
       <CustomModalWindow>
         <div className="flex flex-col gap-3">
-          <Success />
+          <div className="grow-1">
+            {failure ? (
+              <img src="/icons/price_1.svg" alt="purchase" />
+            ) : (
+              <Lottie animationData={animationData} />
+            )}
+          </div>
           <h2 className="text-muted font-semibold text-lg text-center">
             {title}
           </h2>
           <p className="text-muted/70 text-md text-center">{body}</p>
           <Button
-            variant="secondary"
+            variant={failure ? "destructive" : "default"}
             className="mx-auto block"
             onClick={onConfirm}
           >
