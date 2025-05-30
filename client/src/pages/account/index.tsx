@@ -1,5 +1,6 @@
 import { useRefreshSlice } from "@/app/providers";
 import { apiClient } from "@/shared/api";
+import { formatAddress } from "@/shared/lib/formatAddress";
 import { mintERC20 } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { PageContainer } from "@/shared/ui/PageContainer";
@@ -31,9 +32,7 @@ export const AccountPage: React.FC = () => {
             src={`https://effigy.im/a/${address}.svg`}
             alt="User"
           />
-          <p className="text-lg">
-            {address.slice(0, 7)}...{address.slice(-5)}
-          </p>
+          <p className="text-lg">{formatAddress(address as `0x${string}`)}</p>
         </div>
         <div className="w-1/2 h-full flex flex-col justify-between gap-20">
           <Button
