@@ -37,7 +37,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
       <div className="flex justify-center py-6">
         <span>
           <Button onClick={() => mutate(order)} className="mx-auto">
-            Confirm
+            {error ? "Try again" : "Confirm"}
           </Button>
         </span>
       </div>
