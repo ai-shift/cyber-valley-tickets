@@ -17,7 +17,9 @@ export const NotificationsList: React.FC = () => {
   if (error) return <ErrorMessage errors={error} />;
   if (!notifications) return <p>No data for some reason</p>;
 
-  if (notifications.length === 0) return <p>You have no notifications</p>;
+  if (notifications.length === 0) {
+    return <p className="text-center mt-48">You have no notifications</p>;
+  }
 
   return (
     <div className="flex flex-col gap-3 px-3">
