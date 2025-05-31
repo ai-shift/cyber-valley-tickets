@@ -1,4 +1,6 @@
+import { useSendTx } from "@/shared/hooks";
 import { assignStaff } from "@/shared/lib/web3";
+import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import {
@@ -24,16 +26,20 @@ export const StaffForm: React.FC = () => {
       address: "",
     },
   });
+  const [isOpen, setIsOpen] = useState(false);
   const account = useActiveAccount();
-  const [isSuccess, setIsSuccess] = useState(false);
+  const { sendTx, error, isLoading } = useSendTx();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    (async () => {
-      if (!account) throw new Error("Account should be connected");
-      await assignStaff(account, values.address);
-      setIsSuccess(true);
-      form.reset();
-    })();
+    if (account == null) {
+      throw new Error("Account isn't connected");
+    }
+    sendTx(
+      assignStaff(account, values.address).then(() => {
+        setIsOpen(true);
+        form.reset();
+      }),
+    );
   };
 
   return (
@@ -52,17 +58,22 @@ export const StaffForm: React.FC = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Submit
-        </Button>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Button type="submit" className="w-full">
+            Submit
+          </Button>
+        )}
         <ResultDialog
-          open={isSuccess}
-          setOpen={setIsSuccess}
+          open={isOpen}
+          setOpen={setIsOpen}
           title="Transaction sent!"
           body="Staff role will be granted soon"
           onConfirm={() => {
-            setIsSuccess(false);
+            setIsOpen(false);
           }}
+          failure={error != null}
         />
       </form>
     </Form>
