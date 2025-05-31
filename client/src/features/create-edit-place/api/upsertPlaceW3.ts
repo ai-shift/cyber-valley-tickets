@@ -1,10 +1,11 @@
 import type { EventPlaceForm } from "@/features/place-form";
 import { apiClient } from "@/shared/api";
+import type { SendTx } from "@/shared/hooks";
 import { createPlace, updatePlace } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
 export const upsertPlaceW3 = async (
-  sendTx: (tx: Promise<unknown>) => unknown,
+  sendTx: SendTx<unknown>,
   place: EventPlaceForm,
   account?: Account,
   editPlaceId?: number,
