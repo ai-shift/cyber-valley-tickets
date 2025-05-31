@@ -1,8 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
 import { useActiveWallet, useWalletInfo } from "thirdweb/react";
 
+export type SendTx<T> = (promise: Promise<T>) => Promise<T>;
+
 export type UseSendTxReturn<T> = {
-  sendTx: (promise: Promise<T>) => Promise<T>;
+  sendTx: SendTx<T>;
   error: Error | null;
   isLoading: boolean;
 };
@@ -19,7 +21,7 @@ export const useSendTx = <T>(): UseSendTxReturn<T> => {
 
   const sendTx = useCallback(
     async (promise: Promise<T>): Promise<T> => {
-      console.log("Submitting transaction", walletInfo, wallet);
+      console.log("Submitting transaction");
       setError(null);
       setIsLoading(true);
 
@@ -52,6 +54,7 @@ export const useSendTx = <T>(): UseSendTxReturn<T> => {
 
         console.log("Waiting for Tx");
         const result = await promise;
+        console.log("Tx finished");
         setIsLoading(false);
         return result;
       } catch (err) {
