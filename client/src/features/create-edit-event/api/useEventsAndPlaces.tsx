@@ -13,7 +13,9 @@ export const useEventsAndPlaces = () => {
   );
 
   return {
-    places: placesResult.data,
+    places: placesResult.data
+      ? placesResult.data.filter((place) => place.available)
+      : undefined,
     events: eventsResult.data,
     isLoading,
     errors,
