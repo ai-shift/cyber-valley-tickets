@@ -4,6 +4,7 @@ import { createPlace, updatePlace } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
 export const upsertPlaceW3 = async (
+  sendTx: (tx: Promise<unknown>) => unknown,
   place: EventPlaceForm,
   account?: Account,
   editPlaceId?: number,
@@ -30,8 +31,9 @@ export const upsertPlaceW3 = async (
 
   if (!data || !data.cid) throw new Error("No cid was recieved");
 
+  let promise: Promise<unknown>;
   if (editPlaceId) {
-    await updatePlace(
+    promise = updatePlace(
       account,
       BigInt(editPlaceId),
       maxTickets,
@@ -43,7 +45,7 @@ export const upsertPlaceW3 = async (
       data.cid,
     );
   } else {
-    await createPlace(
+    promise = createPlace(
       account,
       maxTickets,
       minTickets,
@@ -54,4 +56,6 @@ export const upsertPlaceW3 = async (
       data.cid,
     );
   }
+  sendTx(promise);
+  await promise;
 };
