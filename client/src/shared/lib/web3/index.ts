@@ -90,6 +90,15 @@ export async function updatePlace(
   return transactionHash;
 }
 
+export async function approveSubmitEventRequest(account: Account) {
+  const approveTransaction = prepareContractCall({
+    contract: erc20,
+    method: "approve",
+    params: [eventManager.address, getEventSubmitionPrice()],
+  });
+  await sendTransaction({ account, transaction: approveTransaction });
+}
+
 export async function submitEventRequest(
   account: Account,
   eventPlaceId: bigint,
@@ -99,12 +108,6 @@ export async function submitEventRequest(
   metaCID: string,
 ): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
-  const approveTransaction = prepareContractCall({
-    contract: erc20,
-    method: "approve",
-    params: [eventManager.address, getEventSubmitionPrice()],
-  });
-  await sendTransaction({ account, transaction: approveTransaction });
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "submitEventRequest",
@@ -176,18 +179,20 @@ export async function declineEvent(
   return transactionHash;
 }
 
-export async function mintTicket(
-  account: Account,
-  ticketPrice: bigint,
-  eventId: bigint,
-  socialsCID: string,
-): Promise<TxHash> {
-  const approveTransaction = prepareContractCall({
+export async function approveMintTicket(account: Account, ticketPrice: bigint) {
+  const transaction = prepareContractCall({
     contract: erc20,
     method: "approve",
     params: [eventManager.address, ticketPrice],
   });
-  await sendTransaction({ account, transaction: approveTransaction });
+  await sendTransaction({ account, transaction });
+}
+
+export async function mintTicket(
+  account: Account,
+  eventId: bigint,
+  socialsCID: string,
+): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
   const mintTransaction = prepareContractCall({
     contract: eventManager,
