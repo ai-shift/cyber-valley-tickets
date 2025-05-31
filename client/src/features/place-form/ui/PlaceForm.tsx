@@ -23,7 +23,7 @@ import { formSchema } from "../model/formSchema";
 
 type PlaceFormProps = {
   existingPlace?: EventPlace;
-  onSubmit: UseMutateFunction<void, unknown, EventPlaceForm, unknown>;
+  onSubmit: UseMutateFunction<unknown, Error, EventPlaceForm, unknown>;
   disableFields: boolean;
 };
 
