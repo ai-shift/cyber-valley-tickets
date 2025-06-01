@@ -1,9 +1,8 @@
 GANACHE_CONTAINER_NAME := "cyber-valley-tickets-ganache-node"
 
-compile:
+compile: format-solidity
 	pnpm exec hardhat compile
 	pnpm exec hardhat typechain
-	$(MAKE) format-solidity
 
 tests:
 	pnpm exec hardhat test --typecheck
