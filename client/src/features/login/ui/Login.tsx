@@ -73,7 +73,6 @@ export const Login: React.FC = () => {
                       return await resp.json();
                     },
                     doLogin: async (params: VerifyLoginPayloadParams) => {
-                      console.log("kek");
                       await fetch("/api/auth/web3/login/", {
                         method: "POST",
                         headers: {
@@ -84,9 +83,7 @@ export const Login: React.FC = () => {
                           ...params.payload,
                         }),
                       });
-                      console.log("lol");
                       setHasJWT(true);
-                      console.log("fuck");
                     },
                     isLoggedIn: async () => {
                       const resp = await fetch("api/auth/verify");
