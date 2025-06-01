@@ -256,7 +256,7 @@ export async function hasEnoughtTokens(account: Account): Promise<{
   console.log("ERC20 balance", erc20Balance);
   const balanceAfterPayment = erc20Balance - getEventSubmitionPrice();
   return {
-    enoughTokens: balanceAfterPayment > BigInt(0),
+    enoughTokens: balanceAfterPayment >= BigInt(0),
     balanceAfterPayment: babs(balanceAfterPayment),
   };
 }
