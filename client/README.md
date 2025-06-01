@@ -52,3 +52,5 @@ export default tseslint.config({
   },
 })
 ```
+
+/home/user/code/work/aishift/cyber-valley-tickets/client/node_modules/.pnpm/thirdweb@5.97.3_@hey-api+openapi-ts@0.67.3_typescript@5.7.3__@types+react-dom@19.1.3_@t_625089547a5872b0e6d80f2b9fe63d1c/node_modules/thirdweb/src/react/web/ui/ConnectWallet/Details.tsx

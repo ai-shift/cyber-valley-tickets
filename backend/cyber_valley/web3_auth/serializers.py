@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from rest_framework import serializers
@@ -7,20 +7,48 @@ from rest_framework import serializers
 @dataclass
 class SIWEModel:
     address: str
-    signature: str
-    message: str
+    chain_id: str
+    domain: str
+    expiration_time: str
+    invalid_before: str
+    issued_at: str
     nonce: str
+    statement: str
+    uri: str
+    version: str
+    signature: str
+    resources: list[str] = field(default_factory=list)
 
 
 class SIWEModelSerializer(serializers.Serializer[SIWEModel]):
-    address = serializers.CharField(
-        min_length=42, max_length=42, help_text="Address of the user's EOA"
-    )
+    address = serializers.CharField()
+    chain_id = serializers.CharField()
+    domain = serializers.CharField()
+    expiration_time = serializers.CharField()
+    invalid_before = serializers.CharField()
+    issued_at = serializers.CharField()
+    nonce = serializers.CharField()
+    resources = serializers.ListField(child=serializers.CharField())
+    statement = serializers.CharField()
+    uri = serializers.CharField()
+    version = serializers.CharField()
     signature = serializers.CharField(
         help_text="Message signed with user's private key"
     )
-    message = serializers.CharField(help_text="Original message")
-    nonce = serializers.CharField(help_text="Nonce value retrieved from the server")
 
     def create(self, validated_data: dict[str, Any]) -> SIWEModel:
         return SIWEModel(**validated_data)
+
+
+class SIWELoginSerializer(serializers.Serializer[dict[str, Any]]):
+    address = serializers.CharField()
+    chain_id = serializers.CharField()
+    domain = serializers.CharField()
+    expiration_time = serializers.CharField()
+    invalid_before = serializers.CharField()
+    issued_at = serializers.CharField()
+    nonce = serializers.CharField()
+    resources = serializers.ListField(child=serializers.CharField())
+    statement = serializers.CharField()
+    uri = serializers.CharField()
+    version = serializers.CharField()

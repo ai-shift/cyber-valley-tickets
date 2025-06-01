@@ -1,20 +1,24 @@
 import { useRefreshSlice } from "@/app/providers";
-import { cn } from "@/shared/lib/utils";
+import { client } from "@/shared/lib/web3";
 import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { useConnect, useWalletImage, useWalletInfo } from "thirdweb/react";
+import type { LoginPayload, VerifyLoginPayloadParams } from "thirdweb/auth";
+import { useConnectModal } from "thirdweb/react";
 import { createWallet, injectedProvider } from "thirdweb/wallets";
-import type { Wallet } from "thirdweb/wallets";
-import { type LoginStatus, login } from "../api/login";
+
+const wallets = [
+  createWallet("io.metamask"),
+  createWallet("com.coinbase.wallet"),
+  createWallet("me.rainbow"),
+  createWallet("io.rabby"),
+  createWallet("io.zerion.wallet"),
+];
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
-  const { connect, isConnecting, error: connectError } = useConnect();
-  const [loginStatus, setLoginStatus] = useState<null | LoginStatus>(null);
+  const { connect, isConnecting } = useConnectModal();
 
   const installedWallets = injectedSupportedWalletIds
     .filter((wallet) => injectedProvider(wallet) != null)
@@ -24,80 +28,73 @@ export const Login: React.FC = () => {
     console.log("Installed wallets wasn't found");
   }
 
-  const { mutate, error, isPending } = useMutation({
-    mutationFn: (wallet: Wallet) =>
-      login(wallet, connect, (s) => setLoginStatus(s)),
-    onSuccess: () => {
-      setHasJWT(true);
-    },
-  });
-
-  const gotError = error || connectError;
+  const gotError = null;
+  const isLoading = isConnecting;
 
   return (
     <div className="flex flex-col h-full items-center">
       <div className="h-1/5 w-full" />
-      {isPending || (
-        <>
-          <h1 className="text-2xl">Connect wallet to login</h1>
-          <div className="h-1/5 w-full" />
-        </>
-      )}
       <div className="text-center space-y-5">
-        {(isPending || isConnecting) && <Loader className="h-60" />}
-        <div className={cn("flex-col space-y-4", isPending && "hidden")}>
-          {installedWallets.map((wallet) => (
-            <ExternalWallet key={wallet.id} wallet={wallet} login={mutate} />
-          ))}
-          <Button
-            type="button"
-            onClick={() => mutate(createWallet("walletConnect"))}
-          >
-            {installedWallets.length > 0 ? "Other wallets" : "Connect wallet"}
-          </Button>
-        </div>
-        {!gotError && loginStatus === "connectWallet" && (
-          <p>Wallet should pop-up right now</p>
+        {isLoading && <Loader className="h-60" />}
+        {isLoading || (
+          <>
+            <h1 className="text-2xl">Connect wallet to login</h1>
+            <div className="h-1/5 w-full" />
+            <Button
+              onClick={async () => {
+                const wallet = await connect({
+                  client,
+                  wallets,
+                  auth: {
+                    getLoginPayload: async (params: {
+                      address: string;
+                    }): Promise<LoginPayload> => {
+                      const resp = await fetch(
+                        `/api/auth/web3/nonce/${params.address}`,
+                      );
+                      console.log("Generated");
+                      return await resp.json();
+                    },
+                    doLogin: async (params: VerifyLoginPayloadParams) => {
+                      console.log("kek");
+                      await fetch("/api/auth/web3/login/", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          signature: params.signature,
+                          ...params.payload,
+                        }),
+                      });
+                      console.log("lol");
+                      setHasJWT(true);
+                      console.log("fuck");
+                    },
+                    isLoggedIn: async () => {
+                      const resp = await fetch("api/auth/verify");
+                      return resp.status === 200;
+                    },
+                    doLogout: async () => {
+                      await fetch("api/auth/logout");
+                    },
+                  },
+                });
+                console.log("connected", wallet);
+              }}
+            >
+              Connect
+            </Button>
+          </>
         )}
-        {!gotError && loginStatus === "signMessage" && (
-          <p>Sign message in your wallet</p>
-        )}
-        {!gotError && loginStatus === "fetchingJWT" && (
-          <p>Acquiring your session token...</p>
-        )}
+
         {gotError && (
           <ErrorMessage
             className="capitalize text-destructive"
-            errors={error || connectError}
+            errors={gotError}
           />
         )}
       </div>
-    </div>
-  );
-};
-
-type ExternalWalletProps = {
-  wallet: Wallet;
-  login: (wallet: Wallet) => void;
-};
-
-const ExternalWallet: React.FC<ExternalWalletProps> = ({
-  wallet,
-  login,
-}: ExternalWalletProps) => {
-  const imageQuery = useWalletImage(wallet.id);
-  const infoQuery = useWalletInfo(wallet.id);
-  return (
-    <div
-      className="flex items-center space-x-4 cursor-pointer card border-secondary/40"
-      onClick={() => login(wallet)}
-    >
-      <img
-        className="w-16 aspect-square"
-        src={imageQuery.data ?? "https://shorturl.at/E7fM6"}
-        alt="Wallet logo"
-      />
-      <p>{infoQuery.data?.name || ""}</p>
     </div>
   );
 };

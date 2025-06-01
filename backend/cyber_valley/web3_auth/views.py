@@ -1,14 +1,12 @@
 import secrets
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.middleware import csrf
-from drf_spectacular.utils import (
-    extend_schema,
-)
-from rest_framework import exceptions
+from drf_spectacular.utils import extend_schema
+from rest_framework import exceptions, status
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -16,7 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import SIWEModelSerializer
+from .serializers import SIWELoginSerializer, SIWEModelSerializer
 from .service import verify_signature
 
 User = get_user_model()
@@ -132,17 +130,41 @@ def verify(_request: Request) -> Response:
 
 @extend_schema(
     responses={
-        (200, "application/json"): {
-            "type": "object",
-            "properties": {"nonce": {"type": "string"}},
-        }
-    }
+        status.HTTP_200_OK: SIWELoginSerializer,
+    },
 )
 @api_view(["GET"])
-def nonce(_request: Request) -> Response:
-    nonce = secrets.token_hex(16)
-    cache.set(nonce, "nonce", timeout=10)
-    return Response({"nonce": nonce})
+def nonce(request: Request, address: str) -> Response:
+    nonce_value = secrets.token_hex(16)
+    expire_after_seconds = 30
+    now = datetime.now(UTC)
+    cache.set(nonce_value, "nonce", timeout=expire_after_seconds)
+    expiration_time = now + timedelta(seconds=expire_after_seconds)
+    message = (
+        f"Sign this message to authenticate with our service."
+        f"\n\nAddress: {address}"
+        f"\nTimestamp: {now.isoformat()}"
+    )
+
+    serializer = SIWELoginSerializer(
+        data={
+            "address": address,
+            "chain_id": settings.DEFAULT_CHAIN_ID,
+            "domain": settings.ALLOWED_HOSTS[0],
+            "expiration_time": str(int(expiration_time.timestamp())),
+            "invalid_before": str(int(now.timestamp())),
+            "issued_at": str(int(now.timestamp())),
+            "nonce": nonce_value,
+            "resources": settings.ALLOWED_HOSTS,
+            "statement": message,
+            "uri": request.build_absolute_uri(),
+            "version": "1",
+        }
+    )
+
+    if serializer.is_valid():
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
