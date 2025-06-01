@@ -8,6 +8,7 @@ tests:
 	pnpm exec hardhat test --typecheck
 
 deploy-test:
+	rm -rf ignition/deployments
 	pnpm exec hardhat run scripts/deploy.js --network cvlandTest
 
 check:
