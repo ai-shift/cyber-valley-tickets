@@ -292,6 +292,7 @@ export const EventForm: React.FC<EventFormProps> = ({
                           className="h-6 aspect-square inline"
                           alt="currency"
                         />
+                        {")"}
                       </>
                     )}
                   </span>
