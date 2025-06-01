@@ -335,6 +335,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 size
     ) external onlyMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
+        bool realloc = evt.eventPlaceId != eventPlaceId ||
+            evt.startDate != startDate ||
+            evt.daysAmount != daysAmount;
         evt.eventPlaceId = eventPlaceId;
         evt.ticketPrice = ticketPrice;
         evt.startDate = floorTimestampToDate(startDate);
@@ -345,6 +348,18 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             size: size
         });
         validateEvent(evt);
+        if (realloc) {
+            freeDateRange(
+                eventPlaceId,
+                startDate,
+                startDate + daysAmount * SECONDS_IN_DAY
+            );
+            allocateDateRange(
+                eventPlaceId,
+                startDate,
+                startDate + daysAmount * SECONDS_IN_DAY
+            );
+        }
         emit EventUpdated(
             eventId,
             eventPlaceId,
