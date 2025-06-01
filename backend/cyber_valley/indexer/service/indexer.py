@@ -87,7 +87,7 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
                         "block_number": receipt["blockNumber"],
                         "log_receipt": pickle.dumps(receipt),
                         "error": repr(error),
-                    }
+                    },
                 )
         LastProcessedBlock.objects.update_or_create(
             defaults={"id": 1, "block_number": receipt["blockNumber"]}

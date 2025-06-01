@@ -90,6 +90,9 @@ REST_FRAMEWORK = {
         "djangorestframework_camel_case.parser.CamelCaseJSONParser",
     ),
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
+    "JSON_UNDERSCOREIZE": {
+        "ignore_keys": ("issued_at", "expiration_time", "invalid_before", "chain_id"),
+    },
 }
 
 SPECTACULAR_SETTINGS = {
@@ -248,6 +251,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EVENT_MODELS_BASE_PATH = BASE_DIR / "cyber_valley/indexer/service/events"
 HTTP_ETH_NODE_HOST = os.environ["PUBLIC_HTTP_ETH_NODE_HOST"]
 WS_ETH_NODE_HOST = os.environ["WS_ETH_NODE_HOST"]
+
+DEFAULT_CHAIN_ID = 1337
 
 # XXX: Order should match actual deployment flow
 CONTRACTS_INFO: Final = (
