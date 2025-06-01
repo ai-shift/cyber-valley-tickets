@@ -316,6 +316,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Failed to refund event request"
         );
         evt.status = EventStatus.Declined;
+        freeDateRange(
+            evt.eventPlaceId,
+            evt.startDate,
+            evt.startDate + evt.daysAmount * SECONDS_IN_DAY
+        );
         emit EventStatusChanged(eventId, evt.status);
     }
 
