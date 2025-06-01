@@ -24,7 +24,7 @@
         PUBLIC_API_HOST: "https://{{ domain_name }}"
         PUBLIC_THIRDWEB_PUBLIC_CLIENT_ID: "{{ lookup('env', 'PUBLIC_THIRDWEB_PUBLIC_CLIENT_ID', default=undef()) }}"
       ansible.builtin.command:
-        cmd: npm run build
+        cmd: npm run build --sourcemap
         chdir: "{{ frontend_src }}"
       changed_when: true
 
