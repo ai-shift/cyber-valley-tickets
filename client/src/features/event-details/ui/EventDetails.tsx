@@ -3,7 +3,6 @@ import { useUser } from "@/entities/user";
 import { cn } from "@/shared/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
-import { canEdit } from "@/features/create-edit-event";
 import { StatusBage } from "@/features/events-list/ui/StatusBage";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
@@ -40,7 +39,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     status,
   } = event;
 
-  const editPermission = canEdit(user, event);
+  const isCreator = user.address === event.creator.address;
 
   return (
     <div className="flex flex-col">
@@ -71,7 +70,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           icon="/icons/calendar.svg"
           title="Date"
           information={formatTimestamp(startDateTimestamp)}
-          className={cn(editPermission || "col-span-2")}
+          className={cn(isCreator || "col-span-2")}
         />
         <DetailsBlock
           icon="/icons/duration_2.svg"
@@ -79,7 +78,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${daysAmount} day${daysAmount > 1 ? "s" : ""}`}
         />
 
-        {editPermission && (
+        {isCreator && (
           <DetailsBlock
             icon="/icons/Attendees_2.svg"
             title="Tickets available"
@@ -96,7 +95,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
       <Ticket event={event} user={user} />
       <MaybeManageEvent
         eventId={eventId}
-        canEdit={editPermission}
+        canEdit={user.role === "master"}
         role={user.role}
         status={event.status}
       />
