@@ -62,19 +62,47 @@ contract DateOverlapChecker {
             endMask & buckets[endBucketIdx] == 0;
     }
 
-    function allocateDateRange(
+    function freeDateRange(
         uint256 id,
         uint256 startDate,
         uint256 endDate
     ) internal validDateRange(startDate, endDate) returns (bool) {
-        require(
-            checkNoOverlap(id, startDate, endDate),
-            "Can not allocate overlapping date ranges"
+        uint256[] storage buckets = dateRanges[id];
+        uint256 startBucketIdx = dateToBucketIdx(startDate);
+        uint256 endBucketIdx = dateToBucketIdx(endDate);
+
+        uint256 startDaysWithBucketOffset = dateToBucketRelativeDays(
+            startDate,
+            startBucketIdx
         );
-        return _allocateDateRangeUnsafe(id, startDate, endDate);
+        uint256 endDaysWithBucketOffset = dateToBucketRelativeDays(
+            endDate,
+            endBucketIdx
+        );
+
+        if (
+            startBucketIdx >= buckets.length || endBucketIdx >= buckets.length
+        ) {
+            return true;
+        }
+
+        if (startBucketIdx == endBucketIdx) {
+            buckets[startBucketIdx] &= ~daysRangeToMask(
+                startDaysWithBucketOffset,
+                endDaysWithBucketOffset
+            );
+            return true;
+        }
+
+        buckets[startBucketIdx] &= ~daysRangeToMask(
+            startDaysWithBucketOffset,
+            255
+        );
+        buckets[endBucketIdx] &= ~daysRangeToMask(0, endDaysWithBucketOffset);
+        return true;
     }
 
-    function _allocateDateRangeUnsafe(
+    function allocateDateRange(
         uint256 id,
         uint256 startDate,
         uint256 endDate
