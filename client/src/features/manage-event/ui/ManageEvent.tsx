@@ -41,7 +41,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   });
   const navigate = useNavigate();
 
-  const canControl = checkPermission(role, "event:accept/decline");
+  const canControl = checkPermission(role, "event:accept/decline") && status === "submitted";
 
   function onEdit() {
     navigate(`/events/${eventId}/edit`);
