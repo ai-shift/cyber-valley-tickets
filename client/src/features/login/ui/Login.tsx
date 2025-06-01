@@ -1,4 +1,3 @@
-import { darkTheme } from "thirdweb/react";
 import { useRefreshSlice } from "@/app/providers";
 import { client } from "@/shared/lib/web3";
 import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
@@ -6,6 +5,7 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import type { LoginPayload, VerifyLoginPayloadParams } from "thirdweb/auth";
+import { darkTheme } from "thirdweb/react";
 import { useConnectModal } from "thirdweb/react";
 import { createWallet, injectedProvider } from "thirdweb/wallets";
 
@@ -30,8 +30,7 @@ const theme = darkTheme({
     secondaryButtonText: "var(--foreground)",
   },
   fontFamily: "var(--font-chakra-petch)",
-  type: "dark",
-})
+});
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
@@ -62,7 +61,7 @@ export const Login: React.FC = () => {
                 const wallet = await connect({
                   client,
                   wallets,
-		  theme,
+                  theme,
                   auth: {
                     getLoginPayload: async (params: {
                       address: string;
