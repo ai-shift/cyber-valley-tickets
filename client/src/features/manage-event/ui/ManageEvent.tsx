@@ -2,8 +2,10 @@ import type { EventStatus } from "@/entities/event";
 import { type Role, checkPermission } from "@/shared/lib/RBAC";
 import { approveEvent, declineEvent } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { AcceptDialog } from "./AcceptDialog";
@@ -23,25 +25,49 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   eventId,
   canEdit,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalInfo, setModalInfo] = useState({
+    title: "",
+    body: "",
+    error: false,
+  });
   const account = useActiveAccount();
   const { mutate } = useMutation({
     mutationFn: async (action: ManageAction) => {
       if (account == null) throw new Error("Got null account");
       switch (action) {
         case "accept":
-          return await approveEvent(account, BigInt(eventId));
+          await approveEvent(account, BigInt(eventId));
+          setModalInfo({
+            title: "Event accepting was initiated",
+            body: "Event will be accepted soon",
+            error: false,
+          });
+          break;
         case "decline":
-          return await declineEvent(account, BigInt(eventId));
+          await declineEvent(account, BigInt(eventId));
+          setModalInfo({
+            title: "Event declining was inititated",
+            body: "Event will be declined soon",
+            error: false,
+          });
+          break;
         default:
-          throw `Unknown action: ${action}`;
+          setModalInfo({
+            title: "Failure",
+            body: `Unknown action: ${action}`,
+            error: true,
+          });
       }
+      setIsOpen(true)
     },
     onSuccess: console.log,
     onError: console.error,
   });
   const navigate = useNavigate();
 
-  const canControl = checkPermission(role, "event:accept/decline") && status === "submitted";
+  const canControl =
+    checkPermission(role, "event:accept/decline") && status === "submitted";
 
   function onEdit() {
     navigate(`/events/${eventId}/edit`);
@@ -68,6 +94,16 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             </AcceptDialog>
           </div>
         )}
+        <ResultDialog
+          open={isOpen}
+          setOpen={setIsOpen}
+          title={modalInfo.title}
+          body={modalInfo.body}
+          onConfirm={() => {
+            setIsOpen(false);
+          }}
+          failure={modalInfo.error}
+        />
       </div>
     </div>
   );
