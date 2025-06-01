@@ -1,3 +1,4 @@
+import { darkTheme } from "thirdweb/react";
 import { useRefreshSlice } from "@/app/providers";
 import { client } from "@/shared/lib/web3";
 import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
@@ -15,6 +16,22 @@ const wallets = [
   createWallet("io.rabby"),
   createWallet("io.zerion.wallet"),
 ];
+
+const theme = darkTheme({
+  colors: {
+    borderColor: "var(--background)",
+    accentButtonBg: "var(--primary)",
+    accentButtonText: "var(--foreground)",
+    accentText: "var(--primary)",
+    modalBg: "var(--background)",
+    primaryButtonBg: "var(--primary)",
+    primaryButtonText: "var(--foreground)",
+    secondaryButtonBg: "var(--secondary)",
+    secondaryButtonText: "var(--foreground)",
+  },
+  fontFamily: "var(--font-chakra-petch)",
+  type: "dark",
+})
 
 export const Login: React.FC = () => {
   const { setHasJWT } = useRefreshSlice();
@@ -45,6 +62,7 @@ export const Login: React.FC = () => {
                 const wallet = await connect({
                   client,
                   wallets,
+		  theme,
                   auth: {
                     getLoginPayload: async (params: {
                       address: string;
