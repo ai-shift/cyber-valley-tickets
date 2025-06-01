@@ -35,23 +35,6 @@ export const useSendTx = <T>(): UseSendTxReturn<T> => {
       }
 
       try {
-        if (isMobile && walletInfo != null) {
-          if (wallet.id === "walletConnect") {
-            window.location.href = "wc://";
-          } else {
-            if (walletInfo.mobile.universal == null) {
-              console.warn(
-                "Deep link wasn't found for wallet",
-                wallet,
-                "with info",
-                walletInfo,
-              );
-            } else {
-              window.location.href = walletInfo.mobile.universal;
-            }
-          }
-        }
-
         console.log("Waiting for Tx");
         const result = await promise;
         console.log("Tx finished");
