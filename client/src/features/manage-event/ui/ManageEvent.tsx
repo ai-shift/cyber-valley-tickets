@@ -59,7 +59,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             error: true,
           });
       }
-      setIsOpen(true)
+      setIsOpen(true);
     },
     onSuccess: console.log,
     onError: console.error,
