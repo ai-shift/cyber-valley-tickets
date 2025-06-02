@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
+import { useManageEventState } from "../model/slice";
 import { AcceptDialog } from "./AcceptDialog";
 
 type MaybeManageEventProps = {
@@ -32,9 +33,12 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     error: false,
   });
   const account = useActiveAccount();
+  const { optimisticSetEventStatus, optimisticEventsStatuses } =
+    useManageEventState();
   const { mutate } = useMutation({
     mutationFn: async (action: ManageAction) => {
       if (account == null) throw new Error("Got null account");
+      // TODO: Use the same type with EventStatus
       switch (action) {
         case "accept":
           await approveEvent(account, BigInt(eventId));
@@ -43,6 +47,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             body: "Event will be accepted soon",
             error: false,
           });
+          optimisticSetEventStatus(eventId, "approved");
           break;
         case "decline":
           await declineEvent(account, BigInt(eventId));
@@ -51,6 +56,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             body: "Event will be declined soon",
             error: false,
           });
+          optimisticSetEventStatus(eventId, "declined");
           break;
         default:
           setModalInfo({
@@ -66,6 +72,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   });
   const navigate = useNavigate();
 
+  status = optimisticEventsStatuses[eventId] || status;
   const canControl =
     checkPermission(role, "event:accept/decline") && status === "submitted";
 
