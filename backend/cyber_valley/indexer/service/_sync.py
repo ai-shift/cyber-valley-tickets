@@ -157,6 +157,7 @@ def _sync_event_place_updated(
 
     place, created = EventPlace.objects.update_or_create(
         id=event_data.event_place_id,
+        title=data["title"],
         defaults={
             "title": data["title"],
             "max_tickets": event_data.max_tickets,
@@ -167,7 +168,7 @@ def _sync_event_place_updated(
             "available": event_data.available,
         },
     )
-
+    log.info("Event place %s was created (%s)", event_data.event_place_id, created)
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
     for user in masters:
         Notification.objects.create(
