@@ -1,8 +1,8 @@
+import { useStaffState } from "@/entities/staff";
 import { useSendTx } from "@/shared/hooks";
 import { removeStaff } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { useActiveAccount } from "thirdweb/react";
-import { useStaffListState } from "../model/slice";
 
 type RemoveStaffIconProps = {
   staffAddress: string;
@@ -14,12 +14,12 @@ export const RemoveStaffIcon: React.FC<RemoveStaffIconProps> = ({
 }) => {
   const account = useActiveAccount();
   const { sendTx, error, isLoading } = useSendTx();
-  const { optimisitcRemoveStaff } = useStaffListState();
+  const { optimisticRemoveStaff } = useStaffState();
   async function deleteHandler() {
     if (!account) throw new Error("Account should be connected");
     sendTx(
       removeStaff(account, staffAddress).then(() =>
-        optimisitcRemoveStaff(staffAddress),
+        optimisticRemoveStaff(staffAddress),
       ),
     );
   }

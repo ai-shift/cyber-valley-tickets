@@ -1,15 +1,15 @@
+import { useStaffState } from "@/entities/staff";
 import { userQueries } from "@/entities/user";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
-import { useStaffListState } from "../model/slice";
 import { RemoveStaffIcon } from "./RemoveStaffIcon";
 
 export const StaffList: React.FC = () => {
   const { data: users, isLoading, error } = useQuery(userQueries.staff());
-  const { removedStaff } = useStaffListState();
+  const { removedStaff } = useStaffState();
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
