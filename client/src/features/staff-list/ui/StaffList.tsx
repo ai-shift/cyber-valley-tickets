@@ -4,10 +4,12 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
+import { useStaffListState } from "../model/slice";
 import { RemoveStaffIcon } from "./RemoveStaffIcon";
 
 export const StaffList: React.FC = () => {
   const { data: users, isLoading, error } = useQuery(userQueries.staff());
+  const { removedStaff } = useStaffListState();
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
@@ -18,15 +20,20 @@ export const StaffList: React.FC = () => {
 
   return (
     <ul className="divide-y divide-secondary/60 py-2">
-      {users.map((user) => (
-        <ManageItem
-          key={user.address}
-          title={formatAddress(user.address as `0x${string}`)}
-          render={() => [
-            <RemoveStaffIcon key={user.address} staffAddress={user.address} />,
-          ]}
-        />
-      ))}
+      {users
+        .filter((user) => !removedStaff.includes(user.address))
+        .map((user) => (
+          <ManageItem
+            key={user.address}
+            title={formatAddress(user.address as `0x${string}`)}
+            render={() => [
+              <RemoveStaffIcon
+                key={user.address}
+                staffAddress={user.address}
+              />,
+            ]}
+          />
+        ))}
     </ul>
   );
 };
