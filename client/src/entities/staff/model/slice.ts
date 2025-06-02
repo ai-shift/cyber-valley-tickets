@@ -22,6 +22,6 @@ export const useStaffState = create<StaffState>()(
           ),
         }),
     }),
-    { name: "manageStaff" },
+    { name: "optimisticStaffState" },
   ),
 );
