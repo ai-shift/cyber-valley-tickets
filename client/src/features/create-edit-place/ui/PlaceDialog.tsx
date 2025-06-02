@@ -1,7 +1,7 @@
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 
 export type ModalStatus = "success" | "error" | "idle";
-export type ModalType = "edit" | "create";
+export type ModalType = "edit" | "creat";
 
 type PlaceDialogProps = {
   open: boolean;

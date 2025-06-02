@@ -15,8 +15,9 @@ type PlaceEditorProps = {
 export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<ModalStatus>("idle");
+  // TODO: Keep is simple, stupid
   const [mode] = useState<ModalType>(() =>
-    placeForEdit?.id ? "edit" : "create",
+    placeForEdit?.id ? "edit" : "creat",
   );
   const account = useActiveAccount();
   const { sendTx, error, isLoading } = useSendTx();
