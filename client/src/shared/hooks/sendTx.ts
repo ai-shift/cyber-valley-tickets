@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
-import { useActiveWallet, useWalletInfo } from "thirdweb/react";
+import { useCallback, useState } from "react";
+import { useActiveWallet } from "thirdweb/react";
 
 export type SendTx<T> = (promise: Promise<T>) => Promise<T>;
 
@@ -11,13 +11,8 @@ export type UseSendTxReturn<T> = {
 
 export const useSendTx = <T>(): UseSendTxReturn<T> => {
   const wallet = useActiveWallet();
-  const { data: walletInfo } = useWalletInfo(wallet?.id);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const isMobile = useMemo(() => {
-    return /Mobi|Android/i.test(navigator.userAgent);
-  }, []);
 
   const sendTx = useCallback(
     async (promise: Promise<T>): Promise<T> => {
@@ -47,7 +42,7 @@ export const useSendTx = <T>(): UseSendTxReturn<T> => {
         throw err;
       }
     },
-    [wallet, walletInfo, isMobile],
+    [wallet],
   );
 
   return { sendTx, error, isLoading };
