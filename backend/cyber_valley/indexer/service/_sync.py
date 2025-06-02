@@ -155,18 +155,19 @@ def _sync_event_place_updated(
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
 
+    defaults = {
+        "title": data["title"],
+        "max_tickets": event_data.max_tickets,
+        "min_tickets": event_data.min_tickets,
+        "min_price": event_data.min_price,
+        "min_days": event_data.min_days,
+        "days_before_cancel": event_data.days_before_cancel,
+        "available": event_data.available,
+    }
     place, created = EventPlace.objects.update_or_create(
         id=event_data.event_place_id,
-        title=data["title"],
-        defaults={
-            "title": data["title"],
-            "max_tickets": event_data.max_tickets,
-            "min_tickets": event_data.min_tickets,
-            "min_price": event_data.min_price,
-            "min_days": event_data.min_days,
-            "days_before_cancel": event_data.days_before_cancel,
-            "available": event_data.available,
-        },
+        defaults=defaults,
+        create_defaults=dict(id=event_data.event_place_id, **defaults),
     )
     log.info("Event place %s was created (%s)", event_data.event_place_id, created)
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
