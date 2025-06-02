@@ -71,7 +71,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           icon="/icons/calendar.svg"
           title="Date"
           information={formatTimestamp(startDateTimestamp)}
-          className={cn(isCreator || "col-span-2")}
+          className={cn((isCreator || isMaster) || "col-span-2")}
         />
         <DetailsBlock
           icon="/icons/duration_2.svg"
