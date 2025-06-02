@@ -2,19 +2,26 @@ import { useSendTx } from "@/shared/hooks";
 import { removeStaff } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { useActiveAccount } from "thirdweb/react";
+import { useStaffListState } from "../model/slice";
 
 type RemoveStaffIconProps = {
   staffAddress: string;
 };
 
+// TODO: Rename, it's a button, not a simple icon
 export const RemoveStaffIcon: React.FC<RemoveStaffIconProps> = ({
   staffAddress,
 }) => {
   const account = useActiveAccount();
   const { sendTx, error, isLoading } = useSendTx();
+  const { optimisitcRemoveStaff } = useStaffListState();
   async function deleteHandler() {
     if (!account) throw new Error("Account should be connected");
-    sendTx(removeStaff(account, staffAddress));
+    sendTx(
+      removeStaff(account, staffAddress).then(() =>
+        optimisitcRemoveStaff(staffAddress),
+      ),
+    );
   }
   if (error != null) {
     alert("Failed to revoke staff role");
