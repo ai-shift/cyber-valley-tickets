@@ -40,6 +40,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   } = event;
 
   const isCreator = user.address === event.creator.address;
+  const isMaster = user.role === "master";
 
   return (
     <div className="flex flex-col">
@@ -78,7 +79,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${daysAmount} day${daysAmount > 1 ? "s" : ""}`}
         />
 
-        {isCreator && (
+        {(isCreator || isMaster) && (
           <DetailsBlock
             icon="/icons/Attendees_2.svg"
             title="Tickets available"
@@ -95,7 +96,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
       <Ticket event={event} user={user} />
       <MaybeManageEvent
         eventId={eventId}
-        canEdit={user.role === "master"}
+        canEdit={isMaster}
         role={user.role}
         status={event.status}
       />
