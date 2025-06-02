@@ -1,3 +1,4 @@
+import { useStaffState } from "@/entities/staff";
 import { useSendTx } from "@/shared/hooks";
 import { assignStaff } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
@@ -29,6 +30,7 @@ export const StaffForm: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const account = useActiveAccount();
   const { sendTx, error, isLoading } = useSendTx();
+  const { optimisticAddStaff } = useStaffState();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (account == null) {
@@ -37,6 +39,7 @@ export const StaffForm: React.FC = () => {
     sendTx(
       assignStaff(account, values.address).then(() => {
         setIsOpen(true);
+        optimisticAddStaff(values.address);
         form.reset();
       }),
     );
