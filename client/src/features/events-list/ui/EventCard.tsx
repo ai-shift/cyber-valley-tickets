@@ -11,13 +11,26 @@ type EventCardProps = {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const { place, startDateTimestamp, description, title, status, imageUrl } =
-    event;
+  const {
+    place,
+    startDateTimestamp,
+    description,
+    title,
+    status,
+    imageUrl,
+    ticketsBought,
+  } = event;
 
   return (
     <article className="relative">
       <div className="absolute top-3 right-2 ">
-        <StatusBage status={status} />
+        {status === "approved" ? (
+          <p className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black">
+            Tickets available: {place.maxTickets - (ticketsBought || 0)}
+          </p>
+        ) : (
+          <StatusBage status={status} />
+        )}
       </div>
       <Link className="flex flex-col h-full" to={`/events/${event.id}`}>
         <img
