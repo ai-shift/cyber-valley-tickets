@@ -51,7 +51,13 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           alt={title}
         />
         <div className="absolute top-3 right-2">
-          <StatusBage status={status} />
+          {status === "approved" ? (
+            <p className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black">
+              Tickets available: {place.maxTickets - (ticketsBought || 0)}
+            </p>
+          ) : (
+            <StatusBage status={status} />
+          )}
         </div>
       </div>
       <div className="bg-secondary py-10 px-4 text-black space-y-8">
