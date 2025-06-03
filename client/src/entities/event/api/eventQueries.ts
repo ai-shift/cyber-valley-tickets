@@ -7,11 +7,13 @@ export const eventQueries = {
       queryKey: ["events", "lists"],
       queryFn: getEvents,
       select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
     }),
   detail: (id: number) =>
     queryOptions({
       queryKey: ["events", "lists", id],
       queryFn: () => getDetailEvent(id),
       select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
     }),
 };

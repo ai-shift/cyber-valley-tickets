@@ -7,5 +7,6 @@ export const placesQueries = {
       queryKey: ["places"],
       queryFn: getPlaces,
       select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
     }),
 };
