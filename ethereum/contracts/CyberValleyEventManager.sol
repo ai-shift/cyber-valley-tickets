@@ -297,7 +297,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         allocateDateRange(
             evt.eventPlaceId,
             evt.startDate,
-            evt.startDate + evt.daysAmount * SECONDS_IN_DAY
+            calcDaysAfter(evt.startDate, evt.daysAmount)
         );
         evt.status = EventStatus.Approved;
         emit EventStatusChanged(eventId, evt.status);
@@ -319,7 +319,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         freeDateRange(
             evt.eventPlaceId,
             evt.startDate,
-            evt.startDate + evt.daysAmount * SECONDS_IN_DAY
+            calcDaysAfter(evt.startDate, evt.daysAmount)
         );
         emit EventStatusChanged(eventId, evt.status);
     }
@@ -352,12 +352,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             freeDateRange(
                 eventPlaceId,
                 startDate,
-                startDate + daysAmount * SECONDS_IN_DAY
+                calcDaysAfter(evt.startDate, evt.daysAmount)
             );
             allocateDateRange(
                 eventPlaceId,
                 startDate,
-                startDate + daysAmount * SECONDS_IN_DAY
+                calcDaysAfter(evt.startDate, evt.daysAmount)
             );
         }
         emit EventUpdated(
@@ -402,7 +402,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             checkNoOverlap(
                 evt.eventPlaceId,
                 evt.startDate,
-                evt.startDate + evt.daysAmount * SECONDS_IN_DAY
+                calcDaysAfter(evt.startDate, evt.daysAmount)
             ),
             "Requested event overlaps with existing"
         );
@@ -446,7 +446,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Only event in approved state can be closed"
         );
         require(
-            block.timestamp >= evt.startDate + evt.daysAmount * SECONDS_IN_DAY,
+            block.timestamp >= calcDaysAfter(evt.startDate, evt.daysAmount),
             "Event has not been finished yet"
         );
         uint256 networth = evt.ticketPrice *
@@ -505,5 +505,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 timestamp
     ) internal pure returns (uint256) {
         return (timestamp / SECONDS_IN_DAY) * SECONDS_IN_DAY;
+    }
+
+    function calcDaysAfter(uint256 date, uint256 daysAmount) internal pure returns (uint256) {
+	return date + (daysAmount - 1) * SECONDS_IN_DAY;
     }
 }
