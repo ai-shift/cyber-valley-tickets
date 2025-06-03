@@ -14,6 +14,7 @@ export const userQueries = {
       queryKey: ["user", "list", "staff"],
       queryFn: getUsersStaff,
       select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
     }),
 };
 
