@@ -180,10 +180,6 @@ contract DateOverlapChecker {
             endDate >= initialOffest,
             "End date should be after initial offset"
         );
-        require(
-            endDate - startDate >= SECONDS_IN_DAY,
-            "Dates should differ at least for one day"
-        );
         _;
     }
 }
