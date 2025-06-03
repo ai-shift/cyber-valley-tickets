@@ -1,6 +1,6 @@
 GANACHE_CONTAINER_NAME := "cyber-valley-tickets-ganache-node"
 
-compile: format-solidity
+compile:
 	pnpm exec hardhat compile
 	pnpm exec hardhat typechain
 
