@@ -59,6 +59,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "days_amount",
             "image_url",
             "start_date_timestamp",
+            "tickets_bought",
         )
 
     def get_start_date_timestamp(self, obj: Event) -> int:
@@ -81,7 +82,6 @@ class StaffEventSerializer(EventSerializer):
         model = EventSerializer.Meta.model
         fields = (
             *EventSerializer.Meta.fields,
-            "tickets_bought",
             "tickets_required_until_cancel",
             "cancel_date_timestamp",
         )
