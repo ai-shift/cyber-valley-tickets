@@ -1,5 +1,9 @@
 import type { Event } from "@/entities/event";
 import type { User } from "@/entities/user";
+import { hasEnoughtTokens } from "@/shared/lib/web3";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
+import { useState } from "react";
+import { useActiveAccount } from "thirdweb/react";
 
 import { useOrderStore } from "@/entities/order";
 import { useNavigate } from "react-router";
@@ -15,7 +19,9 @@ type TicketProps = {
 
 export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   const { setTicketOrder } = useOrderStore();
+  const account = useActiveAccount();
 
   if (event.status !== "approved") return null;
 
@@ -23,7 +29,16 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   const hasPassed = isEventPassed(event.startDateTimestamp, event.daysAmount);
   const isCreator = user.address === event.creator.address;
 
-  function initOrder() {
+  async function initOrder() {
+    if (account == null) throw new Error("Account isn't connected");
+    const { enoughTokens } = await hasEnoughtTokens(
+      account,
+      BigInt(event.ticketPrice),
+    );
+    if (!enoughTokens) {
+      setIsOpen(true);
+      return;
+    }
     setTicketOrder({
       eventId: event.id,
       eventTitle: event.title,
@@ -46,6 +61,16 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
           Attend
         </Button>
       )}
+      <ResultDialog
+        open={isOpen}
+        setOpen={setIsOpen}
+        title="Not enought tokens"
+        body=""
+        onConfirm={() => {
+          setIsOpen(false);
+        }}
+        failure={true}
+      />
     </div>
   );
 };
