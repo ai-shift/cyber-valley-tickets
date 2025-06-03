@@ -245,16 +245,20 @@ export async function removeStaff(
   return transactionHash;
 }
 
-export async function hasEnoughtTokens(account: Account): Promise<{
+export async function hasEnoughtTokens(
+  account: Account,
+  tokens?: bigint,
+): Promise<{
   enoughTokens: boolean;
   balanceAfterPayment: bigint;
 }> {
+  const tokensToCheck = tokens == null ? getEventSubmitionPrice() : tokens;
   const erc20Balance = await balanceOf({
     contract: erc20,
     address: account.address,
   });
   console.log("ERC20 balance", erc20Balance);
-  const balanceAfterPayment = erc20Balance - getEventSubmitionPrice();
+  const balanceAfterPayment = erc20Balance - tokensToCheck;
   return {
     enoughTokens: balanceAfterPayment >= BigInt(0),
     balanceAfterPayment: babs(balanceAfterPayment),
