@@ -33,6 +33,9 @@ tests:
 run-indexer: migrate
 	$(python) manage.py indexer
 
+run-reaper: migrate
+	$(python) manage.py reaper
+
 run-server: migrate
 	$(python) manage.py runserver
 
