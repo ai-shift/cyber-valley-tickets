@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "cyber_valley.notifications",
     "cyber_valley.scripts",
     "cyber_valley.indexer",
+    "cyber_valley.event_reaper",
 ]
 
 REST_FRAMEWORK = {
