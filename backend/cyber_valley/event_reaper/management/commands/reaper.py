@@ -24,7 +24,7 @@ class Command(BaseCommand):
             help=(
                 "How frequently DB should be checked. In minutes\n"
                 "It should be higher then worse ETH block calculation,"
-                " otherwise double close \ cancel can happen"
+                r" otherwise double close \ cancel can happen"
             ),
             default=60,
         )
@@ -35,6 +35,16 @@ class Command(BaseCommand):
 
         w3 = Web3(Web3.HTTPProvider(settings.HTTP_ETH_NODE_HOST))
         assert w3.is_connected()
+
+        account: LocalAccount = Account.from_key(PRIVATE_KEY)
+        w3.eth.default_account = account.address
+        w3.middleware_onion.inject(
+            SignAndSendRawMiddlewareBuilder.build(account), layer=0
+        )
+        self.stdout.write(f"Imported {account.address} EOA")
+
+        contract = w3.eth.contract(abi=EVENT_MANAGER_ABI, address=EVENT_MANAGER_ADDRESS)
+        self.stdout.write(f"Will interact with {EVENT_MANAGER_ADDRESS}")
 
         while True:
             with connection.cursor() as cursor:
