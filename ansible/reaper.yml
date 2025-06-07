@@ -1,0 +1,50 @@
+---
+- hosts: all
+  vars:
+    image_name: "{{ lookup('ansible.builtin.env', 'BACKEND_IMAGE', default=undef()) }}"
+    dotenv_src: ../.env.production
+    dotenv_dest: ".env"
+
+  tasks:
+    - name: "Install packages"
+      ansible.builtin.package: "name={{ item }} state=present"
+      with_items:
+        - podman
+
+    - name: "Build image"
+      delegate_to: localhost
+      command:
+        chdir: "../backend"
+        cmd: "make podman-build"
+
+    - name: "Transfer image"
+      delegate_to: localhost
+      shell: >-
+        podman save {{ image_name }}
+        | ssh {{ inventory_hostname }} podman load
+
+    - name: "Start container"
+      containers.podman.podman_container:
+        name: "{{ image_name }}-reaper"
+        image: "{{ image_name }}"
+        state: started
+        recreate: true
+        detach: true
+        restart_policy: always
+        network: host
+        command:
+          - run-reaper
+        env:
+          IPFS_DATA: "{{ lookup('env', 'IPFS_DATA', default=undef()) }}"
+          IPFS_PUBLIC_HOST: "{{ lookup('env', 'IPFS_PUBLIC_HOST', default=undef()) }}"
+          DB_USER: "{{ lookup('env', 'DB_USER', default=undef()) }}"
+          DB_NAME: "{{ lookup('env', 'DB_NAME', default=undef()) }}"
+          DB_PASSWORD: "{{ lookup('env', 'DB_PASSWORD', default=undef()) }}"
+          PUBLIC_HTTP_ETH_NODE_HOST: "{{ lookup('env', 'PUBLIC_HTTP_ETH_NODE_HOST', default=undef()) }}"
+          WS_ETH_NODE_HOST: "{{ lookup('env', 'WS_ETH_NODE_HOST', default=undef()) }}"
+          VALKEY_HOST: "{{ lookup('env', 'VALKEY_HOST', default=undef()) }}"
+          PUBLIC_EVENT_MANAGER_ADDRESS: "{{ lookup('env', 'PUBLIC_EVENT_MANAGER_ADDRESS', default=undef()) }}"
+          PUBLIC_EVENT_TICKET_ADDRESS: "{{ lookup('env', 'PUBLIC_EVENT_TICKET_ADDRESS', default=undef()) }}"
+          PUBLIC_ERC20_ADDRESS: "{{ lookup('env', 'PUBLIC_ERC20_ADDRESS', default=undef()) }}"
+          DJANGO_SECRET_KEY: "{{ lookup('env', 'DJANGO_SECRET_KEY', default=undef()) }}"
+          PYTHONUNBUFFERED: "{{ lookup('env', 'PYTHONUNBUFFERED', default=undef()) }}"
