@@ -6,11 +6,6 @@
     dotenv_dest: ".env"
 
   tasks:
-    - name: "Install packages"
-      ansible.builtin.package: "name={{ item }} state=present"
-      with_items:
-        - podman
-
     - name: "Build image"
       delegate_to: localhost
       command:
@@ -48,3 +43,4 @@
           PUBLIC_ERC20_ADDRESS: "{{ lookup('env', 'PUBLIC_ERC20_ADDRESS', default=undef()) }}"
           DJANGO_SECRET_KEY: "{{ lookup('env', 'DJANGO_SECRET_KEY', default=undef()) }}"
           PYTHONUNBUFFERED: "{{ lookup('env', 'PYTHONUNBUFFERED', default=undef()) }}"
+          BACKEND_EOA_PRIVATE_KEY: "{{ lookup('env', 'BACKEND_EOA_PRIVATE_KEY', default=undef()) }}"

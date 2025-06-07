@@ -8,10 +8,21 @@ from typing import Any
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
+from eth_account import Account
+from eth_account.signers.local import LocalAccount
+from eth_typing import (
+    ChecksumAddress,
+    HexAddress,
+    HexStr,
+)
 from web3 import Web3
+from web3.middleware import SignAndSendRawMiddlewareBuilder
 
-EVENT_MANAGER_ADDRESS = os.environ["PUBLIC_EVENT_MANAGER_ADDRESS"]
+EVENT_MANAGER_ADDRESS = ChecksumAddress(
+    HexAddress(HexStr(os.environ["PUBLIC_EVENT_MANAGER_ADDRESS"]))
+)
 EVENT_MANAGER_ABI = json.loads(settings.CONTRACTS_INFO[2].read_text())["abi"]
+PRIVATE_KEY = os.environ.get("BACKEND_EOA_PRIVATE_KEY")
 
 
 class Command(BaseCommand):
@@ -74,11 +85,21 @@ class Command(BaseCommand):
 
             if to_cancel:
                 self.stdout.write(f"Got {len(to_cancel)} events to cancel: {to_cancel}")
+                for i in to_cancel:
+                    try:
+                        contract.functions.cancelEvent(i).transact()
+                    except Exception as e:
+                        self.stderr.write(f"Failed to cancel event {i} with {e}")
 
             if to_close:
                 # Because of down time some events should be cancelled
                 # but they'll be fetched with to_close events as well
                 to_close = [i for i in to_close if i not in to_cancel]
                 self.stdout.write(f"Got {len(to_close)} events to close: {to_close}")
+                for i in to_close:
+                    try:
+                        contract.functions.closeEvent(i).transact()
+                    except Exception as e:
+                        self.stderr.write(f"Failed to close event {i} with {e}")
 
             time.sleep(poll_interval.total_seconds())
