@@ -446,7 +446,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Only event in approved state can be closed"
         );
         require(
-            block.timestamp >= calcDaysAfter(evt.startDate, evt.daysAmount),
+            floorTimestampToDate(block.timestamp) >=
+                calcDaysAfter(evt.startDate, evt.daysAmount),
             "Event has not been finished yet"
         );
         uint256 networth = evt.ticketPrice *
@@ -483,8 +484,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
         EventPlace storage place = eventPlaces[evt.eventPlaceId];
         require(
-            evt.startDate - place.daysBeforeCancel * SECONDS_IN_DAY >=
-                block.timestamp,
+            calcDaysBefore(evt.startDate, place.daysBeforeCancel) >=
+                floorTimestampToDate(block.timestamp),
             "Event still have time"
         );
         evt.status = EventStatus.Cancelled;
@@ -507,7 +508,17 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         return (timestamp / SECONDS_IN_DAY) * SECONDS_IN_DAY;
     }
 
-    function calcDaysAfter(uint256 date, uint256 daysAmount) internal pure returns (uint256) {
-	return date + (daysAmount - 1) * SECONDS_IN_DAY;
+    function calcDaysAfter(
+        uint256 date,
+        uint256 daysAmount
+    ) internal pure returns (uint256) {
+        return date + (daysAmount - 1) * SECONDS_IN_DAY;
+    }
+
+    function calcDaysBefore(
+        uint256 date,
+        uint256 daysAmount
+    ) internal pure returns (uint256) {
+        return date - (daysAmount - 1) * SECONDS_IN_DAY;
     }
 }
