@@ -46,8 +46,6 @@ export function createFormSchema(
 
       const bookedRanges = extractBookedRangesForPlace(events, place);
 
-      console.log(bookedRanges);
-
       if (data.daysAmount < place.minDays) {
         ctx.addIssue({
           path: ["daysAmount"],
@@ -104,5 +102,7 @@ export const addDays = (date: Date, days: number): Date => {
 };
 
 export const setToMidday = (date: Date): Date => {
-  return new Date(date.setHours(12, 0, 0, 0));
+  const cloned = new Date(date);
+  cloned.setHours(12, 0, 0, 0);
+  return cloned;
 };
