@@ -25,31 +25,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   daysBeforeCancel,
 }) => {
   const [open, setOpen] = useState(false);
-  const prevAvailible = useRef<Date>(new Date());
-
-  useEffect(() => {
-    const getFirstAvailableDate = (): Date => {
-      let initial = new Date();
-      while (
-        !isDateAvailable(
-          initial,
-          selectedDuration,
-          daysBeforeCancel,
-          disabledRanges,
-        )
-      ) {
-        initial = addDays(initial, 1);
-      }
-      return initial;
-    };
-    const availible = getFirstAvailableDate();
-
-    if (prevAvailible.current.getDate() === availible.getDate()) {
-      return;
-    }
-    setDate(availible);
-    prevAvailible.current = availible;
-  }, [selectedDuration, daysBeforeCancel, disabledRanges, setDate]);
 
   const disabledDays = () => {
     const disabled = [];
