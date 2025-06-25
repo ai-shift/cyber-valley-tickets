@@ -137,7 +137,7 @@ export const EventForm: React.FC<EventFormProps> = ({
                   <img
                     className="w-full aspect-video object-contain"
                     src={URL.createObjectURL(field.value)}
-                    alt="sd"
+                    alt="event-thumb"
                   />
                 ) : (
                   <div className="text-center border-2 border-input bg-input/10 p-5 w-full aspect-video flex flex-col justify-center">
@@ -151,13 +151,20 @@ export const EventForm: React.FC<EventFormProps> = ({
               <FormControl>
                 <Input
                   type="file"
+                  accept="image/*"
                   hidden
                   onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      field.onChange(e.target.files[0]);
-                    } else {
-                      field.onChange(undefined);
+                    const files = e.target.files
+                    if (!files || files.length === 0) {
+                      return form.setError("image", {message: "Event must have an image"})
                     }
+                    if (!files[0]?.type.startsWith("image"))
+                    {
+                      form.setError("image", {message: "Incorrect image type"})
+                      return
+                    }
+                    field.onChange(files[0])
+                    form.clearErrors()
                   }}
                 />
               </FormControl>
@@ -244,7 +251,9 @@ export const EventForm: React.FC<EventFormProps> = ({
                   inputMode="decimal"
                   {...field}
                   onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
+                    field.onChange(
+                      Math.min(handleNumericInput(e.target.value), 30),
+                    )
                   }
                 />
               </FormControl>
