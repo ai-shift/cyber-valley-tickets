@@ -3,7 +3,6 @@ import type { EventPlace } from "@/entities/place";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import useFormPersist from "react-hook-form-persist";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -27,6 +26,7 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { fromUnixTime } from "date-fns";
 import { useEffect, useMemo } from "react";
 import type { z } from "zod";
+import { useEventPersist } from "../hooks/useEventPersist";
 import { useFetchImage } from "../hooks/useFetchImage";
 import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
 import { getPlaceDefaults } from "../lib/getPlaceDefaults";
@@ -39,8 +39,6 @@ type EventFormProps = {
   onSumbit: (values: EventDto) => void;
   existingEvent?: Event;
 };
-
-const STORAGE_KEY = "event-form";
 
 export const EventForm: React.FC<EventFormProps> = ({
   events,
@@ -64,8 +62,6 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   const formSchema = createFormSchema(places, events);
 
-  const defaults = sessionStorage.getItem(STORAGE_KEY);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingEvent
@@ -73,22 +69,15 @@ export const EventForm: React.FC<EventFormProps> = ({
           ...eventForEdit,
           startDate: fromUnixTime(existingEvent.startDateTimestamp),
         }
-      : defaults
-        ? JSON.parse(defaults)
-        : {
-            title: "",
-            description: "",
-            ...getPlaceDefaults(places[0], events, eventIdsToExclude),
-          },
-  });
-
-  useFormPersist(STORAGE_KEY, {
-    watch: form.watch,
-    setValue: form.setValue,
-    exclude: ["image"],
+      : {
+          title: "",
+          description: "",
+          ...getPlaceDefaults(places[0], events, eventIdsToExclude),
+        },
   });
 
   useFetchImage(form, existingEvent);
+  useEventPersist(form);
 
   const selectedPlace = places.find(
     (place) => `${place?.id}` === form.watch("place"),
@@ -103,17 +92,19 @@ export const EventForm: React.FC<EventFormProps> = ({
   );
 
   useEffect(() => {
+    if (!form.formState.isDirty) return
+
     const updatedValues = getPlaceDefaults(
       selectedPlace,
       events,
       eventIdsToExclude,
     );
 
-    form.reset((values) => ({
-      ...values,
-      ...updatedValues,
-    }));
-  }, [selectedPlace, events, eventIdsToExclude, form]);
+    const { daysAmount, startDate, ticketPrice } = updatedValues;
+    form.setValue("daysAmount", daysAmount);
+    form.setValue("startDate", startDate);
+    form.setValue("ticketPrice", ticketPrice);
+  }, [form, selectedPlace, events, eventIdsToExclude]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const eventDto = mapEventFormToEventDto(values);
