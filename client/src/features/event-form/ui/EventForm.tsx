@@ -18,13 +18,14 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
+import { Camera } from "@/features/camera";
 import { assertIsDefined } from "@/shared/lib/assert";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { pluralDays } from "@/shared/lib/pluralDays";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { fromUnixTime } from "date-fns";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { z } from "zod";
 import { useEventPersist } from "../hooks/useEventPersist";
 import { useFetchImage } from "../hooks/useFetchImage";
@@ -62,6 +63,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   const formSchema = createFormSchema(places, events);
 
+  const [cameraOpen, setCameraOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingEvent
@@ -92,7 +94,7 @@ export const EventForm: React.FC<EventFormProps> = ({
   );
 
   useEffect(() => {
-    if (!form.formState.isDirty) return
+    if (!form.formState.isDirty) return;
 
     const updatedValues = getPlaceDefaults(
       selectedPlace,
@@ -123,7 +125,15 @@ export const EventForm: React.FC<EventFormProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Event image</FormLabel>
-              <FormLabel>
+              <FormLabel className="relative">
+                <div
+                  className="h-10 w-10 absolute top-0 right-0 bg-red-500"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCameraOpen(true);
+                  }}
+                />
+                <Camera open={cameraOpen} setOpen={setCameraOpen} onShot={(file: File) => form.setValue("image", file)} />
                 {field.value ? (
                   <img
                     className="w-full aspect-video object-contain"
@@ -145,17 +155,20 @@ export const EventForm: React.FC<EventFormProps> = ({
                   accept="image/*"
                   hidden
                   onChange={(e) => {
-                    const files = e.target.files
+                    const files = e.target.files;
                     if (!files || files.length === 0) {
-                      return form.setError("image", {message: "Event must have an image"})
+                      return form.setError("image", {
+                        message: "Event must have an image",
+                      });
                     }
-                    if (!files[0]?.type.startsWith("image"))
-                    {
-                      form.setError("image", {message: "Incorrect image type"})
-                      return
+                    if (!files[0]?.type.startsWith("image")) {
+                      form.setError("image", {
+                        message: "Incorrect image type",
+                      });
+                      return;
                     }
-                    field.onChange(files[0])
-                    form.clearErrors()
+                    field.onChange(files[0]);
+                    form.clearErrors();
                   }}
                 />
               </FormControl>
