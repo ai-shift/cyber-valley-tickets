@@ -6,7 +6,7 @@ import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { addDays, isDateAvailable } from "../model/formSchema";
 
 type DatePickerProps = {
