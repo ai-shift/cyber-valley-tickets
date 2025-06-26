@@ -4,13 +4,16 @@ import { useRef } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import type { EventFormOutput } from "../model/types";
 
+export const EVENT_LOCAL_KEY = "eventForm";
+
+// TODO: implement cleaning the storage on submit
 export const useEventPersist = (
   form: UseFormReturn<EventFormOutput, unknown, EventFormOutput>,
 ) => {
   const formData = form.watch();
   const initial = useRef(true);
 
-  const localString = localStorage.getItem("eventForm");
+  const localString = localStorage.getItem(EVENT_LOCAL_KEY);
 
   if (localString !== null && initial.current) {
     const localData = JSON.parse(localString);
@@ -36,13 +39,13 @@ export const useEventPersist = (
     }
 
     localStorage.setItem(
-      "eventForm",
+      EVENT_LOCAL_KEY,
       JSON.stringify({ ...storedValues, ...cloneFormData }),
     );
   } else {
     getBase64(formData.image).then((data) => {
       localStorage.setItem(
-        "eventForm",
+        EVENT_LOCAL_KEY,
         JSON.stringify({ ...formData, image: data }),
       );
     });
