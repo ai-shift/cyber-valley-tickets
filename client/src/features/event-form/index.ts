@@ -4,3 +4,4 @@ export type {
   EventFormOutput,
 } from "./model/types";
 export { mapEventFormToEventDto } from "./lib/mapEvent";
+export { cleanEventLocal } from "./hooks/useEventPersist";
