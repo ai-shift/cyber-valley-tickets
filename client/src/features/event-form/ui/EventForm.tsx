@@ -144,7 +144,11 @@ export const EventForm: React.FC<EventFormProps> = ({
                     setCameraOpen(true);
                   }}
                 />
-                <Camera open={cameraOpen} setOpen={setCameraOpen} onShot={(file: File) => form.setValue("image", file)} />
+                <Camera
+                  open={cameraOpen}
+                  setOpen={setCameraOpen}
+                  onShot={(file: File) => form.setValue("image", file)}
+                />
                 {field.value ? (
                   <img
                     className="w-full aspect-video object-contain"
