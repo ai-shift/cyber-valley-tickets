@@ -10,6 +10,7 @@ import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { DetailsBlock } from "./DetailsBlock";
+import { getTimeString } from "@/shared/lib/getTimeString";
 
 type EventDetailsProps = {
   eventId: number;
@@ -75,8 +76,8 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
       <div className="grid grid-cols-2 gap-3 px-4 py-3">
         <DetailsBlock
           icon="/icons/calendar.svg"
-          title="Date"
-          information={formatTimestamp(startDateTimestamp)}
+          title="Date and time"
+          information={`${formatTimestamp(startDateTimestamp)} (${getTimeString(startDateTimestamp)})`}
           className={cn(isCreator || isMaster || "col-span-2")}
         />
         <DetailsBlock
