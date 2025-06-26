@@ -4,7 +4,7 @@ import { useRef } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import type { EventFormOutput } from "../model/types";
 
-export const EVENT_LOCAL_KEY = "eventForm";
+const EVENT_LOCAL_KEY = "eventForm";
 
 // TODO: implement cleaning the storage on submit
 export const useEventPersist = (
@@ -50,4 +50,8 @@ export const useEventPersist = (
       );
     });
   }
+};
+
+export const cleanEventLocal = () => {
+  localStorage.removeItem(EVENT_LOCAL_KEY);
 };

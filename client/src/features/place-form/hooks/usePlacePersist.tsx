@@ -23,3 +23,7 @@ export const usePlacePersist = (
 
   localStorage.setItem(PLACE_LOCAL_KEY, JSON.stringify(formData));
 };
+
+export const cleanPlaceLocal = () => {
+  localStorage.removeItem(PLACE_LOCAL_KEY);
+};
