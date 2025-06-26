@@ -49,9 +49,8 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
 
   if (user.role === "master" || user.role === "staff") return <Redeem />;
   if (isCreator) return;
-
   return (
-    <div className="flex flex-col justify-center items-center">
+    <>
       {ticket ? (
         <ShowTicket hasPassed={hasPassed} ticket={ticket} />
       ) : (
@@ -69,6 +68,6 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
         }}
         failure={true}
       />
-    </div>
+    </>
   );
 };

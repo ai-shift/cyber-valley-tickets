@@ -22,10 +22,9 @@ export const Redeem: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center ">
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="block mx-auto my-8">Redeem ticket</Button>
+          <Button className="w-full">Redeem ticket</Button>
         </DialogTrigger>
         <DialogContent aria-describedby={undefined} className="p-16">
           <DialogTitle className="text-center text-3xl">
@@ -36,6 +35,5 @@ export const Redeem: React.FC = () => {
           </DialogDescription>
         </DialogContent>
       </Dialog>
-    </div>
   );
 };
