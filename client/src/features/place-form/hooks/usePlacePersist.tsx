@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import type { UseFormReturn } from "react-hook-form";
-import { EventPlaceForm } from "../model/types";
+import type { EventPlaceForm } from "../model/types";
 
-export const PLACE_LOCAL_KEY = "placeForm"
+export const PLACE_LOCAL_KEY = "placeForm";
 
 // TODO: implement storage cleaning
 export const usePlacePersist = (
@@ -21,8 +21,5 @@ export const usePlacePersist = (
     initial.current = false;
   }
 
-    localStorage.setItem(
-        PLACE_LOCAL_KEY,
-        JSON.stringify(formData),
-    );
+  localStorage.setItem(PLACE_LOCAL_KEY, JSON.stringify(formData));
 };
