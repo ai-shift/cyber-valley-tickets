@@ -52,13 +52,11 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      {hasPassed && <p>Event is already over</p>}
-
       {ticket ? (
         <ShowTicket hasPassed={hasPassed} ticket={ticket} />
       ) : (
-        <Button disabled={hasPassed} onClick={initOrder}>
-          Attend
+        <Button className="w-full" disabled={hasPassed} onClick={initOrder}>
+          Get ticket
         </Button>
       )}
       <ResultDialog
