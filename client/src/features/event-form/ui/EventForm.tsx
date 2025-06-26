@@ -40,6 +40,7 @@ import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace"
 import { getPlaceDefaults } from "../lib/getPlaceDefaults";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
+import { PlaceCard } from "./PlaceCard";
 
 type EventFormProps = {
   events: Event[];
@@ -88,7 +89,8 @@ export const EventForm: React.FC<EventFormProps> = ({
   });
 
   useFetchImage(form, existingEvent);
-  useEventPersist(form);
+
+  !eventForEdit && useEventPersist(form)
 
   const selectedPlace = places.find(
     (place) => `${place?.id}` === form.watch("place"),
@@ -232,33 +234,7 @@ export const EventForm: React.FC<EventFormProps> = ({
             </FormItem>
           )}
         />
-        {isSelected && (
-          <div className="text-secondary border-2 border-secondary p-4">
-            <div>
-              <h3 className="font-bold mb-2 text-lg">{selectedPlace.title}</h3>
-              <ul className=" space-y-1 text-md text-muted">
-                <li>Min Tickets: {selectedPlace.minTickets}</li>
-                <li>Max Tickets: {selectedPlace.maxTickets}</li>
-                <li>
-                  Min Ticket Price: {selectedPlace.minPrice}{" "}
-                  <img
-                    src={getCurrencySymbol()}
-                    className="h-6 aspect-square inline"
-                    alt="currency"
-                  />
-                </li>
-                <li>
-                  Minimum duration: {selectedPlace.minDays}{" "}
-                  {pluralDays(selectedPlace.minDays)}
-                </li>
-                <li>
-                  Cancel: {selectedPlace.daysBeforeCancel}{" "}
-                  {pluralDays(selectedPlace.daysBeforeCancel)} before event
-                </li>
-              </ul>
-            </div>
-          </div>
-        )}
+        {isSelected && <PlaceCard place={selectedPlace} />}
         <FormField
           control={form.control}
           name="daysAmount"
@@ -339,8 +315,7 @@ export const EventForm: React.FC<EventFormProps> = ({
                     className={`${!isSelected ? "text-gray-500" : "text-secondary"}`}
                   >
                     Ticket price
-                    {!isSelected && " (select the place to enter the price)"}
-                    {isSelected && (
+                    {isSelected ? (
                       <>
                         {` (minimum price ${minimumPrice} `}
                         <img
@@ -350,6 +325,8 @@ export const EventForm: React.FC<EventFormProps> = ({
                         />
                         {")"}
                       </>
+                    ) : (
+                      "(select the place to enter the price)"
                     )}
                   </span>
                 </FormLabel>
