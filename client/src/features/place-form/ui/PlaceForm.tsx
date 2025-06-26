@@ -19,8 +19,8 @@ import type { EventPlace } from "@/entities/place";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { Switch } from "@/shared/ui/switch";
 import type { UseMutateFunction } from "@tanstack/react-query";
-import { formSchema } from "../model/formSchema";
 import { usePlacePersist } from "../hooks/usePlacePersist";
+import { formSchema } from "../model/formSchema";
 
 type PlaceFormProps = {
   existingPlace?: EventPlace;
@@ -48,7 +48,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
         },
   });
 
-  !existingPlace && usePlacePersist(form)
+  !existingPlace && usePlacePersist(form);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     submitHandler(values, {

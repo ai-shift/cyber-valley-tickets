@@ -90,7 +90,7 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   useFetchImage(form, existingEvent);
 
-  !eventForEdit && useEventPersist(form)
+  !eventForEdit && useEventPersist(form);
 
   const selectedPlace = places.find(
     (place) => `${place?.id}` === form.watch("place"),
