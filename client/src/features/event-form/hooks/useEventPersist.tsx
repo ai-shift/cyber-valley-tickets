@@ -1,8 +1,8 @@
+import { getBase64, getImage } from "@/shared/lib/fileBase64Conveter";
 import { parseJSON } from "date-fns";
 import { useRef } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import type { EventFormOutput } from "../model/types";
-import { getBase64, getImage } from "@/shared/lib/fileBase64Conveter";
 
 export const useEventPersist = (
   form: UseFormReturn<EventFormOutput, unknown, EventFormOutput>,
