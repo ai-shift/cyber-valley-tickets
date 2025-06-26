@@ -12,7 +12,6 @@ import {
   ManagePage,
   ManagePlacesPage,
   ManageStaffPage,
-  MyEventsPage,
   NotificationsPage,
   Page404,
   PurchasePage,
@@ -71,7 +70,6 @@ export const Router = () => {
 
               <Route path="/account">
                 <Route index element={<AccountPage />} />
-                <Route path="/account/my-events" element={<MyEventsPage />} />
               </Route>
             </Route>
 
