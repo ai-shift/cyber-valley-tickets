@@ -99,13 +99,16 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         />
       </div>
 
-      <Ticket event={event} user={user} />
       <MaybeManageEvent
         eventId={eventId}
         canEdit={isMaster}
         role={user.role}
         status={event.status}
       />
+
+          <div className="sticky bottom-2 mt-2 px-4">
+              <Ticket event={event} user={user} />
+          </div>
     </div>
   );
 };

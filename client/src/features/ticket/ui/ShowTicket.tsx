@@ -23,9 +23,9 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
     <Dialog>
       <DialogTrigger asChild>
         {ticket.isRedeemed ? (
-          <Button disabled>Ticket redeemed</Button>
+          <Button className="w-full" disabled>Ticket redeemed</Button>
         ) : (
-          <Button disabled={hasPassed}>Show ticket</Button>
+          <Button className="w-full" disabled={hasPassed}>Show ticket</Button>
         )}
       </DialogTrigger>
       <DialogContent className="w-11/12 sm:max-w-96">
