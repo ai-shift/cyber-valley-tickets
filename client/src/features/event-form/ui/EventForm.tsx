@@ -19,11 +19,18 @@ import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
 import { Camera } from "@/features/camera";
+import { TimePicker } from "@/features/time-input";
 import { assertIsDefined } from "@/shared/lib/assert";
+import { getTimeString } from "@/shared/lib/getTimeString";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
-import { pluralDays } from "@/shared/lib/pluralDays";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shared/ui/dialog";
 import { fromUnixTime } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import type { z } from "zod";
@@ -64,6 +71,8 @@ export const EventForm: React.FC<EventFormProps> = ({
   const formSchema = createFormSchema(places, events);
 
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [timeOpen, setTimeOpen] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingEvent
@@ -107,6 +116,8 @@ export const EventForm: React.FC<EventFormProps> = ({
     form.setValue("startDate", startDate);
     form.setValue("ticketPrice", ticketPrice);
   }, [form, selectedPlace, events, eventIdsToExclude]);
+
+  const currentDate = form.watch("startDate");
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const eventDto = mapEventFormToEventDto(values);
@@ -284,6 +295,34 @@ export const EventForm: React.FC<EventFormProps> = ({
             </FormItem>
           )}
         />
+        <Dialog open={timeOpen} onOpenChange={setTimeOpen}>
+          <DialogTrigger>
+            <p className="uppercase text-lg font-bold text-start mb-1">
+              Start time
+            </p>
+            <div className="border-2 border-secondary px-3 py-2">
+              <h2 className="text-xl text-white text-center">
+                {getTimeString(currentDate)}
+              </h2>
+            </div>
+          </DialogTrigger>
+          <DialogContent aria-describedby={undefined} className="py-5">
+            <DialogTitle>Select time</DialogTitle>
+            <TimePicker
+              setValue={(data) => {
+                const date = currentDate;
+                date.setHours(data.hours);
+                date.setMinutes(data.minutes);
+                form.setValue("startDate", date);
+                setTimeOpen(false);
+              }}
+              initialValue={{
+                hours: currentDate.getHours(),
+                minutes: currentDate.getMinutes(),
+              }}
+            />
+          </DialogContent>
+        </Dialog>
         <FormField
           control={form.control}
           name="ticketPrice"

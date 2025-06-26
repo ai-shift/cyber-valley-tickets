@@ -67,6 +67,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             mode="single"
             selected={date}
             onSelect={(day) => {
+              day?.setHours(date.getHours())
+              day?.setMinutes(date.getMinutes())
               setDate(day);
               setOpen(false);
             }}
