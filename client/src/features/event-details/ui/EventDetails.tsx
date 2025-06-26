@@ -7,10 +7,10 @@ import { StatusBage } from "@/features/events-list/ui/StatusBage";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
+import { getTimeString } from "@/shared/lib/getTimeString";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { DetailsBlock } from "./DetailsBlock";
-import { getTimeString } from "@/shared/lib/getTimeString";
 
 type EventDetailsProps = {
   eventId: number;
@@ -107,9 +107,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         status={event.status}
       />
 
-          <div className="sticky bottom-2 mt-2 px-4">
-              <Ticket event={event} user={user} />
-          </div>
+      <div className="sticky bottom-2 mt-2 px-4">
+        <Ticket event={event} user={user} />
+      </div>
     </div>
   );
 };

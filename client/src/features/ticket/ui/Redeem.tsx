@@ -22,18 +22,16 @@ export const Redeem: React.FC = () => {
   }
 
   return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="w-full">Redeem ticket</Button>
-        </DialogTrigger>
-        <DialogContent aria-describedby={undefined} className="p-16">
-          <DialogTitle className="text-center text-3xl">
-            Scan ticket
-          </DialogTitle>
-          <DialogDescription asChild>
-            <Scanner onScan={handleDetect} />
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="w-full">Redeem ticket</Button>
+      </DialogTrigger>
+      <DialogContent aria-describedby={undefined} className="p-16">
+        <DialogTitle className="text-center text-3xl">Scan ticket</DialogTitle>
+        <DialogDescription asChild>
+          <Scanner onScan={handleDetect} />
+        </DialogDescription>
+      </DialogContent>
+    </Dialog>
   );
 };
