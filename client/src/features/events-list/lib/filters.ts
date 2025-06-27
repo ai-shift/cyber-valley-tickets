@@ -17,12 +17,13 @@ export const myEventsFilter = (
   const mapper: { [key in Chronology]: (event: Event) => boolean } = {
     past: isPast,
     current: isCurrent,
-    upcoming: isUpcoming,
+    upcoming: isUpcoming(user),
   };
 
   if (user.role === "master") {
-    return event.status === "submitted" && mapper[option](event);
+    return mapper[option](event);
   }
+
   return (
     !!user.tickets.find((ticket) => ticket.eventId === event.id) ||
     (event.creator.address === user.address && mapper[option](event))
@@ -30,18 +31,24 @@ export const myEventsFilter = (
 };
 
 const isPast = (event: Event) => {
-  return (
-    event.startDateTimestamp + event.daysAmount * 24 * 60 * 60 * 60 <
-    getUnixTime(new Date())
-  );
+  return event.status !== "submitted" && event.status !== "approved";
 };
 
-const isUpcoming = (event: Event) => {
-  return getUnixTime(new Date()) < event.startDateTimestamp;
+const isUpcoming = (user: User) => (event: Event) => {
+  if (isCurrent(event)) {
+    return false
+  }
+  if (event.status === "approved") {
+    return true
+  }
+  if (event.status === "submitted" && user.role === "master") {
+    return true
+  }
+  return false
 };
 
 const isCurrent = (event: Event) => {
-  return !isPast(event) && !isUpcoming(event);
+  return !isPast(event) && (getUnixTime(new Date()) >= event.startDateTimestamp);
 };
 
 export const upcomingFilter = (event: Event) => {
