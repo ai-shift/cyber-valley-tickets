@@ -45,8 +45,8 @@ export const Camera: React.FC<CameraProps> = ({ open, setOpen, onShot }) => {
 
   return (
     <CustomModal open={open} setOpen={setOpen}>
-      <CustomModalWindow>
-        <div className="flex flex-col items-center gap-3">
+      <CustomModalWindow className="p-0">
+        <div className="flex flex-col items-center gap-5">
           <X
             className="h-10 w-10 cursor-pointer text-red-500 self-end"
             onClick={() => setOpen(false)}
@@ -66,13 +66,22 @@ export const Camera: React.FC<CameraProps> = ({ open, setOpen, onShot }) => {
             }
           />
           <div className="flex justify-between items-center w-full">
-            <div
-              className="h-10 w-10 bg-yellow-500"
+            <img
+              src="/icons/light.svg"
+              alt="flash"
+              className="h-12 aspect-square cursor-pointer"
               onClick={() => setFlash((prev) => !prev)}
             />
-            <div className="h-10 w-10 bg-green-500" onClick={capture} />
-            <div
-              className="h-10 w-10 bg-blue-500"
+            <img
+              src="/icons/camera.svg"
+              alt="camera"
+              className="h-14 aspect-square cursor-pointer"
+              onClick={capture}
+            />
+            <img
+              src="/icons/rotate.svg"
+              alt="rotate"
+              className="h-10 aspect-square cursor-pointer"
               onClick={() => toggleMode()}
             />
           </div>
