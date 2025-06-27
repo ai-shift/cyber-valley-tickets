@@ -162,8 +162,8 @@ export const EventForm: React.FC<EventFormProps> = ({
                 </FormLabel>
               </div>
               <div className="flex items-center justify-between text-lg uppercase font-medium underline underline-offset-2">
-                <label htmlFor="fileInput">Upload file</label>
-                <p onClick={(e) => {
+                <label className="cursor-pointer" htmlFor="fileInput">Upload file</label>
+                <p className="cursor-pointer" onClick={(e) => {
                     e.preventDefault();
                     setCameraOpen(true);
                   }}>Take a picture</p>
