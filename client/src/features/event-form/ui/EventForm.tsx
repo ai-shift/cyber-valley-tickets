@@ -137,21 +137,15 @@ export const EventForm: React.FC<EventFormProps> = ({
           name="image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event image</FormLabel>
-              <FormLabel className="relative">
-                <div
-                  className="h-10 w-10 absolute top-0 right-0 bg-red-500"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCameraOpen(true);
-                  }}
-                />
+              <p className="uppercase text-lg font-bold text-start mb-1">Event image</p>
+              <div className="relative">
                 <Camera
                   open={cameraOpen}
                   setOpen={setCameraOpen}
                   onShot={(file: File) => form.setValue("image", file)}
                 />
-                {field.value ? (
+                <FormLabel htmlFor="fileInput">
+                  {field.value ? (
                   <img
                     className="w-full aspect-video object-contain"
                     src={URL.createObjectURL(field.value)}
@@ -161,13 +155,22 @@ export const EventForm: React.FC<EventFormProps> = ({
                   <div className="text-center border-2 border-input bg-input/10 p-5 w-full aspect-video flex flex-col justify-center">
                     <h2 className="text-secondary">Upload image banner</h2>
                     <p className="text-normal font-normal text-muted-foreground lowercase">
-                      Click to upload image (16:9 ratio recommended)
+                      16:9 ratio recommended
                     </p>
                   </div>
                 )}
-              </FormLabel>
+                </FormLabel>
+              </div>
+              <div className="flex items-center justify-between text-lg uppercase font-medium underline underline-offset-2">
+                <label htmlFor="fileInput">Upload file</label>
+                <p onClick={(e) => {
+                    e.preventDefault();
+                    setCameraOpen(true);
+                  }}>Take a picture</p>
+              </div>
               <FormControl>
                 <Input
+                  id="fileInput"
                   type="file"
                   accept="image/*"
                   hidden
