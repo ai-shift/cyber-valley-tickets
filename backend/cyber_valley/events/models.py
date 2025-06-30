@@ -43,6 +43,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200, null=False)
     description = models.TextField(null=False)
     image_url = models.URLField(null=True)
+    website = models.CharField()
     created_at = models.DateTimeField(null=False)
     updated_at = models.DateTimeField(null=False)
 

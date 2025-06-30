@@ -95,6 +95,7 @@ def _sync_new_event_request(
         title=data["title"],
         description=data["description"],
         image_url=f"{settings.IPFS_PUBLIC_HOST}/ipfs/{data['cover']}",
+        website=data["website"],
         created_at=timezone.now(),
         updated_at=timezone.now(),
     )
