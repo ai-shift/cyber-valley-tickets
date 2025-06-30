@@ -36,19 +36,19 @@ const isPast = (event: Event) => {
 
 const isUpcoming = (user: User) => (event: Event) => {
   if (isCurrent(event)) {
-    return false
+    return false;
   }
   if (event.status === "approved") {
-    return true
+    return true;
   }
   if (event.status === "submitted" && user.role === "master") {
-    return true
+    return true;
   }
-  return false
+  return false;
 };
 
 const isCurrent = (event: Event) => {
-  return !isPast(event) && (getUnixTime(new Date()) >= event.startDateTimestamp);
+  return !isPast(event) && getUnixTime(new Date()) >= event.startDateTimestamp;
 };
 
 export const upcomingFilter = (event: Event) => {
