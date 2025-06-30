@@ -158,6 +158,7 @@ def _sync_event_place_updated(
 
     defaults = {
         "title": data["title"],
+        "location_url": data["location_url"],
         "max_tickets": event_data.max_tickets,
         "min_tickets": event_data.min_tickets,
         "min_price": event_data.min_price,

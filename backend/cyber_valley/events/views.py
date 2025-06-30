@@ -119,10 +119,7 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     user = request.user
     assert not isinstance(user, AnonymousUser)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
-        event_meta = {
-            "title": meta.title,
-            "description": meta.description,
-        }
+        event_meta = {"title": meta.title, "location_url": meta.location_url}
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash})
 

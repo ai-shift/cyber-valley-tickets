@@ -689,12 +689,14 @@ export interface components {
             code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
             detail: string;
         };
-        ApiIpfsPlacesMetaUpdateDescriptionErrorComponent: {
+        ApiIpfsPlacesMetaUpdateError: components["schemas"]["ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateTitleErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent"];
+        ApiIpfsPlacesMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsPlacesMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent: {
             /**
-             * @description * `description` - description (enum property replaced by openapi-typescript)
+             * @description * `location_url` - location_url (enum property replaced by openapi-typescript)
              * @enum {string}
              */
-            attr: "description";
+            attr: "location_url";
             /**
              * @description * `blank` - blank
              *     * `invalid` - invalid
@@ -707,8 +709,6 @@ export interface components {
             code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
             detail: string;
         };
-        ApiIpfsPlacesMetaUpdateError: components["schemas"]["ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateTitleErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"];
-        ApiIpfsPlacesMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsPlacesMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
         ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent: {
             /**
              * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
@@ -965,6 +965,7 @@ export interface components {
             minPrice: number;
             /** Format: int64 */
             minDays: number;
+            locationUrl: string;
             /** Format: int64 */
             daysBeforeCancel: number;
             available?: boolean;
@@ -1093,7 +1094,7 @@ export interface components {
         };
         UploadPlaceMetaToIpfsRequest: {
             title: string;
-            description: string;
+            locationUrl: string;
         };
         UploadSocialsRequest: {
             network: components["schemas"]["NetworkEnum"];
