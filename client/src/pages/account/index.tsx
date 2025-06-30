@@ -65,16 +65,20 @@ export const AccountPage: React.FC = () => {
         <div className="p-5">
           <ExpandableList>
             <Expandable id="current">
-             <ExpandableTrigger className="w-full p-3 text-xl flex justify-start gap-3 items-center">
-                {({isCurrentExpanded}) =>
+              <ExpandableTrigger className="w-full p-3 text-xl flex justify-start gap-3 items-center">
+                {({ isCurrentExpanded }) => (
                   <>
-                    <img className={twMerge(
-                      "h-8 transition-all duration-300",
-                      isCurrentExpanded && "rotate-90"
-                    )} alt="chevrone" src="/icons/chevrone_right.svg" />
+                    <img
+                      className={twMerge(
+                        "h-8 transition-all duration-300",
+                        isCurrentExpanded && "rotate-90",
+                      )}
+                      alt="chevrone"
+                      src="/icons/chevrone_right.svg"
+                    />
                     <span>Current events</span>
                   </>
-                }
+                )}
               </ExpandableTrigger>
               <ExpandableContent>
                 <EventsList
@@ -86,15 +90,19 @@ export const AccountPage: React.FC = () => {
             </Expandable>
             <Expandable id="upcoming">
               <ExpandableTrigger className="w-full p-3 text-xl flex justify-start gap-3 items-center">
-                {({isCurrentExpanded}) =>
+                {({ isCurrentExpanded }) => (
                   <>
-                    <img className={twMerge(
-                      "h-8 transition-all duration-300",
-                      isCurrentExpanded && "rotate-90"
-                    )} alt="chevrone" src="/icons/chevrone_right.svg" />
+                    <img
+                      className={twMerge(
+                        "h-8 transition-all duration-300",
+                        isCurrentExpanded && "rotate-90",
+                      )}
+                      alt="chevrone"
+                      src="/icons/chevrone_right.svg"
+                    />
                     <span>Upcoming events</span>
                   </>
-                }
+                )}
               </ExpandableTrigger>
               <ExpandableContent>
                 <EventsList
@@ -106,15 +114,19 @@ export const AccountPage: React.FC = () => {
             </Expandable>
             <Expandable id="past">
               <ExpandableTrigger className="w-full p-3 text-xl flex justify-start gap-3 items-center">
-                {({isCurrentExpanded}) =>
+                {({ isCurrentExpanded }) => (
                   <>
-                    <img className={twMerge(
-                      "h-8 transition-all duration-300",
-                      isCurrentExpanded && "rotate-90"
-                    )} alt="chevrone" src="/icons/chevrone_right.svg" />
+                    <img
+                      className={twMerge(
+                        "h-8 transition-all duration-300",
+                        isCurrentExpanded && "rotate-90",
+                      )}
+                      alt="chevrone"
+                      src="/icons/chevrone_right.svg"
+                    />
                     <span>Past events</span>
                   </>
-                }
+                )}
               </ExpandableTrigger>
               <ExpandableContent>
                 <EventsList

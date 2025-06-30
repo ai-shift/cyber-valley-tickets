@@ -10,6 +10,8 @@ import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { getTimeString } from "@/shared/lib/getTimeString";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
+import { Button } from "@/shared/ui/button";
+import { useNavigate } from "react-router";
 import { DetailsBlock } from "./DetailsBlock";
 
 type EventDetailsProps = {
@@ -17,6 +19,7 @@ type EventDetailsProps = {
 };
 
 export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
+  const navigate = useNavigate();
   const { user } = useUser();
   const {
     data: event,
@@ -26,7 +29,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
-  if (!event || !user) return <ErrorMessage errors={error} />;
+  if (!event) return <ErrorMessage errors={error} />;
 
   const {
     imageUrl,
@@ -40,8 +43,8 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     status,
   } = event;
 
-  const isCreator = user.address === event.creator.address;
-  const isMaster = user.role === "master";
+  const isCreator = user?.address === event.creator.address;
+  const isMaster = user?.role === "master";
 
   return (
     <div className="flex flex-col">
@@ -100,16 +103,24 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         />
       </div>
 
-      <MaybeManageEvent
-        eventId={eventId}
-        canEdit={isMaster}
-        role={user.role}
-        status={event.status}
-      />
+      {user ? (
+        <>
+          <MaybeManageEvent
+            eventId={eventId}
+            canEdit={isMaster}
+            role={user.role}
+            status={event.status}
+          />
 
-      <div className="sticky bottom-2 mt-2 px-4">
-        <Ticket event={event} user={user} />
-      </div>
+          <div className="sticky bottom-2 mt-2 px-4">
+            <Ticket event={event} user={user} />
+          </div>
+        </>
+      ) : (
+        <Button onClick={() => navigate("/login")}>
+          Login to get the ticket
+        </Button>
+      )}
     </div>
   );
 };

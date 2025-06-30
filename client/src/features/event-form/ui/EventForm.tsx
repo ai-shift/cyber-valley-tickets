@@ -137,7 +137,9 @@ export const EventForm: React.FC<EventFormProps> = ({
           name="image"
           render={({ field }) => (
             <FormItem>
-              <p className="uppercase text-lg font-bold text-start mb-1">Event image</p>
+              <p className="uppercase text-lg font-bold text-start mb-1">
+                Event image
+              </p>
               <div className="relative">
                 <Camera
                   open={cameraOpen}
@@ -146,27 +148,34 @@ export const EventForm: React.FC<EventFormProps> = ({
                 />
                 <FormLabel htmlFor="fileInput">
                   {field.value ? (
-                  <img
-                    className="w-full aspect-video object-contain"
-                    src={URL.createObjectURL(field.value)}
-                    alt="event-thumb"
-                  />
-                ) : (
-                  <div className="text-center border-2 border-input bg-input/10 p-5 w-full aspect-video flex flex-col justify-center">
-                    <h2 className="text-secondary">Upload image banner</h2>
-                    <p className="text-normal font-normal text-muted-foreground lowercase">
-                      16:9 ratio recommended
-                    </p>
-                  </div>
-                )}
+                    <img
+                      className="w-full aspect-video object-contain"
+                      src={URL.createObjectURL(field.value)}
+                      alt="event-thumb"
+                    />
+                  ) : (
+                    <div className="text-center border-2 border-input bg-input/10 p-5 w-full aspect-video flex flex-col justify-center">
+                      <h2 className="text-secondary">Upload image banner</h2>
+                      <p className="text-normal font-normal text-muted-foreground lowercase">
+                        16:9 ratio recommended
+                      </p>
+                    </div>
+                  )}
                 </FormLabel>
               </div>
               <div className="flex items-center justify-between text-lg uppercase font-medium underline underline-offset-2">
-                <label className="cursor-pointer" htmlFor="fileInput">Upload file</label>
-                <p className="cursor-pointer" onClick={(e) => {
+                <label className="cursor-pointer" htmlFor="fileInput">
+                  Upload file
+                </label>
+                <p
+                  className="cursor-pointer"
+                  onClick={(e) => {
                     e.preventDefault();
                     setCameraOpen(true);
-                  }}>Take a picture</p>
+                  }}
+                >
+                  Take a picture
+                </p>
               </div>
               <FormControl>
                 <Input

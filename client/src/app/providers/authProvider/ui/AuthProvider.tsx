@@ -27,13 +27,11 @@ export const AuthProvider: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!hasJWT) {
-      navigate("/login");
-    }
-
+    // if (!hasJWT) {
+    //   navigate("/login");
+    // }
     if (hasError) {
       setHasJWT(false);
-      navigate("/login");
     }
   }, [hasError, navigate, hasJWT, setHasJWT]);
 

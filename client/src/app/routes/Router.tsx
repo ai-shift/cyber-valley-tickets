@@ -21,6 +21,7 @@ import {
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { QueryProvider } from "../providers";
 import { AuthProvider } from "../providers";
+import { ProtectedRoute } from "../providers/authProvider/ui/ProtectedRoute";
 import { RestrictedTo } from "../providers/restrictToProvider/RestrictedTo";
 
 export const Router = () => {
@@ -38,43 +39,45 @@ export const Router = () => {
                   path="/events/:eventId"
                   element={<EventsDetailsPage />}
                 />
+                <Route element={<ProtectedRoute />}>
+                  <Route
+                    path="/events/:eventId/edit"
+                    element={<EditEventPage />}
+                  />
+                  <Route path="/events/create" element={<CreateEventPage />} />
+                </Route>
+              </Route>
+
+              <Route element={<ProtectedRoute />}>
                 <Route
-                  path="/events/:eventId/edit"
-                  element={<EditEventPage />}
-                />
-                <Route path="/events/create" element={<CreateEventPage />} />
-              </Route>
-
-              <Route
-                path="/manage"
-                element={<RestrictedTo userRole="master" />}
-              >
-                <Route index element={<ManagePage />} />
-                <Route path="/manage/place">
-                  <Route index element={<ManagePlacesPage />} />
-                  <Route
-                    path="/manage/place/create"
-                    element={<CreatePlacePage />}
-                  />
-                  <Route
-                    path="/manage/place/update"
-                    element={<UpdatePlacePage />}
-                  />
+                  path="/manage"
+                  element={<RestrictedTo userRole="master" />}
+                >
+                  <Route index element={<ManagePage />} />
+                  <Route path="/manage/place">
+                    <Route index element={<ManagePlacesPage />} />
+                    <Route
+                      path="/manage/place/create"
+                      element={<CreatePlacePage />}
+                    />
+                    <Route
+                      path="/manage/place/update"
+                      element={<UpdatePlacePage />}
+                    />
+                  </Route>
+                  <Route path="/manage/staff">
+                    <Route index element={<ManageStaffPage />} />
+                  </Route>
                 </Route>
-                <Route path="/manage/staff">
-                  <Route index element={<ManageStaffPage />} />
+
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/account">
+                  <Route index element={<AccountPage />} />
                 </Route>
               </Route>
-
-              <Route path="/notifications" element={<NotificationsPage />} />
-
-              <Route path="/account">
-                <Route index element={<AccountPage />} />
-              </Route>
+              <Route path="/purchase" element={<PurchasePage />} />
+              <Route path="/socials" element={<SocialsPage />} />
             </Route>
-
-            <Route path="/purchase" element={<PurchasePage />} />
-            <Route path="/socials" element={<SocialsPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<Page404 />} />
