@@ -8,7 +8,6 @@ import { PageContainer } from "@/shared/ui/PageContainer";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
 import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
-import { ExpandableList } from "@/shared/ui/expandable/ui/ExpandableList";
 import { ExpandableTrigger } from "@/shared/ui/expandable/ui/ExpandableTrigger";
 import { LogOut } from "lucide-react";
 import { twMerge } from "tailwind-merge";
@@ -63,80 +62,76 @@ export const AccountPage: React.FC = () => {
           </Button>
         </div>
         <div className="p-5">
-          <ExpandableList>
-            <Expandable id="current">
-              <ExpandableTrigger className="w-full p-3 text-xl flex justify-start gap-3 items-center">
-                {({ isCurrentExpanded }) => (
-                  <>
-                    <img
-                      className={twMerge(
-                        "h-8 transition-all duration-300",
-                        isCurrentExpanded && "rotate-90",
-                      )}
-                      alt="chevrone"
-                      src="/icons/chevrone_right.svg"
-                    />
-                    <span>Current events</span>
-                  </>
-                )}
-              </ExpandableTrigger>
-              <ExpandableContent>
-                <EventsList
-                  filterFn={(event, user) =>
-                    myEventsFilter(event, user, "current")
-                  }
-                />
-              </ExpandableContent>
-            </Expandable>
-            <Expandable id="upcoming">
-              <ExpandableTrigger className="w-full p-3 text-xl flex justify-start gap-3 items-center">
-                {({ isCurrentExpanded }) => (
-                  <>
-                    <img
-                      className={twMerge(
-                        "h-8 transition-all duration-300",
-                        isCurrentExpanded && "rotate-90",
-                      )}
-                      alt="chevrone"
-                      src="/icons/chevrone_right.svg"
-                    />
-                    <span>Upcoming events</span>
-                  </>
-                )}
-              </ExpandableTrigger>
-              <ExpandableContent>
-                <EventsList
-                  filterFn={(event, user) =>
-                    myEventsFilter(event, user, "upcoming")
-                  }
-                />
-              </ExpandableContent>
-            </Expandable>
-            <Expandable id="past">
-              <ExpandableTrigger className="w-full p-3 text-xl flex justify-start gap-3 items-center">
-                {({ isCurrentExpanded }) => (
-                  <>
-                    <img
-                      className={twMerge(
-                        "h-8 transition-all duration-300",
-                        isCurrentExpanded && "rotate-90",
-                      )}
-                      alt="chevrone"
-                      src="/icons/chevrone_right.svg"
-                    />
-                    <span>Past events</span>
-                  </>
-                )}
-              </ExpandableTrigger>
-              <ExpandableContent>
-                <EventsList
-                  filterFn={(event, user) =>
-                    myEventsFilter(event, user, "past")
-                  }
-                />
-              </ExpandableContent>
-            </Expandable>
-          </ExpandableList>
+          <Expandable defaultOpened>
+            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center card">
+              {({ isCurrentExpanded }) => (
+                <>
+                  <img
+                    className={twMerge(
+                      "h-8 transition-all duration-300",
+                      isCurrentExpanded && "rotate-90",
+                    )}
+                    alt="chevrone"
+                    src="/icons/chevrone_right.svg"
+                  />
+                  <span>Current events</span>
+                </>
+              )}
+            </ExpandableTrigger>
+            <ExpandableContent>
+              <EventsList
+                filterFn={(event, user) =>
+                  myEventsFilter(event, user, "current")
+                }
+              />
+            </ExpandableContent>
+          </Expandable>
+          <Expandable defaultOpened>
+            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center card">
+              {({ isCurrentExpanded }) => (
+                <>
+                  <img
+                    className={twMerge(
+                      "h-8 transition-all duration-300",
+                      isCurrentExpanded && "rotate-90",
+                    )}
+                    alt="chevrone"
+                    src="/icons/chevrone_right.svg"
+                  />
+                  <span>Upcoming events</span>
+                </>
+              )}
+            </ExpandableTrigger>
+            <ExpandableContent>
+              <EventsList
+                filterFn={(event, user) =>
+                  myEventsFilter(event, user, "upcoming")
+                }
+              />
+            </ExpandableContent>
+          </Expandable>
+          <Expandable defaultOpened>
+            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center card">
+              {({ isCurrentExpanded }) => (
+                <>
+                  <img
+                    className={twMerge(
+                      "h-8 transition-all duration-300",
+                      isCurrentExpanded && "rotate-90",
+                    )}
+                    alt="chevrone"
+                    src="/icons/chevrone_right.svg"
+                  />
+                  <span>Past events</span>
+                </>
+              )}
+            </ExpandableTrigger>
+            <ExpandableContent>
+              <EventsList
+                filterFn={(event, user) => myEventsFilter(event, user, "past")}
+              />
+            </ExpandableContent>
+          </Expandable>
         </div>
       </div>
     </PageContainer>
