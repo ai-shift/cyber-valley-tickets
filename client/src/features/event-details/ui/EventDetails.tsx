@@ -1,8 +1,8 @@
 import { eventQueries } from "@/entities/event";
-import { useUser } from "@/entities/user";
 import { cn } from "@/shared/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
+import { useAuthSlice } from "@/app/providers";
 import { StatusBage } from "@/features/events-list/ui/StatusBage";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
@@ -20,7 +20,7 @@ type EventDetailsProps = {
 
 export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user } = useAuthSlice();
   const {
     data: event,
     error,

@@ -1,23 +1,16 @@
+import { useAuthSlice } from "@/app/providers";
 import { notificationQueries } from "@/entities/notification";
-import { useUser } from "@/entities/user";
-import { Loader } from "@/shared/ui/Loader";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 
 export const NotificationIcon: React.FC = () => {
-  const { user, isLoading } = useUser();
+  const { user } = useAuthSlice();
   const { data: notifications } = useQuery(notificationQueries.list());
 
   const unreadNotifications = notifications?.filter((notif) => !notif.seenAt);
   const hasUnreadNotifications =
     unreadNotifications && unreadNotifications.length > 0;
 
-  if (isLoading)
-    return (
-      <div className="h-12 aspect-square">
-        <Loader className="h-8" />
-      </div>
-    );
   if (!user) return;
   return (
     <Link

@@ -1,9 +1,9 @@
 import { Button } from "@/shared/ui/button";
 import { Outlet, useNavigate } from "react-router";
-import { useRefreshSlice } from "../model/refreshSlice";
+import { useAuthSlice } from "../model/authSlice";
 
 export const ProtectedRoute: React.FC = () => {
-  const { hasJWT } = useRefreshSlice();
+  const { hasJWT } = useAuthSlice();
   const navigate = useNavigate();
 
   if (hasJWT) {
