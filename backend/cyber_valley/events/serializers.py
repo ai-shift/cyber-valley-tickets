@@ -125,8 +125,9 @@ class CreatorEventSerializer(StaffEventSerializer):
 
     def should_provide_sensitive(self, obj: Event) -> bool:
         user = self.context["request"].user
-        assert isinstance(user, User)
-        return obj.creator.address == user.address
+        if isinstance(user, User):
+            return obj.creator.address == user.address
+        return False
 
 
 class TicketSerializer(serializers.ModelSerializer[Ticket]):
