@@ -103,7 +103,8 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         />
       </div>
 
-      {user ? (
+
+        {user ? (
         <>
           <MaybeManageEvent
             eventId={eventId}
@@ -117,10 +118,10 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           </div>
         </>
       ) : (
-        <Button onClick={() => navigate("/login")}>
+        <Button className="m-5" onClick={() => navigate("/login")}>
           Login to get the ticket
         </Button>
       )}
-    </div>
+      </div>
   );
 };

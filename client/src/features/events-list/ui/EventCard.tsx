@@ -1,5 +1,4 @@
 import type { Event } from "@/entities/event";
-import type { User } from "@/entities/user";
 
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { Link } from "react-router";
@@ -7,7 +6,6 @@ import { StatusBage } from "./StatusBage";
 
 type EventCardProps = {
   event: Event;
-  user: User;
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
