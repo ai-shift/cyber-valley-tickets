@@ -14,6 +14,7 @@ type ExpandableProps = {
   className?: string;
   axle?: ExpandableAxle;
   contentAbsolute?: boolean;
+  defaultOpened?: boolean;
 };
 
 export const Expandable: React.FC<ExpandableProps> = ({
@@ -24,6 +25,7 @@ export const Expandable: React.FC<ExpandableProps> = ({
   className,
   axle = "vertical",
   contentAbsolute = false,
+  defaultOpened = false,
 }) => {
   const { expandedId, setExpanded, registerId, unregisterId, isInsideContext } =
     useExpandableListContext();
@@ -46,6 +48,7 @@ export const Expandable: React.FC<ExpandableProps> = ({
     id,
     externalOpen,
     setExpernalOpen,
+    defaultOpened,
   );
 
   return (

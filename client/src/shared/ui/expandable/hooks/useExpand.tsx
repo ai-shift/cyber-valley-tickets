@@ -8,8 +8,9 @@ export const useExpand = (
   id?: ExpandableId,
   externalOpen?: boolean,
   setExternalOpen?: Dispatch<SetStateAction<boolean>>,
+  defaultOpened?: boolean,
 ): [boolean, () => void] => {
-  const [internalOpen, setInternalOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(!!defaultOpened);
 
   const isControlled =
     externalOpen !== undefined && setExternalOpen !== undefined;
