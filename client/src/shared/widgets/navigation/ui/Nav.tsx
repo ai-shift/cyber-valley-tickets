@@ -1,4 +1,4 @@
-import { useUser } from "@/entities/user";
+import { useAuthSlice } from "@/app/providers";
 
 import { cn } from "@/shared/lib/utils";
 import { routes } from "../model/routes";
@@ -9,7 +9,7 @@ type NavProps = {
 };
 
 export const Nav: React.FC<NavProps> = ({ className }) => {
-  const { user } = useUser();
+  const { user } = useAuthSlice();
   if (!user) return;
   return (
     <nav className={cn("flex justify-around flex-wrap gap-3", className)}>

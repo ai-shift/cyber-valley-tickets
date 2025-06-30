@@ -1,8 +1,8 @@
 import { type Event, eventQueries } from "@/entities/event";
-import { useUser } from "@/entities/user";
 import { useQuery } from "@tanstack/react-query";
 import { EventCard } from "./EventCard";
 
+import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
@@ -14,7 +14,7 @@ type EventsListProps = {
 
 export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   const { data: events, error, isLoading } = useQuery(eventQueries.list());
-  const { user } = useUser();
+  const { user } = useAuthSlice();
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;

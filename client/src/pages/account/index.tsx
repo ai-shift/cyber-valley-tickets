@@ -1,4 +1,4 @@
-import { useRefreshSlice } from "@/app/providers";
+import { useAuthSlice } from "@/app/providers";
 import { EventsList, myEventsFilter } from "@/features/events-list";
 import { apiClient } from "@/shared/api";
 import { formatAddress } from "@/shared/lib/formatAddress";
@@ -14,7 +14,7 @@ import { twMerge } from "tailwind-merge";
 import { useActiveAccount } from "thirdweb/react";
 
 export const AccountPage: React.FC = () => {
-  const { setHasJWT } = useRefreshSlice();
+  const { logout: signOut } = useAuthSlice();
   const account = useActiveAccount();
 
   const logout = async () => {
@@ -22,7 +22,7 @@ export const AccountPage: React.FC = () => {
       return;
     }
     await apiClient.GET("/api/auth/logout");
-    setHasJWT(false);
+    signOut();
   };
 
   if (!account) return <Loader />;

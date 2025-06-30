@@ -1,2 +1,2 @@
 export { AuthProvider } from "./ui/AuthProvider";
-export { useRefreshSlice } from "./model/refreshSlice";
+export { useAuthSlice } from "./model/authSlice";

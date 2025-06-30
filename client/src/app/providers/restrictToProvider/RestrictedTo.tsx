@@ -1,17 +1,13 @@
-import { useUser } from "@/entities/user";
 import type { Role } from "@/shared/lib/RBAC";
 import { Navigate, Outlet } from "react-router";
+import { useAuthSlice } from "../authProvider";
 
 type RestrictedToProps = {
   userRole: Role;
 };
 
 export const RestrictedTo: React.FC<RestrictedToProps> = ({ userRole }) => {
-  const { user, isLoading } = useUser();
+  const { user } = useAuthSlice();
 
-  return userRole === user?.role && !isLoading ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/" />
-  );
+  return userRole === user?.role ? <Outlet /> : <Navigate to="/" />;
 };

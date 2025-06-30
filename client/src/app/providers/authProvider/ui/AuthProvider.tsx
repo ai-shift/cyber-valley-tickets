@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useAutoConnect } from "thirdweb/react";
-import { useRefreshSlice } from "../model/refreshSlice";
+import { useAuthSlice } from "../model/authSlice";
 
 export const AuthProvider: React.FC = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const AuthProvider: React.FC = () => {
   });
 
   const hasError = !isLoading && isError;
-  const { setHasJWT, hasJWT } = useRefreshSlice();
+  const { logout, hasJWT } = useAuthSlice();
   useAutoConnect({
     client,
     wallets,
@@ -27,13 +27,10 @@ export const AuthProvider: React.FC = () => {
   });
 
   useEffect(() => {
-    // if (!hasJWT) {
-    //   navigate("/login");
-    // }
     if (hasError) {
-      setHasJWT(false);
+      logout();
     }
-  }, [hasError, navigate, hasJWT, setHasJWT]);
+  }, [hasError, navigate, hasJWT, logout]);
 
   return <Outlet />;
 };

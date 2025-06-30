@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
 import { getCurrentUser, getUsersStaff } from "./userApi";
 
@@ -16,9 +15,4 @@ export const userQueries = {
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),
-};
-
-export const useUser = () => {
-  const { data: user, isLoading } = useQuery(userQueries.current());
-  return { user, isLoading };
 };

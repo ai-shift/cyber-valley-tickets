@@ -1,4 +1,6 @@
-import { useRefreshSlice } from "@/app/providers";
+import { useAuthSlice } from "@/app/providers";
+import type { User } from "@/entities/user";
+import { apiClient } from "@/shared/api";
 import { client } from "@/shared/lib/web3";
 import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
@@ -33,7 +35,7 @@ const theme = darkTheme({
 });
 
 export const Login: React.FC = () => {
-  const { setHasJWT } = useRefreshSlice();
+  const { login } = useAuthSlice();
   const { connect, isConnecting } = useConnectModal();
 
   const installedWallets = injectedSupportedWalletIds
@@ -83,7 +85,9 @@ export const Login: React.FC = () => {
                           ...params.payload,
                         }),
                       });
-                      setHasJWT(true);
+                      apiClient.GET("/api/users/current/").then((data) => {
+                        login(data.data as User);
+                      });
                     },
                     isLoggedIn: async () => {
                       const resp = await fetch("api/auth/verify");
