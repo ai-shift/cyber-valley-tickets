@@ -95,6 +95,7 @@ def _sync_new_event_request(
         title=data["title"],
         description=data["description"],
         image_url=f"{settings.IPFS_PUBLIC_HOST}/ipfs/{data['cover']}",
+        website=data["website"],
         created_at=timezone.now(),
         updated_at=timezone.now(),
     )
@@ -157,6 +158,7 @@ def _sync_event_place_updated(
 
     defaults = {
         "title": data["title"],
+        "location_url": data["location_url"],
         "max_tickets": event_data.max_tickets,
         "min_tickets": event_data.min_tickets,
         "min_price": event_data.min_price,
