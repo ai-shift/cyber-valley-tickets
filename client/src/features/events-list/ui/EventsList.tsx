@@ -16,12 +16,14 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   const { data: events, error, isLoading } = useQuery(eventQueries.list());
   const { user } = useAuthSlice();
 
+  const maybeUser = user ?? ({ role: "customer" } as User);
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
-  if (!(events && user)) return <p>No data for some reason</p>;
+  if (!events) return <p>No data for some reason</p>;
 
   const displayEvents = filterFn
-    ? events.filter((event) => filterFn(event, user))
+    ? events.filter((event) => filterFn(event, maybeUser))
     : events;
   const limitedEvents = limit ? displayEvents.slice(0, limit) : displayEvents;
 
@@ -32,7 +34,7 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   return (
     <div className={"flex flex-col gap-6 px-3"}>
       {limitedEvents.map((event) => (
-        <EventCard key={event.id} event={event} user={user} />
+        <EventCard key={event.id} event={event} />
       ))}
     </div>
   );
