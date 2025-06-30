@@ -36,7 +36,6 @@ from .serializers import (
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
     queryset = EventPlace.objects.all().prefetch_related("event_set")
     serializer_class = EventPlaceSerializer
-    permission_classes = (IsAuthenticated,)
 
 
 @extend_schema_view(
@@ -52,7 +51,6 @@ class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
 class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
     queryset = Event.objects.all()
     serializer_class = StaffEventSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> type[EventSerializer]:
         if self.request.user.is_staff:
@@ -93,6 +91,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
         event_meta = {
             "title": meta.title,
             "description": meta.description,
+            "website": meta.website,
             "cover": cover_hash,
             "socialsCid": meta.socials_cid,
         }
@@ -120,10 +119,7 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     user = request.user
     assert not isinstance(user, AnonymousUser)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
-        event_meta = {
-            "title": meta.title,
-            "description": meta.description,
-        }
+        event_meta = {"title": meta.title, "location_url": meta.location_url}
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash})
 

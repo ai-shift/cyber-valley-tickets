@@ -13,6 +13,7 @@ class EventPlace(models.Model):
     min_tickets = models.PositiveSmallIntegerField(null=False)
     min_price = models.PositiveSmallIntegerField(null=False)
     min_days = models.PositiveSmallIntegerField(null=False)
+    location_url = models.CharField()
     days_before_cancel = models.PositiveSmallIntegerField(null=False)
     available = models.BooleanField(null=False, default=True)
 
@@ -43,6 +44,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200, null=False)
     description = models.TextField(null=False)
     image_url = models.URLField(null=True)
+    website = models.CharField()
     created_at = models.DateTimeField(null=False)
     updated_at = models.DateTimeField(null=False)
 

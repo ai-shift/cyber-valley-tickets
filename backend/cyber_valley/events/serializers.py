@@ -26,6 +26,7 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
             "min_tickets",
             "min_price",
             "min_days",
+            "location_url",
             "days_before_cancel",
             "available",
             "is_used",
@@ -58,6 +59,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "ticket_price",
             "days_amount",
             "image_url",
+            "website",
             "start_date_timestamp",
             "tickets_bought",
         )
@@ -138,6 +140,7 @@ class TicketSerializer(serializers.ModelSerializer[Ticket]):
 class EventMetaData:
     cover: "File[bytes]"
     title: str
+    website: str
     description: str
     socials_cid: str
 
@@ -146,6 +149,7 @@ class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
     cover = serializers.FileField()
     title = serializers.CharField()
     description = serializers.CharField()
+    website = serializers.CharField()
     socials_cid = serializers.CharField()
 
     def create(self, validated_data: dict[str, Any]) -> EventMetaData:
@@ -155,12 +159,12 @@ class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
 @dataclass
 class PlaceMetaData:
     title: str
-    description: str
+    location_url: str
 
 
 class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
     title = serializers.CharField()
-    description = serializers.CharField()
+    location_url = serializers.CharField()
 
     def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:
         return PlaceMetaData(**validated_data)
