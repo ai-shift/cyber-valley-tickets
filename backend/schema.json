@@ -1097,9 +1097,19 @@
                 }
             }
         },
-        "/api/auth/web3/nonce/": {
+        "/api/auth/web3/nonce/{address}": {
             "get": {
                 "operationId": "api_auth_web3_nonce_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "address",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
                 "tags": [
                     "api"
                 ],
@@ -1146,6 +1156,30 @@
                                                 {
                                                     "code": "not_authenticated",
                                                     "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse404"
+                                },
+                                "examples": {
+                                    "NotFound": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_found",
+                                                    "detail": "Not found.",
                                                     "attr": null
                                                 }
                                             ]
@@ -1256,12 +1290,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "nonce": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SIWELogin"
                                 }
                             }
                         },
@@ -1280,7 +1309,8 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
-                    }
+                    },
+                    {}
                 ],
                 "responses": {
                     "400": {
@@ -1461,7 +1491,8 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
-                    }
+                    },
+                    {}
                 ],
                 "responses": {
                     "400": {
@@ -3135,7 +3166,8 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
-                    }
+                    },
+                    {}
                 ],
                 "responses": {
                     "400": {
@@ -3319,7 +3351,8 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
-                    }
+                    },
+                    {}
                 ],
                 "responses": {
                     "400": {
@@ -3894,15 +3927,77 @@
                         "enum": [
                             "blank",
                             "invalid",
-                            "max_length",
-                            "min_length",
                             "null",
                             "null_characters_not_allowed",
                             "required",
                             "surrogate_characters_not_allowed"
                         ],
                         "type": "string",
-                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `max_length` - max_length\n* `min_length` - min_length\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateChainIdErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "chain_id"
+                        ],
+                        "type": "string",
+                        "description": "* `chain_id` - chain_id"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateDomainErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "domain"
+                        ],
+                        "type": "string",
+                        "description": "* `domain` - domain"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
                     },
                     "detail": {
                         "type": "string"
@@ -3923,13 +4018,40 @@
                         "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateAddressErrorComponent"
                     },
                     {
-                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateSignatureErrorComponent"
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateChainIdErrorComponent"
                     },
                     {
-                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateMessageErrorComponent"
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateDomainErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateExpirationTimeErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateInvalidBeforeErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateIssuedAtErrorComponent"
                     },
                     {
                         "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateNonceErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateResourcesErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateResourcesINDEXErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateStatementErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateUriErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateVersionErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiAuthWeb3LoginCreateSignatureErrorComponent"
                     }
                 ],
                 "discriminator": {
@@ -3937,9 +4059,18 @@
                     "mapping": {
                         "non_field_errors": "#/components/schemas/ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent",
                         "address": "#/components/schemas/ApiAuthWeb3LoginCreateAddressErrorComponent",
-                        "signature": "#/components/schemas/ApiAuthWeb3LoginCreateSignatureErrorComponent",
-                        "message": "#/components/schemas/ApiAuthWeb3LoginCreateMessageErrorComponent",
-                        "nonce": "#/components/schemas/ApiAuthWeb3LoginCreateNonceErrorComponent"
+                        "chain_id": "#/components/schemas/ApiAuthWeb3LoginCreateChainIdErrorComponent",
+                        "domain": "#/components/schemas/ApiAuthWeb3LoginCreateDomainErrorComponent",
+                        "expiration_time": "#/components/schemas/ApiAuthWeb3LoginCreateExpirationTimeErrorComponent",
+                        "invalid_before": "#/components/schemas/ApiAuthWeb3LoginCreateInvalidBeforeErrorComponent",
+                        "issued_at": "#/components/schemas/ApiAuthWeb3LoginCreateIssuedAtErrorComponent",
+                        "nonce": "#/components/schemas/ApiAuthWeb3LoginCreateNonceErrorComponent",
+                        "resources": "#/components/schemas/ApiAuthWeb3LoginCreateResourcesErrorComponent",
+                        "resources.INDEX": "#/components/schemas/ApiAuthWeb3LoginCreateResourcesINDEXErrorComponent",
+                        "statement": "#/components/schemas/ApiAuthWeb3LoginCreateStatementErrorComponent",
+                        "uri": "#/components/schemas/ApiAuthWeb3LoginCreateUriErrorComponent",
+                        "version": "#/components/schemas/ApiAuthWeb3LoginCreateVersionErrorComponent",
+                        "signature": "#/components/schemas/ApiAuthWeb3LoginCreateSignatureErrorComponent"
                     }
                 }
             },
@@ -3960,15 +4091,79 @@
                     }
                 }
             },
-            "ApiAuthWeb3LoginCreateMessageErrorComponent": {
+            "ApiAuthWeb3LoginCreateExpirationTimeErrorComponent": {
                 "type": "object",
                 "properties": {
                     "attr": {
                         "enum": [
-                            "message"
+                            "expiration_time"
                         ],
                         "type": "string",
-                        "description": "* `message` - message"
+                        "description": "* `expiration_time` - expiration_time"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateInvalidBeforeErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "invalid_before"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid_before` - invalid_before"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateIssuedAtErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "issued_at"
+                        ],
+                        "type": "string",
+                        "description": "* `issued_at` - issued_at"
                     },
                     "code": {
                         "enum": [
@@ -4052,6 +4247,67 @@
                     "detail"
                 ]
             },
+            "ApiAuthWeb3LoginCreateResourcesErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "resources"
+                        ],
+                        "type": "string",
+                        "description": "* `resources` - resources"
+                    },
+                    "code": {
+                        "enum": [
+                            "not_a_list",
+                            "null",
+                            "required"
+                        ],
+                        "type": "string",
+                        "description": "* `not_a_list` - not_a_list\n* `null` - null\n* `required` - required"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateResourcesINDEXErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "resources.INDEX"
+                        ],
+                        "type": "string",
+                        "description": "* `resources.INDEX` - resources.INDEX"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
             "ApiAuthWeb3LoginCreateSignatureErrorComponent": {
                 "type": "object",
                 "properties": {
@@ -4061,6 +4317,70 @@
                         ],
                         "type": "string",
                         "description": "* `signature` - signature"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateStatementErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "statement"
+                        ],
+                        "type": "string",
+                        "description": "* `statement` - statement"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateUriErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "uri"
+                        ],
+                        "type": "string",
+                        "description": "* `uri` - uri"
                     },
                     "code": {
                         "enum": [
@@ -4100,6 +4420,38 @@
                 "required": [
                     "errors",
                     "type"
+                ]
+            },
+            "ApiAuthWeb3LoginCreateVersionErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "version"
+                        ],
+                        "type": "string",
+                        "description": "* `version` - version"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
                 ]
             },
             "ApiAuthWeb3LoginRetrieveErrorResponse400": {
@@ -4245,6 +4597,9 @@
                         "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent"
                     },
                     {
+                        "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateWebsiteErrorComponent"
+                    },
+                    {
                         "$ref": "#/components/schemas/ApiIpfsEventsMetaUpdateSocialsCidErrorComponent"
                     }
                 ],
@@ -4255,6 +4610,7 @@
                         "cover": "#/components/schemas/ApiIpfsEventsMetaUpdateCoverErrorComponent",
                         "title": "#/components/schemas/ApiIpfsEventsMetaUpdateTitleErrorComponent",
                         "description": "#/components/schemas/ApiIpfsEventsMetaUpdateDescriptionErrorComponent",
+                        "website": "#/components/schemas/ApiIpfsEventsMetaUpdateWebsiteErrorComponent",
                         "socials_cid": "#/components/schemas/ApiIpfsEventsMetaUpdateSocialsCidErrorComponent"
                     }
                 }
@@ -4384,6 +4740,38 @@
                 "required": [
                     "errors",
                     "type"
+                ]
+            },
+            "ApiIpfsEventsMetaUpdateWebsiteErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "website"
+                        ],
+                        "type": "string",
+                        "description": "* `website` - website"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
                 ]
             },
             "ApiIpfsPlacesMetaUpdateDescriptionErrorComponent": {
@@ -4893,6 +5281,9 @@
                         "nullable": true,
                         "maxLength": 200
                     },
+                    "website": {
+                        "type": "string"
+                    },
                     "startDateTimestamp": {
                         "type": "integer",
                         "readOnly": true
@@ -4923,7 +5314,8 @@
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
-                    "title"
+                    "title",
+                    "website"
                 ]
             },
             "CurrentUser": {
@@ -5397,36 +5789,129 @@
                 "type": "string",
                 "description": "* `customer` - Customer\n* `staff` - Staff\n* `creator` - Creator\n* `master` - Master"
             },
+            "SIWELogin": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "chain_id": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string"
+                    },
+                    "expiration_time": {
+                        "type": "string"
+                    },
+                    "invalid_before": {
+                        "type": "string"
+                    },
+                    "issued_at": {
+                        "type": "string"
+                    },
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "resources": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "statement": {
+                        "type": "string"
+                    },
+                    "uri": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "address",
+                    "chain_id",
+                    "domain",
+                    "expiration_time",
+                    "invalid_before",
+                    "issued_at",
+                    "nonce",
+                    "resources",
+                    "statement",
+                    "uri",
+                    "version"
+                ]
+            },
             "SIWEModelRequest": {
                 "type": "object",
                 "properties": {
                     "address": {
                         "type": "string",
-                        "minLength": 42,
-                        "description": "Address of the user's EOA",
-                        "maxLength": 42
+                        "minLength": 1
+                    },
+                    "chain_id": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "domain": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "expiration_time": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "invalid_before": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "issued_at": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "nonce": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "resources": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    "statement": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "uri": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "version": {
+                        "type": "string",
+                        "minLength": 1
                     },
                     "signature": {
                         "type": "string",
                         "minLength": 1,
                         "description": "Message signed with user's private key"
-                    },
-                    "message": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Original message"
-                    },
-                    "nonce": {
-                        "type": "string",
-                        "minLength": 1,
-                        "description": "Nonce value retrieved from the server"
                     }
                 },
                 "required": [
                     "address",
-                    "message",
+                    "chain_id",
+                    "domain",
+                    "expiration_time",
+                    "invalid_before",
+                    "issued_at",
                     "nonce",
-                    "signature"
+                    "resources",
+                    "signature",
+                    "statement",
+                    "uri",
+                    "version"
                 ]
             },
             "ServerErrorEnum": {
@@ -5489,6 +5974,9 @@
                         "nullable": true,
                         "maxLength": 200
                     },
+                    "website": {
+                        "type": "string"
+                    },
                     "startDateTimestamp": {
                         "type": "integer",
                         "readOnly": true
@@ -5519,7 +6007,8 @@
                     "ticketPrice",
                     "ticketsBought",
                     "ticketsRequiredUntilCancel",
-                    "title"
+                    "title",
+                    "website"
                 ]
             },
             "StatusEnum": {
@@ -5570,6 +6059,10 @@
                         "type": "string",
                         "minLength": 1
                     },
+                    "website": {
+                        "type": "string",
+                        "minLength": 1
+                    },
                     "socialsCid": {
                         "type": "string",
                         "minLength": 1
@@ -5579,7 +6072,8 @@
                     "cover",
                     "description",
                     "socialsCid",
-                    "title"
+                    "title",
+                    "website"
                 ]
             },
             "UploadPlaceMetaToIpfsRequest": {

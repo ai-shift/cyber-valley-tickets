@@ -91,6 +91,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
         event_meta = {
             "title": meta.title,
             "description": meta.description,
+            "website": meta.website,
             "cover": cover_hash,
             "socialsCid": meta.socials_cid,
         }
