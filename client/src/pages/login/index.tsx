@@ -1,8 +1,23 @@
 import { useAuthSlice } from "@/app/providers";
 import { Login } from "@/features/login";
-import { Navigate } from "react-router";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 export const LoginPage: React.FC = () => {
   const { hasJWT } = useAuthSlice();
-  return !hasJWT ? <Login /> : <Navigate to="/" />;
+  const { state } = useLocation();
+  const navigate = useNavigate();
+
+  console.log(state);
+
+  useEffect(() => {
+    if (!hasJWT) return;
+    if (state?.goBack) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  }, [hasJWT, state, navigate]);
+
+  return !hasJWT && <Login />;
 };

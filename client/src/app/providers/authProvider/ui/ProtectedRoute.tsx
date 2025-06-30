@@ -23,7 +23,17 @@ export const ProtectedRoute: React.FC = () => {
           >
             Go back
           </Button>
-          <Button onClick={() => navigate("/login")}>Login</Button>
+          <Button
+            onClick={() =>
+              navigate("/login", {
+                state: {
+                  goBack: true,
+                },
+              })
+            }
+          >
+            Login
+          </Button>
         </div>
       </div>
     </div>

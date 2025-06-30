@@ -103,8 +103,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         />
       </div>
 
-
-        {user ? (
+      {user ? (
         <>
           <MaybeManageEvent
             eventId={eventId}
@@ -118,10 +117,19 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           </div>
         </>
       ) : (
-        <Button className="m-5" onClick={() => navigate("/login")}>
+        <Button
+          className="m-5"
+          onClick={() =>
+            navigate("/login", {
+              state: {
+                goBack: true,
+              },
+            })
+          }
+        >
           Login to get the ticket
         </Button>
       )}
-      </div>
+    </div>
   );
 };
