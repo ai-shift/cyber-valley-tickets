@@ -4774,15 +4774,53 @@
                     "detail"
                 ]
             },
-            "ApiIpfsPlacesMetaUpdateDescriptionErrorComponent": {
+            "ApiIpfsPlacesMetaUpdateError": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "attr",
+                    "mapping": {
+                        "non_field_errors": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent",
+                        "title": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent",
+                        "location_url": "#/components/schemas/ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent"
+                    }
+                }
+            },
+            "ApiIpfsPlacesMetaUpdateErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateValidationError"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ParseErrorResponse"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "validation_error": "#/components/schemas/ApiIpfsPlacesMetaUpdateValidationError",
+                        "client_error": "#/components/schemas/ParseErrorResponse"
+                    }
+                }
+            },
+            "ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent": {
                 "type": "object",
                 "properties": {
                     "attr": {
                         "enum": [
-                            "description"
+                            "location_url"
                         ],
                         "type": "string",
-                        "description": "* `description` - description"
+                        "description": "* `location_url` - location_url"
                     },
                     "code": {
                         "enum": [
@@ -4805,44 +4843,6 @@
                     "code",
                     "detail"
                 ]
-            },
-            "ApiIpfsPlacesMetaUpdateError": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "attr",
-                    "mapping": {
-                        "non_field_errors": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent",
-                        "title": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent",
-                        "description": "#/components/schemas/ApiIpfsPlacesMetaUpdateDescriptionErrorComponent"
-                    }
-                }
-            },
-            "ApiIpfsPlacesMetaUpdateErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateValidationError"
-                    },
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "validation_error": "#/components/schemas/ApiIpfsPlacesMetaUpdateValidationError",
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
             },
             "ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent": {
                 "type": "object",
@@ -5655,6 +5655,9 @@
                         "minimum": 0,
                         "format": "int64"
                     },
+                    "locationUrl": {
+                        "type": "string"
+                    },
                     "daysBeforeCancel": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -5673,6 +5676,7 @@
                     "daysBeforeCancel",
                     "id",
                     "isUsed",
+                    "locationUrl",
                     "maxTickets",
                     "minDays",
                     "minPrice",
@@ -6083,13 +6087,13 @@
                         "type": "string",
                         "minLength": 1
                     },
-                    "description": {
+                    "locationUrl": {
                         "type": "string",
                         "minLength": 1
                     }
                 },
                 "required": [
-                    "description",
+                    "locationUrl",
                     "title"
                 ]
             },
