@@ -36,7 +36,6 @@ from .serializers import (
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
     queryset = EventPlace.objects.all().prefetch_related("event_set")
     serializer_class = EventPlaceSerializer
-    permission_classes = (IsAuthenticated,)
 
 
 @extend_schema_view(
@@ -52,7 +51,6 @@ class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
 class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
     queryset = Event.objects.all()
     serializer_class = StaffEventSerializer
-    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self) -> type[EventSerializer]:
         if self.request.user.is_staff:
