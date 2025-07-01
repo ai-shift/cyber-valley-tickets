@@ -73,7 +73,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         <DetailsBlock
           icon="/icons/event place_2.svg"
           title="Location"
-          information={place.title}
+          information={
+            <a href={place.locationUrl} target="_blank" className="underline underline-offset-2 text-secondary">{place.title}</a>
+          }
         />
       </div>
       <div className="grid grid-cols-2 gap-3 px-4 py-3">

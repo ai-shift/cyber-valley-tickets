@@ -39,6 +39,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
       ? { ...existingPlace }
       : {
           title: "",
+        locationUrl: "",
           minTickets: 1,
           maxTickets: 100,
           daysBeforeCancel: 1,
@@ -73,6 +74,20 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
               <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input placeholder="Place's name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          disabled={disableFields}
+          name="locationUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Loaction URL</FormLabel>
+              <FormControl>
+                <Input placeholder="https://maps.app.goo.gl/SS9jofi43afx7Z4EA" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
