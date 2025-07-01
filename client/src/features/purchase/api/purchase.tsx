@@ -134,11 +134,12 @@ const getSocialsCid = async (order: Order) => {
 };
 
 const getEventCid = async (event: EventDto, cid: string) => {
-  const { title, description, image } = event;
+  const { title, description, image, website } = event;
 
   const formData = new FormData();
   formData.set("title", title);
   formData.set("description", description);
+  formData.set("website", website);
   formData.set("cover", image);
   formData.set("socials_cid", cid);
 

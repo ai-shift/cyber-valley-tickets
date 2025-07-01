@@ -13,6 +13,10 @@ export function createFormSchema(
     .object({
       title: z.string().min(1, "Title is required"),
       description: z.string().min(10, "This is too short for description"),
+      website: z
+        .string()
+        .min(1, "Please add a link to your landing website or one of socials")
+        .url("Mast be a valid URL"),
       image: z
         .instanceof(File, { message: "Event must have an image" })
         .refine((val) => val instanceof File, {

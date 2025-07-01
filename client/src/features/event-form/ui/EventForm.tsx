@@ -84,6 +84,7 @@ export const EventForm: React.FC<EventFormProps> = ({
       : {
           title: "",
           description: "",
+          website: "",
           ...getPlaceDefaults(places[0], events, eventIdsToExclude),
         },
   });
@@ -226,6 +227,19 @@ export const EventForm: React.FC<EventFormProps> = ({
               <FormLabel>Event description</FormLabel>
               <FormControl>
                 <Textarea placeholder="Describe your event" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="website"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Landing website</FormLabel>
+              <FormControl>
+                <Input placeholder="https://www.leningrad.spb.ru" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

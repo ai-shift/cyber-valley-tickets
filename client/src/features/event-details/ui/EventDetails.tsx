@@ -41,6 +41,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     startDateTimestamp,
     daysAmount,
     status,
+    website
   } = event;
 
   const isCreator = user?.address === event.creator.address;
@@ -49,6 +50,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   return (
     <div className="flex flex-col">
       <div className="relative">
+        <a href={website} target="_blank" className="absolute top-3 left-2 aspect-square h-10 rounded-full flex items-center justify-center bg-black">
+          <p className="text-3xl font-bold text-primary">?</p>
+        </a>
         <img
           className="aspect-video object-cover object-center"
           src={imageUrl ?? "/event_default.jpg"}
@@ -74,7 +78,14 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           icon="/icons/event place_2.svg"
           title="Location"
           information={
-            <a href={place.locationUrl} target="_blank" className="underline underline-offset-2 text-secondary">{place.title}</a>
+            <a
+              href={place.locationUrl}
+              target="_blank"
+              className="underline underline-offset-2 text-secondary"
+              rel="noreferrer"
+            >
+              {place.title}
+            </a>
           }
         />
       </div>

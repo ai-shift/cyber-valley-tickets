@@ -1,6 +1,7 @@
 type EventFormType = {
   title: string;
   description: string;
+  website: string;
   place: string;
   ticketPrice: number;
   startDate: Date;
