@@ -5,7 +5,7 @@ import { getCurrencySymbol } from "@/shared/lib/web3";
 type DetailsBlockProps = {
   icon: string;
   title: string;
-  information: string;
+  information: string | React.ReactNode;
   className?: string;
 };
 export const DetailsBlock: React.FC<DetailsBlockProps> = ({

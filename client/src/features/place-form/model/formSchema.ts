@@ -14,6 +14,7 @@ const numberField = (min: number, max: number, fieldName: string) =>
 export const formSchema: ZodType<EventPlaceForm> = z
   .object({
     title: z.string().min(1, "Title is required"),
+    locationUrl: z.string().min(1, "Link to the place loction required").url("Link should be a valid URL"),
     maxTickets: numberField(1, 65536, "Maximum ticket amount"),
     minTickets: numberField(1, 65536, "Minimum ticket amount"),
     minPrice: numberField(1, 65536, "Minimum price"),

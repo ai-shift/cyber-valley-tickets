@@ -18,12 +18,14 @@ export const upsertPlaceW3 = async (
     minDays,
     daysBeforeCancel,
     title,
+    locationUrl,
     available,
   } = place;
 
   const placeForm = new FormData();
   placeForm.append("title", title);
   placeForm.append("description", "foo");
+  placeForm.append("loactionUrl", locationUrl);
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
     // @ts-ignore
