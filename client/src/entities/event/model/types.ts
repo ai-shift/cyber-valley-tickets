@@ -5,7 +5,7 @@ export type EventStatus = Event["status"];
 // XXX: Post mortem review
 export type EventDto = Pick<
   Event,
-  "title" | "description" | "daysAmount" | "ticketPrice"
+  "title" | "description" | "daysAmount" | "ticketPrice" | "website"
 > & {
   image: File;
   startTimeTimeStamp: number;
