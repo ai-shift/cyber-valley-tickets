@@ -85,19 +85,19 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center gap-7 py-10">
-      <div className="w-3/4 flex flex-col justify-center gap-9">
+      <div className="w-3/4 flex flex-col justify-center gap-3">
         {canEdit && (
           <Button className="w-full" onClick={onEdit}>
             Edit
           </Button>
         )}
         {canControl && (
-          <div className="flex justify-between gap-6">
+          <div className="flex justify-between gap-3">
             <AcceptDialog option="accept" confirmFn={() => mutate("accept")}>
-              <Button variant="secondary">Accept</Button>
+              <Button className="w-full" variant="secondary">Accept</Button>
             </AcceptDialog>
             <AcceptDialog option="decline" confirmFn={() => mutate("decline")}>
-              <Button variant="destructive">Decline</Button>
+              <Button className="w-full" variant="destructive">Decline</Button>
             </AcceptDialog>
           </div>
         )}
