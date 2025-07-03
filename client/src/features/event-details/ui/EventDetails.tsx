@@ -13,6 +13,7 @@ import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import { useNavigate } from "react-router";
 import { DetailsBlock } from "./DetailsBlock";
+import { pluralDays } from "@/shared/lib/pluralDays";
 
 type EventDetailsProps = {
   eventId: number;
@@ -50,7 +51,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   return (
     <div className="flex flex-col">
       <div className="relative">
-        <a href={website} target="_blank" className="absolute top-3 left-2 aspect-square h-10 rounded-full flex items-center justify-center bg-black">
+        <a href={website} target="_blank" className="absolute top-3 right-2 aspect-square h-10 rounded-full flex items-center justify-center bg-black">
           <p className="text-3xl font-bold text-primary">?</p>
         </a>
         <img
@@ -58,7 +59,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           src={imageUrl ?? "/event_default.jpg"}
           alt={title}
         />
-        <div className="absolute top-3 right-2">
+        <div className="absolute top-3 left-2">
           {status === "approved" ? (
             <p className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black">
               Tickets available: {place.maxTickets - (ticketsBought || 0)}
@@ -99,7 +100,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         <DetailsBlock
           icon="/icons/duration_2.svg"
           title="Duration"
-          information={`${daysAmount} day${daysAmount > 1 ? "s" : ""}`}
+          information={`${daysAmount} ${pluralDays(daysAmount)}`}
         />
 
         {(isCreator || isMaster) && (
