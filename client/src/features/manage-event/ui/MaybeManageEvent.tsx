@@ -73,6 +73,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   const navigate = useNavigate();
 
   status = optimisticEventsStatuses[eventId] || status;
+  const canFinalize = status === "approved";
   const canControl =
     checkPermission(role, "event:accept/decline") && status === "submitted";
 
@@ -101,6 +102,12 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             </AcceptDialog>
           </div>
         )}
+        {canFinalize &&
+           <div className="flex justify-between gap-3">
+              <Button className="w-full" variant="secondary">Finalize</Button>
+              <Button className="w-full" variant="destructive">Fuck up</Button>
+          </div>
+        }
         <ResultDialog
           open={isOpen}
           setOpen={setIsOpen}
