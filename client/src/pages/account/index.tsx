@@ -52,14 +52,36 @@ export const AccountPage: React.FC = () => {
         <div className="w-1/2 h-full flex flex-col justify-between gap-20">
           <Button
             className="mt-8"
-            onClick={() =>
-              mintERC20(account, 50n)
-                .then(() => alert("Minted 50 tokens"))
-                .catch(console.error)
-            }
+            onClick={() => {
+              const maybeAmount = prompt("Amount of tokens to mint:");
+              if (maybeAmount == null) {
+                // User decided to cancel
+                return;
+              }
+
+              let amount: bigint;
+              try {
+                amount = BigInt(maybeAmount);
+              } catch (e) {
+                alert(`Failed to process amount with: ${JSON.stringify(e)}`);
+                return;
+              }
+
+              if (amount <= 0) {
+                alert("Amount should be greater than zero");
+                return;
+              }
+
+              mintERC20(account, amount)
+                .then(() => alert(`Minted ${amount} tokens`))
+                .catch((err) => {
+                  alert(`Failed to mint ERC20 with ${JSON.stringify(err)}`);
+                });
+            }}
           >
             Mint ERC20
           </Button>
+
         </div>
         <div className="p-5">
           <Expandable defaultOpened>
