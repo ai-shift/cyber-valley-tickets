@@ -2,11 +2,11 @@ import type { EventPlace } from "@/entities/place";
 import { type EventPlaceForm, PlaceForm } from "@/features/place-form";
 import { useSendTx } from "@/shared/hooks";
 import { Loader } from "@/shared/ui/Loader";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 import { upsertPlaceW3 } from "../api/upsertPlaceW3";
-import { type ModalStatus, type ModalType, PlaceDialog } from "./PlaceDialog";
 
 type PlaceEditorProps = {
   placeForEdit?: EventPlace;
@@ -14,32 +14,40 @@ type PlaceEditorProps = {
 
 export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [status, setStatus] = useState<ModalStatus>("idle");
-  // TODO: Keep is simple, stupid
-  const [mode] = useState<ModalType>(() =>
-    placeForEdit?.id ? "edit" : "creat",
-  );
   const account = useActiveAccount();
-  const { sendTx, error, isLoading } = useSendTx();
+  const { sendTx, data: txHash, isLoading } = useSendTx();
 
-  const { mutate } = useMutation<unknown, Error, EventPlaceForm>({
+  const { mutate, isSuccess, isError } = useMutation<
+    unknown,
+    Error,
+    EventPlaceForm
+  >({
     mutationFn: (values: EventPlaceForm) =>
       upsertPlaceW3(sendTx, values, account, placeForEdit?.id),
     onSuccess: () => {
-      setStatus("success");
       setIsOpen(true);
     },
     onError: () => {
-      setStatus("error");
       setIsOpen(true);
     },
   });
 
-  // TODO: Get rid of `ModalStatus` and pass simply props
-  useEffect(() => {
-    if (error == null) return;
-    setStatus("error");
-  }, [error]);
+  const mode = placeForEdit?.id ? "edit" : "creat";
+  const dialogTitle = isSuccess
+    ? `Place ${mode}ed!`
+    : isError
+      ? "Someting went wrong!"
+      : "Oops";
+
+  let dialogBody = isSuccess
+    ? `Place will be ${mode}ed within several minutes.`
+    : isError
+      ? "Some error occured during transation. Please check your wallet for more information."
+      : "Oops";
+
+  if (txHash != null) {
+    dialogBody += `\ntx hash: ${txHash}`;
+  }
 
   return (
     <div className="px-6">
@@ -52,12 +60,13 @@ export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
           onSubmit={mutate}
         />
       )}
-      <PlaceDialog
+      <ResultDialog
         open={isOpen}
         setOpen={setIsOpen}
-        status={status}
-        clearStatus={() => setStatus("idle")}
-        mode={mode}
+        title={dialogTitle}
+        body={dialogBody}
+        onConfirm={() => setIsOpen(false)}
+        failure={isError}
       />
     </div>
   );
