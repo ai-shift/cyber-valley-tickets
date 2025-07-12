@@ -29,7 +29,7 @@ export const StaffForm: React.FC = () => {
   });
   const [isOpen, setIsOpen] = useState(false);
   const account = useActiveAccount();
-  const { sendTx, error, isLoading } = useSendTx();
+  const { sendTx, data: txHash, error, isLoading } = useSendTx();
   const { optimisticAddStaff } = useStaffState();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -72,7 +72,7 @@ export const StaffForm: React.FC = () => {
           open={isOpen}
           setOpen={setIsOpen}
           title="Transaction sent!"
-          body="Staff role will be granted soon"
+          body={`Staff role will be granted soon.\ntx hash: ${txHash}`}
           onConfirm={() => {
             setIsOpen(false);
           }}

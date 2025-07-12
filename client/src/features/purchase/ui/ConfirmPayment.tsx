@@ -17,7 +17,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
   const account = useActiveAccount();
-  const { sendTx, error } = useSendTx();
+  const { sendTx, data: txHash, error } = useSendTx();
   if (!account) return <p>Failed to connect wallet</p>;
   const { mutate, isPending } = useMutation({
     mutationFn: (order: Order) => purchase(sendTx, account, order),
@@ -27,10 +27,14 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
     onError: console.error,
   });
 
-  const successMessage =
+  let successMessage =
     order.type === "buy_ticket"
       ? "Your will recieve your ticket within several minutes."
       : "Your order will be published within several minutes.";
+
+  if (txHash != null) {
+    successMessage += `\ntx hash: ${txHash}`;
+  }
 
   return (
     <article className="card border-primary/30">
