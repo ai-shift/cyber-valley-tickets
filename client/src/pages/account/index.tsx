@@ -81,7 +81,6 @@ export const AccountPage: React.FC = () => {
           >
             Mint ERC20
           </Button>
-
         </div>
         <div className="p-5">
           <Expandable defaultOpened>
