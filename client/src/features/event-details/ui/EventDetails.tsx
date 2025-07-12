@@ -8,12 +8,12 @@ import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { getTimeString } from "@/shared/lib/getTimeString";
+import { pluralDays } from "@/shared/lib/pluralDays";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import { useNavigate } from "react-router";
 import { DetailsBlock } from "./DetailsBlock";
-import { pluralDays } from "@/shared/lib/pluralDays";
 
 type EventDetailsProps = {
   eventId: number;
@@ -42,7 +42,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     startDateTimestamp,
     daysAmount,
     status,
-    website
+    website,
   } = event;
 
   const isCreator = user?.address === event.creator.address;
@@ -51,7 +51,12 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   return (
     <div className="flex flex-col">
       <div className="relative">
-        <a href={website} target="_blank" className="absolute top-3 right-2 aspect-square h-10 rounded-full flex items-center justify-center bg-black">
+        <a
+          href={website}
+          target="_blank"
+          className="absolute top-3 right-2 aspect-square h-10 rounded-full flex items-center justify-center bg-black"
+          rel="noreferrer"
+        >
           <p className="text-3xl font-bold text-primary">?</p>
         </a>
         <img

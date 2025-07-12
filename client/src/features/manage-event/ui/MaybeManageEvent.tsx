@@ -95,19 +95,27 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
         {canControl && (
           <div className="flex justify-between gap-3">
             <AcceptDialog option="accept" confirmFn={() => mutate("accept")}>
-              <Button className="w-full" variant="secondary">Accept</Button>
+              <Button className="w-full" variant="secondary">
+                Accept
+              </Button>
             </AcceptDialog>
             <AcceptDialog option="decline" confirmFn={() => mutate("decline")}>
-              <Button className="w-full" variant="destructive">Decline</Button>
+              <Button className="w-full" variant="destructive">
+                Decline
+              </Button>
             </AcceptDialog>
           </div>
         )}
-        {canFinalize &&
-           <div className="flex justify-between gap-3">
-              <Button className="w-full" variant="secondary">Finalize</Button>
-              <Button className="w-full" variant="destructive">Fuck up</Button>
+        {canFinalize && (
+          <div className="flex justify-between gap-3">
+            <Button className="w-full" variant="secondary">
+              Finalize
+            </Button>
+            <Button className="w-full" variant="destructive">
+              Fuck up
+            </Button>
           </div>
-        }
+        )}
         <ResultDialog
           open={isOpen}
           setOpen={setIsOpen}
