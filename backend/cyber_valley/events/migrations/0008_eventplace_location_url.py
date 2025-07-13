@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('events', '0007_event_website'),
+        ("events", "0007_event_website"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='eventplace',
-            name='location_url',
-            field=models.CharField(default='https://maps.app.goo.gl/E4mhMmnFFaCFrVGx6'),
+            model_name="eventplace",
+            name="location_url",
+            field=models.CharField(default="https://maps.app.goo.gl/E4mhMmnFFaCFrVGx6"),
             preserve_default=False,
         ),
     ]
