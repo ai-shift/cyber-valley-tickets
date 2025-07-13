@@ -165,7 +165,7 @@ class PlaceMetaData:
 
 class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
     title = serializers.CharField()
-    location_url = serializers.CharField(source="locationUrl")
+    location_url = serializers.CharField()
 
     def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:
         return PlaceMetaData(**validated_data)
