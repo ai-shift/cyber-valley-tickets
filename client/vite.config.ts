@@ -14,6 +14,11 @@ export default defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
+      "/ganache": {
+        target: "http://localhost:8545",
+        rewrite: (path) => path.replace(/^\/ganache/, ""),
+        changeOrigin: true,
+      },
     },
   },
   resolve: {
