@@ -10,15 +10,16 @@ import { useAuthSlice } from "../model/authSlice";
 
 export const AuthProvider: React.FC = () => {
   const navigate = useNavigate();
+  const { logout, hasJWT } = useAuthSlice();
   const { isError, isLoading } = useQuery({
     queryFn: refresh,
     queryKey: ["refresh"],
+    enabled: hasJWT,
     refetchInterval: 1000 * 60 * 3,
     refetchOnWindowFocus: true,
   });
 
   const hasError = !isLoading && isError;
-  const { logout, hasJWT } = useAuthSlice();
   useAutoConnect({
     client,
     wallets,
