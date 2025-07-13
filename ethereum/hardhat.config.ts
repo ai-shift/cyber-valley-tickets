@@ -11,11 +11,11 @@ const config: HardhatUserConfig = {
     hardhat: {
       loggingEnabled: false
     },
-    ser7: {
-      url: "https://ce9d-109-93-188-5.ngrok-free.app"
-    },
     cvlandTest: {
       url: "https://cvland-tickets.aishift.co/ganache"
+    },
+    cvlandDev: {
+      url: "http://localhost:8545"
     },
   }
 };
