@@ -64,6 +64,7 @@ export const Login: React.FC = () => {
                   client,
                   wallets,
                   theme,
+                  showThirdwebBranding: false,
                   auth: {
                     getLoginPayload: async (params: {
                       address: string;
