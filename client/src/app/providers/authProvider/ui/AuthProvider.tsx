@@ -1,3 +1,6 @@
+// TODO: Investigate thirdweb/react/web/ui/ConnectWallet/screens/SignatureScreen.tsx
+// to find a way of only signing in message on account switch instead of
+// complete login flow
 import type { User } from "@/entities/user";
 import { apiClient } from "@/shared/api";
 import { client, wallets } from "@/shared/lib/web3";
