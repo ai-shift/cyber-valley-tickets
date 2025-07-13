@@ -1,16 +1,17 @@
-import type React from "react";
-import { refresh } from "../api/refresh";
-
+import type { User } from "@/entities/user";
+import { apiClient } from "@/shared/api";
 import { client, wallets } from "@/shared/lib/web3";
 import { useQuery } from "@tanstack/react-query";
+import type React from "react";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useAutoConnect } from "thirdweb/react";
+import { refresh } from "../api/refresh";
 import { useAuthSlice } from "../model/authSlice";
 
 export const AuthProvider: React.FC = () => {
   const navigate = useNavigate();
-  const { logout, hasJWT } = useAuthSlice();
+  const { login, logout, hasJWT } = useAuthSlice();
   const { isError, isLoading } = useQuery({
     queryFn: refresh,
     queryKey: ["refresh"],
@@ -30,6 +31,10 @@ export const AuthProvider: React.FC = () => {
   useEffect(() => {
     if (hasError) {
       logout();
+    } else {
+      apiClient.GET("/api/users/current/").then((resp) => {
+        login(resp.data as User);
+      });
     }
   }, [hasError, navigate, hasJWT, logout]);
 

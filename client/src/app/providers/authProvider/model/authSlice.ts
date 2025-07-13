@@ -14,11 +14,13 @@ export const useAuthSlice = create<AuthState>()(
     (set) => ({
       hasJWT: false,
       user: null,
-      login: (user: User) =>
+      login: (user: User) => {
+        console.log("setting user", user);
         set({
           hasJWT: true,
           user,
-        }),
+        });
+      },
       logout: () =>
         set({
           hasJWT: false,
