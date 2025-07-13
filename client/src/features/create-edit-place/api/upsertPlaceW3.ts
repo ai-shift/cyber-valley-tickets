@@ -25,7 +25,7 @@ export const upsertPlaceW3 = async (
   const placeForm = new FormData();
   placeForm.append("title", title);
   placeForm.append("description", "foo");
-  placeForm.append("loactionUrl", locationUrl);
+  placeForm.append("location_url", locationUrl);
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
     // @ts-ignore
