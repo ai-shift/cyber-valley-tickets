@@ -27,14 +27,10 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
     onError: console.error,
   });
 
-  let successMessage =
+  const successMessage =
     order.type === "buy_ticket"
       ? "Your will recieve your ticket within several minutes."
       : "Your order will be published within several minutes.";
-
-  if (txHash != null) {
-    successMessage += `\ntx hash: ${txHash}`;
-  }
 
   return (
     <article className="card border-primary/30">
@@ -56,6 +52,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
         title="Payment successful!"
         body={successMessage}
         onConfirm={() => navigate("/", { replace: true })}
+        txHash={txHash as string}
       />
     </article>
   );

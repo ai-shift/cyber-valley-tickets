@@ -2,6 +2,7 @@ import animationData from "@/lotties/vagina.json";
 import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
 import { Button } from "@/shared/ui/button";
 import Lottie from "lottie-react";
+import { ExternalLink } from "lucide-react";
 
 type ResultDialogProps = {
   open: boolean;
@@ -10,6 +11,7 @@ type ResultDialogProps = {
   title: string;
   body: string;
   failure?: boolean;
+  txHash?: string | null;
 };
 
 export const ResultDialog: React.FC<ResultDialogProps> = ({
@@ -19,6 +21,7 @@ export const ResultDialog: React.FC<ResultDialogProps> = ({
   title,
   body,
   failure,
+  txHash,
 }) => {
   return (
     <CustomModal open={open} setOpen={setOpen}>
@@ -34,7 +37,23 @@ export const ResultDialog: React.FC<ResultDialogProps> = ({
           <h2 className="text-muted font-semibold text-lg text-center">
             {title}
           </h2>
-          <p className="text-muted/70 text-md text-center">{body}</p>
+          <p className="text-muted/70 text-md text-center">
+            {body}
+            {txHash != null && (
+              <>
+                <br />
+                <a
+                  className="text-secondary"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  href={`https://etherscan.io/tx/${txHash}`}
+                >
+                  <span className="underline">Show transaction</span>{" "}
+                  <ExternalLink className="inline h-4" />
+                </a>
+              </>
+            )}
+          </p>
           <Button
             variant={failure ? "destructive" : "default"}
             className="mx-auto block"
