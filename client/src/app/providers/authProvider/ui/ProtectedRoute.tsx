@@ -10,7 +10,7 @@ export const ProtectedRoute: React.FC = () => {
     return <Outlet />;
   }
   return (
-    <div className="h-full flex justify-center items-center">
+    <div className="h-full flex justify-center items-center px-6">
       <div>
         <h2 className="text-xl">
           You have to be logged in to access this resource.
