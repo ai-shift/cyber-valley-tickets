@@ -1,17 +1,14 @@
-import { useAuthSlice } from "@/app/providers";
 import { notificationQueries } from "@/entities/notification";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 
 export const NotificationIcon: React.FC = () => {
-  const { user } = useAuthSlice();
   const { data: notifications } = useQuery(notificationQueries.list());
 
   const unreadNotifications = notifications?.filter((notif) => !notif.seenAt);
   const hasUnreadNotifications =
     unreadNotifications && unreadNotifications.length > 0;
 
-  if (!user) return;
   return (
     <Link
       to="/notifications"
