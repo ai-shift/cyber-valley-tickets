@@ -39,15 +39,11 @@ export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
       ? "Someting went wrong!"
       : "Oops";
 
-  let dialogBody = isSuccess
+  const dialogBody = isSuccess
     ? `Place will be ${mode}ed within several minutes.`
     : isError
       ? "Some error occured during transation. Please check your wallet for more information."
       : "Oops";
-
-  if (txHash != null) {
-    dialogBody += `\ntx hash: ${txHash}`;
-  }
 
   return (
     <div className="px-6">
@@ -67,6 +63,7 @@ export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
         body={dialogBody}
         onConfirm={() => setIsOpen(false)}
         failure={isError}
+        txHash={txHash as string}
       />
     </div>
   );

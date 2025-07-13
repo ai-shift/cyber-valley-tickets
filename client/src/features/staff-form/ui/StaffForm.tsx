@@ -72,11 +72,12 @@ export const StaffForm: React.FC = () => {
           open={isOpen}
           setOpen={setIsOpen}
           title="Transaction sent!"
-          body={`Staff role will be granted soon.\ntx hash: ${txHash}`}
+          body={"Staff role will be granted soon."}
           onConfirm={() => {
             setIsOpen(false);
           }}
           failure={error != null}
+          txHash={txHash as string}
         />
       </form>
     </Form>
