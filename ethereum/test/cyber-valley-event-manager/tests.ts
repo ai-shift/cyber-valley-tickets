@@ -481,7 +481,7 @@ describe("CyberValleyEventManager", () => {
     });
 
     it("proportionally spreads funds", async () => {
-      const { eventManager, ERC20, master, creator, devTeam } =
+      const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
       const { tx } = await createAndCloseEvent(
         eventManager,
@@ -494,14 +494,10 @@ describe("CyberValleyEventManager", () => {
         ERC20,
         [
           await master.getAddress(),
-          await creator.getAddress(),
-          await devTeam.getAddress(),
           await eventManager.getAddress(),
         ],
         [
-          (Number(eventRequestSubmitionPrice) * 50) / 100,
-          (Number(eventRequestSubmitionPrice) * 40) / 100,
-          (Number(eventRequestSubmitionPrice) * 10) / 100,
+          Number(eventRequestSubmitionPrice),
           -eventRequestSubmitionPrice,
         ],
       );
@@ -617,7 +613,7 @@ describe("CyberValleyEventManager", () => {
     });
 
     it("refunds tokens to customers and creator", async () => {
-      const { eventManager, ERC20, master, creator, devTeam } =
+      const { eventManager, ERC20, master, creator } =
         await loadFixture(deployContract);
       const { tx } = await createAndCancelEvent(
         eventManager,
@@ -628,7 +624,7 @@ describe("CyberValleyEventManager", () => {
       );
       await expect(tx).to.changeTokenBalances(
         ERC20,
-        [await creator.getAddress(), await eventManager.getAddress()],
+        [await master.getAddress(), await eventManager.getAddress()],
         [eventRequestSubmitionPrice, -eventRequestSubmitionPrice],
       );
       assert(false, "Requires `verifyTicket` implementation");

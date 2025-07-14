@@ -84,9 +84,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     IERC20 public usdtTokenContract;
     CyberValleyEventTicket public eventTicketContract;
 
-    uint256 public devTeamPercentage;
-    address public devTeam;
-    uint256 public masterPercentage;
     address public master;
     // TODO: Make it changeable & add to Event struct
     uint256 public eventRequestPrice;
@@ -108,22 +105,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address _usdtTokenContract,
         address _eventTicketContract,
         address _master,
-        uint256 _masterPercentage,
-        address _devTeam,
-        uint256 _devTeamPercentage,
         uint256 _eventRequestPrice,
         uint256 _initialOffest
     ) DateOverlapChecker(_initialOffest) {
-        require(
-            _devTeamPercentage + _masterPercentage <= 100,
-            "Percentages must be less than 100"
-        );
-
         usdtTokenContract = IERC20(_usdtTokenContract);
         eventTicketContract = CyberValleyEventTicket(_eventTicketContract);
-        devTeamPercentage = _devTeamPercentage;
-        devTeam = _devTeam;
-        masterPercentage = _masterPercentage;
         master = _master;
         eventRequestPrice = _eventRequestPrice;
 
@@ -450,25 +436,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 calcDaysAfter(evt.startDate, evt.daysAmount),
             "Event has not been finished yet"
         );
-        uint256 networth = evt.ticketPrice *
-            evt.customers.length +
-            eventRequestPrice;
-        uint256 masterShare = (networth * masterPercentage) / 100;
-        uint256 devTeamShare = (networth * devTeamPercentage) / 100;
+        uint256 networth = calcEventNetworth(evt);
         require(
-            usdtTokenContract.transfer(master, masterShare),
-            "Failed to transfer master's share"
-        );
-        require(
-            usdtTokenContract.transfer(devTeam, devTeamShare),
-            "Failed to transfer devTeam's share"
-        );
-        require(
-            usdtTokenContract.transfer(
-                evt.creator,
-                networth - masterShare - devTeamShare
-            ),
-            "Failed to transfer creator's share"
+            usdtTokenContract.transfer(master, networth),
+            "Failed to transfer means to master"
         );
         evt.status = EventStatus.Closed;
         emit EventStatusChanged(eventId, evt.status);
@@ -488,18 +459,17 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 floorTimestampToDate(block.timestamp),
             "Event still have time"
         );
-        evt.status = EventStatus.Cancelled;
-        for (uint256 idx = 0; idx < evt.customers.length; idx++) {
-            require(
-                usdtTokenContract.transfer(evt.customers[idx], evt.ticketPrice),
-                "Failed to transfer tokens to customer"
-            );
-        }
+        uint256 networth = calcEventNetworth(evt);
         require(
-            usdtTokenContract.transfer(evt.creator, eventRequestPrice),
-            "Failed to transfer tokens to creator"
+            usdtTokenContract.transfer(master, networth),
+            "Failed to transfer means to master"
         );
+        evt.status = EventStatus.Cancelled;
         emit EventStatusChanged(eventId, evt.status);
+    }
+
+    function calcEventNetworth(Event storage evt) internal view returns (uint256) {
+        return evt.ticketPrice * evt.customers.length + eventRequestPrice;
     }
 
     function floorTimestampToDate(

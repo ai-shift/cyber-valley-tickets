@@ -49,7 +49,6 @@ export type ContractsFixture = {
   eventManager: CyberValleyEventManager & BaseContract;
   owner: Signer;
   master: Signer;
-  devTeam: Signer;
   creator: Signer;
   staff: Signer;
 };
@@ -72,7 +71,7 @@ const loadFixture = blockchainRestoreDisabled
 export { loadFixture };
 
 export async function deployContract(): Promise<ContractsFixture> {
-  const [owner, master, devTeam, creator, staff] = await ethers.getSigners();
+  const [owner, master, creator, staff] = await ethers.getSigners();
   const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
     "CyberValleyEventManager",
@@ -89,16 +88,13 @@ export async function deployContract(): Promise<ContractsFixture> {
     await ERC20.getAddress(),
     await eventTicket.getAddress(),
     master,
-    50,
-    devTeam,
-    10,
     eventRequestSubmitionPrice,
     timestamp(0),
   );
   eventTicket
     .connect(master)
     .setEventManagerAddress(await eventManager.getAddress());
-  return { ERC20, eventManager, owner, master, devTeam, creator, staff };
+  return { ERC20, eventManager, owner, master, creator, staff };
 }
 
 export async function createEventPlace(
