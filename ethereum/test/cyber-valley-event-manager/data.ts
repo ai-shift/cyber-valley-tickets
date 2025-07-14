@@ -13,8 +13,6 @@ const multihash = {
   size: 32,
 };
 
-export const devTeamPercentage = 10;
-export const masterPercentage = 50;
 export const eventRequestSubmitionPrice = BigInt(100);
 export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   maxTickets: 100,

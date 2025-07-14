@@ -46,21 +46,6 @@ export const eventManager = getContract({
         },
         {
           internalType: "uint256",
-          name: "_masterPercentage",
-          type: "uint256",
-        },
-        {
-          internalType: "address",
-          name: "_devTeam",
-          type: "address",
-        },
-        {
-          internalType: "uint256",
-          name: "_devTeamPercentage",
-          type: "uint256",
-        },
-        {
-          internalType: "uint256",
           name: "_eventRequestPrice",
           type: "uint256",
         },
@@ -542,32 +527,6 @@ export const eventManager = getContract({
       type: "function",
     },
     {
-      inputs: [],
-      name: "devTeam",
-      outputs: [
-        {
-          internalType: "address",
-          name: "",
-          type: "address",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "devTeamPercentage",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
       inputs: [
         {
           internalType: "uint256",
@@ -794,19 +753,6 @@ export const eventManager = getContract({
           internalType: "address",
           name: "",
           type: "address",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "masterPercentage",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
         },
       ],
       stateMutability: "view",

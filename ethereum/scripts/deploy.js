@@ -13,7 +13,6 @@ async function main() {
   const { eventManager } = await hre.ignition.deploy(EventManagerModule, {
     parameters: { EventManager: {
       masterAddress: MASTER_EOA,
-      devTeamAddress: DEV_TEAM_EOA,
       eventTicket: await eventTicket.getAddress(),
       erc20: await erc20.getAddress()
     }}
