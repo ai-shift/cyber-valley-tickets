@@ -234,17 +234,25 @@ def _sync_event_status_changed(
     event.status = new_status
     event.save()
 
+    # Notify creator
     Notification.objects.create(
         user=event.creator,
         title="Event status updated",
         body=f"Event {event.title}. New status: {new_status}",
     )
+
+    # Notify master(s)
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
+    body=f"Event {event.title}. New status: {new_status}"
+    if event.status >= 3:
+        # Some funds were sent
+        networth = event.tickets_bought * event.ticket_price + 100
+        body += f"\nEarned {networth} USDT"
     for user in masters:
         Notification.objects.create(
             user=user,
             title="Event status updated",
-            body=f"Event {event.title}. New status: {new_status}",
+            body=body,
         )
 
 
