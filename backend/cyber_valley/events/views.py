@@ -24,7 +24,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Event, EventPlace
+from .models import Event, EventPlace, Ticket
 from .serializers import (
     CreatorEventSerializer,
     EventPlaceSerializer,
@@ -183,3 +183,34 @@ def verify_ticket(request: Request, nonce: str) -> Response:
         return Response("Nonce expired or invalid", status=400)
 
     return Response(status=204)
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {
+                "tickets": {
+                    "type": "object",
+                    "properties": {
+                        "total": {"type": "integer"},
+                        "redeemed": {"type": "integer"},
+                    },
+                }
+            },
+        }
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def event_status(_: Request, event_id: int) -> Response:
+    event = get_object_or_404(Event, id=event_id)
+    redeemed = Ticket.objects.filter(event_id=event_id, is_redeemed=True).count()
+    return Response(
+        {
+            "tickets": {
+                "total": event.tickets_bought,
+                "redeemed": redeemed,
+            }
+        }
+    )

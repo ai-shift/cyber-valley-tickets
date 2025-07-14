@@ -22,6 +22,7 @@ from rest_framework import routers
 from .events.views import (
     EventPlaceViewSet,
     EventViewSet,
+    event_status,
     ticket_nonce,
     upload_event_meta_to_ipfs,
     upload_place_meta_to_ipfs,
@@ -41,6 +42,7 @@ router.register(r"users", CurrentUserViewSet, basename="users")
 urlpatterns = [
     path("", SpectacularSwaggerView.as_view(), name="swagger"),
     path("api/", include(router.urls)),
+    path("api/events/<int:event_id>/status", event_status, name="event_status"),
     path("api/events/tickets/nonce", ticket_nonce, name="ticket-nonce"),
     path("api/events/tickets/nonce/<str:nonce>", verify_ticket, name="verify-ticket"),
     path("api/ipfs/events/meta", upload_event_meta_to_ipfs, name="ipfs-events"),

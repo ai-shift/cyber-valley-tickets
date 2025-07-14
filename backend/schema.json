@@ -1471,6 +1471,220 @@
                 }
             }
         },
+        "/api/events/{event_id}/status": {
+            "get": {
+                "operationId": "api_events_status_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "eventId",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiEventsStatusRetrieveErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse404"
+                                },
+                                "examples": {
+                                    "NotFound": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_found",
+                                                    "detail": "Not found.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "405": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse405"
+                                },
+                                "examples": {
+                                    "MethodNotAllowed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "method_not_allowed",
+                                                    "detail": "Method \"get\" not allowed.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "406": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse406"
+                                },
+                                "examples": {
+                                    "NotAcceptable": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_acceptable",
+                                                    "detail": "Could not satisfy the request Accept header.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "415": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse415"
+                                },
+                                "examples": {
+                                    "UnsupportedMediaType": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "unsupported_media_type",
+                                                    "detail": "Unsupported media type \"application/json\" in request.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse500"
+                                },
+                                "examples": {
+                                    "APIException": {
+                                        "value": {
+                                            "type": "server_error",
+                                            "errors": [
+                                                {
+                                                    "code": "error",
+                                                    "detail": "A server error occurred.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "tickets": {
+                                            "type": "object",
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "redeemed": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/events/{id}/": {
             "get": {
                 "operationId": "api_events_retrieve",
@@ -1837,7 +2051,7 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "nonce": {
+                                        "status": {
                                             "type": "string"
                                         }
                                     }
@@ -4677,6 +4891,19 @@
                 }
             },
             "ApiEventsRetrieveErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ParseErrorResponse"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "client_error": "#/components/schemas/ParseErrorResponse"
+                    }
+                }
+            },
+            "ApiEventsStatusRetrieveErrorResponse400": {
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
