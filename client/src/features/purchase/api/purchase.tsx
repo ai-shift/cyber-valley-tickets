@@ -40,7 +40,7 @@ const purchaseTicket = async (
   if (order.type !== "buy_ticket")
     throw new Error("There is no ticket in the order");
 
-  const { data } = await getSocialsCid(order);
+  const { data } = await getTicketCid(order);
 
   if (!data || !data.cid) throw new Error("Can't fetch CID");
 
@@ -129,6 +129,24 @@ const getSocialsCid = async (order: Order) => {
       //@ts-ignore
       network: order.socials.type.toLocaleLowerCase(),
       value: order.socials.contactInfo,
+    },
+  });
+};
+
+const getTicketCid = async (order: Order) => {
+  if (!order.socials) throw new Error("There is no socials in the order");
+  if (!order.ticket)
+    throw new Error(
+      `Unexpected order type in a ticket flow: ${JSON.stringify(order)}`,
+    );
+  return await apiClient.PUT("/api/ipfs/tickets/meta", {
+    body: {
+      socials: {
+        //@ts-ignore
+        network: order.socials.type.toLocaleLowerCase(),
+        value: order.socials.contactInfo,
+      },
+      eventid: order.ticket.eventId,
     },
   });
 };

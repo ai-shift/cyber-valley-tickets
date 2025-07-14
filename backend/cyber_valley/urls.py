@@ -25,6 +25,7 @@ from .events.views import (
     ticket_nonce,
     upload_event_meta_to_ipfs,
     upload_place_meta_to_ipfs,
+    upload_ticket_meta_to_ipfs,
     verify_ticket,
 )
 from .notifications.views import NotificationViewSet
@@ -45,6 +46,7 @@ urlpatterns = [
     path("api/ipfs/events/meta", upload_event_meta_to_ipfs, name="ipfs-events"),
     path("api/ipfs/places/meta", upload_place_meta_to_ipfs, name="ipfs-events"),
     path("api/ipfs/users/socials", upload_user_socials_to_ipfs, name="ipfs-socials"),
+    path("api/ipfs/tickets/meta", upload_ticket_meta_to_ipfs, name="ipfs-tickets"),
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/auth/web3/nonce/<str:address>", nonce, name="web3_nonce"),
     path("api/auth/verify", verify, name="jwt_verify"),

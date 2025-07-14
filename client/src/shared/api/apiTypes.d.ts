@@ -181,6 +181,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/ipfs/tickets/meta": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["api_ipfs_tickets_meta_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/ipfs/users/socials": {
     parameters: {
       query?: never;
@@ -886,6 +902,107 @@ export interface components {
       type: "validation_error";
       errors: components["schemas"]["ApiIpfsPlacesMetaUpdateError"][];
     };
+    ApiIpfsTicketsMetaUpdateError:
+      | components["schemas"]["ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent"]
+      | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent"]
+      | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent"]
+      | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent"]
+      | components["schemas"]["ApiIpfsTicketsMetaUpdateEventidErrorComponent"];
+    ApiIpfsTicketsMetaUpdateErrorResponse400:
+      | components["schemas"]["ApiIpfsTicketsMetaUpdateValidationError"]
+      | components["schemas"]["ParseErrorResponse"];
+    ApiIpfsTicketsMetaUpdateEventidErrorComponent: {
+      /**
+       * @description * `eventid` - eventid (enum property replaced by openapi-typescript)
+       * @enum {string}
+       */
+      attr: "eventid";
+      /**
+       * @description * `invalid` - invalid
+       *     * `max_string_length` - max_string_length
+       *     * `null` - null
+       *     * `required` - required
+       * @enum {string}
+       */
+      code: "invalid" | "max_string_length" | "null" | "required";
+      detail: string;
+    };
+    ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent: {
+      /**
+       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+       * @enum {string}
+       */
+      attr: "non_field_errors";
+      /**
+       * @description * `invalid` - invalid
+       *     * `null` - null
+       * @enum {string}
+       */
+      code: "invalid" | "null";
+      detail: string;
+    };
+    ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent: {
+      /**
+       * @description * `socials.network` - socials.network (enum property replaced by openapi-typescript)
+       * @enum {string}
+       */
+      attr: "socials.network";
+      /**
+       * @description * `invalid_choice` - invalid_choice
+       *     * `null` - null
+       *     * `required` - required
+       * @enum {string}
+       */
+      code: "invalid_choice" | "null" | "required";
+      detail: string;
+    };
+    ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent: {
+      /**
+       * @description * `socials.non_field_errors` - socials.non_field_errors (enum property replaced by openapi-typescript)
+       * @enum {string}
+       */
+      attr: "socials.non_field_errors";
+      /**
+       * @description * `invalid` - invalid
+       *     * `null` - null
+       *     * `required` - required
+       * @enum {string}
+       */
+      code: "invalid" | "null" | "required";
+      detail: string;
+    };
+    ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent: {
+      /**
+       * @description * `socials.value` - socials.value (enum property replaced by openapi-typescript)
+       * @enum {string}
+       */
+      attr: "socials.value";
+      /**
+       * @description * `blank` - blank
+       *     * `invalid` - invalid
+       *     * `null` - null
+       *     * `null_characters_not_allowed` - null_characters_not_allowed
+       *     * `required` - required
+       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+       * @enum {string}
+       */
+      code:
+        | "blank"
+        | "invalid"
+        | "null"
+        | "null_characters_not_allowed"
+        | "required"
+        | "surrogate_characters_not_allowed";
+      detail: string;
+    };
+    ApiIpfsTicketsMetaUpdateValidationError: {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      type: "validation_error";
+      errors: components["schemas"]["ApiIpfsTicketsMetaUpdateError"][];
+    };
     ApiIpfsUsersSocialsUpdateError:
       | components["schemas"]["ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent"]
       | components["schemas"]["ApiIpfsUsersSocialsUpdateNetworkErrorComponent"]
@@ -1251,6 +1368,10 @@ export interface components {
     UploadSocialsRequest: {
       network: components["schemas"]["NetworkEnum"];
       value: string;
+    };
+    UploadTicketMetaToIpfsRequest: {
+      socials: components["schemas"]["UploadSocialsRequest"];
+      eventid: number;
     };
     /**
      * @description * `validation_error` - Validation Error
@@ -2103,6 +2224,79 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiIpfsPlacesMetaUpdateErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_ipfs_tickets_meta_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["UploadTicketMetaToIpfsRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            cid?: string;
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiIpfsTicketsMetaUpdateErrorResponse400"];
         };
       };
       401: {

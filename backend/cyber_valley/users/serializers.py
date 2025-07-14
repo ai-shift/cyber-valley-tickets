@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from cyber_valley.events.serializers import TicketSerializer
+from cyber_valley.events.ticket_serializer import TicketSerializer
 
 from .models import CyberValleyUser, UserSocials
 
