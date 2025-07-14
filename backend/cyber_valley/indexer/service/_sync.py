@@ -243,8 +243,8 @@ def _sync_event_status_changed(
 
     # Notify master(s)
     masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    body=f"Event {event.title}. New status: {new_status}"
-    if event.status >= 3:
+    body = f"Event {event.title}. New status: {new_status}"
+    if event.status in ("cancelled", "closed"):
         # Some funds were sent
         networth = event.tickets_bought * event.ticket_price + 100
         body += f"\nEarned {networth} USDT"
