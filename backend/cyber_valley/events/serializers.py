@@ -8,8 +8,10 @@ from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
 
 from cyber_valley.users.models import CyberValleyUser as UserType
+from cyber_valley.users.models import UserSocials
+from cyber_valley.users.serializers import UploadSocialsSerializer
 
-from .models import Event, EventPlace, Ticket
+from .models import Event, EventPlace
 
 User = get_user_model()
 
@@ -130,13 +132,6 @@ class CreatorEventSerializer(StaffEventSerializer):
         return False
 
 
-class TicketSerializer(serializers.ModelSerializer[Ticket]):
-    class Meta:
-        model = Ticket
-        fields = ("id", "event_id", "is_redeemed")
-        read_only_fields = fields
-
-
 @dataclass
 class EventMetaData:
     cover: "File[bytes]"
@@ -169,3 +164,17 @@ class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
 
     def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:
         return PlaceMetaData(**validated_data)
+
+
+@dataclass
+class TicketMetaData:
+    socials: UserSocials
+    eventid: int
+
+
+class UploadTicketMetaToIpfsSerializer(serializers.Serializer[TicketMetaData]):
+    socials = UploadSocialsSerializer()
+    eventid = serializers.IntegerField()
+
+    def create(self, validated_data: dict[str, Any]) -> TicketMetaData:
+        return TicketMetaData(**validated_data)

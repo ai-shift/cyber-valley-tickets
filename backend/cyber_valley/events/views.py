@@ -6,6 +6,8 @@ import ipfshttpclient
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
+from django.forms.models import model_to_dict
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import (
     PolymorphicProxySerializer,
     extend_schema,
@@ -30,6 +32,7 @@ from .serializers import (
     StaffEventSerializer,
     UploadEventMetaToIpfsSerializer,
     UploadPlaceMetaToIpfsSerializer,
+    UploadTicketMetaToIpfsSerializer,
 )
 
 
@@ -120,6 +123,34 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     assert not isinstance(user, AnonymousUser)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         event_meta = {"title": meta.title, "location_url": meta.location_url}
+        meta_hash = client.add_json(event_meta)
+    return Response({"cid": meta_hash})
+
+
+@extend_schema(
+    request=UploadTicketMetaToIpfsSerializer,
+    responses={
+        200: {
+            "type": "object",
+            "properties": {"cid": {"type": "string"}},
+            "description": "IPFS CID of ticket NFT",
+        }
+    },
+)
+@api_view(["PUT"])
+@parser_classes([MultiPartParser])
+@permission_classes([IsAuthenticated])
+def upload_ticket_meta_to_ipfs(request: Request) -> Response:
+    meta = UploadTicketMetaToIpfsSerializer(data=request.data)
+    meta.is_valid(raise_exception=True)
+    meta = meta.save()
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+    # TODO: Fetch event's img url
+    event = get_object_or_404(Event, id=meta.eventid)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_hash = client.add_json(model_to_dict(meta.socials))
+        event_meta = {"socials": socials_hash, "image": event.image_url}
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash})
 

@@ -2409,6 +2409,189 @@
                 }
             }
         },
+        "/api/ipfs/tickets/meta": {
+            "put": {
+                "operationId": "api_ipfs_tickets_meta_update",
+                "tags": [
+                    "api"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UploadTicketMetaToIpfsRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieJWTAuth": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse401"
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "405": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse405"
+                                },
+                                "examples": {
+                                    "MethodNotAllowed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "method_not_allowed",
+                                                    "detail": "Method \"get\" not allowed.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "406": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse406"
+                                },
+                                "examples": {
+                                    "NotAcceptable": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_acceptable",
+                                                    "detail": "Could not satisfy the request Accept header.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "415": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse415"
+                                },
+                                "examples": {
+                                    "UnsupportedMediaType": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "unsupported_media_type",
+                                                    "detail": "Unsupported media type \"application/json\" in request.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse500"
+                                },
+                                "examples": {
+                                    "APIException": {
+                                        "value": {
+                                            "type": "server_error",
+                                            "errors": [
+                                                {
+                                                    "code": "error",
+                                                    "detail": "A server error occurred.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cid": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "description": "IPFS CID of ticket NFT"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/ipfs/users/socials": {
             "put": {
                 "operationId": "api_ipfs_users_socials_update",
@@ -4922,6 +5105,218 @@
                     "type"
                 ]
             },
+            "ApiIpfsTicketsMetaUpdateError": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventidErrorComponent"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "attr",
+                    "mapping": {
+                        "non_field_errors": "#/components/schemas/ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent",
+                        "socials.non_field_errors": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent",
+                        "socials.network": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent",
+                        "socials.value": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent",
+                        "eventid": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventidErrorComponent"
+                    }
+                }
+            },
+            "ApiIpfsTicketsMetaUpdateErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateValidationError"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ParseErrorResponse"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "validation_error": "#/components/schemas/ApiIpfsTicketsMetaUpdateValidationError",
+                        "client_error": "#/components/schemas/ParseErrorResponse"
+                    }
+                }
+            },
+            "ApiIpfsTicketsMetaUpdateEventidErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "eventid"
+                        ],
+                        "type": "string",
+                        "description": "* `eventid` - eventid"
+                    },
+                    "code": {
+                        "enum": [
+                            "invalid",
+                            "max_string_length",
+                            "null",
+                            "required"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid` - invalid\n* `max_string_length` - max_string_length\n* `null` - null\n* `required` - required"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "non_field_errors"
+                        ],
+                        "type": "string",
+                        "description": "* `non_field_errors` - non_field_errors"
+                    },
+                    "code": {
+                        "enum": [
+                            "invalid",
+                            "null"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid` - invalid\n* `null` - null"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "socials.network"
+                        ],
+                        "type": "string",
+                        "description": "* `socials.network` - socials.network"
+                    },
+                    "code": {
+                        "enum": [
+                            "invalid_choice",
+                            "null",
+                            "required"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid_choice` - invalid_choice\n* `null` - null\n* `required` - required"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "socials.non_field_errors"
+                        ],
+                        "type": "string",
+                        "description": "* `socials.non_field_errors` - socials.non_field_errors"
+                    },
+                    "code": {
+                        "enum": [
+                            "invalid",
+                            "null",
+                            "required"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid` - invalid\n* `null` - null\n* `required` - required"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "socials.value"
+                        ],
+                        "type": "string",
+                        "description": "* `socials.value` - socials.value"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsTicketsMetaUpdateValidationError": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ValidationErrorEnum"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateError"
+                        }
+                    }
+                },
+                "required": [
+                    "errors",
+                    "type"
+                ]
+            },
             "ApiIpfsUsersSocialsUpdateError": {
                 "oneOf": [
                     {
@@ -6111,6 +6506,21 @@
                 "required": [
                     "network",
                     "value"
+                ]
+            },
+            "UploadTicketMetaToIpfsRequest": {
+                "type": "object",
+                "properties": {
+                    "socials": {
+                        "$ref": "#/components/schemas/UploadSocialsRequest"
+                    },
+                    "eventid": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "eventid",
+                    "socials"
                 ]
             },
             "ValidationErrorEnum": {
