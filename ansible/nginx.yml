@@ -1,7 +1,5 @@
 ---
-- hosts: all
-  become: true
-  become_user: root
+- hosts: nginx
   gather_facts: no
 
   vars_files:

@@ -1,5 +1,5 @@
 ## ------------------------------- Builder Stage ------------------------------ ##
-FROM python:3.13-bookworm AS builder
+FROM docker.io/python:3.13-bookworm AS builder
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
         build-essential && \
@@ -17,7 +17,7 @@ COPY ./pyproject.toml .
 RUN uv sync
 
 ## ------------------------------- Production Stage ------------------------------ ##
-FROM python:3.13-slim-bookworm AS production
+FROM docker.io/python:3.13-slim-bookworm AS production
 
 WORKDIR /app
 

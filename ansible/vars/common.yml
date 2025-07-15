@@ -6,3 +6,6 @@ letsencrypt_email: tech@aishift.co
 ipfs_data_volume: ipfs-data
 ipfs_staging_volume: ipfs-staging
 ganache_data_volume: ganache-data
+backend_port: 8100
+ipfs_port: 8110
+ganache_port: 8120

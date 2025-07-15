@@ -35,9 +35,10 @@
         command:
           - run-server
         expose:
-          - 8000
+          - "{{ backend_port }}"
         network: host
         env:
+          BACKEND_PORT: "{{ backend_port }}"
           IPFS_DATA: "{{ lookup('env', 'IPFS_DATA', default=undef()) }}"
           IPFS_PUBLIC_HOST: "{{ lookup('env', 'IPFS_PUBLIC_HOST', default=undef()) }}"
           DB_USER: "{{ lookup('env', 'DB_USER', default=undef()) }}"
