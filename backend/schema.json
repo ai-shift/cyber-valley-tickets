@@ -1887,7 +1887,7 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "status": {
+                                        "nonce": {
                                             "type": "string"
                                         }
                                     }
