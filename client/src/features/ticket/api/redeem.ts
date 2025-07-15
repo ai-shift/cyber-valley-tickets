@@ -36,7 +36,7 @@ export const redeem = async (
     throw new Error(`There is no nonce in the QR code data: ${parts}`);
   }
 
-  const { error } = await apiClient.GET(
+  const { response, error } = await apiClient.GET(
     "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}",
     {
       params: {
@@ -48,6 +48,13 @@ export const redeem = async (
 
   if (error) {
     throw error;
+  }
+
+  if (
+    response.status === 202 &&
+    !confirm("Redeem transaction was possible started. Proceed anyway?")
+  ) {
+    return;
   }
 
   await redeemTicket(account, BigInt(ticketId));
