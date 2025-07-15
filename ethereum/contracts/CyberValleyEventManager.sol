@@ -431,11 +431,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.status == EventStatus.Approved,
             "Only event in approved state can be closed"
         );
-        require(
-            floorTimestampToDate(block.timestamp) >=
-                calcDaysAfter(evt.startDate, evt.daysAmount),
-            "Event has not been finished yet"
-        );
         uint256 networth = calcEventNetworth(evt);
         require(
             usdtTokenContract.transfer(master, networth),
@@ -454,11 +449,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Only event in approved state can be cancelled"
         );
         EventPlace storage place = eventPlaces[evt.eventPlaceId];
-        require(
-            calcDaysBefore(evt.startDate, place.daysBeforeCancel) >=
-                floorTimestampToDate(block.timestamp),
-            "Event still have time"
-        );
         uint256 networth = calcEventNetworth(evt);
         require(
             usdtTokenContract.transfer(master, networth),
