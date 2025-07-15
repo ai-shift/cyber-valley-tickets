@@ -25,8 +25,9 @@ export const myEventsFilter = (
   }
 
   return (
-    !!user.tickets.find((ticket) => ticket.eventId === event.id) ||
-    (event.creator.address === user.address && mapper[option](event))
+    (user.tickets.find((ticket) => ticket.eventId === event.id) ||
+      event.creator.address === user.address) &&
+    mapper[option](event)
   );
 };
 
