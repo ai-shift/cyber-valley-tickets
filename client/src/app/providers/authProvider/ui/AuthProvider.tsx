@@ -31,6 +31,7 @@ export const AuthProvider: React.FC = () => {
       return;
     }
     wallet.subscribe("accountChanged", () => {
+      console.log("account changed");
       setWalletChanged(true);
     });
   }, [wallet]);
@@ -45,7 +46,10 @@ export const AuthProvider: React.FC = () => {
 
   useEffect(() => {
     if (hasError || walletChanged) {
-      logout();
+      apiClient.GET("/api/auth/logout").finally(() => {
+        logout();
+        navigate("/login");
+      });
     } else {
       apiClient.GET("/api/users/current/").then((resp) => {
         login(resp.data as User);
