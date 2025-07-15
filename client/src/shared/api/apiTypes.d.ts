@@ -117,23 +117,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/events/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["api_events_retrieve"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/events/tickets/nonce": {
+    "/api/events/{event_id}/tickets/{ticket_id}/nonce": {
         parameters: {
             query?: never;
             header?: never;
@@ -149,7 +133,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/events/tickets/nonce/{nonce}": {
+    "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}": {
         parameters: {
             query?: never;
             header?: never;
@@ -157,6 +141,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["api_events_tickets_nonce_retrieve_2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_retrieve"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1833,13 +1833,13 @@ export interface operations {
             };
         };
     };
-    api_events_retrieve: {
+    api_events_tickets_nonce_retrieve: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                /** @description A unique integer value identifying this event. */
-                id: number;
+                eventId: number;
+                ticketId: number;
             };
             cookie?: never;
         };
@@ -1850,7 +1850,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreatorEvent"];
+                    "application/json": {
+                        status?: string;
+                    };
                 };
             };
             400: {
@@ -1858,7 +1860,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
+                    "application/json": components["schemas"]["ApiEventsTicketsNonceRetrieveErrorResponse400"];
                 };
             };
             401: {
@@ -1911,24 +1913,25 @@ export interface operations {
             };
         };
     };
-    api_events_tickets_nonce_retrieve: {
+    api_events_tickets_nonce_retrieve_2: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                eventId: number;
+                nonce: string;
+                ticketId: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
+            /** @description No response body */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": {
-                        status?: string;
-                    };
-                };
+                content?: never;
             };
             400: {
                 headers: {
@@ -1944,6 +1947,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
                 };
             };
             405: {
@@ -1980,30 +1991,32 @@ export interface operations {
             };
         };
     };
-    api_events_tickets_nonce_retrieve_2: {
+    api_events_retrieve: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                nonce: string;
+                /** @description A unique integer value identifying this event. */
+                id: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description No response body */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["CreatorEvent"];
+                };
             };
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiEventsTicketsNonceRetrieveErrorResponse400"];
+                    "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
                 };
             };
             401: {

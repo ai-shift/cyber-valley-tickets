@@ -159,30 +159,43 @@ def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     responses={
         (200, "application/json"): {
             "type": "object",
-            "properties": {"nonce": {"type": "string"}},
+            "properties": {"status": {"type": "string"}},
         }
     }
 )
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def ticket_nonce(request: Request) -> Response:
+def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
     user = request.user
     assert not isinstance(user, AnonymousUser)
     nonce = user.address + secrets.token_hex(16)
-    cache.set(nonce, "nonce", timeout=60 * 5)
+    key = f"{nonce}:{event_id}:{ticket_id}"
+    cache.set(key, "nonce", timeout=60 * 5)
     return Response({"nonce": nonce})
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def verify_ticket(request: Request, nonce: str) -> Response:
+def verify_ticket(
+    request: Request, event_id: int, ticket_id: str, nonce: str
+) -> Response:
     user = request.user
     assert not isinstance(user, AnonymousUser)
 
-    if not cache.delete(nonce):
-        return Response("Nonce expired or invalid", status=400)
+    key = f"{nonce}:{event_id}:{ticket_id}"
+    if not cache.delete(key):
+        return Response("Nonce expired or invalid", status=404)
 
-    return Response(status=204)
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    if ticket.is_redeemed:
+        return Response("redeemed", status=409)
+    if ticket.pending_is_redeemed:
+        return Response("pending redeem", status=202)
+
+    ticket.pending_is_redeemed = True
+    ticket.save()
+
+    return Response("no redeem", status=200)
 
 
 @extend_schema(
