@@ -11,6 +11,8 @@
         update_cache: true
         name:
           - podman
+          - slirp4netns 
+          - uidmap 
 
     - name: "Extend bash profile"
       ansible.builtin.blockinfile:

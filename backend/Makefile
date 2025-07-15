@@ -3,6 +3,7 @@ ipfs_container_name := "cyber-valley-ipfs"
 valkey_container_name := "cyber-valley-valkey"
 python := .venv/bin/python
 VIRTUALIZER ?= podman
+BACKEND_PORT ?= 800
 
 format:
 	uv run ruff format
@@ -37,7 +38,7 @@ run-reaper: migrate
 	$(python) manage.py reaper
 
 run-server: migrate
-	$(python) manage.py runserver
+	$(python) manage.py runserver $(BACKEND_PORT)
 
 run-ipfs-node:
 	test -n "$(IPFS_STAGING)" || exit 1

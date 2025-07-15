@@ -22,7 +22,7 @@ server {
 
     location /api {
         proxy_http_version 1.1;
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://127.0.0.1:{{ backend_port }};
         proxy_set_header upgrade $http_upgrade;
         proxy_set_header connection "upgrade";
         proxy_set_header Host $host;
@@ -33,7 +33,7 @@ server {
 
     location /ipfs {
         proxy_http_version 1.1;
-        proxy_pass http://127.0.0.1:8080;
+        proxy_pass http://127.0.0.1:{{ ipfs_port }};
         proxy_set_header upgrade $http_upgrade;
         proxy_set_header connection "upgrade";
         proxy_set_header Host $host;
@@ -44,7 +44,7 @@ server {
 
     location /ganache {
         proxy_http_version 1.1;
-        proxy_pass http://localhost:8545/;
+        proxy_pass http://localhost:{{ ganache_port }}/;
         proxy_set_header upgrade $http_upgrade;
         proxy_set_header connection "upgrade";
         proxy_set_header Host $host;

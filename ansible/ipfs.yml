@@ -1,17 +1,10 @@
 ---
 - name: "Deploy IPFS"
-  become: true
-  become_user: root
   hosts: all
   vars_files:
     - vars/common.yml
   tasks:
-    - name: "Install packages"
-      ansible.builtin.package: "name={{ item }} state=present"
-      with_items:
-        - podman
-
-    - name: "Pull valkey image"
+    - name: "Pull go IPFS image"
       containers.podman.podman_image:
         name: docker.io/ipfs/go-ipfs:v0.7.0
 
@@ -34,8 +27,7 @@
         volume:
           - "{{ ipfs_data_volume }}:/data/ipfs"
           - "{{ ipfs_staging_volume }}:/export"
-        exposed_ports:
-          - 5001 # API
-          - 8080 # Gateway
-          - 4001 # Swarm
-        network: host
+        ports:
+          - 5001:5001 # API
+          - "{{ ipfs_port }}:8080" # Gateway
+          - 4001:4001 # Swarm
