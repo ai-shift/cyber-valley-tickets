@@ -22,7 +22,7 @@ export const HomePage: React.FC = () => {
       <div className="w-full h-[1px] bg-primary/30" />
       <Button
         onClick={() => navigate("/events/create")}
-        className="w-full text-center text-2xl mt-8 h-24 card"
+        className="w-full text-center text-2xl mt-8 h-14 card"
       >
         Become SHAMAN
       </Button>
