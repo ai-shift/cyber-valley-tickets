@@ -20,7 +20,7 @@ export const AuthProvider: React.FC = () => {
   const { isError, isLoading } = useQuery({
     queryFn: refresh,
     queryKey: ["refresh"],
-    enabled: hasJWT && !walletChanged,
+    enabled: hasJWT,
     refetchInterval: 1000 * 60 * 3,
     refetchOnWindowFocus: true,
   });
@@ -53,6 +53,7 @@ export const AuthProvider: React.FC = () => {
     } else {
       apiClient.GET("/api/users/current/").then((resp) => {
         login(resp.data as User);
+        setWalletChanged(false);
       });
     }
   }, [hasError, navigate, hasJWT, logout, walletChanged]);
