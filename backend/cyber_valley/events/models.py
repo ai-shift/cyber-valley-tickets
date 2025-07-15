@@ -61,6 +61,7 @@ class Ticket(models.Model):
     )
     id = models.CharField(max_length=255, primary_key=True)
     is_redeemed = models.BooleanField(default=False, null=False)
+    pending_is_redeemed = models.BooleanField(default=False, null=False)
 
     def __str__(self) -> str:
         return f"Ticket for {self.event.title} owned by {self.owner.address}"
