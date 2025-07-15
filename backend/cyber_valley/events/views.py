@@ -6,7 +6,6 @@ import ipfshttpclient
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
-from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import (
     PolymorphicProxySerializer,
@@ -138,7 +137,6 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     },
 )
 @api_view(["PUT"])
-@parser_classes([MultiPartParser])
 @permission_classes([IsAuthenticated])
 def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     meta = UploadTicketMetaToIpfsSerializer(data=request.data)
@@ -149,7 +147,7 @@ def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     # TODO: Fetch event's img url
     event = get_object_or_404(Event, id=meta.eventid)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
-        socials_hash = client.add_json(model_to_dict(meta.socials))
+        socials_hash = client.add_json(meta.socials)
         event_meta = {"socials": socials_hash, "image": event.image_url}
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash})
