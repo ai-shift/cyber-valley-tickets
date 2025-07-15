@@ -1,6 +1,11 @@
 import type { EventStatus } from "@/entities/event";
 import { type Role, checkPermission } from "@/shared/lib/RBAC";
-import { approveEvent, declineEvent } from "@/shared/lib/web3";
+import {
+  approveEvent,
+  cancelEvent,
+  closeEvent,
+  declineEvent,
+} from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
@@ -18,7 +23,7 @@ type MaybeManageEventProps = {
   canEdit: boolean;
 };
 
-type ManageAction = "decline" | "accept";
+type ManageAction = "decline" | "accept" | "close" | "cancel";
 
 export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   role,
@@ -57,6 +62,24 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             error: false,
           });
           optimisticSetEventStatus(eventId, "declined");
+          break;
+        case "close":
+          await closeEvent(account, BigInt(eventId));
+          setModalInfo({
+            title: "Event finishing was initiated",
+            body: "Event will be finished soon",
+            error: false,
+          });
+          optimisticSetEventStatus(eventId, "closed");
+          break;
+        case "cancel":
+          await cancelEvent(account, BigInt(eventId));
+          setModalInfo({
+            title: "Event cancelling was initiated",
+            body: "Event will be cancelled soon",
+            error: false,
+          });
+          optimisticSetEventStatus(eventId, "cancelled");
           break;
         default:
           setModalInfo({
@@ -108,12 +131,16 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
         )}
         {canFinalize && (
           <div className="flex justify-between gap-3">
-            <Button className="w-full" variant="secondary">
-              Finalize
-            </Button>
-            <Button className="w-full" variant="destructive">
-              Fuck up
-            </Button>
+            <AcceptDialog option="accept" confirmFn={() => mutate("close")}>
+              <Button className="w-full" variant="secondary">
+                Finalize
+              </Button>
+            </AcceptDialog>
+            <AcceptDialog option="accept" confirmFn={() => mutate("cancel")}>
+              <Button className="w-full" variant="destructive">
+                Fuck up
+              </Button>
+            </AcceptDialog>
           </div>
         )}
         <ResultDialog

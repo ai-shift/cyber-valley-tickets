@@ -179,6 +179,32 @@ export async function declineEvent(
   return transactionHash;
 }
 
+export async function closeEvent(
+  account: Account,
+  eventId: bigint,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "closeEvent",
+    params: [eventId],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function cancelEvent(
+  account: Account,
+  eventId: bigint,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "cancelEvent",
+    params: [eventId],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
 export async function approveMintTicket(account: Account, ticketPrice: bigint) {
   const transaction = prepareContractCall({
     contract: erc20,
