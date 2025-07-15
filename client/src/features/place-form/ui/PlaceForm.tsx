@@ -19,7 +19,7 @@ import type { EventPlace } from "@/entities/place";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { Switch } from "@/shared/ui/switch";
 import type { UseMutateFunction } from "@tanstack/react-query";
-import { usePlacePersist } from "../hooks/usePlacePersist";
+import { cleanPlaceLocal, usePlacePersist } from "../hooks/usePlacePersist";
 import { formSchema } from "../model/formSchema";
 
 type PlaceFormProps = {
@@ -54,6 +54,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   function onSubmit(values: z.infer<typeof formSchema>) {
     submitHandler(values, {
       onSuccess: () => {
+        cleanPlaceLocal();
         form.reset();
       },
     });

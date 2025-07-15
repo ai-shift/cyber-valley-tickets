@@ -5,6 +5,7 @@ import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { upsertPlaceW3 } from "../api/upsertPlaceW3";
 
@@ -13,6 +14,7 @@ type PlaceEditorProps = {
 };
 
 export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const account = useActiveAccount();
   const { sendTx, data: txHash, isLoading } = useSendTx();
@@ -61,7 +63,10 @@ export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
         setOpen={setIsOpen}
         title={dialogTitle}
         body={dialogBody}
-        onConfirm={() => setIsOpen(false)}
+        onConfirm={() => {
+          navigate("/manage/place");
+          setIsOpen(false);
+        }}
         failure={isError}
         txHash={txHash as string}
       />
