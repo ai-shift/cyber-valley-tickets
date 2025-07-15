@@ -9,6 +9,7 @@ import type { Account } from "thirdweb/wallets";
 
 import type { EventDto } from "@/entities/event";
 import type { Order } from "@/entities/order";
+import { cleanEventLocal } from "@/features/event-form";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
 
@@ -83,6 +84,7 @@ const updateEvent = async (
   );
   sendTx(tx);
   await tx;
+  cleanEventLocal();
 };
 
 const createEvent = async (
@@ -120,6 +122,7 @@ const createEvent = async (
   );
   sendTx(tx);
   await tx;
+  cleanEventLocal();
 };
 
 const getSocialsCid = async (order: Order) => {
