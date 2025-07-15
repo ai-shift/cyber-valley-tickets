@@ -84,7 +84,7 @@ export const AccountPage: React.FC = () => {
         </div>
         <div className="p-5">
           <Expandable defaultOpened>
-            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center card">
+            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
               {({ isCurrentExpanded }) => (
                 <>
                   <img
@@ -108,7 +108,7 @@ export const AccountPage: React.FC = () => {
             </ExpandableContent>
           </Expandable>
           <Expandable defaultOpened>
-            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center card">
+            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
               {({ isCurrentExpanded }) => (
                 <>
                   <img
@@ -132,7 +132,7 @@ export const AccountPage: React.FC = () => {
             </ExpandableContent>
           </Expandable>
           <Expandable defaultOpened>
-            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center card">
+            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
               {({ isCurrentExpanded }) => (
                 <>
                   <img

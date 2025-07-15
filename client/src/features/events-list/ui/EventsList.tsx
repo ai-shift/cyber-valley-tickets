@@ -28,7 +28,7 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   const limitedEvents = limit ? displayEvents.slice(0, limit) : displayEvents;
 
   if (limitedEvents.length <= 0) {
-    return <p className="text-center">No events!</p>;
+    return <p className="text-center text-secondary/60">No events!</p>;
   }
 
   return (
