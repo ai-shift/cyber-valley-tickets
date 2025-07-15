@@ -159,7 +159,7 @@ def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     responses={
         (200, "application/json"): {
             "type": "object",
-            "properties": {"status": {"type": "string"}},
+            "properties": {"nonce": {"type": "string"}},
         }
     }
 )

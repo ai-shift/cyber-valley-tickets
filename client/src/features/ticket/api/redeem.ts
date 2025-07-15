@@ -9,8 +9,9 @@ export const redeem = async (
   if (!account) throw new Error("No account");
 
   const parts = QRCodeValue.split(",");
-  const ticketId = Number(parts[0]);
-  const nonce = parts[1];
+  const eventId = Number(parts[0]);
+  const ticketId = Number(parts[1]);
+  const nonce = parts[2];
 
   if (Number.isNaN(ticketId)) {
     throw new Error(`Invalid ticket id: ${parts}`);
@@ -19,11 +20,15 @@ export const redeem = async (
     throw new Error(`There is no nonce in the QR code data: ${parts}`);
   }
 
-  const { error } = await apiClient.GET("/api/events/tickets/nonce/{nonce}", {
-    params: {
-      path: { nonce },
+  const { error } = await apiClient.GET(
+    "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}",
+    {
+      params: {
+        // @ts-ignore: TS2561
+        path: { nonce, event_id: eventId, ticket_id: ticketId },
+      },
     },
-  });
+  );
 
   if (error) {
     throw error;

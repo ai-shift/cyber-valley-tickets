@@ -2016,7 +2016,7 @@ export interface operations {
         };
         content: {
           "application/json": {
-            status?: string;
+            nonce?: string;
           };
         };
       };
