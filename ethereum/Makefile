@@ -29,8 +29,8 @@ lint-solidity:
 
 ganache:
 	podman run -d \
-	  --name ganache-node \
-	  --restart=always \
+	  --name cvland-ganache \
+	  --rm \
 	  -p 8545:8545 \
 	  docker.io/trufflesuite/ganache:v7.9.2 \
 	  --logging.verbose=true \
