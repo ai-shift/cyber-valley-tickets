@@ -448,7 +448,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.status == EventStatus.Approved,
             "Only event in approved state can be cancelled"
         );
-        EventPlace storage place = eventPlaces[evt.eventPlaceId];
         uint256 networth = calcEventNetworth(evt);
         require(
             usdtTokenContract.transfer(master, networth),
