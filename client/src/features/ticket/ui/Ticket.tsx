@@ -47,7 +47,8 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
     navigate("/socials");
   }
 
-  if (user.role === "master" || user.role === "staff") return <Redeem />;
+  if (user.role === "master" || user.role === "staff")
+    return <Redeem eventId={event.id} />;
   if (isCreator) return;
   return (
     <>
