@@ -1,9 +1,5 @@
 import { Button } from "@/shared/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/shared/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/shared/ui/dialog";
 
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useQuery } from "@tanstack/react-query";
