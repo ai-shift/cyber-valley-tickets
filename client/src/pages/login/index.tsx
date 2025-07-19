@@ -8,8 +8,6 @@ export const LoginPage: React.FC = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  console.log(state);
-
   useEffect(() => {
     if (!hasJWT) return;
     if (state?.goBack) {
