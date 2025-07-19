@@ -4,7 +4,6 @@ import { apiClient } from "@/shared/api";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import { mintERC20 } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
-import { PageContainer } from "@/shared/ui/PageContainer";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
 import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
@@ -29,7 +28,19 @@ export const AccountPage: React.FC = () => {
   const address = account.address;
 
   return (
-    <PageContainer hasBackIcon={false} name="Account">
+    <div>
+      <header className="flex justify-start items-center gap-5 py-4 px-5">
+        <h2 className="text-2xl font-semibold text-primary text-shadow-primary text-shadow-xs">
+          Account
+        </h2>
+        <Button
+          className="ml-auto"
+          variant="destructive"
+          onClick={logout}
+        >
+          <LogOut />
+        </Button>
+      </header>
       <div className="flex flex-col">
         <div className="flex gap-5 items-center py-5 px-10 sm:px-20">
           <div className="flex md:flex-row md:gap-3 flex-col items-center">
@@ -40,14 +51,6 @@ export const AccountPage: React.FC = () => {
             />
             <p className="text-lg">{formatAddress(address as `0x${string}`)}</p>
           </div>
-          <Button
-            className="ml-auto"
-            variant="destructive"
-            size="lg"
-            onClick={logout}
-          >
-            <LogOut />
-          </Button>
         </div>
         <div className="w-1/2 h-full flex flex-col justify-between gap-20">
           <Button
@@ -155,6 +158,6 @@ export const AccountPage: React.FC = () => {
           </Expandable>
         </div>
       </div>
-    </PageContainer>
+    </div>
   );
 };
