@@ -60,7 +60,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           <p className="text-3xl font-bold text-primary">?</p>
         </a>
         <img
-          className="aspect-video object-cover object-center"
+          className="w-full aspect-video object-cover object-center"
           src={imageUrl ?? "/event_default.jpg"}
           alt={title}
         />

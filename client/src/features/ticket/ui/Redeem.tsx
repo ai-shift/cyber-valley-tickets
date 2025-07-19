@@ -2,7 +2,6 @@ import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogTrigger,
 } from "@/shared/ui/dialog";
 
@@ -34,24 +33,20 @@ export const Redeem: React.FC<RedeemProps> = ({ eventId }) => {
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} className="p-16">
         <DialogTitle className="text-center text-3xl">Scan ticket</DialogTitle>
-        <DialogDescription asChild>
-          <>
-            <Scanner onScan={handleDetect} />
-            {/* NOTE: IDK why openapi-typescript marks it as possible undefined */}
-            {data?.tickets && (
-              <div className="text-center">
-                <p>
-                  <span>Total tickets:</span>
-                  {data.tickets.total}
-                </p>
-                <p>
-                  <span>Redeemed:</span>
-                  {data.tickets.redeemed}
-                </p>
-              </div>
-            )}
-          </>
-        </DialogDescription>
+        <Scanner onScan={handleDetect} />
+        {/* NOTE: IDK why openapi-typescript marks it as possible undefined */}
+        {data?.tickets && (
+          <div className="text-center">
+            <p>
+              <span>Total tickets:</span>
+              {data.tickets.total}
+            </p>
+            <p>
+              <span>Redeemed:</span>
+              {data.tickets.redeemed}
+            </p>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
