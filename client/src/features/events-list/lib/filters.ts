@@ -42,7 +42,7 @@ const isUpcoming = (user: User) => (event: Event) => {
   if (event.status === "approved") {
     return true;
   }
-  if (event.status === "submitted" && user.role === "master") {
+  if (event.status === "submitted" && (user.role === "master" || user.address === event.creator.address)) {
     return true;
   }
   return false;

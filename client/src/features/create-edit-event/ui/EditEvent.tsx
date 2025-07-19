@@ -32,8 +32,7 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
     );
   }
 
-  // TODO: Why do we need the first part
-  if (canEdit && !canEdit(foundEvent)) {
+  if (!canEdit(foundEvent)) {
     return (
       <ErrorMessage
         errors={new Error("You have no permissions to edit this event")}
