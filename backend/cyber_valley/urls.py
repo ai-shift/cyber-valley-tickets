@@ -23,6 +23,7 @@ from .events.views import (
     EventPlaceViewSet,
     EventViewSet,
     event_status,
+    ticket_info,
     ticket_nonce,
     upload_event_meta_to_ipfs,
     upload_place_meta_to_ipfs,
@@ -43,6 +44,11 @@ urlpatterns = [
     path("", SpectacularSwaggerView.as_view(), name="swagger"),
     path("api/", include(router.urls)),
     path("api/events/<int:event_id>/status", event_status, name="event_status"),
+    path(
+        "api/events/<int:event_id>/tickets/<str:ticket_id>",
+        ticket_info,
+        name="ticket_info",
+    ),
     path(
         "api/events/<int:event_id>/tickets/<int:ticket_id>/nonce",
         ticket_nonce,
