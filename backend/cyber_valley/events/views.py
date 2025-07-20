@@ -29,11 +29,11 @@ from .serializers import (
     EventPlaceSerializer,
     EventSerializer,
     StaffEventSerializer,
-    TicketSerializer,
     UploadEventMetaToIpfsSerializer,
     UploadPlaceMetaToIpfsSerializer,
     UploadTicketMetaToIpfsSerializer,
 )
+from .ticket_serializer import TicketSerializer
 
 
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
@@ -173,10 +173,9 @@ def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
     return Response({"nonce": nonce})
 
 
+@extend_schema(responses=TicketSerializer)
 @api_view(["GET"])
-@extend_schema(
-    responses=TicketSerializer,
-)
+@permission_classes([])
 def ticket_info(_: Request, event_id: int, ticket_id: str) -> Response:
     data = get_object_or_404(Ticket, event__id=event_id, id=ticket_id)
     resp = TicketSerializer(data)
