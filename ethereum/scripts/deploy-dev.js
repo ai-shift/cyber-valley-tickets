@@ -113,6 +113,20 @@ async function main() {
         value: "@clare-doe",
       },
     },
+    {
+      title: "pending pending pending",
+      description: "la lala lalalala",
+      placeId: 1,
+      price: 69,
+      startDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+      daysAmount: 5,
+      cover: "https://picsum.photos/1920/1080",
+      creator: creatorSlave,
+      socials: {
+        network: "telegram",
+        value: "@michael-doe",
+      },
+    },
   ];
   for (const cfg of events) {
     // Fetch cover
@@ -177,6 +191,10 @@ async function main() {
   }
 
   // Approve some events
+  for (let eventId = 0; eventId < events.length - 1; eventId++) {
+    await eventManager.connect(master).approveEvent(eventId);
+    console.log("event", events[eventId].title, "approved")
+  }
 
   // Print deployed addresses
   console.log(`export PUBLIC_ERC20_ADDRESS=${await erc20.getAddress()}`);
