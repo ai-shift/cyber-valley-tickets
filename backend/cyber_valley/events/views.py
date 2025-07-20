@@ -29,6 +29,7 @@ from .serializers import (
     EventPlaceSerializer,
     EventSerializer,
     StaffEventSerializer,
+    TicketSerializer,
     UploadEventMetaToIpfsSerializer,
     UploadPlaceMetaToIpfsSerializer,
     UploadTicketMetaToIpfsSerializer,
@@ -170,6 +171,16 @@ def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
     key = f"{nonce}:{event_id}:{ticket_id}"
     cache.set(key, "nonce", timeout=60 * 5)
     return Response({"nonce": nonce})
+
+
+@api_view(["GET"])
+@extend_schema(
+    responses=TicketSerializer,
+)
+def ticket_info(_: Request, event_id: int, ticket_id: str) -> Response:
+    data = get_object_or_404(Ticket, event__id=event_id, id=ticket_id)
+    resp = TicketSerializer(data)
+    return Response(resp.data, status=200)
 
 
 @api_view(["GET"])
