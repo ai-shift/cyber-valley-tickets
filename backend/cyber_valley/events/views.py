@@ -184,7 +184,7 @@ def verify_ticket(
     if not cache.delete(key):
         return Response("Nonce expired or invalid", status=404)
 
-    ticket = get_object_or_404(Ticket, id=ticket_id)
+    ticket = get_object_or_404(Ticket, id=ticket_id, event__id=event_id)
     if ticket.is_redeemed:
         return Response("redeemed", status=409)
     if ticket.pending_is_redeemed:
