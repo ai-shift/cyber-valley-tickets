@@ -65,12 +65,14 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
         return CreatorEventSerializer
 
 
+# NOTE: There is a problem with DNS to fetch event meta info via HTTP
+# during seeding, so the easiest way is to return cover's IPFS CID directly
 @extend_schema(
     request=UploadEventMetaToIpfsSerializer,
     responses={
         200: {
             "type": "object",
-            "properties": {"cid": {"type": "string"}},
+            "properties": {"cid": {"type": "string"}, "cover": {"type": "string"}},
             "description": "IPFS CID of stored data",
         }
     },
@@ -102,7 +104,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
             "socialsCid": meta.socials_cid,
         }
         meta_hash = client.add_json(event_meta)
-    return Response({"cid": meta_hash})
+    return Response({"cid": meta_hash, "cover": cover_hash})
 
 
 @extend_schema(

@@ -15,6 +15,9 @@
                     {
                         "cookieJWTAuth": []
                     },
+                    {
+                        "tokenAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -176,6 +179,9 @@
                     {
                         "cookieJWTAuth": []
                     },
+                    {
+                        "tokenAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -336,6 +342,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -509,6 +518,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     },
                     {}
                 ],
@@ -824,6 +836,9 @@
                     {
                         "cookieJWTAuth": []
                     },
+                    {
+                        "tokenAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -1117,6 +1132,9 @@
                     {
                         "cookieJWTAuth": []
                     },
+                    {
+                        "tokenAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -1310,6 +1328,9 @@
                     {
                         "cookieJWTAuth": []
                     },
+                    {
+                        "tokenAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -1490,6 +1511,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -1712,6 +1736,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -1921,6 +1948,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -2143,6 +2173,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -2338,6 +2371,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     },
                     {}
                 ],
@@ -2543,6 +2579,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -2696,6 +2735,9 @@
                                     "properties": {
                                         "cid": {
                                             "type": "string"
+                                        },
+                                        "cover": {
+                                            "type": "string"
                                         }
                                     },
                                     "description": "IPFS CID of stored data"
@@ -2726,6 +2768,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -2919,6 +2964,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -3102,6 +3150,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -3275,6 +3326,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -3455,6 +3509,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -3656,6 +3713,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -3841,6 +3901,9 @@
                     {
                         "cookieJWTAuth": []
                     },
+                    {
+                        "tokenAuth": []
+                    },
                     {}
                 ],
                 "responses": {
@@ -4025,6 +4088,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     },
                     {}
                 ],
@@ -4217,6 +4283,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -4384,6 +4453,9 @@
                 "security": [
                     {
                         "cookieJWTAuth": []
+                    },
+                    {
+                        "tokenAuth": []
                     }
                 ],
                 "responses": {
@@ -5638,6 +5710,12 @@
                     },
                     {
                         "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventidErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventtitleErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventcoverErrorComponent"
                     }
                 ],
                 "discriminator": {
@@ -5647,7 +5725,9 @@
                         "socials.non_field_errors": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent",
                         "socials.network": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent",
                         "socials.value": "#/components/schemas/ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent",
-                        "eventid": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventidErrorComponent"
+                        "eventid": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventidErrorComponent",
+                        "eventtitle": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventtitleErrorComponent",
+                        "eventcover": "#/components/schemas/ApiIpfsTicketsMetaUpdateEventcoverErrorComponent"
                     }
                 }
             },
@@ -5668,6 +5748,37 @@
                     }
                 }
             },
+            "ApiIpfsTicketsMetaUpdateEventcoverErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "eventcover"
+                        ],
+                        "type": "string",
+                        "description": "* `eventcover` - eventcover"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
             "ApiIpfsTicketsMetaUpdateEventidErrorComponent": {
                 "type": "object",
                 "properties": {
@@ -5687,6 +5798,37 @@
                         ],
                         "type": "string",
                         "description": "* `invalid` - invalid\n* `max_string_length` - max_string_length\n* `null` - null\n* `required` - required"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiIpfsTicketsMetaUpdateEventtitleErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "eventtitle"
+                        ],
+                        "type": "string",
+                        "description": "* `eventtitle` - eventtitle"
+                    },
+                    "code": {
+                        "enum": [
+                            "blank",
+                            "invalid",
+                            "null",
+                            "null_characters_not_allowed",
+                            "surrogate_characters_not_allowed"
+                        ],
+                        "type": "string",
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
                     },
                     "detail": {
                         "type": "string"
@@ -7033,6 +7175,14 @@
                     },
                     "eventid": {
                         "type": "integer"
+                    },
+                    "eventtitle": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "eventcover": {
+                        "type": "string",
+                        "minLength": 1
                     }
                 },
                 "required": [
@@ -7054,6 +7204,12 @@
                 "in": "cookie",
                 "name": "access_token",
                 "description": "JSON Web Token authentication via cookie"
+            },
+            "tokenAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "Authorization",
+                "description": "Token-based authentication with required prefix \"Token\""
             }
         }
     }
