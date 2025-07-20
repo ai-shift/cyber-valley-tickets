@@ -6,11 +6,15 @@ import EventTicketModule from "../ignition/modules/EventTicket";
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const DEV_TEAM_EOA = MASTER_EOA;
 const API_HOST = process.env.PUBLIC_API_HOST;
+const IPFS_HOST = process.env.IPFS_PUBLIC_HOST;
 
 async function main() {
   // Validation
   if (API_HOST == null || API_HOST === "") {
-    throw new Error(`API_HOST env var is missing: ${API_HOST}`);
+    throw new Error(`PUBLIC_API_HOST env var is missing: ${API_HOST}`);
+  }
+  if (IPFS_HOST == null || IPFS_HOST === "") {
+    throw new Error(`IPFS_PUBLIC_HOST env var is missing: ${IPFS_HOST}`);
   }
 
   // Deploy contracts
@@ -171,6 +175,7 @@ async function main() {
       throw new Error(`failed to upload event's meta with ${body}`);
     }
     const eventMeta = await eventMetaResponse.json();
+    cfg.ipfsCID = eventMeta.cid;
     const mh = getBytes32FromMultiash(eventMeta.cid);
     await erc20.connect(cfg.creator).mint(100);
     await erc20
@@ -193,7 +198,72 @@ async function main() {
   // Approve some events
   for (let eventId = 0; eventId < events.length - 1; eventId++) {
     await eventManager.connect(master).approveEvent(eventId);
-    console.log("event", events[eventId].title, "approved")
+    console.log("event", events[eventId].title, "approved");
+  }
+
+  // Mint tickets
+  const tickets = [
+    {
+      owner: completeSlave,
+      eventId: 0,
+      socials: {
+        network: "instagram",
+        value: "@username1",
+      },
+    },
+    {
+      owner: completeSlave,
+      eventId: 1,
+      socials: {
+        network: "discord",
+        value: "@username2",
+      },
+    },
+  ];
+  for (const cfg of tickets) {
+    // Upload socials
+    const socialsResponse = await fetch(`${API_HOST}/api/ipfs/tickets/meta`, {
+      method: "PUT",
+      body: JSON.stringify({
+        eventid: cfg.eventId,
+        socials: cfg.socials,
+        // NOTE: Ugly AF, but pausing this script and running indexer is  even worse
+        eventcover: `${IPFS_HOST}/ipfs/${events[cfg.eventId].ipfsCID}`,
+        eventtitle: events[cfg.eventId].title,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${cfg.owner.address}`,
+      },
+    });
+    if (!socialsResponse.ok) {
+      const body = await socialsResponse.text();
+      throw new Error(
+        `failed to upload socials with ${body} for config ${JSON.stringify(cfg)}`,
+      );
+    }
+    const socials = await socialsResponse.json();
+    const mh = getBytes32FromMultiash(socials.cid);
+
+    // Mint ERC20
+    const price = events[cfg.eventId].price;
+    await erc20.connect(cfg.owner).mint(price);
+    await erc20
+      .connect(cfg.owner)
+      .approve(await eventManager.getAddress(), price);
+
+    // Mint ticket
+    await eventManager
+      .connect(cfg.owner)
+      .mintTicket(cfg.eventId, mh.digest, mh.hashFunction, mh.size);
+
+    console.log(
+      "ticket minted",
+      "owner",
+      cfg.owner.address,
+      "event",
+      events[cfg.eventId].title,
+    );
   }
 
   // Print deployed addresses

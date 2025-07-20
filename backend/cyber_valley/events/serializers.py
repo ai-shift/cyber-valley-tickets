@@ -170,11 +170,15 @@ class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
 class TicketMetaData:
     socials: UserSocials
     eventid: int
+    eventtitle: None | str
+    eventcover: None | str
 
 
 class UploadTicketMetaToIpfsSerializer(serializers.Serializer[TicketMetaData]):
     socials = UploadSocialsSerializer()
     eventid = serializers.IntegerField()
+    eventtitle = serializers.CharField(default=None)
+    eventcover = serializers.CharField(default=None)
 
     def create(self, validated_data: dict[str, Any]) -> TicketMetaData:
         return TicketMetaData(**validated_data)
