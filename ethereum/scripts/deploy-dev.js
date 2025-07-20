@@ -175,7 +175,7 @@ async function main() {
       throw new Error(`failed to upload event's meta with ${body}`);
     }
     const eventMeta = await eventMetaResponse.json();
-    cfg.ipfsCID = eventMeta.cid;
+    cfg.coverCID = eventMeta.cover;
     const mh = getBytes32FromMultiash(eventMeta.cid);
     await erc20.connect(cfg.creator).mint(100);
     await erc20
@@ -228,7 +228,7 @@ async function main() {
         eventid: cfg.eventId,
         socials: cfg.socials,
         // NOTE: Ugly AF, but pausing this script and running indexer is  even worse
-        eventcover: `${IPFS_HOST}/ipfs/${events[cfg.eventId].ipfsCID}`,
+        eventcover: `${IPFS_HOST}/ipfs/${events[cfg.eventId].coverCID}`,
         eventtitle: events[cfg.eventId].title,
       }),
       headers: {
@@ -263,6 +263,8 @@ async function main() {
       cfg.owner.address,
       "event",
       events[cfg.eventId].title,
+      "ticket CID",
+      socials.cid,
     );
   }
 

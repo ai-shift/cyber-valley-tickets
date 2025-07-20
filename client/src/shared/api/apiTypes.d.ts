@@ -799,8 +799,25 @@ export interface components {
             type: "validation_error";
             errors: components["schemas"]["ApiIpfsPlacesMetaUpdateError"][];
         };
-        ApiIpfsTicketsMetaUpdateError: components["schemas"]["ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateEventidErrorComponent"];
+        ApiIpfsTicketsMetaUpdateError: components["schemas"]["ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsNetworkErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateSocialsValueErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateEventidErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateEventtitleErrorComponent"] | components["schemas"]["ApiIpfsTicketsMetaUpdateEventcoverErrorComponent"];
         ApiIpfsTicketsMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsTicketsMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsTicketsMetaUpdateEventcoverErrorComponent: {
+            /**
+             * @description * `eventcover` - eventcover (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "eventcover";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
         ApiIpfsTicketsMetaUpdateEventidErrorComponent: {
             /**
              * @description * `eventid` - eventid (enum property replaced by openapi-typescript)
@@ -815,6 +832,23 @@ export interface components {
              * @enum {string}
              */
             code: "invalid" | "max_string_length" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsTicketsMetaUpdateEventtitleErrorComponent: {
+            /**
+             * @description * `eventtitle` - eventtitle (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "eventtitle";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "surrogate_characters_not_allowed";
             detail: string;
         };
         ApiIpfsTicketsMetaUpdateNonFieldErrorsErrorComponent: {
@@ -1241,6 +1275,8 @@ export interface components {
         UploadTicketMetaToIpfsRequest: {
             socials: components["schemas"]["UploadSocialsRequest"];
             eventid: number;
+            eventtitle?: string;
+            eventcover?: string;
         };
         /**
          * @description * `validation_error` - Validation Error
@@ -2184,6 +2220,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         cid?: string;
+                        cover?: string;
                     };
                 };
             };
