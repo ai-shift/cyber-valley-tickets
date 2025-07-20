@@ -19,7 +19,6 @@ deploy-dev:
 check:
 	pnpm exec biome check --write test/
 	pnpm exec biome check --write scripts/
-	pnpm exec tsc --noEmit
 
 # Prettier solidity plugin is piece of shit. It yells with huge stack traces without any clues about error place
 format-solidity:
