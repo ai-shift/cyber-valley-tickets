@@ -45,7 +45,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/events/<int:event_id>/status", event_status, name="event_status"),
     path(
-        "api/events/<int:event_id>/tickets/<str:ticket_id>",
+        "api/events/<int:event_id>/tickets/<int:ticket_id>",
         ticket_info,
         name="ticket_info",
     ),
