@@ -1,3 +1,4 @@
+import logging
 import secrets
 import time
 from pathlib import Path
@@ -34,6 +35,8 @@ from .serializers import (
     UploadTicketMetaToIpfsSerializer,
 )
 from .ticket_serializer import TicketSerializer
+
+log = logging.getLogger(__name__)
 
 
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
@@ -79,9 +82,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
     meta = UploadEventMetaToIpfsSerializer(data=request.data)
     meta.is_valid(raise_exception=True)
     meta = meta.save()
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
-    target_base_path = settings.IPFS_DATA_PATH / "users" / user.address / "events"
+    target_base_path = settings.IPFS_DATA_PATH / "users" / meta.socials_cid / "events"
     target_base_path.mkdir(exist_ok=True, parents=True)
     # FIXME: Can be a name without a suffix
     assert meta.cover.name
@@ -119,8 +120,6 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     meta = UploadPlaceMetaToIpfsSerializer(data=request.data)
     meta.is_valid(raise_exception=True)
     meta = meta.save()
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         event_meta = {"title": meta.title, "location_url": meta.location_url}
         meta_hash = client.add_json(event_meta)
@@ -149,9 +148,14 @@ def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     event = get_object_or_404(Event, id=meta.eventid)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_hash = client.add_json(meta.socials)
-        event_meta = {"socials": socials_hash, "image": event.image_url}
+        event_meta = {
+            "socials": socials_hash,
+            "image": event.image_url,
+            "name": f"Ticket to {event.title}",
+            "description": "Your way to attend the event",
+        }
         meta_hash = client.add_json(event_meta)
-    return Response({"cid": meta_hash})
+    log.info("saving metadata for the new ticket: %s with cid %s", event_meta, meta_hash)
 
 
 @extend_schema(
