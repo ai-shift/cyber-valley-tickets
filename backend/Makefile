@@ -3,7 +3,7 @@ ipfs_container_name := "cyber-valley-ipfs"
 valkey_container_name := "cyber-valley-valkey"
 python := .venv/bin/python
 VIRTUALIZER ?= podman
-BACKEND_PORT ?= 800
+BACKEND_PORT ?= 8000
 
 format:
 	uv run ruff format
