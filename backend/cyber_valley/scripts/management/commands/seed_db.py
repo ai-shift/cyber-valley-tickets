@@ -1,17 +1,14 @@
-import uuid
 from argparse import ArgumentParser
-from datetime import timedelta
 from typing import Any
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.utils import timezone
+from rest_framework.authtoken.models import Token
 
 from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.indexer.models import LastProcessedBlock, LogProcessingError
 from cyber_valley.notifications.models import Notification
 from cyber_valley.users.models import CyberValleyUser
-from rest_framework.authtoken.models import Token
 
 
 class Command(BaseCommand):
@@ -29,7 +26,7 @@ class Command(BaseCommand):
             help="Removes existing data without adding mocks",
         )
 
-    def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:  # noqa: PLR0915
+    def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
         self.stdout.write("Seeding database...")
 
         if options["flush"] or options["flush_only"]:
@@ -50,6 +47,7 @@ class Command(BaseCommand):
         users = [
             ("0x2789023F36933E208675889869c7d3914A422921", CyberValleyUser.MASTER),
             ("0x96e37a0cD915c38dE8B5aAC0db61eB7eB839CeeB", CyberValleyUser.CUSTOMER),
+            ("0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e", CyberValleyUser.CUSTOMER),
         ]
         with transaction.atomic():
             for address, role in users:

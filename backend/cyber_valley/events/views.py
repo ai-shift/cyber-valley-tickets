@@ -82,7 +82,9 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
     meta = UploadEventMetaToIpfsSerializer(data=request.data)
     meta.is_valid(raise_exception=True)
     meta = meta.save()
-    target_base_path = settings.IPFS_DATA_PATH / "users" / meta.socials_cid / "events"
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+    target_base_path = settings.IPFS_DATA_PATH / "users" / user.address / "events"
     target_base_path.mkdir(exist_ok=True, parents=True)
     # FIXME: Can be a name without a suffix
     assert meta.cover.name
@@ -145,17 +147,34 @@ def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     user = request.user
     assert not isinstance(user, AnonymousUser)
     # TODO: Fetch event's img url
-    event = get_object_or_404(Event, id=meta.eventid)
+    try:
+        event = Event.objects.get(id=meta.eventid)
+        event_data = {
+            "image": event.image_url,
+            "name": f"Ticket to {event.title}",
+        }
+    except Event.DoesNotExist:
+        if not meta.eventcover or not meta.eventtitle:
+            return Response("event not found", status=404)
+
+        event_data = {
+            "image": meta.eventcover,
+            "name": f"Ticket to {meta.eventtitle}",
+        }
+
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_hash = client.add_json(meta.socials)
         event_meta = {
             "socials": socials_hash,
-            "image": event.image_url,
-            "name": f"Ticket to {event.title}",
             "description": "Your way to attend the event",
+            **event_data,
         }
         meta_hash = client.add_json(event_meta)
-    log.info("saving metadata for the new ticket: %s with cid %s", event_meta, meta_hash)
+
+    log.info(
+        "saving metadata for the new ticket: %s with cid %s", event_meta, meta_hash
+    )
+    return Response({"cid": meta_hash}, status=201)
 
 
 @extend_schema(
