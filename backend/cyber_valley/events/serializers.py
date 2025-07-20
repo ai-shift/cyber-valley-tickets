@@ -11,7 +11,7 @@ from cyber_valley.users.models import CyberValleyUser as UserType
 from cyber_valley.users.models import UserSocials
 from cyber_valley.users.serializers import UploadSocialsSerializer
 
-from .models import Event, EventPlace, Ticket
+from .models import Event, EventPlace
 
 User = get_user_model()
 
@@ -178,9 +178,3 @@ class UploadTicketMetaToIpfsSerializer(serializers.Serializer[TicketMetaData]):
 
     def create(self, validated_data: dict[str, Any]) -> TicketMetaData:
         return TicketMetaData(**validated_data)
-
-
-class TicketSerializer(serializers.Serializer[Ticket]):
-    class Meta:
-        model = Ticket
-        fields = ("is_redeemed", "pending_is_redeemed")
