@@ -30,8 +30,8 @@ import {
 
 import {
   createEventPlaceCornerCases,
-  submitEventDateRangeOverlapCornerCases,
   submitEventCases,
+  submitEventDateRangeOverlapCornerCases,
 } from "./corner-cases";
 
 describe("CyberValleyEventManager", () => {
@@ -177,11 +177,11 @@ describe("CyberValleyEventManager", () => {
             eventPlaceId,
             ...eventRequestPatch,
           });
-	  if (revertsWith == null) {
-	    await expect(tx).to.not.be.reverted;
-	  } else {
-	    await expect(tx).to.be.revertedWith(revertsWith);
-	  }
+          if (revertsWith == null) {
+            await expect(tx).to.not.be.reverted;
+          } else {
+            await expect(tx).to.be.revertedWith(revertsWith);
+          }
         }),
     );
 
@@ -492,14 +492,8 @@ describe("CyberValleyEventManager", () => {
       );
       await expect(tx).to.changeTokenBalances(
         ERC20,
-        [
-          await master.getAddress(),
-          await eventManager.getAddress(),
-        ],
-        [
-          Number(eventRequestSubmitionPrice),
-          -eventRequestSubmitionPrice,
-        ],
+        [await master.getAddress(), await eventManager.getAddress()],
+        [Number(eventRequestSubmitionPrice), -eventRequestSubmitionPrice],
       );
     });
   });

@@ -76,7 +76,7 @@ export const submitEventCases = [
     eventRequestPatch: {
       startDate: timestamp(2),
     },
-  }
+  },
 ];
 
 export const submitEventDateRangeOverlapCornerCases = [
