@@ -47,14 +47,18 @@ class Command(BaseCommand):
         if options["flush_only"]:
             return
 
+        users = [
+            ("0x2789023F36933E208675889869c7d3914A422921", CyberValleyUser.MASTER),
+            ("0x96e37a0cD915c38dE8B5aAC0db61eB7eB839CeeB", CyberValleyUser.CUSTOMER),
+        ]
         with transaction.atomic():
-            # --- Create Master User ---
-            master_user, created = CyberValleyUser.objects.get_or_create(
-                address="0x2789023F36933E208675889869c7d3914A422921",
-                defaults={"role": CyberValleyUser.MASTER, "is_active": True},
-            )
-            self.stdout.write(f"Created Master User: {master_user.address}")
-            token = Token.objects.create(user=master_user, key="0x2789023F36933E208675889869c7d3914A422921")
-            self.stdout.write(f"Created token: {token.key}")
+            for address, role in users:
+                u = CyberValleyUser.objects.create(
+                    address=address,
+                    role=role,
+                    is_active=True,
+                )
+                Token.objects.create(user=u, key=address)
+                self.stdout.write(f"Created {role} user: {address}")
 
         self.stdout.write(self.style.SUCCESS("Database seeding complete."))
