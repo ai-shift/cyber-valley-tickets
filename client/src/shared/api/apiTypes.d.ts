@@ -1190,9 +1190,7 @@ export interface components {
     ClientErrorEnum: "client_error";
     Creator: {
       address: string;
-      readonly socials: {
-        [key: string]: unknown;
-      } | null;
+      readonly socials: components["schemas"]["UploadSocials"];
     };
     CreatorEvent: {
       readonly id: number;
@@ -1435,6 +1433,7 @@ export interface components {
       readonly id: string;
       readonly eventId: number;
       readonly isRedeemed: boolean;
+      readonly pendingIsRedeemed: boolean;
     };
     UploadEventMetaToIpfsRequest: {
       /** Format: binary */
@@ -1447,6 +1446,10 @@ export interface components {
     UploadPlaceMetaToIpfsRequest: {
       title: string;
       locationUrl: string;
+    };
+    UploadSocials: {
+      network: components["schemas"]["NetworkEnum"];
+      value: string;
     };
     UploadSocialsRequest: {
       network: components["schemas"]["NetworkEnum"];
