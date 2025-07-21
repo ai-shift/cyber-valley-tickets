@@ -193,7 +193,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
 
     with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
-            user=event.creator, network=socials["network"], value=socials["value"]
+            user=owner, network=socials["network"], value=socials["value"]
         )
 
     Ticket.objects.create(
