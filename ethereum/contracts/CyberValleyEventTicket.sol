@@ -99,7 +99,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         _requireOwned(tokenId);
         CyberValley.Multihash memory mh = ticketsMeta[tokenId];
         string memory cid = toCID(mh.digest, mh.hashFunction, mh.size);
-        return string(abi.encodePacked("ipfs://", cid));
+        return string(abi.encodePacked("http://localhost:8080/", cid));
     }
 
     function transferFrom(
@@ -139,20 +139,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
             multihashBytes[j + 2] = hashBytes[j];
         }
 
-        return bytesToHex(Base58.encode(multihashBytes));
-    }
-
-    
-    function bytesToHex(bytes memory data) internal pure returns (string memory) {
-        bytes memory hexChars = "0123456789abcdef";
-        bytes memory result = new bytes(data.length * 2);
-
-        for (uint i = 0; i < data.length; i++) {
-            result[i * 2] = hexChars[uint8(data[i] >> 4)];
-            result[i * 2 + 1] = hexChars[uint8(data[i] & 0x0f)];
-        }
-
-        return string(result);
+        return string(Base58.encode(multihashBytes));
     }
 }
 
