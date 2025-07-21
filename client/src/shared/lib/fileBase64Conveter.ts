@@ -4,7 +4,8 @@ export function getBase64(file: File): Promise<string> {
       const reader = new FileReader();
       reader.onload = (event) => {
         const string = event.target?.result;
-        if (typeof string !== "string") return reject("Failed to extract base64");
+        if (typeof string !== "string")
+          return reject("Failed to extract base64");
         const base = string.split(",")[1];
         if (base === undefined) return reject("Failed to split base64");
         resolve(
@@ -19,10 +20,10 @@ export function getBase64(file: File): Promise<string> {
       reader.onerror = (err) => {
         console.error("Can't extract base64", err);
         reject(err);
-      }
+      };
       reader.readAsDataURL(file);
-    } catch(e) {
-      console.error("Can't extract base64", e)
+    } catch (e) {
+      console.error("Can't extract base64", e);
       reject(e);
     }
   });
