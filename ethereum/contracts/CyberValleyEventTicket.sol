@@ -36,7 +36,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         string memory name,
         string memory symbol,
         address _master,
-        string calldata _ipfsHost
+        string memory _ipfsHost
     ) ERC721(name, symbol) {
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
