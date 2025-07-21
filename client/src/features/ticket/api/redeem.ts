@@ -50,6 +50,11 @@ export const redeem = async (
     throw error;
   }
 
+  if (response.status === 409) {
+    alert("Ticket has been redeemed already");
+    return;
+  }
+
   if (
     response.status === 202 &&
     !confirm("Redeem transaction was possible started. Proceed anyway?")
