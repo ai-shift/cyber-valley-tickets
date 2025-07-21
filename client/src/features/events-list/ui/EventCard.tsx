@@ -1,9 +1,9 @@
 import type { Event } from "@/entities/event";
 
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
+import { getTimeString } from "@/shared/lib/getTimeString";
 import { Link } from "react-router";
 import { StatusBage } from "./StatusBage";
-import { getTimeString } from "@/shared/lib/getTimeString";
 
 type EventCardProps = {
   event: Event;
@@ -48,7 +48,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
                 alt="calendar icon"
               />
               <p className="text-sm text-accent font-light">
-                {formatTimestamp(startDateTimestamp)} ({getTimeString(startDateTimestamp)})
+                {formatTimestamp(startDateTimestamp)} (
+                {getTimeString(startDateTimestamp)})
               </p>
               <img
                 className="h-4"
