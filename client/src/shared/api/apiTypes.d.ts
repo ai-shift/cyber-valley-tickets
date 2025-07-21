@@ -1433,6 +1433,7 @@ export interface components {
       readonly id: string;
       readonly eventId: number;
       readonly isRedeemed: boolean;
+      readonly pendingIsRedeemed: boolean;
     };
     UploadEventMetaToIpfsRequest: {
       /** Format: binary */

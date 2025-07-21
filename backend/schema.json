@@ -7103,12 +7103,17 @@
                     "isRedeemed": {
                         "type": "boolean",
                         "readOnly": true
+                    },
+                    "pendingIsRedeemed": {
+                        "type": "boolean",
+                        "readOnly": true
                     }
                 },
                 "required": [
                     "eventId",
                     "id",
-                    "isRedeemed"
+                    "isRedeemed",
+                    "pendingIsRedeemed"
                 ]
             },
             "UploadEventMetaToIpfsRequest": {
