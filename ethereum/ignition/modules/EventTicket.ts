@@ -10,7 +10,7 @@ const EventTicketModule = buildModule("EventTicket", (m) => {
     "CyberValleyEventTicket",
     "CVET",
     masterAddress,
-    IPFS_HOST
+    IPFS_HOST + "/ipfs"
   ]);
   return { eventTicket };
 });
