@@ -457,7 +457,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         emit EventStatusChanged(eventId, evt.status);
     }
 
-    function calcEventNetworth(Event storage evt) internal view returns (uint256) {
+    function calcEventNetworth(
+        Event storage evt
+    ) internal view returns (uint256) {
         return evt.ticketPrice * evt.customers.length + eventRequestPrice;
     }
 
