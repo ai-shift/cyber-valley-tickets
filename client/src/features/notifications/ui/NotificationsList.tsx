@@ -25,7 +25,7 @@ export const NotificationsList: React.FC = () => {
     <div className="flex flex-col gap-3 px-3">
       {notifications.map((notification) => (
         <NotificationCard
-          key={notification.title}
+          key={notification.id}
           notification={notification}
         />
       ))}
