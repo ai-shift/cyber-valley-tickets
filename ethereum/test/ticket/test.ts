@@ -3,6 +3,8 @@ import bs58 from "bs58";
 import { expect } from "chai";
 import type { BaseContract, Signer } from "ethers";
 
+const IPFS_HOST = "http://test.ipfs.host";
+
 describe("CyberValleyEventTicket", () => {
   describe("tokenURI", () => {
     it("returns valid URI", async () => {
@@ -14,7 +16,7 @@ describe("CyberValleyEventTicket", () => {
         .connect(eventManager)
         .mint(master, 1, mh.digest, mh.hashFunction, mh.size);
       const tx = await undertest.connect(master).tokenURI(1);
-      await expect(tx).to.equal(`http://localhost:8080/${cid}`);
+      await expect(tx).to.equal(`${IPFS_HOST}/${cid}`);
     });
   });
 });
@@ -33,9 +35,12 @@ async function deployContract(): Promise<ContractFixture> {
   const eventTicket = await CyberValleyEventTicketFactory.deploy(
     "CyberValleyEventTicket",
     "CVET",
-    eventManager,
+    master,
   );
-  eventTicket.connect(master).setEventManagerAddress(eventManager.address);
+  await eventTicket
+    .connect(master)
+    .setEventManagerAddress(eventManager.address);
+  await eventTicket.connect(master).setIpfsHost(IPFS_HOST);
   return { master, eventManager, undertest: eventTicket };
 }
 

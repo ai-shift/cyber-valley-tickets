@@ -11,12 +11,14 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
 
     bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
     bytes32 public constant STAFF_ROLE = keccak256("STAFF_ROLE");
-    bytes32 public constant EVENT_MANAGER_ROLE = keccak256("EVENT_MANAGER_ROLE");
+    bytes32 public constant EVENT_MANAGER_ROLE =
+        keccak256("EVENT_MANAGER_ROLE");
 
     uint256 private lastTokenId;
     mapping(uint256 => CyberValley.Multihash) public ticketsMeta;
     mapping(uint256 => bool) public isRedeemed;
 
+    string public ipfsHost;
     address public eventManagerAddress;
 
     event TicketMinted(
@@ -70,6 +72,10 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         _grantRole(EVENT_MANAGER_ROLE, _eventManagerAddress);
     }
 
+    function setIpfsHost(string calldata host) public onlyMaster {
+        ipfsHost = host;
+    }
+
     function mint(
         address to,
         uint256 eventId,
@@ -95,11 +101,13 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         return (meta.digest, meta.hashFunction, meta.size);
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
         _requireOwned(tokenId);
         CyberValley.Multihash memory mh = ticketsMeta[tokenId];
         string memory cid = toCID(mh.digest, mh.hashFunction, mh.size);
-        return string(abi.encodePacked("http://localhost:8080/", cid));
+        return string(abi.encodePacked(ipfsHost, "/", cid));
     }
 
     function transferFrom(
@@ -123,7 +131,11 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         return super.supportsInterface(interfaceId);
     }
 
-    function toCID(bytes32 digest, uint8 hashFunction, uint8 size) internal pure returns (string memory) {
+    function toCID(
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
+    ) internal pure returns (string memory) {
         if (size == 0) return ""; // Return empty string for size 0
 
         bytes memory hashBytes = new bytes(32);
