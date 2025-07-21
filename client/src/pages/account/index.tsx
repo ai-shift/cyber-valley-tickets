@@ -33,11 +33,7 @@ export const AccountPage: React.FC = () => {
         <h2 className="text-2xl font-semibold text-primary text-shadow-primary text-shadow-xs">
           Account
         </h2>
-        <Button
-          className="ml-auto"
-          variant="destructive"
-          onClick={logout}
-        >
+        <Button className="ml-auto" variant="destructive" onClick={logout}>
           <LogOut />
         </Button>
       </header>
