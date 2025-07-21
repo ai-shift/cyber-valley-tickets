@@ -19,7 +19,11 @@ export const Redeem: React.FC<RedeemProps> = ({ eventId }) => {
   function handleDetect(detected: IDetectedBarcode[]) {
     const value = detected.at(0);
     if (!value) return;
-    redeem(account, value.rawValue);
+    try {
+      redeem(account, value.rawValue);
+    } catch (e) {
+      alert("Failed to redeem ticket");
+    }
   }
 
   return (
