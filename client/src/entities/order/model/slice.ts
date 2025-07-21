@@ -57,7 +57,7 @@ export const useOrderStore = create<OrderState>()(
           order: state.order && { ...state.order, socials },
         }),
         undefined,
-        "order/setTicketSocials",
+        "order/setOrderSocials",
       ),
   })),
 );
