@@ -4,7 +4,11 @@ from typing import Any
 
 from django.contrib.auth import get_user_model
 from django.core.files import File
-from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
+from drf_spectacular.utils import (
+    OpenApiExample,
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from rest_framework import serializers
 
 from cyber_valley.users.models import CyberValleyUser as UserType
@@ -41,9 +45,10 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
 class CreatorSerializer(serializers.ModelSerializer[UserType]):
     socials = serializers.SerializerMethodField()
 
-    def get_socials(self, obj: UserType):
-        last_social = obj.socials.order_by('id').last()
-        return UploadSocialsSerializer(last_social).data if last_social else None
+    @extend_schema_field(UploadSocialsSerializer)
+    def get_socials(self, obj: UserType) -> dict[str, Any]:
+        last_social = obj.socials.order_by("id").last()
+        return UploadSocialsSerializer(last_social).data
 
     class Meta:
         model = User

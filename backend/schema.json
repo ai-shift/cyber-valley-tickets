@@ -6288,10 +6288,19 @@
                     "address": {
                         "type": "string",
                         "maxLength": 42
+                    },
+                    "socials": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UploadSocials"
+                            }
+                        ],
+                        "readOnly": true
                     }
                 },
                 "required": [
-                    "address"
+                    "address",
+                    "socials"
                 ]
             },
             "CreatorEvent": {
@@ -7149,6 +7158,21 @@
                 "required": [
                     "locationUrl",
                     "title"
+                ]
+            },
+            "UploadSocials": {
+                "type": "object",
+                "properties": {
+                    "network": {
+                        "$ref": "#/components/schemas/NetworkEnum"
+                    },
+                    "value": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "network",
+                    "value"
                 ]
             },
             "UploadSocialsRequest": {
