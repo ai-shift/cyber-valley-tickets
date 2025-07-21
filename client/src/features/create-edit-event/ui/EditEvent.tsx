@@ -1,4 +1,5 @@
 import type { Event, EventDto } from "@/entities/event";
+import type { Socials } from "@/entities/order";
 import type { EventPlace } from "@/entities/place";
 import { EventForm } from "@/features/event-form";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
@@ -6,7 +7,7 @@ import { EventDataProvider } from "./EventDataProvider";
 
 type EditEventProps = {
   editEventId: number;
-  onSubmit: (event: EventDto) => void;
+  onSubmit: (event: EventDto, socials?: Socials) => void;
   canEdit: (event: Event) => boolean;
 };
 

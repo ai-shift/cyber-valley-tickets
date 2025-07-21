@@ -18,6 +18,7 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
+import type { Socials } from "@/entities/order";
 import { Camera } from "@/features/camera";
 import { TimePicker } from "@/features/time-input";
 import { assertIsDefined } from "@/shared/lib/assert";
@@ -45,7 +46,7 @@ import { PlaceCard } from "./PlaceCard";
 type EventFormProps = {
   events: Event[];
   places: EventPlace[];
-  onSumbit: (values: EventDto) => void;
+  onSumbit: (values: EventDto, maybeSocials?: Socials) => void;
   existingEvent?: Event;
 };
 
@@ -124,7 +125,14 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const eventDto = mapEventFormToEventDto(values);
-    submitHandler(eventDto);
+    if (existingEvent) {
+      submitHandler(eventDto, {
+        contactInfo: existingEvent.creator.socials.value,
+        type: existingEvent.creator.socials.network,
+      });
+    } else {
+      submitHandler(eventDto);
+    }
   }
 
   return (
