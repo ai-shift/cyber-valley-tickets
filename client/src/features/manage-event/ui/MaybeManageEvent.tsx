@@ -44,49 +44,57 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     mutationFn: async (action: ManageAction) => {
       if (account == null) throw new Error("Got null account");
       // TODO: Use the same type with EventStatus
-      switch (action) {
-        case "accept":
-          await approveEvent(account, BigInt(eventId));
-          setModalInfo({
-            title: "Event accepting was initiated",
-            body: "Event will be accepted soon",
-            error: false,
-          });
-          optimisticSetEventStatus(eventId, "approved");
-          break;
-        case "decline":
-          await declineEvent(account, BigInt(eventId));
-          setModalInfo({
-            title: "Event declining was inititated",
-            body: "Event will be declined soon",
-            error: false,
-          });
-          optimisticSetEventStatus(eventId, "declined");
-          break;
-        case "close":
-          await closeEvent(account, BigInt(eventId));
-          setModalInfo({
-            title: "Event finishing was initiated",
-            body: "Event will be finished soon",
-            error: false,
-          });
-          optimisticSetEventStatus(eventId, "closed");
-          break;
-        case "cancel":
-          await cancelEvent(account, BigInt(eventId));
-          setModalInfo({
-            title: "Event cancelling was initiated",
-            body: "Event will be cancelled soon",
-            error: false,
-          });
-          optimisticSetEventStatus(eventId, "cancelled");
-          break;
-        default:
-          setModalInfo({
-            title: "Failure",
-            body: `Unknown action: ${action}`,
-            error: true,
-          });
+      try {
+        switch (action) {
+          case "accept":
+            await approveEvent(account, BigInt(eventId));
+            setModalInfo({
+              title: "Event accepting was initiated",
+              body: "Event will be accepted soon",
+              error: false,
+            });
+            optimisticSetEventStatus(eventId, "approved");
+            break;
+          case "decline":
+            await declineEvent(account, BigInt(eventId));
+            setModalInfo({
+              title: "Event declining was inititated",
+              body: "Event will be declined soon",
+              error: false,
+            });
+            optimisticSetEventStatus(eventId, "declined");
+            break;
+          case "close":
+            await closeEvent(account, BigInt(eventId));
+            setModalInfo({
+              title: "Event finishing was initiated",
+              body: "Event will be finished soon",
+              error: false,
+            });
+            optimisticSetEventStatus(eventId, "closed");
+            break;
+          case "cancel":
+            await cancelEvent(account, BigInt(eventId));
+            setModalInfo({
+              title: "Event cancelling was initiated",
+              body: "Event will be cancelled soon",
+              error: false,
+            });
+            optimisticSetEventStatus(eventId, "cancelled");
+            break;
+          default:
+            setModalInfo({
+              title: "Failure",
+              body: `Unknown action: ${action}`,
+              error: true,
+            });
+        }
+      } catch (e) {
+        setModalInfo({
+          title: "Failure",
+          body: "Failed to send transaction",
+          error: true,
+        });
       }
       setIsOpen(true);
     },
