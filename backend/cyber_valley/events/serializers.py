@@ -42,10 +42,12 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
     socials = serializers.SerializerMethodField()
 
     def get_socials(self, obj: UserType):
-        return UploadSocialsSerializer(obj.socials.all(), many=True).data if obj.socials.exists() else []
+        last_social = obj.socials.order_by('id').last()
+        return UploadSocialsSerializer(last_social).data if last_social else None
+
     class Meta:
         model = User
-        fields = ("address",)
+        fields = ("address", "socials")
 
 
 class EventSerializer(serializers.ModelSerializer[Event]):
