@@ -39,6 +39,10 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
 
 
 class CreatorSerializer(serializers.ModelSerializer[UserType]):
+    socials = serializers.SerializerMethodField()
+
+    def get_socials(self, obj: UserType):
+        return UploadSocialsSerializer(obj.socials.all(), many=True).data if obj.socials.exists() else []
     class Meta:
         model = User
         fields = ("address",)
