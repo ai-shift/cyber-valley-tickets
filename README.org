@@ -1120,3 +1120,17 @@ https://dribbble.com/shots/23082238-Earthquake-Warning-App-Cyberpunk-Design-Styl
 ** Do socials really should be saved in IPFS or can be stored on the back-end?
 
 TBD
+
+* How to run
+
+#+begin_src bash
+make -C ethereum/ ganache
+make -C backend/ run # New terminal
+make -C client/ dev # New terminal
+make -C backend/ seed-db
+make -C ethereum/ deploy-dev # Copy new contract addresses from the stdout to .env
+make -C backend/ run-indexer # New terminal
+# Rerun backend & frontend
+make -C backend/ run # New terminal
+make -C client/ dev # New terminal
+#+end_src
