@@ -36,6 +36,7 @@ async function deployContract(): Promise<ContractFixture> {
     "CyberValleyEventTicket",
     "CVET",
     master,
+    "",
   );
   await eventTicket
     .connect(master)
