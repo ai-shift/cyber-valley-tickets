@@ -35,7 +35,8 @@ export const upsertPlaceW3 = async (
   if (!data || !data.cid) throw new Error("No cid was recieved");
 
   let promise: Promise<unknown>;
-  if (editPlaceId) {
+  if (editPlaceId != null) {
+    console.log("editing existing event place with id", editPlaceId);
     promise = updatePlace(
       account,
       BigInt(editPlaceId),

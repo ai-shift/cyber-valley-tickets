@@ -38,9 +38,6 @@ def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
         case CyberValleyEventManager.EventUpdated():
             _sync_event_updated(event_data)
             log.info("Event updated")
-        case CyberValleyEventManager.EventPlaceUpdated():
-            _sync_event_place_updated(event_data)
-            log.info("Event place created or updated")
         case CyberValleyEventTicket.TicketMinted():
             _sync_ticket_minted(event_data)
             log.info("Ticket minted")
