@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ variable_host | default('all') }}"
+- hosts: "{{ variable_host | default('backend') }}"
   vars_files:
     - "./vars/common.yml"
   tasks:

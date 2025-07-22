@@ -1,6 +1,6 @@
 ---
 - name: "Deploy IPFS"
-  hosts: all
+  hosts: backend
   vars_files:
     - vars/common.yml
   tasks:
