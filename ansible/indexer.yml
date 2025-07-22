@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: backend
   vars:
     image_name: "{{ lookup('ansible.builtin.env', 'BACKEND_IMAGE', default=undef()) }}"
     dotenv_src: ../.env.production

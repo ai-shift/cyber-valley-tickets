@@ -1,6 +1,6 @@
 ---
 - name: "Start podman containers with cron"
-  hosts: all
+  hosts: backend
   tasks:
     - name: "Podman restart containers"
       ansible.builtin.cron:

@@ -1,6 +1,6 @@
 ---
 - name: "Deploy frontend"
-  hosts: all
+  hosts: frontend
   become: true
   become_user: root
 
