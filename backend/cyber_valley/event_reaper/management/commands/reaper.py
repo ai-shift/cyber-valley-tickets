@@ -72,17 +72,6 @@ class Command(BaseCommand):
                 )
                 to_cancel = [row[0] for row in cursor.fetchall()]
 
-                cursor.execute(
-                    """
-                    SELECT e.id
-                    FROM events_event e
-                    WHERE e.status = 'approved'
-                    AND e.start_date::date + interval '1 day' * e.days_amount
-                      < now()::date
-                    """,
-                )
-                to_close = [row[0] for row in cursor.fetchall()]
-
             if to_cancel:
                 self.stdout.write(f"Got {len(to_cancel)} events to cancel: {to_cancel}")
                 for i in to_cancel:
@@ -90,16 +79,5 @@ class Command(BaseCommand):
                         contract.functions.cancelEvent(i).transact()
                     except Exception as e:
                         self.stderr.write(f"Failed to cancel event {i} with {e}")
-
-            if to_close:
-                # Because of down time some events should be cancelled
-                # but they'll be fetched with to_close events as well
-                to_close = [i for i in to_close if i not in to_cancel]
-                self.stdout.write(f"Got {len(to_close)} events to close: {to_close}")
-                for i in to_close:
-                    try:
-                        contract.functions.closeEvent(i).transact()
-                    except Exception as e:
-                        self.stderr.write(f"Failed to close event {i} with {e}")
 
             time.sleep(poll_interval.total_seconds())
