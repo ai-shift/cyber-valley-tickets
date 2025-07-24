@@ -37,8 +37,8 @@ export const AccountPage: React.FC = () => {
           <LogOut />
         </Button>
       </header>
-      <div className="flex flex-col items-center">
-        <div className="flex gap-5 items-center py-5 px-10 sm:px-20">
+      <div className="flex flex-col">
+        <div className="flex gap-5 self-center py-5 px-10 sm:px-20">
           <div className="flex md:flex-row md:gap-3 flex-col items-center">
             <img
               className="rounded-full h-14 md:h-20 aspect-square"
@@ -48,7 +48,7 @@ export const AccountPage: React.FC = () => {
             <p className="text-lg">{formatAddress(address as `0x${string}`)}</p>
           </div>
         </div>
-        <div className="w-1/2 h-full flex flex-col justify-between gap-20">
+        <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <Button
             className="mt-8"
             onClick={() => {
