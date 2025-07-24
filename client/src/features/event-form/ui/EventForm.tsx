@@ -135,6 +135,9 @@ export const EventForm: React.FC<EventFormProps> = ({
     }
   }
 
+  const isIphoneDevice =
+    /iPhone/.test(navigator.userAgent) && !/iPad/.test(navigator.userAgent);
+
   return (
     <Form {...form}>
       <form
@@ -176,15 +179,17 @@ export const EventForm: React.FC<EventFormProps> = ({
                 <label className="cursor-pointer" htmlFor="fileInput">
                   Upload file
                 </label>
-                <p
-                  className="cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCameraOpen(true);
-                  }}
-                >
-                  Take a picture
-                </p>
+                {isIphoneDevice || (
+                  <p
+                    className="cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCameraOpen(true);
+                    }}
+                  >
+                    Take a picture
+                  </p>
+                )}
               </div>
               <FormControl>
                 <Input
