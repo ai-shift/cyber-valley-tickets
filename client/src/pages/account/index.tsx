@@ -37,7 +37,7 @@ export const AccountPage: React.FC = () => {
           <LogOut />
         </Button>
       </header>
-      <div className="flex flex-col">
+      <div className="flex flex-col items-center">
         <div className="flex gap-5 items-center py-5 px-10 sm:px-20">
           <div className="flex md:flex-row md:gap-3 flex-col items-center">
             <img
