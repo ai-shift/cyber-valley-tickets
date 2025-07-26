@@ -61,23 +61,37 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 cursor.execute(
                     """
-                    SELECT e.id
+                    SELECT e.id, e.status
                     FROM events_event e
                     INNER JOIN events_eventplace p ON e.place_id = p.id
-                    WHERE e.status = 'approved'
+                    WHERE e.status in ('approved', 'submitted')
                     AND now()::date + interval '1 day' * p.days_before_cancel
                       >= e.start_date::date
                     AND e.tickets_bought < p.min_tickets
                     """,
                 )
-                to_cancel = [row[0] for row in cursor.fetchall()]
+                to_cancel = cursor.fetchall()
 
             if to_cancel:
                 self.stdout.write(f"Got {len(to_cancel)} events to cancel: {to_cancel}")
-                for i in to_cancel:
+                for row in to_cancel:
+                    event_id, status = row["id"], row["status"]
+
+                    tx: Any
+                    match status:
+                        case "approved":
+                            tx = contract.functions.cancelEvent(event_id)
+                        case "submitted":
+                            tx = contract.functions.declineEvent(event_id)
+                        case _:
+                            self.stderr.write(f"unexpected event {status=}")
+                            raise ValueError
+
                     try:
-                        contract.functions.cancelEvent(i).transact()
+                        tx.transact()
                     except Exception as e:
-                        self.stderr.write(f"Failed to cancel event {i} with {e}")
+                        self.stderr.write(
+                            f"Failed to exeucte {tx=} {event_id=} with {e}"
+                        )
 
             time.sleep(poll_interval.total_seconds())
