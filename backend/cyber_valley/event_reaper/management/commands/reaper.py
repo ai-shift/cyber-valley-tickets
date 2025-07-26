@@ -74,9 +74,7 @@ class Command(BaseCommand):
 
             if to_cancel:
                 self.stdout.write(f"Got {len(to_cancel)} events to cancel: {to_cancel}")
-                for row in to_cancel:
-                    event_id, status = row["id"], row["status"]
-
+                for event_id, status in to_cancel:
                     tx: Any
                     match status:
                         case "approved":
