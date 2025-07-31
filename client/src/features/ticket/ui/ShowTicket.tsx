@@ -49,7 +49,11 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
 
   if (isLoading) return <Loader className="h-8" containerClassName="h-20" />;
   if (!data || error)
-    return <p className="text-center text-red-500 text-xl">Can't check your ticket</p>
+    return (
+      <p className="text-center text-red-500 text-xl">
+        Can't check your ticket
+      </p>
+    );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -65,7 +69,10 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         )}
       </DialogTrigger>
       <DialogContent className="w-11/12 sm:max-w-96">
-        <DialogTitle>Ticket QR code <br/> {data.pendingIsRedeemed && !data.isRedeemed && "(redeem pending)"}</DialogTitle>
+        <DialogTitle>
+          Ticket QR code <br />{" "}
+          {data.pendingIsRedeemed && !data.isRedeemed && "(redeem pending)"}
+        </DialogTitle>
         <Suspense fallback={<Loader />}>
           <TicketQR ticket={ticket} />
         </Suspense>
