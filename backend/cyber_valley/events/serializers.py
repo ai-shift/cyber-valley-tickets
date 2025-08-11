@@ -59,6 +59,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     place = EventPlaceSerializer(required=True)
     creator = CreatorSerializer(required=True)
     start_date_timestamp = serializers.SerializerMethodField()
+    attendees = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
@@ -75,10 +76,14 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "website",
             "start_date_timestamp",
             "tickets_bought",
+            "attendees",
         )
 
     def get_start_date_timestamp(self, obj: Event) -> int:
         return int(obj.start_date.timestamp())
+
+    def get_attendees(self, obj: Event) -> list[str]:
+        return [ticket.owner.address for ticket in obj.tickets.all()]
 
 
 @extend_schema_serializer(
