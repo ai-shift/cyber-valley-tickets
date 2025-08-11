@@ -6355,6 +6355,13 @@
                         "type": "integer",
                         "nullable": true
                     },
+                    "attendees": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "readOnly": true
+                    },
                     "ticketsRequiredUntilCancel": {
                         "type": "integer",
                         "readOnly": true,
@@ -6367,6 +6374,7 @@
                     }
                 },
                 "required": [
+                    "attendees",
                     "cancelDateTimestamp",
                     "creator",
                     "daysAmount",
@@ -7054,6 +7062,13 @@
                         "minimum": 0,
                         "format": "int64"
                     },
+                    "attendees": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "readOnly": true
+                    },
                     "ticketsRequiredUntilCancel": {
                         "type": "integer",
                         "readOnly": true
@@ -7064,6 +7079,7 @@
                     }
                 },
                 "required": [
+                    "attendees",
                     "cancelDateTimestamp",
                     "creator",
                     "daysAmount",
