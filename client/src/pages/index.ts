@@ -1,6 +1,7 @@
 export { HomePage } from "./home";
 export { EventsListPage } from "./events/";
 export { CreateEventPage } from "./events/create";
+export { EventAttendeesPage } from "./events/attendees";
 export { EventsDetailsPage } from "./events/details";
 export { EditEventPage } from "./events/edit";
 export { NotificationsPage } from "./notifications";

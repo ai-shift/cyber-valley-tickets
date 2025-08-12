@@ -6275,6 +6275,27 @@
                     }
                 }
             },
+            "Attendee": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "maxLength": 42
+                    },
+                    "socials": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UploadSocials"
+                            }
+                        ],
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "address",
+                    "socials"
+                ]
+            },
             "ClientErrorEnum": {
                 "enum": [
                     "client_error"
@@ -6358,7 +6379,7 @@
                     "attendees": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/Attendee"
                         },
                         "readOnly": true
                     },
@@ -7065,7 +7086,7 @@
                     "attendees": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/Attendee"
                         },
                         "readOnly": true
                     },
