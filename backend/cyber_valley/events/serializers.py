@@ -55,6 +55,10 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
         fields = ("address", "socials")
 
 
+class AttendeeSerializer(CreatorSerializer):
+    pass
+
+
 class EventSerializer(serializers.ModelSerializer[Event]):
     place = EventPlaceSerializer(required=True)
     creator = CreatorSerializer(required=True)
@@ -82,8 +86,9 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     def get_start_date_timestamp(self, obj: Event) -> int:
         return int(obj.start_date.timestamp())
 
-    def get_attendees(self, obj: Event) -> list[str]:
-        return [ticket.owner.address for ticket in obj.tickets.all()]
+    @extend_schema_field(serializers.ListSerializer(child=AttendeeSerializer()))
+    def get_attendees(self, obj: Event) -> list[dict[str, Any]]:
+        return [AttendeeSerializer(ticket.owner).data for ticket in obj.tickets.all()]
 
 
 @extend_schema_serializer(

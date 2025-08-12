@@ -5,6 +5,7 @@ import {
   CreateEventPage,
   CreatePlacePage,
   EditEventPage,
+  EventAttendeesPage,
   EventsDetailsPage,
   EventsListPage,
   HomePage,
@@ -38,6 +39,10 @@ export const Router = () => {
                 <Route
                   path="/events/:eventId"
                   element={<EventsDetailsPage />}
+                />
+                <Route
+                  path="/events/:eventId/attendees"
+                  element={<EventAttendeesPage />}
                 />
                 <Route element={<ProtectedRoute />}>
                   <Route
