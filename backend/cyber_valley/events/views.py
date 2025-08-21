@@ -7,6 +7,7 @@ import ipfshttpclient
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
+from django.db.models import Case, IntegerField, When
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import (
     PolymorphicProxySerializer,
@@ -55,7 +56,16 @@ class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
     )
 )
 class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
-    queryset = Event.objects.all()
+    queryset = Event.objects.annotate(
+        status_priority=Case(
+            When(status="approved", then=1),
+            When(status="submitted", then=2),
+            When(status="cancelled", then=3),
+            When(status="closed", then=4),
+            When(status="declined", then=5),
+            output_field=IntegerField(),
+        )
+    ).order_by("status_priority", "-created_at")
     serializer_class = StaffEventSerializer
 
     def get_serializer_class(self) -> type[EventSerializer]:
