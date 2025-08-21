@@ -193,7 +193,9 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
             user=owner, network=socials["network"], value=socials["value"]
         )
 
-    log.info("Saving ticket for event %s, owner %s from event %s", event, owner, event_data)
+    log.info(
+        "Saving ticket for event %s, owner %s from event %s", event, owner, event_data
+    )
     Ticket.objects.create(
         event=event,
         owner=owner,
