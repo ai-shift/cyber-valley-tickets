@@ -31,7 +31,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
           path: {
             // @ts-ignore: T2561
             event_id: ticket.eventId,
-            ticket_id: ticket.eventId,
+            ticket_id: ticket.id,
           },
         },
       }),
