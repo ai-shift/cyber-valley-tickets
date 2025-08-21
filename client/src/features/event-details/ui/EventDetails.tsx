@@ -1,7 +1,6 @@
 import { eventQueries } from "@/entities/event";
 import { cn } from "@/shared/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router";
 
 import { useAuthSlice } from "@/app/providers";
 import { StatusBage } from "@/features/events-list/ui/StatusBage";
@@ -67,12 +66,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         />
         <div className="absolute top-3 left-2">
           {status === "approved" ? (
-            <Link
-              to="attendees"
-              className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black"
-            >
+            <div className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black">
               Tickets available: {place.maxTickets - (ticketsBought || 0)}
-            </Link>
+            </div>
           ) : (
             <StatusBage status={status} />
           )}
@@ -125,7 +121,13 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${ticketPrice}`}
         />
       </div>
-
+      <Button
+        filling="outline"
+        className="m-5"
+        onClick={() => navigate("attendees")}
+      >
+        Event Attendees
+      </Button>
       {user ? (
         <>
           <MaybeManageEvent
