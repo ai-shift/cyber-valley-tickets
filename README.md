@@ -101,8 +101,6 @@ classDiagram
         +int startDate
         +int durationDays
     }
-
-    note for EventModel "title: Any string of length 100 chars\ndescription: Any string of length 300 chars\nimageUrl: Link to the cover image\nplace: One of the available places that add boundaries for the event\nticketPrice: Bounded by selected event place\nticketsBought: Amount of tickets that were bought\ncancelDate: Date when event will be canceled if there will not be enough bought tickets\nstartDate: The day when the event starts, should not overlap with existing events in the selected place\ndurationDays: Duration of the event"
 ```
 
 ### Use cases
@@ -464,15 +462,15 @@ classDiagram
         -uint256 eventRequestPrice
         -bytes32 MASTER_ROLE
 
-        +createEventPlace(maxTickets: uint16, minTickets: uint16, minPrice: uint16, minDays: uint8)
-        +updateEventPlace(eventPlaceId: uint256, maxTickets: uint16, minTickets: uint16, minPrice: uint16, minDays: uint8)
-        +submitEventRequest(eventPlaceId: uint256, ticketPrice: uint16, cancelDate: uint256, startDate: uint256, daysAmount: uint16)
-        +approveEvent(eventId: uint256)
-        +declineEvent(eventId: uint256)
-        +updateEvent(eventId: uint256, eventPlaceId: uint256, ticketPrice: uint16, cancelDate: uint256, startDate: uint256, daysAmount: uint16)
-        +cancelEvent(eventId: uint256)
-        +closeEvent(eventId: uint256)
-        +mintTicket(eventId: uint256, digest: bytes32, hashFunction: uint8, size: uint8)
+        +createEventPlace(uint16, uint16, uint16, uint8)
+        +updateEventPlace(uint256, uint16, uint16, uint16, uint8)
+        +submitEventRequest(uint256, uint16, uint256, uint256, uint16)
+        +approveEvent(uint256)
+        +declineEvent(uint256)
+        +updateEvent(uint256, uint256, uint16, uint256, uint256, uint16)
+        +cancelEvent(uint256)
+        +closeEvent(uint256)
+        +mintTicket(uint256, bytes32, uint8, uint8)
     }
 
     class Event {
@@ -497,10 +495,10 @@ classDiagram
 
     class IERC20 {
         <<interface>>
-        +transferFrom(address sender, address recipient, uint256 amount)
-        +transfer(address recipient, uint256 amount)
-        +balanceOf(address account): uint256
-        +allowance(address owner, address spender): uint256
+        +transferFrom(address, address, uint256)
+        +transfer(address, uint256)
+        +balanceOf(address): uint256
+        +allowance(address, address): uint256
     }
 
     class CyberValleyEventTicket {
@@ -509,17 +507,17 @@ classDiagram
 
     class AccessControl {
         <<abstract>>
-        +grantRole(bytes32 role, address account)
-        +revokeRole(bytes32 role, address account)
-        +hasRole(bytes32 role, address account): bool
+        +grantRole(bytes32, address)
+        +revokeRole(bytes32, address)
+        +hasRole(bytes32, address): bool
     }
 
-    CyberValleyEventManager --> AccessControl : inherits
-    CyberValleyEventManager --> IERC20 : composition
-    CyberValleyEventManager --> CyberValleyEventTicket : composition
-    CyberValleyEventManager --> Event : aggregation
-    CyberValleyEventManager --> EventPlace : aggregation
-    Event --> EventStatus : uses
+    CyberValleyEventManager --> AccessControl
+    CyberValleyEventManager --> IERC20
+    CyberValleyEventManager --> CyberValleyEventTicket
+    CyberValleyEventManager --> Event
+    CyberValleyEventManager --> EventPlace
+    Event --> EventStatus
 ```
 ###### Create event place
 
@@ -642,10 +640,10 @@ classDiagram
         -bytes32 STAFF_ROLE
         -bytes32 EVENT_MANAGER_ROLE
 
-        +setEventManagerAddress(_eventManagerAddress: address)
+        +setEventManagerAddress(address)
         +mint(address to: address, eventId: uint256, digest: bytes32, hashFunction: uint8, size: uint8)
-        +ticketMeta(tokenId: uint256): (bytes32 digest, uint8 hashFunction, uint8 size)
-        +redeemTicket(tokenId: uint256)
+        +ticketMeta(uint256)
+        +redeemTicket(uint256)
     }
 
     class Multihash {
@@ -656,28 +654,28 @@ classDiagram
 
     class IERC721 {
         <<interface>>
-        +balanceOf(address owner): int
-        +ownerOf(int tokenId): address
+        +balanceOf(address): int
+        +ownerOf(int): address
     }
 
     class IERC721Metadata {
         <<interface>>
         +name(): string
         +symbol(): string
-        +tokenURI(int tokenId): string
+        +tokenURI(int): string
     }
 
     class AccessControl {
         <<abstract>>
-        +grantRole(bytes32 role, address account)
-        +revokeRole(bytes32 role, address account)
-        +hasRole(bytes32 role, address account): bool
+        +grantRole(bytes32, address)
+        +revokeRole(bytes32, address)
+        +hasRole(bytes32, address): bool
     }
 
-    CyberValleyEventTicket --> Multihash : uses
-    CyberValleyEventTicket --> IERC721 : implements
-    CyberValleyEventTicket --> IERC721Metadata : implements
-    CyberValleyEventTicket --> AccessControl : inherits
+    CyberValleyEventTicket --> Multihash
+    CyberValleyEventTicket --> IERC721
+    CyberValleyEventTicket --> IERC721Metadata
+    CyberValleyEventTicket --> AccessControl
 ```
 #### Backend
 
@@ -734,8 +732,8 @@ classDiagram
         redeemed
     }
 
-    EventSensitiveModel --> PublicEventModel : extends
-    PublicEventModel --> TicketStatus : uses
+    EventSensitiveModel --> PublicEventModel
+    PublicEventModel --> TicketStatus
 ```
 ###### GET /events/<int:event-id>/tickets/<str:ticket-id>
 
@@ -819,15 +817,6 @@ flowchart TD
     G --> H[Attend Event]
     G --> I[Edit Event]
 
-    A --> |authority: APP:ACCESS| A
-    B --> |authority: APP:ACCESS| B
-    G --> |authority: APP:ACCESS| G
-    H --> |authority: APP:ACCESS| H
-    I --> |authority: EVENT:CREATE| I
-    C --> |authority: APP:ACCESS| C
-    D --> |authority: APP:ACCESS| D
-    E --> |authority: APP:ACCESS| E
-    F --> |authority: MANAGE:ACCESS| F
 ```
 ##### Main Page
 
@@ -1332,15 +1321,15 @@ classDiagram
         -uint256 eventRequestPrice
         -bytes32 MASTER_ROLE
 
-        +createEventPlace(maxTickets: uint16, minTickets: uint16, minPrice: uint16, minDays: uint8)
-        +updateEventPlace(eventPlaceId: uint256, maxTickets: uint16, minTickets: uint16, minPrice: uint16, minDays: uint8)
-        +submitEventRequest(eventPlaceId: uint256, ticketPrice: uint16, cancelDate: uint256, startDate: uint256, daysAmount: uint16)
-        +approveEvent(eventId: uint256)
-        +declineEvent(eventId: uint256)
-        +updateEvent(eventId: uint256, eventPlaceId: uint256, ticketPrice: uint16, cancelDate: uint256, startDate: uint256, daysAmount: uint16)
-        +cancelEvent(eventId: uint256)
-        +closeEvent(eventId: uint256)
-        +mintTicket(eventId: uint256, digest: bytes32, hashFunction: uint8, size: uint8)
+        +createEventPlace(uint16, uint16, uint16, uint8)
+        +updateEventPlace(uint256, uint16, uint16, uint16, uint8)
+        +submitEventRequest(uint256, uint16, uint256, uint256, uint16)
+        +approveEvent(uint256)
+        +declineEvent(uint256)
+        +updateEvent(uint256, uint256, uint16, uint256, uint256, uint16)
+        +cancelEvent(uint256)
+        +closeEvent(uint256)
+        +mintTicket(uint256, bytes32, uint8, uint8)
     }
 
     class Event {
@@ -1365,10 +1354,10 @@ classDiagram
 
     class IERC20 {
         <<interface>>
-        +transferFrom(address sender, address recipient, uint256 amount)
-        +transfer(address recipient, uint256 amount)
-        +balanceOf(address account): uint256
-        +allowance(address owner, address spender): uint256
+        +transferFrom(address, address, uint256)
+        +transfer(address, uint256)
+        +balanceOf(address): uint256
+        +allowance(address, address): uint256
     }
 
     class CyberValleyEventTicket {
@@ -1377,17 +1366,17 @@ classDiagram
 
     class AccessControl {
         <<abstract>>
-        +grantRole(bytes32 role, address account)
-        +revokeRole(bytes32 role, address account)
-        +hasRole(bytes32 role, address account): bool
+        +grantRole(bytes32, address)
+        +revokeRole(bytes32, address)
+        +hasRole(bytes32, address): bool
     }
 
-    CyberValleyEventManager --> AccessControl : inherits
-    CyberValleyEventManager --> IERC20 : composition
-    CyberValleyEventManager --> CyberValleyEventTicket : composition
-    CyberValleyEventManager --> Event : aggregation
-    CyberValleyEventManager --> EventPlace : aggregation
-    Event --> EventStatus : uses
+    CyberValleyEventManager --> AccessControl
+    CyberValleyEventManager --> IERC20
+    CyberValleyEventManager --> CyberValleyEventTicket
+    CyberValleyEventManager --> Event
+    CyberValleyEventManager --> EventPlace
+    Event --> EventStatus
 ```
 
 ***** Create event place
@@ -1525,22 +1514,22 @@ classDiagram
 
     class IERC721 {
         <<interface>>
-        +balanceOf(address owner) int
-        +ownerOf(int tokenId) address
+        +balanceOf(address) int
+        +ownerOf(int) address
     }
 
     class IERC721Metadata {
         <<interface>>
         +name() string
         +symbol() string
-        +tokenURI(int tokenId) string
+        +tokenURI(int) string
     }
 
     class AccessControl {
         <<abstract>>
-        +grantRole(bytes32 role, address account)
-        +revokeRole(bytes32 role, address account)
-        +hasRole(bytes32 role, address account) bool
+        +grantRole(bytes32, address)
+        +revokeRole(bytes32, address)
+        +hasRole(bytes32, address) bool
     }
 
     CyberValleyEventTicket --> Multihash
@@ -1684,15 +1673,15 @@ classDiagram
 
 ```mermaid
 flowchart TD
-    Main[Main | APP:ACCESS]
-    EventList[Event list | APP:ACCESS]
-    Event[Event | APP:ACCESS]
-    Attend[Attend | APP:ACCESS]
-    Edit[Edit | EVENT:CREATE]
-    Account[Account | APP:ACCESS]
-    Notifications[Notifications | APP:ACCESS]
-    CreateEvent[Create event | APP:ACCESS]
-    Manage[Manage | MANAGE:ACCESS]
+    Main[Main - APP:ACCESS]
+    EventList[Event list - APP:ACCESS]
+    Event[Event - APP:ACCESS]
+    Attend[Attend - APP:ACCESS]
+    Edit[Edit - EVENT:CREATE]
+    Account[Account - APP:ACCESS]
+    Notifications[Notifications - APP:ACCESS]
+    CreateEvent[Create event - APP:ACCESS]
+    Manage[Manage - MANAGE:ACCESS]
 
     Main --> EventList
     EventList --> Event
