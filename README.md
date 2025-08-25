@@ -1,6 +1,6 @@
 # Cyber Valley Tickets
 
-*By aishift*
+## By aishift
 
 ## Table of Contents
 
@@ -189,7 +189,7 @@ sequenceDiagram
     Backend->>Database: Persist used socials
 ```
 
-#### COMMENT Submit event request
+#### Submit event request
 
 ```mermaid
 classDiagram
@@ -1013,7 +1013,7 @@ sequenceDiagram
     SmartContract-->>TicketsApp: Emits EventPlaceUpdated
     deactivate SmartContract
 ```
-*** Save socials
+#### Save socials
 
 Supported socials:
 
@@ -1022,7 +1022,7 @@ Supported socials:
 - Whats App
 - Instagram
 
-**** V1
+##### V1
 
 Used socials stored in the browser cache, so customer should input his social on each new device
 
@@ -1035,7 +1035,7 @@ sequenceDiagram
     Customer->>TicketsApp: Provide one of the socials
     TicketsApp->>BrowserLocalStorage: Save socials for the future use
 ```
-**** V2
+##### V2
 
 Used socials stored in the centralized database which allows to sync state of the all devices
 
@@ -1231,13 +1231,13 @@ sequenceDiagram
     EventManager->>Backend: Emit EventStatusChanged
     deactivate EventManager
 ```
-** Tech stack
+### Tech stack
 
 Solidity, OpenZeppelin, React, TypeScript, Tailwind, ethers.js, IPFS
 
 Also a thin backend over database is required to provide free of charge ability to change event request data before it's approve, so it'll be implemented with Python, PostgreSQL and Django.
 
-** Excluded features from the first stage
+### Excluded features from the first stage
 
 Given list of features can be interpreted as obviously required or any section below can unintentionally imply them, so they explicitly mentioned
 
@@ -1247,11 +1247,11 @@ Given list of features can be interpreted as obviously required or any section b
 - Ticket price change on sold out and increasing available seats
 - Remove assigned staff person to the event
 
-** Proxy contract vs multiple versions
+### Proxy contract vs multiple versions
 
 Because of big amount of reads from the blockchain (which lead to spending gas on call delegation in proxy) we offer to use multiple versions and support them on the client side. To prevent difficulties of funds & data migration between versions, we'll create new events in a new version, but still support the previous ones until all events there will be closed or canceled.
 
-** Component design
+### Component design
 
 #### General overview
 
@@ -1304,8 +1304,8 @@ flowchart TD
     class G storage
     class H storage
 ```
-*** Smart contract
-**** Event manager
+#### Smart contract
+##### Event manager
 
 ```mermaid
 classDiagram
@@ -1379,114 +1379,114 @@ classDiagram
     Event --> EventStatus
 ```
 
-***** Create event place
+###### Create event place
 
-*Accessible only by master*
+**Accessible only by master**
 
 Adds a new event place
 
-*Emits* ~EventPlaceUpdated~
+**Emits** `EventPlaceUpdated`
 
 Validations:
--   =eventPlace.maxTickets >= eventPlace.minTickets=, "Max tickets must be greater or equal min tickets"
--   =eventPlace.maxTickets > 0 && eventPlace.minTickets > 0 && eventPlace.minPrice > 0 && eventPlace.minDays > 0=, "Values must be greater than zero"
+- `eventPlace.maxTickets >= eventPlace.minTickets`, "Max tickets must be greater or equal min tickets"
+- `eventPlace.maxTickets > 0 && eventPlace.minTickets > 0 && eventPlace.minPrice > 0 && eventPlace.minDays > 0`, "Values must be greater than zero"
 
-***** Update event place
+###### Update event place
 
-*Accessible only by master*
+**Accessible only by master**
 
 Updates existing event place by it's id
 
-@@warning:Event place can't be changed if there is another event@@
+> **Warning:** Event place can't be changed if there is another event
 
-*Emits* ~EventPlaceUpdated~
+**Emits** `EventPlaceUpdated`
 
 Validations:
--   =eventPlaceId < eventPlaces.length=, "eventPlaceId should exist"
--   =eventPlace.maxTickets >= eventPlace.minTickets=, "Max tickets must be greater or equal min tickets"
--   =eventPlace.maxTickets > 0 && eventPlace.minTickets > 0 && eventPlace.minPrice > 0 && eventPlace.minDays > 0=, "Values must be greater than zero"
+- `eventPlaceId < eventPlaces.length`, "eventPlaceId should exist"
+- `eventPlace.maxTickets >= eventPlace.minTickets`, "Max tickets must be greater or equal min tickets"
+- `eventPlace.maxTickets > 0 && eventPlace.minTickets > 0 && eventPlace.minPrice > 0 && eventPlace.minDays > 0`, "Values must be greater than zero"
 
-***** Submit event request
+###### Submit event request
 
-*Public*
+**Public**
 
 Creates new event request.
 
 Validations:
--   =usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice=, "Not enough tokens"
--   =usdtTokenContract.allowance(msg.sender, address(this)) >= eventRequestPrice=, "Required amount was not allowed"
+- `usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice`, "Not enough tokens"
+- `usdtTokenContract.allowance(msg.sender, address(this)) >= eventRequestPrice`, "Required amount was not allowed"
 
-***** Approve event
+###### Approve event
 
-*Accessible only by master*
+**Accessible only by master**
 
 Transforms event request into the proper event which is visible to others
 
-*Emits* ~EventStatusChanged~
+**Emits** `EventStatusChanged`
 
 Validations:
 
--   =evt.status == EventStatus.Submitted=, "Event status differs from submitted"
+- `evt.status == EventStatus.Submitted`, "Event status differs from submitted"
 
-***** Decline event
+###### Decline event
 
-*Accessible only by master*
+**Accessible only by master**
 
 Removes event request from the queue and refunds means to the creator
 
-*Emits* ~EventStatusChanged~
+**Emits** `EventStatusChanged`
 
 Validations:
 
--   =evt.status == EventStatus.Submitted=, "Event status differs from submitted"
+- `evt.status == EventStatus.Submitted`, "Event status differs from submitted"
 
-***** Update event
+###### Update event
 
-*Accessible only by master*
+**Accessible only by master**
 
 Allows to change the event data.
 
-*Emits* ~EventUpdated~
+**Emits** `EventUpdated`
 
-***** Cancel event
+###### Cancel event
 
-*Accessible only by master*
+**Accessible only by master**
 
 Cancels given event and refunds all means between creator and customers who bought a ticket
 
-*Emits* ~EventStatusChanged~
+**Emits** `EventStatusChanged`
 
 Validations:
 
--   =evt.status == EventStatus.Approved=, "Only event in approved state can be cancelled"
--   =block.timestamp >= evt.cancelDate=, "Event can not be cancelled before setted date"
+- `evt.status == EventStatus.Approved`, "Only event in approved state can be cancelled"
+- `block.timestamp >= evt.cancelDate`, "Event can not be cancelled before setted date"
 
-***** Close event
+###### Close event
 
-*Accessible only by master*
+**Accessible only by master**
 
 Closes given event and sends means to the master, creator and dev team according to their shares
 
-*Emits* ~EventStatusChanged~
+**Emits** `EventStatusChanged`
 
 Validations:
 
--   =evt.status == EventStatus.Approved=, "Only event in approved state can be closed"
--   =block.timestamp >= evt.startDate + evt.daysAmount * SECONDS_IN_DAY=, "Event has not been finished yet"
+- `evt.status == EventStatus.Approved`, "Only event in approved state can be closed"
+- `block.timestamp >= evt.startDate + evt.daysAmount * SECONDS_IN_DAY`, "Event has not been finished yet"
 
-***** Mint ticket
+###### Mint ticket
 
-*Accessible by event manager*
+**Accessible by event manager**
 
-Checks if provided NFT was minted by the =EventManager= contract and connected to the given event.
+Checks if provided NFT was minted by the `EventManager` contract and connected to the given event.
 
-@@warning:Marks the ticket as used for the current day and makes it impossible to reenter the event@@
+> **Warning:** Marks the ticket as used for the current day and makes it impossible to reenter the event
 
 Validations:
 
--   =evt.customers.length < eventPlaces[evt.eventPlaceId].maxTickets=, "Sold out"
+- `evt.customers.length < eventPlaces[evt.eventPlaceId].maxTickets`, "Sold out"
 
-**** Event ticket
+##### Event ticket
 
 ```mermaid
 classDiagram
@@ -1538,7 +1538,7 @@ classDiagram
     CyberValleyEventTicket ..|> AccessControl
 ```
 
-*** Backend
+#### Backend
 
 It's required for the two general purposes:
 
@@ -1547,23 +1547,23 @@ It's required for the two general purposes:
 
 Both of this solutions provide the most minimal off-chain reading pricing (probably even fit into free tier) and allow to publicly expose them without difficult caching system. Also all data will be stored locally, so it could be processed or aggregated in many wanted ways.
 
-**** Indexer
+##### Indexer
 
-Listens to logs of ~EventManager~ and ~EventTicket~ via WebSocket and store all events in the database. Catches up on possible downtime via using `getLogs`, starting from last event block number.
+Listens to logs of `EventManager` and `EventTicket` via WebSocket and store all events in the database. Catches up on possible downtime via using `getLogs`, starting from last event block number.
 
-**** Sign-in with Ethereum
+##### Sign-in with Ethereum
 
-Because of requirement to allow posting and fetching event requests for the master some authentication process should be made. It could be made with JWT and [[https://docs.metamask.io/wallet/how-to/sign-data/#use-personal_sign][Infura's ~personal_sign~ method]]
+Because of requirement to allow posting and fetching event requests for the master some authentication process should be made. It could be made with JWT and [Infura's `personal_sign` method](https://docs.metamask.io/wallet/how-to/sign-data/#use-personal_sign)
 
-**** API
+##### API
 
-***** GET /events
+###### GET /events
 
-*Authority* ~PUBLIC~
+**Authority** `PUBLIC`
 
-*Returns* All available events in the system.
+**Returns** All available events in the system.
 
-For ~EVENT:READ_SENSITIVE~ or event's creator receive ~EventSensitiveModel~.
+For `EVENT:READ_SENSITIVE` or event's creator receive `EventSensitiveModel`.
 
 ```mermaid
 classDiagram
@@ -1597,11 +1597,11 @@ classDiagram
     PublicEventModel --> TicketStatus
 ```
 
-***** GET /events/<int:event-id>/tickets/<str:ticket-id>
+###### GET /events/<int:event-id>/tickets/<str:ticket-id>
 
-*Authority* ~EVENT:CREATE~, ~TICKET:UPDATE~ or ticket's owner
+**Authority** `EVENT:CREATE`, `TICKET:UPDATE` or ticket's owner
 
-*Returns* Ticket metadata for the given event
+**Returns** Ticket metadata for the given event
 
 ```mermaid
 classDiagram
@@ -1610,11 +1610,11 @@ classDiagram
     }
 ```
 
-***** GET /places
+###### GET /places
 
-*Authority* ~PUBLIC~
+**Authority** `PUBLIC`
 
-*Returns* List of available places
+**Returns** List of available places
 
 ```mermaid
 classDiagram
@@ -1629,11 +1629,11 @@ classDiagram
     }
 ```
 
-***** GET /notifications
+###### GET /notifications
 
-*Authority* ~PUBLIC~
+**Authority** `PUBLIC`
 
-*Return* List of notifications for the current user
+**Return** List of notifications for the current user
 
 ```mermaid
 classDiagram
@@ -1644,21 +1644,21 @@ classDiagram
     }
 ```
 
-***** PUT /ipfs
+###### PUT /ipfs
 
-Accepts provided data (file or text), stores it in IPFS and returns [[https://docs.ipfs.tech/how-to/address-ipfs-on-web/#path-gateway][CID]]
+Accepts provided data (file or text), stores it in IPFS and returns [CID](https://docs.ipfs.tech/how-to/address-ipfs-on-web/#path-gateway)
 
-***** POST /auth/generate-nonce/{public-address}
+###### POST /auth/generate-nonce/{public-address}
 
-Generates session and checks if the given ~public-address~ is allowed to sign-in
+Generates session and checks if the given `public-address` is allowed to sign-in
 
-*Returns* nonce or =403=
+**Returns** nonce or `403`
 
-***** POST /auth/verify-signature/{public-address}
+###### POST /auth/verify-signature/{public-address}
 
 Verifies signature and returns JWT
 
-*Returns* JWT token or =403=
+**Returns** JWT token or `403`
 
 ```mermaid
 classDiagram
@@ -1667,9 +1667,9 @@ classDiagram
     }
 ```
 
-*** Frontend
+#### Frontend
 
-**** Page structure
+##### Page structure
 
 ```mermaid
 flowchart TD
@@ -1693,31 +1693,31 @@ flowchart TD
     Main --> Manage
 ```
 
-**** Main Page
+##### Main Page
 
-Only authorized users (via [[https://docs.login.xyz/][sign-in with Ethereum]]) can have access to this page.
+Only authorized users (via [sign-in with Ethereum](https://docs.login.xyz/)) can have access to this page.
 
 It provides the following components:
 
-- *Notifications* - Amount of unread notifications with link to the [[*Notifications][Notifications page]]
-- *Event list* - Top ~N~ upcoming events and link to the [[*Events list][Events list page]]
-- *Navigation* - List of available base pages for the current user
-  - _Create event_ - Redirects to [[*Create event][Create event page]]
-  - _Manage_ - Shown to ~MANAGE:ACCESS~ authority and redirects to the system [[*Manage][Manage page]]
-  - _Home_ - Redirects to the [[*Main Page][Main page]]
-  - _Account_ - Redirects to the [[*Account][Account page]]
+- **Notifications** - Amount of unread notifications with link to the [Notifications page](#notifications)
+- **Event list** - Top `N` upcoming events and link to the [Events list page](#events-list)
+- **Navigation** - List of available base pages for the current user
+  - _Create event_ - Redirects to [Create event page](#create-event)
+  - _Manage_ - Shown to `MANAGE:ACCESS` authority and redirects to the system [Manage page](#manage)
+  - _Home_ - Redirects to the [Main Page](#main-page)
+  - _Account_ - Redirects to the [Account page](#account)
 
-[[https://excalidraw.com/?element=IGeC3qEnw6SEahcF-W6_G#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+[UI](https://excalidraw.com/?element=IGeC3qEnw6SEahcF-W6_G#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g)
 
-**** Notifications
+##### Notifications
 
-Page renders a list of models returned by [[*GET /notifications][GET /notifications]] endpoint
+Page renders a list of models returned by [GET /notifications](#get-notifications) endpoint
 
-Each notification can be opened to get description and mark it as ~seen~
+Each notification can be opened to get description and mark it as `seen`
 
-**** Events list
+##### Events list
 
-Page renders a list of models returned by [[*GET /events][GET /events]] endpoint
+Page renders a list of models returned by [GET /events](#get-events) endpoint
 
 Each event card contains the following fields:
 
@@ -1726,17 +1726,17 @@ Each event card contains the following fields:
 - Place title
 - Start date
 
-On click event card redirects to the [[*Event][Event page]]
+On click event card redirects to the [Event page](#event)
 
-[[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+[UI](https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g)
 
-**** Event
+##### Event
 
-Works with the model from [[*GET /events][GET /events]] endpoint
+Works with the model from [GET /events](#get-events) endpoint
 
-Accepts ~eventId~ from URL parameters.
+Accepts `eventId` from URL parameters.
 
-*If creator* handled by the back-end, so simple conditional rendering is needed. Only check for ~TICKET:REDEEM~ is required
+**If creator** handled by the back-end, so simple conditional rendering is needed. Only check for `TICKET:REDEEM` is required
 
 - Cover image
 - Title
@@ -1745,83 +1745,81 @@ Accepts ~eventId~ from URL parameters.
 - Description
 - Ticket price
 - Ticket status
-  - *buy* - Attend button. Navigates to [[*Attend event][Attend event page]]
-  - *show* - Show ticket button
-  - *redeemed* - Ticket redeemed
-- *if staff*
+  - **buy** - Attend button. Navigates to [Attend event page](#attend-event)
+  - **show** - Show ticket button
+  - **redeemed** - Ticket redeemed
+- **if staff**
   - Redeem ticket
-- *if creator*
+- **if creator**
   - Edit
-  - if ~canBeCanceled~
+  - if `canBeCanceled`
     - cancel date
     - required N tickets
-- *if master*
-  - if ~canBeCanceled~
+- **if master**
+  - if `canBeCanceled`
     - cancel date
     - required N tickets
-  - if ~status~ is ~pending~:
+  - if `status` is `pending`:
     - Decline / approve buttons
 
-#+begin_quote
-Currently event model is pretty small, so it could be extracted from ~TanStack Query~ cache via [[https://tanstack.com/query/latest/docs/reference/QueryClient/#queryclientensurequerydata][ensureQueryData]].
-#+end_quote
+> Currently event model is pretty small, so it could be extracted from `TanStack Query` cache via [ensureQueryData](https://tanstack.com/query/latest/docs/reference/QueryClient/#queryclientensurequerydata).
 
-[[https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+[UI](https://excalidraw.com/?element=A0GKWX9waISgJWCArAagX#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g)
 
-**** Attend event
+##### Attend event
 
-Requests a user to input his socials from [[*Save socials][Save socials]] section and redirects to the [[*Payment][Payment page]]. Consists of select box and input text field without any validation.
+Requests a user to input his socials from [Save socials](#save-socials) section and redirects to the [Payment page](#payment). Consists of select box and input text field without any validation.
 
-After payment redirects to [[*Operation status][Operation status page]] and shows:
+After payment redirects to [Operation status page](#operation-status) and shows:
 
-- *On success* ticket QR code
-- *On failure* failure details
+- **On success** ticket QR code
+- **On failure** failure details
 
-[[https://excalidraw.com/?element=LlyKYIWZ3fWJ0lp0pX9po#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+[UI](https://excalidraw.com/?element=LlyKYIWZ3fWJ0lp0pX9po#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g)
 
-***** Questions
+###### Questions
 
-- [[*Do socials really should be saved in IPFS or can be stored on the back-end?][Do socials really should be saved in IPFS or can be stored on the back-end?]]
+- [Do socials really should be saved in IPFS or can be stored on the back-end?](#do-socials-really-should-be-saved-in-ipfs-or-can-be-stored-on-the-back-end)
 
-**** Create event
+##### Create event
 
-Requests a user to provide [[*Event data][Event data]] and =Confirm= button which redirects to [[*Payment][Payment page]]
+Requests a user to provide [Event data](#event-data) and `Confirm` button which redirects to [Payment page](#payment)
 
-- *imageUrl* - Image file or pasting should be accepted in the form, then it should be sent with [[*PUT /ipfs][PUT /ipfs]] to get a CID for the further processing
+- **imageUrl** - Image file or pasting should be accepted in the form, then it should be sent with [PUT /ipfs](#put-ipfs) to get a CID for the further processing
 
-Other invariants should be checked in accordance to [[*Event data][Event data]] specification
+Other invariants should be checked in accordance to [Event data](#event-data) specification
 
-[[https://excalidraw.com/?element=884G2lWaGUN9FsHkarxxG#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+[UI](https://excalidraw.com/?element=884G2lWaGUN9FsHkarxxG#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g)
 
-**** Edit event
+##### Edit event
 
-Works the same as [[*Create event][Create event page]], but instead of payment invokes ~updateEvent~ method of ~EventManager~ contract
+Works the same as [Create event page](#create-event), but instead of payment invokes `updateEvent` method of `EventManager` contract
 
-[[https://excalidraw.com/?element=ECGnLzjTF3oespczMEN3K#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g][UI]]
+[UI](https://excalidraw.com/?element=ECGnLzjTF3oespczMEN3K#room=70c146a09811de73a1cc,hq_dTKi_kHDEdIe1RL4T7g)
 
-**** Account
+##### Account
 
 Provides personal info to the user:
 
-- *Events* - any relative i.e. attented or created. Master should see only ~pending~
-- *Logout* - allows to logout from the app
+- **Events** - any relative i.e. attented or created. Master should see only `pending`
+- **Logout** - allows to logout from the app
 
-**** Manage
+##### Manage
 
 Provides administration features for the existing entities:
 
-- *Event place* - only places without approved events can be edited
-- *Staff* - add or remove staff by EOA address
+- **Event place** - only places without approved events can be edited
+- **Staff** - add or remove staff by EOA address
 
-**** Payment
+##### Payment
 
 Generic page for the payment
 
-**** Operation status
+##### Operation status
 
 Shows result of the made transaction
 
-* Questions
+## Questions
 
 ### Both desktop and mobile are required?
 
@@ -1857,7 +1855,7 @@ It requires additional UI and flows to properly update ticket's meta data, so th
 
 > https://dribbble.com/shots/23082238-Earthquake-Warning-App-Cyberpunk-Design-Style
 
-** Do socials really should be saved in IPFS or can be stored on the back-end?
+### Do socials really should be saved in IPFS or can be stored on the back-end?
 
 TBD
 
