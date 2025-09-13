@@ -69,7 +69,7 @@ export const CustomSMSLogin: React.FC = () => {
         await wallet.connect({
           client,
           strategy: "auth_endpoint",
-          payload: data.payload,
+          payload: JSON.stringify(data.payload),
         });
         return wallet;
       });
