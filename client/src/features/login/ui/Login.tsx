@@ -68,11 +68,7 @@ export const Login: React.FC = () => {
             <div className="max-w-md mx-auto">
               <InAppWalletDemo />
             </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-4">
-                or use traditional wallet
-              </p>
-            </div>
+
             <Button
               onClick={async () => {
                 const wallet = await connect({
