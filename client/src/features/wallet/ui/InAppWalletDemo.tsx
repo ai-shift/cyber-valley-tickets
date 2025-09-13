@@ -1,6 +1,10 @@
+import { useAuthSlice } from "@/app/providers";
+import type { User } from "@/entities/user";
+import { apiClient } from "@/shared/api";
 import { client } from "@/shared/lib/web3";
 import { Button } from "@/shared/ui/button";
 import { useState } from "react";
+import type { LoginPayload, VerifyLoginPayloadParams } from "thirdweb/auth";
 import { useActiveAccount, useConnectModal } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
 import { CustomSMSLogin } from "./CustomSMSLogin";
@@ -16,14 +20,46 @@ export const InAppWalletDemo: React.FC = () => {
   const [showCustom, setShowCustom] = useState(false);
   const account = useActiveAccount();
   const { connect } = useConnectModal();
+  const { login } = useAuthSlice();
 
   const connectInAppWallet = async () => {
     try {
-      await connect({
+      const wallet = await connect({
         client,
         wallets: [inAppWallet],
         showThirdwebBranding: false,
+        auth: {
+          getLoginPayload: async (params: {
+            address: string;
+          }): Promise<LoginPayload> => {
+            const resp = await fetch(`/api/auth/web3/nonce/${params.address}`);
+            return await resp.json();
+          },
+          doLogin: async (params: VerifyLoginPayloadParams) => {
+            await fetch("/api/auth/web3/login/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                signature: params.signature,
+                ...params.payload,
+              }),
+            });
+            apiClient.GET("/api/users/current/").then((data) => {
+              login(data.data as User);
+            });
+          },
+          isLoggedIn: async () => {
+            const resp = await fetch("api/auth/verify");
+            return resp.status === 200;
+          },
+          doLogout: async () => {
+            await fetch("api/auth/logout");
+          },
+        },
       });
+      console.log("connected in-app wallet", wallet);
     } catch (error) {
       console.error("Failed to connect in-app wallet:", error);
     }
