@@ -6,6 +6,12 @@ import { createWallet } from "thirdweb/wallets";
 export const STAFF_ROLE = keccak256(toUtf8Bytes("STAFF_ROLE")) as `0x${string}`;
 
 export const wallets = [
+  createWallet("inApp", {
+    auth: {
+      options: ["phone", "email"],
+      mode: "popup",
+    },
+  }),
   createWallet("io.metamask"),
   createWallet("com.coinbase.wallet"),
   createWallet("me.rainbow"),

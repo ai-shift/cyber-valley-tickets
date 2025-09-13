@@ -1,5 +1,6 @@
 import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
+import { InAppWalletDemo } from "@/features/wallet/ui/InAppWalletDemo";
 import { apiClient } from "@/shared/api";
 import { client } from "@/shared/lib/web3";
 import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
@@ -12,6 +13,12 @@ import { useConnectModal } from "thirdweb/react";
 import { createWallet, injectedProvider } from "thirdweb/wallets";
 
 const wallets = [
+  createWallet("inApp", {
+    auth: {
+      options: ["phone", "email"],
+      mode: "popup",
+    },
+  }),
   createWallet("io.metamask"),
   createWallet("com.coinbase.wallet"),
   createWallet("me.rainbow"),
@@ -58,6 +65,14 @@ export const Login: React.FC = () => {
           <>
             <h1 className="text-2xl">Connect wallet to login</h1>
             <div className="h-1/5 w-full" />
+            <div className="max-w-md mx-auto">
+              <InAppWalletDemo />
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-4">
+                or use traditional wallet
+              </p>
+            </div>
             <Button
               onClick={async () => {
                 const wallet = await connect({
