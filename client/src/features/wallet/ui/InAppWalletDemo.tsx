@@ -66,13 +66,7 @@ export const InAppWalletDemo: React.FC = () => {
   };
 
   if (account) {
-    return (
-      <div className="space-y-4 p-4 border rounded-lg">
-        <h3 className="text-lg font-semibold">✅ Wallet Connected</h3>
-        <p className="text-sm">Address: {account.address}</p>
-        <p className="text-sm text-muted-foreground">Using In-App Wallet</p>
-      </div>
-    );
+    return null;
   }
 
   return (
