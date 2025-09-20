@@ -147,13 +147,145 @@ class PlatformPermission(BasePermission):
 
 ## Smart Contract Changes
 
-### Assessment
-Current smart contracts handle ticket verification and event management on-chain. Since role management is primarily backend-driven and blockchain is used for verification, no immediate changes required.
+### Current Smart Contract Architecture Analysis
 
-### Future Considerations
-- On-chain role verification for enhanced security
-- Platform-specific contract deployments
-- Cross-platform ticket verification
+The current smart contract system includes:
+
+1. **CyberValleyEventManager.sol**
+   - Single `MASTER_ROLE` with all administrative privileges
+   - Event places, event management, date overlap checking
+   - Single master address for revenue collection
+   - Platform-agnostic event storage
+
+2. **CyberValleyEventTicket.sol** 
+   - NFT tickets with `MASTER_ROLE`, `STAFF_ROLE`, `EVENT_MANAGER_ROLE`
+   - Ticket minting and redemption
+   - IPFS metadata integration
+
+3. **DateOverlapChecker.sol**
+   - Handles event date conflicts per place ID
+   - Uses bitmap storage for efficient date range tracking
+
+### Required Smart Contract Updates
+
+#### 1. Multi-Master EventManager Contract
+```solidity
+contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
+    bytes32 public constant GOD_ROLE = keccak256("GOD_ROLE");
+    bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
+    
+    struct Platform {
+        address master;
+        bool active;
+        uint256 createdAt;
+    }
+    
+    mapping(address => Platform) public platforms;
+    mapping(uint256 => address) public eventPlatforms; // eventId => platform
+    mapping(uint256 => address) public placePlatforms; // placeId => platform
+    
+    modifier onlyGod() {
+        require(hasRole(GOD_ROLE, msg.sender), "Must have GOD role");
+        _;
+    }
+    
+    modifier onlyMasterOrGod() {
+        require(
+            hasRole(MASTER_ROLE, msg.sender) || hasRole(GOD_ROLE, msg.sender),
+            "Must have master or GOD role"
+        );
+        _;
+    }
+    
+    function addMaster(address masterAddress) external onlyGod {
+        platforms[masterAddress] = Platform(masterAddress, true, block.timestamp);
+        _grantRole(MASTER_ROLE, masterAddress);
+    }
+    
+    function removeMaster(address masterAddress) external onlyGod {
+        platforms[masterAddress].active = false;
+        _revokeRole(MASTER_ROLE, masterAddress);
+    }
+}
+```
+
+#### 2. Platform-Scoped Operations
+- Event places scoped to platform master
+- Revenue distribution to respective platform masters
+- Cross-platform event overlap prevention
+
+#### 3. Enhanced Ticket Contract
+```solidity
+contract CyberValleyEventTicket is ERC721, AccessControl {
+    bytes32 public constant GOD_ROLE = keccak256("GOD_ROLE");
+    bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE"); 
+    bytes32 public constant STAFF_ROLE = keccak256("STAFF_ROLE");
+    
+    mapping(uint256 => address) public ticketPlatforms; // tokenId => platform
+    
+    modifier onlyPlatformStaff(uint256 tokenId) {
+        address platform = ticketPlatforms[tokenId];
+        require(
+            hasRole(MASTER_ROLE, msg.sender) && platforms[msg.sender].active ||
+            hasRole(STAFF_ROLE, msg.sender) && staffPlatforms[msg.sender] == platform,
+            "Must be platform staff"
+        );
+        _;
+    }
+}
+```
+
+### Implementation Strategy
+
+#### Phase 1: Contract Updates
+1. Deploy new multi-master EventManager contract
+2. Update EventTicket contract with platform support
+3. Implement migration from single to multi-master
+
+#### Phase 2: Platform Integration
+1. Platform registration through GOD role
+2. Event/place assignment to platforms
+3. Revenue distribution per platform
+
+#### Phase 3: Cross-Platform Features
+1. Cross-platform ticket verification
+2. Platform-specific contract instances
+3. Inter-platform event coordination
+
+### Security Considerations
+
+#### 1. Role Hierarchy Enforcement
+- GOD role cannot be granted/revoked except by other GOD users
+- Master roles scoped to specific platforms
+- Staff roles inherit from platform masters
+
+#### 2. Platform Isolation
+- Events/places owned by specific platforms
+- Revenue flows to correct platform masters
+- Cross-platform access controls
+
+#### 3. Migration Safety
+- Existing events/tickets remain functional
+- Gradual migration to multi-platform structure
+- Rollback mechanisms for critical failures
+
+### Gas Optimization
+
+#### 1. Efficient Platform Checks
+- Bitmap-based platform permissions
+- Cached platform lookups
+- Optimized role verification
+
+#### 2. Batch Operations
+- Multi-event approvals per platform
+- Batch ticket minting
+- Efficient date range allocation
+
+### Future Enhancements
+- On-chain governance for platform parameters
+- Automated revenue sharing contracts
+- Cross-chain platform support
+- Decentralized platform registry
 
 ## Migration Strategy
 
