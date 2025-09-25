@@ -1,5 +1,6 @@
 /.env*
 /ipfs_staging/
 /ipfs_data/
+/dev_data/
 /.dir-locals.el
 /ethereum/ignition/deployments
