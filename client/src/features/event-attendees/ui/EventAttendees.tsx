@@ -23,7 +23,13 @@ export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
 
   const attendees = event.attendees;
   if (attendees.length < 1) {
-    return <h1>unluck {eventId}</h1>;
+    return (
+      <div className="w-full aspect-square flex flex-col gap-3 items-center justify-center text-center">
+        <p className="text-gray-500 text-lg font-semibold">
+          No attendees for this event yet
+        </p>
+      </div>
+    );
   }
   return (
     <div className="px-6">
