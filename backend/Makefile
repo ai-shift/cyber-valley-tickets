@@ -49,6 +49,7 @@ run-ipfs-node:
 	$(VIRTUALIZER) rm $(ipfs_container_name) || true
 	$(VIRTUALIZER) run --rm -d \
 		--name $(ipfs_container_name) \
+		--userns=keep-id \
 		-v $$IPFS_STAGING:/export \
 		-v $$IPFS_DATA:/data/ipfs \
 		-p 4001:4001 \
