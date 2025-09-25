@@ -319,9 +319,7 @@ export const EventForm: React.FC<EventFormProps> = ({
           <DialogTrigger>
             <p className="uppercase text-lg font-bold text-start mb-1">
               Start time{" "}
-              <span className="text-gray-500 text-sm normal-case">
-                In UTC
-              </span>
+              <span className="text-gray-500 text-sm normal-case">In UTC</span>
             </p>
             <div className="border-2 border-secondary px-3 py-2">
               <h2 className="text-xl text-white text-center">

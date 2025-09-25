@@ -32,7 +32,7 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
   }
 
   return (
-    <div className={"flex flex-col gap-6 px-3"}>
+    <div className={"flex flex-col gap-6 px-3 pb-24"}>
       {limitedEvents.map((event) => (
         <EventCard key={event.id} event={event} />
       ))}
