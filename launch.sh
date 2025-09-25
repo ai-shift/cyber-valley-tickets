@@ -36,15 +36,15 @@ log_error() {
 # Check if we're inside a tmux session
 check_tmux_session() {
     if [ -n "$TMUX" ]; then
-        log_info "Already inside tmux session: $(tmux display-message -p '#S')"
-        USE_EXISTING_SESSION=true
         SESSION_NAME=$(tmux display-message -p '#S')
+        USE_EXISTING_SESSION=true
+        log_info "Using current tmux session: $SESSION_NAME"
     else
         USE_EXISTING_SESSION=false
         # Check if our target session already exists
         if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-            log_warning "Session '$SESSION_NAME' already exists. Killing it..."
-            tmux kill-session -t "$SESSION_NAME"
+            log_info "Session '$SESSION_NAME' already exists. Using it..."
+            USE_EXISTING_SESSION=true
         fi
     fi
 }
@@ -56,9 +56,15 @@ setup_tmux_session() {
         tmux new-session -d -s "$SESSION_NAME" -c "$SCRIPT_DIR"
         tmux rename-window -t "$SESSION_NAME:0" "setup"
     else
-        log_info "Using existing tmux session"
-        # Create a new window for setup
-        tmux new-window -t "$SESSION_NAME" -n "setup" -c "$SCRIPT_DIR"
+        if [ -n "$TMUX" ]; then
+            log_info "Using current tmux session"
+            # Create a new window for setup in current session
+            tmux new-window -t "$SESSION_NAME" -n "setup" -c "$SCRIPT_DIR"
+        else
+            log_info "Attaching to existing tmux session: $SESSION_NAME"
+            # Session exists but we're not in it, create a setup window
+            tmux new-window -t "$SESSION_NAME" -n "setup" -c "$SCRIPT_DIR"
+        fi
     fi
 }
 
@@ -339,6 +345,7 @@ EXAMPLES:
 
 NOTE:
     If run inside an existing tmux session, it will use that session.
+    If 'cyber-valley-dev' session already exists, it will use it.
     Otherwise, it creates a new session called 'cyber-valley-dev'.
 EOF
 }
