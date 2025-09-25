@@ -23,6 +23,7 @@ import { Camera } from "@/features/camera";
 import { TimePicker } from "@/features/time-input";
 import { assertIsDefined } from "@/shared/lib/assert";
 import { getTimeString } from "@/shared/lib/getTimeString";
+import { getTimezoneOffset } from "@/shared/lib/getTimezoneOffset";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
@@ -327,6 +328,9 @@ export const EventForm: React.FC<EventFormProps> = ({
           </DialogTrigger>
           <DialogContent aria-describedby={undefined} className="py-5">
             <DialogTitle>Select time</DialogTitle>
+            <p className="text-sm text-gray-500 -mt-2 mb-4">
+              Time is set in UTC timezone (your local time: UTC{getTimezoneOffset()})
+            </p>
             <TimePicker
               setValue={(data) => {
                 const date = currentDate;
