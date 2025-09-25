@@ -9,7 +9,9 @@ import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
 import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
 import { ExpandableTrigger } from "@/shared/ui/expandable/ui/ExpandableTrigger";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useActiveAccount } from "thirdweb/react";
 
@@ -17,6 +19,8 @@ export const AccountPage: React.FC = () => {
   const { logout: signOut } = useAuthSlice();
   const account = useActiveAccount();
   const { data: tokenBalance, isLoading: isLoadingBalance } = useTokenBalance();
+  const queryClient = useQueryClient();
+  const [isMinting, setIsMinting] = useState(false);
 
   const logout = async () => {
     if (!confirm("Logout?")) {
@@ -72,7 +76,8 @@ export const AccountPage: React.FC = () => {
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <Button
             className="mt-8"
-            onClick={() => {
+            disabled={isMinting}
+            onClick={async () => {
               const maybeAmount = prompt("Amount of tokens to mint:");
               if (maybeAmount == null) {
                 // User decided to cancel
@@ -92,14 +97,22 @@ export const AccountPage: React.FC = () => {
                 return;
               }
 
-              mintERC20(account, amount)
-                .then(() => alert(`Minted ${amount} tokens`))
-                .catch((err) => {
-                  alert(`Failed to mint ERC20 with ${JSON.stringify(err)}`);
+              setIsMinting(true);
+              try {
+                await mintERC20(account, amount);
+                alert(`Minted ${amount} tokens`);
+                // Invalidate and refetch the token balance
+                queryClient.invalidateQueries({
+                  queryKey: ["tokenBalance", account?.address],
                 });
+              } catch (err) {
+                alert(`Failed to mint ERC20 with ${JSON.stringify(err)}`);
+              } finally {
+                setIsMinting(false);
+              }
             }}
           >
-            Mint ERC20
+            {isMinting ? "Minting..." : "Mint ERC20"}
           </Button>
         </div>
         <div className="p-5">
