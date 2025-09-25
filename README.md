@@ -2,6 +2,44 @@
 
 ## By aishift
 
+## Quick Start
+
+To quickly set up the complete development environment with all services running:
+
+```bash
+./launch.sh
+```
+
+This automated script will:
+1. 🔗 Start Ganache blockchain
+2. 🖥️ Start backend and client (initial setup) 
+3. 📊 Seed the database
+4. 📜 Deploy smart contracts and update .env with new addresses
+5. 🔍 Start blockchain indexer
+6. 🔄 Restart services with updated contract addresses
+
+**Result:** 3 tmux windows with running services:
+- `backend`: Django development server (http://localhost:8000)
+- `client`: React development server (http://localhost:5173)  
+- `indexer`: Blockchain event indexer
+
+### Prerequisites
+- `tmux`, `make`, `curl` installed
+- `.env` file exists in project root
+
+### Manual Setup
+If you prefer manual setup, follow the steps in the launch script:
+
+```bash
+make -C ethereum/ ganache         # Start blockchain
+make -C backend/ run              # Start backend  
+make -C client/ dev               # Start client
+make -C backend/ seed-db          # Seed database
+make -C ethereum/ deploy-dev      # Deploy contracts (update .env with new addresses)
+make -C backend/ run-indexer      # Start indexer
+# Restart backend & client with new addresses
+```
+
 ## Table of Contents
 
 - [Problem](#problem)
