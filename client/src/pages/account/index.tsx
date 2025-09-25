@@ -1,8 +1,9 @@
 import { useAuthSlice } from "@/app/providers";
 import { EventsList, myEventsFilter } from "@/features/events-list";
 import { apiClient } from "@/shared/api";
+import { useTokenBalance } from "@/shared/hooks";
 import { formatAddress } from "@/shared/lib/formatAddress";
-import { mintERC20 } from "@/shared/lib/web3";
+import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
@@ -15,6 +16,7 @@ import { useActiveAccount } from "thirdweb/react";
 export const AccountPage: React.FC = () => {
   const { logout: signOut } = useAuthSlice();
   const account = useActiveAccount();
+  const { data: tokenBalance, isLoading: isLoadingBalance } = useTokenBalance();
 
   const logout = async () => {
     if (!confirm("Logout?")) {
@@ -45,7 +47,26 @@ export const AccountPage: React.FC = () => {
               src={`https://effigy.im/a/${address}.svg`}
               alt="User"
             />
-            <p className="text-lg">{formatAddress(address as `0x${string}`)}</p>
+            <div className="flex flex-col items-center md:items-start gap-1">
+              <p className="text-lg">
+                {formatAddress(address as `0x${string}`)}
+              </p>
+              <div className="flex items-center gap-2">
+                <img
+                  className="h-4 w-4"
+                  src={getCurrencySymbol()}
+                  alt="Token"
+                />
+                <p className="text-sm text-gray-600">
+                  {isLoadingBalance
+                    ? "Loading..."
+                    : tokenBalance
+                      ? tokenBalance.toString()
+                      : "0"}{" "}
+                  tokens
+                </p>
+              </div>
+            </div>
           </div>
         </div>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">

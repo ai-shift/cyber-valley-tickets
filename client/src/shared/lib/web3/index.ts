@@ -3,7 +3,7 @@ import { balanceOf } from "thirdweb/extensions/erc20";
 import type { Account } from "thirdweb/wallets";
 import { getBytes32FromMultiash } from "./multihash";
 import { STAFF_ROLE, erc20, eventManager, eventTicket } from "./state";
-export { client, wallets, cvlandChain } from "./state";
+export { client, wallets, cvlandChain, erc20 } from "./state";
 
 export async function mintERC20(
   account: Account,
