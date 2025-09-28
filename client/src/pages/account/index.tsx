@@ -57,11 +57,11 @@ export const AccountPage: React.FC = () => {
               </p>
               <div className="flex items-center gap-2">
                 <img
-                  className="h-4 w-4"
+                  className="h-6 aspect-square"
                   src={getCurrencySymbol()}
                   alt="Token"
                 />
-                <p className="text-xl font-semibold text-primary">
+                <p className="text-lg font-semibold text-gray-400">
                   {isLoadingBalance
                     ? "Loading..."
                     : tokenBalance
