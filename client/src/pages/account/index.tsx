@@ -61,7 +61,7 @@ export const AccountPage: React.FC = () => {
                   src={getCurrencySymbol()}
                   alt="Token"
                 />
-                <p className="text-sm text-gray-600">
+                <p className="text-xl font-semibold text-primary">
                   {isLoadingBalance
                     ? "Loading..."
                     : tokenBalance
