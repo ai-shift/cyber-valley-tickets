@@ -19,11 +19,23 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
     - We may simply ignore the issue for now and delegate it to our future selves    
 
 **Tasks**:
-1. Rename `LocalProvider` role
-2. Add new role to the smart contract
-3. Implement page / web form to create new `LocalProvider`s
-    - Front-end form
-    - Back-end endpoints to read / create / delete `LocalProvider`s
+1. **Rename `Master` to `LocalProvider` role** (~2 hours)
+    - Update backend user model and migrations
+    - Update smart contract role constants
+    - Update frontend role-based components and permissions
+2. **Add new `Master` role to the smart contract** (~3 hours)
+    - Implement multi-LocalProvider share management in contract
+    - Add LocalProvider registration/removal functions
+    - Update role-based access controls
+3. **Implement LocalProvider management system** (~8 hours)
+    - Create LocalProvider model with telegram/share fields (1h)
+    - Back-end CRUD endpoints for LocalProvider management (2h)
+    - Front-end LocalProvider management page (3h)
+    - Form validation and error handling (2h)
+4. **Implement Telegram message queue system** (~4 hours)
+    - Database model for queued messages
+    - Queue management service
+    - Integration with existing notification system
 
 ## Verified Shaman - New Role
 
@@ -67,10 +79,18 @@ sequenceDiagram
 When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` from the `Manage` page in the navigation bar. This form is migrated from the `Master`'s `Manage` page.
 
 **Tasks**:
-1. Add new `VerifiedShaman` role
-    - Back-end new role enumeration entry
-    - Provide `Manage` page on the front-end
-2. Implement Telegram bot flow to send / approve / decline verification requests
+1. **Add new `VerifiedShaman` role** (~4 hours)
+    - Back-end role enumeration and migration (1h)
+    - Update role-based permissions and views (1h)
+    - Migrate `Manage` page from Master to VerifiedShaman (2h)
+2. **Implement Telegram bot verification flow** (~12 hours)
+    - Document upload handler and validation (3h)
+    - Verification request workflow with approval/decline (4h)
+    - LocalProvider notification and decision system (3h)
+    - Database integration for role granting (2h)
+3. **Create verification request management UI** (~3 hours)
+    - LocalProvider dashboard for pending requests
+    - Document viewer and decision interface
 
 ## Map Integration
 
@@ -85,9 +105,25 @@ For detailed implementation of this feature, further research of Google's API wa
 The API was massively improved this spring and provides a wide variety of drawing plots, creating and grouping markers, managing multiple layers and styling different parts of the map. In conclusion, it seems like a great piece of work and all currently requested features may be implemented without much difficulty.
 
 **Tasks**:
-1. Implement upcoming events map view
-2. Implement points of interest layer
-3. Implement zones plots layer
+1. **Setup Google Maps integration** (~4 hours)
+    - Configure Google Maps API and authentication
+    - Setup dynamic library loading and map initialization
+    - Create base map component with responsive design
+2. **Implement upcoming events map view** (~6 hours)
+    - Event markers with custom styling and clustering (3h)
+    - Event info windows with booking integration (2h)
+    - Real-time event filtering and search (1h)
+3. **Implement points of interest layer** (~5 hours)
+    - POI data management and custom markers (2h)
+    - Category-based filtering and toggle controls (2h)
+    - Info windows and interaction handling (1h)
+4. **Implement zone plots layer** (~8 hours)
+    - Zone boundary drawing and polygon management (4h)
+    - Interactive zone selection for event placement (2h)
+    - Zone availability and conflict detection (2h)
+5. **Implement layer management system** (~3 hours)
+    - Layer toggle controls and visibility management
+    - Performance optimizations for multiple layers
 
 ## Shares Rework
 
@@ -98,8 +134,17 @@ Also, as mentioned in the `LocalProvider` section, the new `Master` role can set
 To prevent potentially cumbersome situations in the future, a setter for the `Master`'s share will also be provided at the contract level.
 
 **Tasks**:
-1. Include share setting to the event approve flow
-2. Add setter for share / address of new `Master` role to the contract
+1. **Include share setting in event approval flow** (~4 hours)
+    - Update event approval UI with share input (2h)
+    - Backend integration for per-event share storage (1h)
+    - Smart contract integration for share distribution (1h)
+2. **Add Master role management to smart contract** (~3 hours)
+    - Implement Master share and address setters (2h)
+    - Update contract deployment and migration scripts (1h)
+3. **Update payment distribution system** (~4 hours)
+    - Modify closeEvent function for multi-LocalProvider shares (2h)
+    - Update indexer to sync share changes (1h)
+    - Add share calculation validation (1h)
 
 ## Event Request Updates
 
@@ -111,8 +156,17 @@ Due to the previous features, the event request flow should/could be improved in
 - Should the `Shaman` choose only one marker, or could they place multiple markers on single/multiple zones?
 
 **Tasks**:
-1. Add new field to the new event web form
-2. Add Telegram bot notifications feature
+1. **Add zone marker selection to event form** (~5 hours)
+    - Integrate map component into event creation form (2h)
+    - Implement zone marker placement and validation (2h)
+    - Store zone coordinates in event model (1h)
+2. **Add Telegram bot notifications for event requests** (~3 hours)
+    - Extend notification system to support Telegram (1h)
+    - Integrate with LocalProvider notification flow (1h)
+    - Add notification preferences and settings (1h)
+3. **Update event validation with zone requirements** (~2 hours)
+    - Frontend and backend validation for zone selection
+    - Error handling and user feedback
 
 ## Telegram integration
 
@@ -121,3 +175,25 @@ Because of tight Telegram integration, it's possible to move social selection to
 2. `Shaman` logged in another way
     1. They started verification -> the same thing as in p.1
     2. They requested an event -> so we ask for Telegram in priority and mention that they can receive notifications there as well, but other social platforms are still available
+
+**Tasks**:
+1. **Move social selection to account page** (~4 hours)
+    - Create account settings page with social management (2h)
+    - Remove social selection from event creation flow (1h)
+    - Update event creation to use stored socials (1h)
+2. **Implement smart Telegram detection** (~3 hours)
+    - Detect Telegram registration source (1h)
+    - Auto-populate Telegram info for verified users (1h)
+    - Fallback flow for missing Telegram info (1h)
+
+## Total Estimated Time
+
+**Summary by Feature:**
+- **Local Provider System**: ~17 hours
+- **Verified Shaman System**: ~19 hours  
+- **Map Integration**: ~26 hours
+- **Shares Rework**: ~11 hours
+- **Event Request Updates**: ~10 hours
+- **Telegram Integration**: ~7 hours
+
+**Total Estimated Development Time**: ~90 hours
