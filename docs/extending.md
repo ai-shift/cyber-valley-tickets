@@ -49,7 +49,7 @@ sequenceDiagram
     alt Request was approved
         TelegramBot-->>Database: Grant "request event space" authority
     else
-        Note: Unluck
+        Note over TelegramBot,Shaman: Unluck
     end
 ```
 
