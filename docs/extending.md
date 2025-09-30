@@ -32,10 +32,6 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
     - Back-end CRUD endpoints for LocalProvider management (2h)
     - Front-end LocalProvider management page (3h)
     - Form validation and error handling (2h)
-4. **Implement Telegram message queue system** (~4 hours)
-    - Database model for queued messages
-    - Queue management service
-    - Integration with existing notification system
 
 ## Verified Shaman - New Role
 
@@ -51,7 +47,7 @@ sequenceDiagram
     TelegramBot->>Shaman: Provide the following list of documents
     Shaman->>TelegramBot: Uploads documents
     Note over Shaman,TelegramBot: All documents should be uploaded in a single message
-    TelegramBot--))LocalProvider: New verification request
+    TelegramBot->>LocalProvider: New verification request
     TelegramBot-->>Shaman: Request sent
 ```
 
@@ -68,7 +64,7 @@ sequenceDiagram
     LocalProvider-->>TelegramBot: Decision
     TelegramBot-->>LocalProvider: Are you super duper puper sure?
     LocalProvider-->>TelegramBot: Confirmation
-    TelegramBot--))Shaman: Notify about decision
+    TelegramBot->>Shaman: Notify about decision
     alt Request was approved
         TelegramBot-->>Database: Grant "request event space" authority
     else
@@ -88,9 +84,6 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
     - Verification request workflow with approval/decline (4h)
     - LocalProvider notification and decision system (3h)
     - Database integration for role granting (2h)
-3. **Create verification request management UI** (~3 hours)
-    - LocalProvider dashboard for pending requests
-    - Document viewer and decision interface
 
 ## Map Integration
 
@@ -109,10 +102,8 @@ The API was massively improved this spring and provides a wide variety of drawin
     - Configure Google Maps API and authentication
     - Setup dynamic library loading and map initialization
     - Create base map component with responsive design
-2. **Implement upcoming events map view** (~6 hours)
+2. **Implement upcoming events map view** (~3 hours)
     - Event markers with custom styling and clustering (3h)
-    - Event info windows with booking integration (2h)
-    - Real-time event filtering and search (1h)
 3. **Implement points of interest layer** (~5 hours)
     - POI data management and custom markers (2h)
     - Category-based filtering and toggle controls (2h)
@@ -120,10 +111,8 @@ The API was massively improved this spring and provides a wide variety of drawin
 4. **Implement zone plots layer** (~8 hours)
     - Zone boundary drawing and polygon management (4h)
     - Interactive zone selection for event placement (2h)
-    - Zone availability and conflict detection (2h)
 5. **Implement layer management system** (~3 hours)
     - Layer toggle controls and visibility management
-    - Performance optimizations for multiple layers
 
 ## Shares Rework
 
@@ -160,10 +149,9 @@ Due to the previous features, the event request flow should/could be improved in
     - Integrate map component into event creation form (2h)
     - Implement zone marker placement and validation (2h)
     - Store zone coordinates in event model (1h)
-2. **Add Telegram bot notifications for event requests** (~3 hours)
+2. **Add Telegram bot notifications for event requests** (~2 hours)
     - Extend notification system to support Telegram (1h)
     - Integrate with LocalProvider notification flow (1h)
-    - Add notification preferences and settings (1h)
 3. **Update event validation with zone requirements** (~2 hours)
     - Frontend and backend validation for zone selection
     - Error handling and user feedback
@@ -190,7 +178,7 @@ Because of tight Telegram integration, it's possible to move social selection to
 
 **Summary by Feature:**
 - **Local Provider System**: ~17 hours
-- **Verified Shaman System**: ~19 hours  
+- **Verified Shaman System**: ~19 hours 
 - **Map Integration**: ~26 hours
 - **Shares Rework**: ~11 hours
 - **Event Request Updates**: ~10 hours
