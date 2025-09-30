@@ -5,6 +5,7 @@ import { useTokenBalance } from "@/shared/hooks";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
+import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
 import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
@@ -74,46 +75,49 @@ export const AccountPage: React.FC = () => {
           </div>
         </div>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
-          <Button
-            className="mt-8"
-            disabled={isMinting}
-            onClick={async () => {
-              const maybeAmount = prompt("Amount of tokens to mint:");
-              if (maybeAmount == null) {
-                // User decided to cancel
-                return;
-              }
+          <div className="flex flex-col gap-4">
+            <Button
+              className="mt-8"
+              disabled={isMinting}
+              onClick={async () => {
+                const maybeAmount = prompt("Amount of tokens to mint:");
+                if (maybeAmount == null) {
+                  // User decided to cancel
+                  return;
+                }
 
-              let amount: bigint;
-              try {
-                amount = BigInt(maybeAmount);
-              } catch (e) {
-                alert(`Failed to process amount with: ${JSON.stringify(e)}`);
-                return;
-              }
+                let amount: bigint;
+                try {
+                  amount = BigInt(maybeAmount);
+                } catch (e) {
+                  alert(`Failed to process amount with: ${JSON.stringify(e)}`);
+                  return;
+                }
 
-              if (amount <= 0) {
-                alert("Amount should be greater than zero");
-                return;
-              }
+                if (amount <= 0) {
+                  alert("Amount should be greater than zero");
+                  return;
+                }
 
-              setIsMinting(true);
-              try {
-                await mintERC20(account, amount);
-                alert(`Minted ${amount} tokens`);
-                // Invalidate and refetch the token balance
-                queryClient.invalidateQueries({
-                  queryKey: ["tokenBalance", account?.address],
-                });
-              } catch (err) {
-                alert(`Failed to mint ERC20 with ${JSON.stringify(err)}`);
-              } finally {
-                setIsMinting(false);
-              }
-            }}
-          >
-            {isMinting ? "Minting..." : "Mint ERC20"}
-          </Button>
+                setIsMinting(true);
+                try {
+                  await mintERC20(account, amount);
+                  alert(`Minted ${amount} tokens`);
+                  // Invalidate and refetch the token balance
+                  queryClient.invalidateQueries({
+                    queryKey: ["tokenBalance", account?.address],
+                  });
+                } catch (err) {
+                  alert(`Failed to mint ERC20 with ${JSON.stringify(err)}`);
+                } finally {
+                  setIsMinting(false);
+                }
+              }}
+            >
+              {isMinting ? "Minting..." : "Mint ERC20"}
+            </Button>
+            <BridgeWidget />
+          </div>
         </div>
         <div className="p-5">
           <Expandable defaultOpened>
