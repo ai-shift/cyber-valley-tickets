@@ -22,11 +22,25 @@ interface WindowWithBridge extends Window {
   };
 }
 
+interface BridgeWidgetTheme {
+  type: "dark" | "light";
+  borderColor?: string;
+  accentButtonBg?: string;
+  accentButtonText?: string;
+  accentText?: string;
+  modalBg?: string;
+  primaryButtonBg?: string;
+  primaryButtonText?: string;
+  secondaryButtonBg?: string;
+  secondaryButtonText?: string;
+}
+
 interface BridgeWidgetOptions {
   clientId: string;
-  theme: "dark" | "light";
+  theme: "dark" | "light" | BridgeWidgetTheme;
   currency: string;
   showThirdwebBranding: boolean;
+  activeTab?: "buy" | "swap";
   buy: {
     chainId: number;
     tokenAddress: string;
@@ -112,15 +126,27 @@ export const BridgeWidget: React.FC = () => {
     ) {
       bridgeWindow.BridgeWidget.render(container, {
         clientId: getClientId(),
-        theme: "dark",
+        theme: {
+          type: "dark",
+          borderColor: "var(--background)",
+          accentButtonBg: "var(--primary)",
+          accentButtonText: "var(--foreground)",
+          accentText: "var(--primary)",
+          modalBg: "var(--background)",
+          primaryButtonBg: "var(--primary)",
+          primaryButtonText: "var(--foreground)",
+          secondaryButtonBg: "var(--secondary)",
+          secondaryButtonText: "var(--foreground)",
+        },
         currency: "IDR",
-        showThirdwebBranding: true,
+        showThirdwebBranding: false,
+        activeTab: "buy",
         buy: {
           chainId: 1, // Ethereum mainnet for USDT
           tokenAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT address
           amount: "10",
           buttonLabel: "Buy USDT with IDR",
-          country: "US", // Indonesia
+          country: "ID", // Indonesia
           presetOptions: [10, 25, 50] as [number, number, number],
           onSuccess: (quote: BridgeQuote) => {
             console.log("Bridge purchase successful:", quote);
