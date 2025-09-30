@@ -40,28 +40,27 @@ interface BridgeWidgetOptions {
   theme: "dark" | "light" | BridgeWidgetTheme;
   currency: string;
   showThirdwebBranding: boolean;
-  activeTab?: "buy" | "swap";
   buy: {
     chainId: number;
     tokenAddress: string;
     amount: string;
-    buttonLabel: string;
+    buttonLabel?: string;
     country: string;
     presetOptions: [number, number, number];
-    onSuccess: (quote: BridgeQuote) => void;
-    onError: (error: Error, quote: BridgeQuote | undefined) => void;
-    onCancel: (quote: BridgeQuote | undefined) => void;
+    onSuccess?: (quote: BridgeQuote) => void;
+    onError?: (error: Error, quote: BridgeQuote | undefined) => void;
+    onCancel?: (quote: BridgeQuote | undefined) => void;
   };
-  swap: {
-    prefill: {
-      buyToken: {
+  swap?: {
+    prefill?: {
+      buyToken?: {
         chainId: number;
         tokenAddress: string;
       };
     };
-    onSuccess: (quote: BridgeQuote) => void;
-    onError: (error: Error, quote: BridgeQuote | undefined) => void;
-    onCancel: (quote: BridgeQuote | undefined) => void;
+    onSuccess?: (quote: BridgeQuote) => void;
+    onError?: (error: Error, quote: BridgeQuote | undefined) => void;
+    onCancel?: (quote: BridgeQuote | undefined) => void;
   };
 }
 
@@ -124,23 +123,39 @@ export const BridgeWidget: React.FC = () => {
       typeof bridgeWindow.BridgeWidget !== "undefined" &&
       bridgeWindow.BridgeWidget
     ) {
+      // Get computed CSS variable values from :root
+      const rootStyles = getComputedStyle(document.documentElement);
+      const themeColors = {
+        background: rootStyles.getPropertyValue("--background").trim(),
+        primary: rootStyles.getPropertyValue("--primary").trim(),
+        foreground: rootStyles.getPropertyValue("--foreground").trim(),
+        secondary: rootStyles.getPropertyValue("--secondary").trim(),
+      };
+
+      console.log("Initializing Bridge Widget with config:", {
+        clientId: getClientId(),
+        currency: "IDR",
+        chainId: 1,
+        tokenAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        theme: themeColors,
+      });
+
       bridgeWindow.BridgeWidget.render(container, {
         clientId: getClientId(),
         theme: {
           type: "dark",
-          borderColor: "var(--background)",
-          accentButtonBg: "var(--primary)",
-          accentButtonText: "var(--foreground)",
-          accentText: "var(--primary)",
-          modalBg: "var(--background)",
-          primaryButtonBg: "var(--primary)",
-          primaryButtonText: "var(--foreground)",
-          secondaryButtonBg: "var(--secondary)",
-          secondaryButtonText: "var(--foreground)",
+          borderColor: themeColors.background,
+          accentButtonBg: themeColors.primary,
+          accentButtonText: themeColors.foreground,
+          accentText: themeColors.primary,
+          modalBg: themeColors.background,
+          primaryButtonBg: themeColors.primary,
+          primaryButtonText: themeColors.foreground,
+          secondaryButtonBg: themeColors.secondary,
+          secondaryButtonText: themeColors.foreground,
         },
         currency: "IDR",
         showThirdwebBranding: false,
-        activeTab: "buy",
         buy: {
           chainId: 1, // Ethereum mainnet for USDT
           tokenAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT address
@@ -159,25 +174,6 @@ export const BridgeWidget: React.FC = () => {
           },
           onCancel: (_quote: BridgeQuote | undefined) => {
             console.log("Bridge purchase cancelled");
-          },
-        },
-        swap: {
-          prefill: {
-            buyToken: {
-              chainId: 1,
-              tokenAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
-            },
-          },
-          onSuccess: (quote: BridgeQuote) => {
-            console.log("Swap successful:", quote);
-            alert("Swap successful!");
-          },
-          onError: (error: Error, _quote: BridgeQuote | undefined) => {
-            console.error("Swap error:", error);
-            alert(`Swap failed: ${error.message}`);
-          },
-          onCancel: (_quote: BridgeQuote | undefined) => {
-            console.log("Swap cancelled");
           },
         },
       });
