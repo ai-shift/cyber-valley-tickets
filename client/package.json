@@ -23,6 +23,7 @@
     "@tailwindcss/vite": "^4.1.5",
     "@tanstack/react-query": "^5.75.2",
     "@tanstack/react-query-devtools": "^5.75.2",
+    "@vis.gl/react-google-maps": "^1.5.5",
     "@yudiel/react-qr-scanner": "^2.3.0",
     "bs58": "^6.0.0",
     "class-variance-authority": "^0.7.1",
