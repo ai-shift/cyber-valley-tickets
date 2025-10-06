@@ -1,0 +1,1398 @@
+[
+  {
+    "name": "border pillar 6",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30069234667418,
+      "lng": 115.093148982619
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border pillar 9",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30058868979488,
+      "lng": 115.094689021889
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border pillar 10",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.29985446250949,
+      "lng": 115.096148820637
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border pillar 11",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.29973423755653,
+      "lng": 115.096376939394
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border pillar 13",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.29904742066512,
+      "lng": 115.097770456145
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border pillar 16",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.29774567596611,
+      "lng": 115.095799260026
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "helipad",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2955132,
+      "lng": 115.0882602
+    },
+    "iconUrl": "images/icon-15.png"
+  },
+  {
+    "name": "carrot house",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3027651,
+      "lng": 115.090917
+    },
+    "iconUrl": "images/icon-16.png"
+  },
+  {
+    "name": "banya",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30107,
+      "lng": 115.0904415
+    },
+    "iconUrl": "images/icon-17.png"
+  },
+  {
+    "name": "permabase",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3009633,
+      "lng": 115.0890704
+    },
+    "iconUrl": "images/icon-18.png"
+  },
+  {
+    "name": "vitalik",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3019613,
+      "lng": 115.0888854
+    },
+    "iconUrl": "images/icon-19.png"
+  },
+  {
+    "name": "organiq",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.301266,
+      "lng": 115.088983
+    },
+    "iconUrl": "images/icon-20.png"
+  },
+  {
+    "name": "parking black",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.301181,
+      "lng": 115.0886705
+    },
+    "iconUrl": "images/icon-21.png"
+  },
+  {
+    "name": "carpentry",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3005343,
+      "lng": 115.0896797
+    },
+    "iconUrl": "images/icon-22.png"
+  },
+  {
+    "name": "soft",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3023565,
+      "lng": 115.0895873
+    },
+    "iconUrl": "images/icon-23.png"
+  },
+  {
+    "name": "pylon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3019586,
+      "lng": 115.088857
+    },
+    "iconUrl": "images/icon-24.png"
+  },
+  {
+    "name": "pad and camping",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3021945,
+      "lng": 115.089389
+    },
+    "iconUrl": "images/icon-25.png"
+  },
+  {
+    "name": "elons",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3023179,
+      "lng": 115.0898562
+    },
+    "iconUrl": "images/icon-26.png"
+  },
+  {
+    "name": "gavin",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3021801,
+      "lng": 115.0891307
+    },
+    "iconUrl": "images/icon-19.png"
+  },
+  {
+    "name": "wc",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3024897,
+      "lng": 115.0894945
+    },
+    "iconUrl": "images/icon-27.png"
+  },
+  {
+    "name": "wc",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3013259,
+      "lng": 115.0889822
+    },
+    "iconUrl": "images/icon-27.png"
+  },
+  {
+    "name": "wc",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3011643,
+      "lng": 115.090841
+    },
+    "iconUrl": "images/icon-27.png"
+  },
+  {
+    "name": "chickens",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3023953,
+      "lng": 115.0897843
+    },
+    "iconUrl": "images/icon-28.png"
+  },
+  {
+    "name": "edem",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3023112,
+      "lng": 115.0902149
+    },
+    "iconUrl": "images/icon-29.png"
+  },
+  {
+    "name": "firefly",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2997383,
+      "lng": 115.089397
+    },
+    "iconUrl": "images/icon-30.png"
+  },
+  {
+    "name": "cyber~market",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2998807,
+      "lng": 115.0898718
+    },
+    "iconUrl": "images/icon-31.png"
+  },
+  {
+    "name": "camping",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2990759,
+      "lng": 115.0890122
+    },
+    "iconUrl": "images/icon-32.png"
+  },
+  {
+    "name": "showrooms",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2993625,
+      "lng": 115.0890261
+    },
+    "iconUrl": "images/icon-33.png"
+  },
+  {
+    "name": "parking bridge",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2975263,
+      "lng": 115.088467
+    },
+    "iconUrl": "images/icon-21.png"
+  },
+  {
+    "name": "jurassic",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3007344,
+      "lng": 115.0896167
+    },
+    "iconUrl": "images/icon-34.png"
+  },
+  {
+    "name": "terrabyte",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3009829,
+      "lng": 115.0890673
+    },
+    "iconUrl": "images/icon-35.png"
+  },
+  {
+    "name": "cock to hold",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3004662,
+      "lng": 115.0930148
+    },
+    "iconUrl": "images/icon-36.png"
+  },
+  {
+    "name": "canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.299797,
+      "lng": 115.0934651
+    },
+    "iconUrl": "images/icon-37.png"
+  },
+  {
+    "name": "canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2995562,
+      "lng": 115.0937588
+    },
+    "iconUrl": "images/icon-37.png"
+  },
+  {
+    "name": "parking",
+    "type": "polygon",
+    "coordinates": [
+      {
+        "lat": -8.2972278,
+        "lng": 115.0948267
+      },
+      {
+        "lat": -8.2972614,
+        "lng": 115.0948733
+      },
+      {
+        "lat": -8.2971949,
+        "lng": 115.0949163
+      },
+      {
+        "lat": -8.297163,
+        "lng": 115.094868
+      },
+      {
+        "lat": -8.2972278,
+        "lng": 115.0948267
+      }
+    ],
+    "polygon_color": "ab8dffff",
+    "line_color": "ff8dffff"
+  },
+  {
+    "name": "canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.298546,
+      "lng": 115.094581
+    },
+    "iconUrl": "images/icon-37.png"
+  },
+  {
+    "name": "canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2968095,
+      "lng": 115.0949346
+    },
+    "iconUrl": "images/icon-37.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.299463,
+      "lng": 115.089108
+    },
+    "iconUrl": "images/icon-38.png"
+  },
+  {
+    "name": "stone",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.29869,
+      "lng": 115.0984
+    },
+    "iconUrl": "images/icon-39.png"
+  },
+  {
+    "name": "border stone",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.297887,
+      "lng": 115.096436
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border stone",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.300204,
+      "lng": 115.095293
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border stone",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.297664,
+      "lng": 115.096125
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "border stone",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.297564,
+      "lng": 115.098165
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "jurasic",
+    "type": "polygon",
+    "coordinates": [
+      {
+        "lat": -8.3007717,
+        "lng": 115.089488
+      },
+      {
+        "lat": -8.3008798,
+        "lng": 115.0895762
+      },
+      {
+        "lat": -8.3009878,
+        "lng": 115.0896806
+      },
+      {
+        "lat": -8.3011067,
+        "lng": 115.089791
+      },
+      {
+        "lat": -8.3011107,
+        "lng": 115.089817
+      },
+      {
+        "lat": -8.3012089,
+        "lng": 115.0899222
+      },
+      {
+        "lat": -8.3012238,
+        "lng": 115.0899831
+      },
+      {
+        "lat": -8.3011748,
+        "lng": 115.0900225
+      },
+      {
+        "lat": -8.3010927,
+        "lng": 115.090062
+      },
+      {
+        "lat": -8.3011027,
+        "lng": 115.090204
+      },
+      {
+        "lat": -8.301117,
+        "lng": 115.0902533
+      },
+      {
+        "lat": -8.3006138,
+        "lng": 115.0896964
+      },
+      {
+        "lat": -8.3007717,
+        "lng": 115.089488
+      }
+    ],
+    "polygon_color": "4d42b37c",
+    "line_color": "ff42b37c"
+  },
+  {
+    "name": "quartz",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3014501,
+      "lng": 115.0887073
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "avalon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3031213,
+      "lng": 115.0903091
+    },
+    "iconUrl": "images/icon-41.png"
+  },
+  {
+    "name": "andara",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3022884,
+      "lng": 115.089388
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "vitalik",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.302011,
+      "lng": 115.088886
+    },
+    "iconUrl": "images/icon-42.png"
+  },
+  {
+    "name": "andrey",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.299447,
+      "lng": 115.090962
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "meditation spot",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.299446,
+      "lng": 115.09119
+    },
+    "iconUrl": "images/icon-43.png"
+  },
+  {
+    "name": "wc",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.299455,
+      "lng": 115.091019
+    },
+    "iconUrl": "images/icon-27.png"
+  },
+  {
+    "name": "baikal",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3025072,
+      "lng": 115.0897004
+    },
+    "iconUrl": "images/icon-41.png"
+  },
+  {
+    "name": "nik",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.29957,
+      "lng": 115.091092
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "lolok temple",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.300397,
+      "lng": 115.08991
+    },
+    "iconUrl": "images/icon-44.png"
+  },
+  {
+    "name": "satoshi",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3020775,
+      "lng": 115.0906877
+    },
+    "iconUrl": "images/icon-45.png"
+  },
+  {
+    "name": "elons",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30237,
+      "lng": 115.089812
+    },
+    "iconUrl": "images/icon-20.png"
+  },
+  {
+    "name": "andara",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.302216,
+      "lng": 115.089298
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "wc",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.299532,
+      "lng": 115.091038
+    },
+    "iconUrl": "images/icon-27.png"
+  },
+  {
+    "name": "monastery",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3012185,
+      "lng": 115.0908175
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "Gavin",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.302206,
+      "lng": 115.089144
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "obsidian",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3009342,
+      "lng": 115.0905843
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "titikaka",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.301079,
+      "lng": 115.090412
+    },
+    "iconUrl": "images/icon-41.png"
+  },
+  {
+    "name": "banya",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3010807,
+      "lng": 115.0904429
+    },
+    "iconUrl": "images/icon-46.png"
+  },
+  {
+    "name": "olymp",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.301402,
+      "lng": 115.090666
+    },
+    "iconUrl": "images/icon-27.png"
+  },
+  {
+    "name": "toba",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.301152,
+      "lng": 115.090531
+    },
+    "iconUrl": "images/icon-41.png"
+  },
+  {
+    "name": "old biochar burner",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3013506,
+      "lng": 115.0903273
+    },
+    "iconUrl": "images/icon-47.png"
+  },
+  {
+    "name": "emerald",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3009002,
+      "lng": 115.0898624
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "yudkowsky",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.301779,
+      "lng": 115.0914002
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "citrin",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3011629,
+      "lng": 115.0894942
+    },
+    "iconUrl": "images/icon-40.png"
+  },
+  {
+    "name": "parking white",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2975264,
+      "lng": 115.0889065
+    },
+    "iconUrl": "images/icon-21.png"
+  },
+  {
+    "name": "baikal",
+    "type": "polygon",
+    "coordinates": [
+      {
+        "lat": -8.3026014,
+        "lng": 115.0896441
+      },
+      {
+        "lat": -8.3026126,
+        "lng": 115.0896807
+      },
+      {
+        "lat": -8.3024441,
+        "lng": 115.0897451
+      },
+      {
+        "lat": -8.3024304,
+        "lng": 115.0897091
+      },
+      {
+        "lat": -8.3026014,
+        "lng": 115.0896441
+      }
+    ],
+    "polygon_color": "d69b5701",
+    "line_color": "ff9b5701"
+  },
+  {
+    "name": "spring wall",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30542267644157,
+      "lng": 115.09686535824
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1391-rec-spa.png"
+  },
+  {
+    "name": "view point",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.306843,
+      "lng": 115.0971546
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1283-poi-lookout-point.png"
+  },
+  {
+    "name": "peak",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.306744,
+      "lng": 115.100287
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1377-rec-mountain.png"
+  },
+  {
+    "name": "hulk",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.302319,
+      "lng": 115.092811
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "chunk",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.302336,
+      "lng": 115.092687
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "mossy giant",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30271,
+      "lng": 115.093263
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "crimson",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.303585,
+      "lng": 115.094279
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "guardian",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.303439,
+      "lng": 115.094003
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "root tree",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3037,
+      "lng": 115.094565
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "mountain dick",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3023584,
+      "lng": 115.0931684
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "ginger way",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.305385,
+      "lng": 115.096813
+    },
+    "iconUrl": "images/icon-48.png"
+  },
+  {
+    "name": "stone stage",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3050593,
+      "lng": 115.0963439
+    },
+    "iconUrl": "images/icon-39.png"
+  },
+  {
+    "name": "rest point",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.303937,
+      "lng": 115.094822
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1283-poi-lookout-point.png"
+  },
+  {
+    "name": "ginger wall",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.305106,
+      "lng": 115.097162
+    },
+    "iconUrl": "images/icon-49.png"
+  },
+  {
+    "name": "view point",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.305132,
+      "lng": 115.096979
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1283-poi-lookout-point.png"
+  },
+  {
+    "name": "view point",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3052424,
+      "lng": 115.0971969
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1283-poi-lookout-point.png"
+  },
+  {
+    "name": "embraced core",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3028482,
+      "lng": 115.0932283
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "valley view",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3064638,
+      "lng": 115.0970219
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1283-poi-lookout-point.png"
+  },
+  {
+    "name": "mountain view",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.307292,
+      "lng": 115.098077
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1283-poi-lookout-point.png"
+  },
+  {
+    "name": "jointwood",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.302495,
+      "lng": 115.093272
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "the hairy tree",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.302248,
+      "lng": 115.092519
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "2074",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3072748,
+      "lng": 115.1007601
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "trail to sanghyang",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2997276,
+      "lng": 115.0907997
+    },
+    "iconUrl": "images/icon-50.png"
+  },
+  {
+    "name": "start trail to sanghyang",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2975929,
+      "lng": 115.0888492
+    },
+    "iconUrl": "images/icon-51.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2976309,
+      "lng": 115.0958138
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "start point",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30052777777778,
+      "lng": 115.0895
+    },
+    "iconUrl": "images/icon-53.png"
+  },
+  {
+    "name": "small canyon bridge",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2998724,
+      "lng": 115.0894371
+    },
+    "iconUrl": "images/icon-54.png"
+  },
+  {
+    "name": "elevated ground",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.296576,
+      "lng": 115.088658
+    },
+    "iconUrl": "images/icon-55.png"
+  },
+  {
+    "name": "avatar",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2999865,
+      "lng": 115.0892643
+    },
+    "iconUrl": "images/icon-30.png"
+  },
+  {
+    "name": "borders path",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.299722,
+      "lng": 115.0895452
+    },
+    "iconUrl": "images/icon-53.png"
+  },
+  {
+    "name": "bridge",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.298119,
+      "lng": 115.089205
+    },
+    "iconUrl": "images/icon-54.png"
+  },
+  {
+    "name": "canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2964953,
+      "lng": 115.0953212
+    },
+    "iconUrl": "images/icon-37.png"
+  },
+  {
+    "name": "bridge",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2981333,
+      "lng": 115.0891132
+    },
+    "iconUrl": "images/icon-54.png"
+  },
+  {
+    "name": "path to the hill",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2944917,
+      "lng": 115.0883283
+    },
+    "iconUrl": "images/icon-53.png"
+  },
+  {
+    "name": "stairs to canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3000014,
+      "lng": 115.0893687
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "path to canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2995157,
+      "lng": 115.0905146
+    },
+    "iconUrl": "images/icon-38.png"
+  },
+  {
+    "name": "rubus",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30019444444445,
+      "lng": 115.089583333333
+    },
+    "iconUrl": "images/icon-57.png"
+  },
+  {
+    "name": "path to canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2996684,
+      "lng": 115.0899523
+    },
+    "iconUrl": "images/icon-38.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.295302,
+      "lng": 115.087637
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2954259,
+      "lng": 115.0876997
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "hill",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.294283,
+      "lng": 115.08752
+    },
+    "iconUrl": "images/icon-58.png"
+  },
+  {
+    "name": "hill",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.294703,
+      "lng": 115.087873
+    },
+    "iconUrl": "images/icon-58.png"
+  },
+  {
+    "name": "pond",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2957473,
+      "lng": 115.087644
+    },
+    "iconUrl": "images/icon-41.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2967442,
+      "lng": 115.0887865
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2940502,
+      "lng": 115.0882077
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2936002,
+      "lng": 115.0874385
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "stone",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.293503,
+      "lng": 115.087913
+    },
+    "iconUrl": "images/icon-39.png"
+  },
+  {
+    "name": "pond",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2974317,
+      "lng": 115.0883927
+    },
+    "iconUrl": "images/icon-41.png"
+  },
+  {
+    "name": "canyon",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.293613,
+      "lng": 115.087406
+    },
+    "iconUrl": "images/icon-37.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.293577,
+      "lng": 115.087583
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2940019,
+      "lng": 115.0872223
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "sacred place",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2977368,
+      "lng": 115.0935526
+    },
+    "iconUrl": "images/icon-59.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.293586,
+      "lng": 115.087476
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2970771,
+      "lng": 115.0878073
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2996847,
+      "lng": 115.0897514
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "stone",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2967612,
+      "lng": 115.0882632
+    },
+    "iconUrl": "images/icon-39.png"
+  },
+  {
+    "name": "unicorn",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.297608,
+      "lng": 115.09556
+    },
+    "iconUrl": "https://www.gstatic.com/mapspro/images/stock/1379-rec-park.png"
+  },
+  {
+    "name": "bamboo jack",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2952947,
+      "lng": 115.0880895
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.29905,
+      "lng": 115.08888
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2963888,
+      "lng": 115.0886479
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "oranges",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.296864,
+      "lng": 115.08782
+    },
+    "iconUrl": "images/icon-60.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2943727,
+      "lng": 115.087359
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "bamboo",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.3012116,
+      "lng": 115.0899222
+    },
+    "iconUrl": "images/icon-52.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.294041,
+      "lng": 115.0872755
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "stairs",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.294273,
+      "lng": 115.087979
+    },
+    "iconUrl": "images/icon-56.png"
+  },
+  {
+    "name": "border pillar 5",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.301239263552,
+      "lng": 115.092643339635
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "spring",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.2970735,
+      "lng": 115.0943704
+    },
+    "iconUrl": "images/icon-61.png"
+  },
+  {
+    "name": "border pillar 7",
+    "type": "point",
+    "coordinates": {
+      "lat": -8.30094839081481,
+      "lng": 115.093981651847
+    },
+    "iconUrl": "images/icon-14.png"
+  },
+  {
+    "name": "avalon",
+    "type": "polygon",
+    "coordinates": [
+      {
+        "lat": -8.303121,
+        "lng": 115.0903261
+      },
+      {
+        "lat": -8.3031037,
+        "lng": 115.090302
+      },
+      {
+        "lat": -8.3031169,
+        "lng": 115.0902858
+      },
+      {
+        "lat": -8.3031368,
+        "lng": 115.090302
+      },
+      {
+        "lat": -8.303121,
+        "lng": 115.0903261
+      }
+    ],
+    "polygon_color": "e3646000",
+    "line_color": "ff646000"
+  },
+  {
+    "name": "elon's",
+    "type": "polygon",
+    "coordinates": [
+      {
+        "lat": -8.3022688,
+        "lng": 115.089815
+      },
+      {
+        "lat": -8.3023913,
+        "lng": 115.0897097
+      },
+      {
+        "lat": -8.3024612,
+        "lng": 115.0897948
+      },
+      {
+        "lat": -8.3023458,
+        "lng": 115.0899115
+      },
+      {
+        "lat": -8.3022688,
+        "lng": 115.089815
+      }
+    ],
+    "polygon_color": "4d000000",
+    "line_color": "ff000000"
+  }
+]
