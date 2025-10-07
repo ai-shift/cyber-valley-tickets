@@ -4,7 +4,7 @@
 
 The current `Master` role is being renamed to `LocalProvider` and retains all of its authorities. At the smart contract level, multiple `LocalProvider`s may exist, each with **their own distinct** share percentage.
 
-Meanwhile, the `Master` role is only capable of adding and removing `LocalProvider`s, which contain the following data:
+Meanwhile, the `Master` role is only capable of adding and removing `LocalProvider`s, which should request the following data in the form:
 - EOA (Externally Owned Account)
 - Telegram username
 - Share percentage
@@ -16,22 +16,20 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
 - Telegram bots are forbidden to send messages to users who haven't sent any messages to them. So `LocalProvider` would not work properly (receive any notifications from the bot) until they send the `/start` command
     - We may implement a message queue at the DB level and send all unreceived notifications when `LocalProvider` contacts the bot
     - We may forbid registering new `LocalProvider`s until they contact the bot
-    - We may simply ignore the issue for now and delegate it to our future selves    
+    - We may simply ignore the issue for now and delegate it to our future selves
 
 **Tasks**:
 1. **Rename `Master` to `LocalProvider` role** (~2 hours)
-    - Update backend user model and migrations
-    - Update smart contract role constants
-    - Update frontend role-based components and permissions
+    - @naqerl Update backend user model and migrations
+    - @naqerl Update smart contract role constants
+    - @redmoor Update frontend role-based components and permissions
 2. **Add new `Master` role to the smart contract** (~3 hours)
-    - Implement multi-LocalProvider share management in contract
-    - Add LocalProvider registration/removal functions
-    - Update role-based access controls
+    - @naqerl Implement multi-LocalProvider share management in contract
+    - @naqerl Add LocalProvider registration/removal functions
 3. **Implement LocalProvider management system** (~8 hours)
-    - Create LocalProvider model with telegram/share fields (1h)
-    - Back-end CRUD endpoints for LocalProvider management (2h)
-    - Front-end LocalProvider management page (3h)
-    - Form validation and error handling (2h)
+    - @naqerl Create LocalProvider model with telegram/share fields (1h)
+    - @naqerl Back-end CRUD endpoints for LocalProvider management (2h)
+    - @redmoor Front-end LocalProvider management page (5h)
 
 ## Verified Shaman - New Role
 
@@ -41,12 +39,12 @@ The `Apply new event space` button now redirects to the Telegram bot with the fo
 sequenceDiagram
     actor Shaman
     participant TelegramBot
+    participant TMA
     actor LocalProvider
-    
+
     Shaman->>TelegramBot: /start command
-    TelegramBot->>Shaman: Provide the following list of documents
-    Shaman->>TelegramBot: Uploads documents
-    Note over Shaman,TelegramBot: All documents should be uploaded in a single message
+    TelegramBot->>Shaman: Provide the following list of documents (open TMA)
+    Shaman->>TMA: Uploads documents
     TelegramBot->>LocalProvider: New verification request
     TelegramBot-->>Shaman: Request sent
 ```
@@ -74,16 +72,29 @@ sequenceDiagram
 
 When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` from the `Manage` page in the navigation bar. This form is migrated from the `Master`'s `Manage` page.
 
+**Documents to be requested for verification**:
+физик индонез
+- KTP (owner’s passport/ID);
+
+юр лицо компания (PT/PT PMA)
+- KTP or passport director/authorized person (if applicable);
+- incorporation documents (Akta Pendirian);
+- SK Kemenkumham (registration with the Ministry of Law and Human Rights);
+
+**Questions**:
+- Do `LocalProvider`s can add / remove `EventPlace`'s the same way as OldMaster or only accept / decline requests from `VerifiedShaman`
+
 **Tasks**:
 1. **Add new `VerifiedShaman` role** (~4 hours)
-    - Back-end role enumeration and migration (1h)
-    - Update role-based permissions and views (1h)
-    - Migrate `Manage` page from Master to VerifiedShaman (2h)
+    - @naqerl Back-end role enumeration and migration (1h)
+    - @redmoor Update role-based permissions and views (1h)
+    - @redmoor Migrate `Manage` page from OldMaster's event place to VerifiedShaman (2h)
 2. **Implement Telegram bot verification flow** (~12 hours)
-    - Document upload handler and validation (3h)
-    - Verification request workflow with approval/decline (4h)
-    - LocalProvider notification and decision system (3h)
-    - Database integration for role granting (2h)
+    - @redmoor Document upload web form (2h)
+    - @naqerl Implement web form upload endpoint (1h)
+    - @naqerl Verification request workflow with approval/decline (4h)
+    - @naqerl LocalProvider notification and decision system (3h)
+    - @naqerl Database integration for role granting (2h)
 
 ## Map Integration
 
@@ -99,20 +110,20 @@ The API was massively improved this spring and provides a wide variety of drawin
 
 **Tasks**:
 1. **Setup Google Maps integration** (~4 hours)
-    - Configure Google Maps API and authentication
-    - Setup dynamic library loading and map initialization
-    - Create base map component with responsive design
+    - [ ] @naqerl Setup dynamic map data endpoint & sync via HTTP
+    - [x] @redmoor Configure Google Maps API and authentication
+    - [x] @redmoor Create base map component with responsive design
 2. **Implement upcoming events map view** (~3 hours)
-    - Event markers with custom styling and clustering (3h)
+    - [ ] Event markers with custom styling and clustering (3h)
 3. **Implement points of interest layer** (~5 hours)
-    - POI data management and custom markers (2h)
-    - Category-based filtering and toggle controls (2h)
-    - Info windows and interaction handling (1h)
+    - [x] @redmoor POI data management and custom markers (2h)
+    - [x] @redmoor Category-based filtering and toggle controls (2h)
+    - [ ] @naqerl TBD Info windows and interaction handling (1h)
 4. **Implement zone plots layer** (~8 hours)
-    - Zone boundary drawing and polygon management (4h)
-    - Interactive zone selection for event placement (2h)
+    - [x] Zone boundary drawing and polygon management (4h)
+    - [ ] Interactive zone selection for event placement (2h)
 5. **Implement layer management system** (~3 hours)
-    - Layer toggle controls and visibility management
+    - [x] Layer toggle controls and visibility management
 
 ## Shares Rework
 
@@ -178,7 +189,7 @@ Because of tight Telegram integration, it's possible to move social selection to
 
 **Summary by Feature:**
 - **Local Provider System**: ~17 hours
-- **Verified Shaman System**: ~19 hours 
+- **Verified Shaman System**: ~19 hours
 - **Map Integration**: ~26 hours
 - **Shares Rework**: ~11 hours
 - **Event Request Updates**: ~10 hours
