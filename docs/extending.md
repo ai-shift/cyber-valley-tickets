@@ -108,6 +108,9 @@ For detailed implementation of this feature, further research of Google's API wa
 
 The API was massively improved this spring and provides a wide variety of drawing plots, creating and grouping markers, managing multiple layers and styling different parts of the map. In conclusion, it seems like a great piece of work and all currently requested features may be implemented without much difficulty.
 
+**Questions**
+- Now there is a huge mess in the layers that come from "Google My Map". Will there be any order, or the specific layer that is meant for event place selection?
+
 **Tasks**:
 1. **Setup Google Maps integration** (~4 hours)
     - [ ] @naqerl Setup dynamic map data endpoint & sync via HTTP
@@ -135,16 +138,16 @@ To prevent potentially cumbersome situations in the future, a setter for the `Ma
 
 **Tasks**:
 1. **Include share setting in event approval flow** (~4 hours)
-    - Update event approval UI with share input (2h)
-    - Backend integration for per-event share storage (1h)
-    - Smart contract integration for share distribution (1h)
+    - @redmoor Add 'shares' field to the `LocalProvider` approve form (input) (2h)
+    - @naqerl Backend integration for per-event share storage (1h)
+    - @naqerl Smart contract integration for share distribution (1h)
 2. **Add Master role management to smart contract** (~3 hours)
-    - Implement Master share and address setters (2h)
-    - Update contract deployment and migration scripts (1h)
+    - @naqerl Implement Master share and address setters (2h)
+    - @naqerl Update contract deployment and migration scripts (1h)
 3. **Update payment distribution system** (~4 hours)
-    - Modify closeEvent function for multi-LocalProvider shares (2h)
-    - Update indexer to sync share changes (1h)
-    - Add share calculation validation (1h)
+    - @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
+    - @naqerl Update indexer to sync share changes (1h)
+    - @naqerl Add share calculation validation (1h)
 
 ## Event Request Updates
 
@@ -154,18 +157,16 @@ Due to the previous features, the event request flow should/could be improved in
 
 **Questions**:
 - Should the `Shaman` choose only one marker, or could they place multiple markers on single/multiple zones?
+- What is the exact flow of putting the marker on the tile?
 
 **Tasks**:
-1. **Add zone marker selection to event form** (~5 hours)
-    - Integrate map component into event creation form (2h)
-    - Implement zone marker placement and validation (2h)
-    - Store zone coordinates in event model (1h)
+1. **Add zone marker selection to event form** (~7 hours)
+    - @redmoor Integrate map component into event creation form (3h)
+    - @redmoor Implement zone marker placement and validation (2h)
+    - @naqerl Store zone coordinates in event model (2h)
 2. **Add Telegram bot notifications for event requests** (~2 hours)
-    - Extend notification system to support Telegram (1h)
-    - Integrate with LocalProvider notification flow (1h)
-3. **Update event validation with zone requirements** (~2 hours)
-    - Frontend and backend validation for zone selection
-    - Error handling and user feedback
+    - @naqerl Extend notification system to support Telegram (1h)
+    - @naqerl Integrate with LocalProvider notification flow (1h)
 
 ## Telegram integration
 
@@ -177,22 +178,22 @@ Because of tight Telegram integration, it's possible to move social selection to
 
 **Tasks**:
 1. **Move social selection to account page** (~4 hours)
-    - Create account settings page with social management (2h)
-    - Remove social selection from event creation flow (1h)
-    - Update event creation to use stored socials (1h)
+    - @redmoor Create account settings page with social management (2h)
+    - @redmoor Remove social selection from event creation flow (1h)
+    - @redmoor Update event creation to use stored socials (1h)
 2. **Implement smart Telegram detection** (~3 hours)
-    - Detect Telegram registration source (1h)
-    - Auto-populate Telegram info for verified users (1h)
-    - Fallback flow for missing Telegram info (1h)
+    - @naqerl Detect Telegram registration source (1h)
+    - @naqerl Auto-populate Telegram info for verified users (1h)
+    - @naqerl TBD Fallback flow for missing Telegram info (1h)
 
 ## Total Estimated Time
 
 **Summary by Feature:**
-- **Local Provider System**: ~17 hours
-- **Verified Shaman System**: ~19 hours
-- **Map Integration**: ~26 hours
+- **Local Provider System**: ~13 hours
+- **Verified Shaman System**: ~16 hours
+- **Map Integration**: ~23 hours
 - **Shares Rework**: ~11 hours
-- **Event Request Updates**: ~10 hours
+- **Event Request Updates**: ~9 hours
 - **Telegram Integration**: ~7 hours
 
-**Total Estimated Development Time**: ~90 hours
+**Total Estimated Development Time**: ~79 hours
