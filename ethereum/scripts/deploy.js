@@ -20,6 +20,10 @@ async function main() {
     },
   });
   await eventTicket.setEventManagerAddress(await eventManager.getAddress());
+  
+  const [master] = await hre.ethers.getSigners();
+  await eventManager.connect(master).setMasterShare(100);
+  
   console.log(`export PUBLIC_ERC20_ADDRESS=${await erc20.getAddress()}`);
   console.log(
     `export PUBLIC_EVENT_TICKET_ADDRESS=${await eventTicket.getAddress()}`,

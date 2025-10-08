@@ -37,6 +37,30 @@ import {
 } from "./corner-cases";
 
 describe("CyberValleyEventManager", () => {
+  describe("setMasterShare", () => {
+    itExpectsOnlyMaster("setMasterShare", [50]);
+
+    it("sets master share value", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      await eventManager.connect(master).setMasterShare(75);
+      expect(await eventManager.masterShare()).to.equal(75);
+    });
+
+    it("reverts when share is 0", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      await expect(
+        eventManager.connect(master).setMasterShare(0),
+      ).to.be.revertedWith("share should be greater than 0");
+    });
+
+    it("reverts when share is greater than 100", async () => {
+      const { eventManager, master } = await loadFixture(deployContract);
+      await expect(
+        eventManager.connect(master).setMasterShare(101),
+      ).to.be.revertedWith("share should be less or equal to 100");
+    });
+  });
+
   describe("createEventPlace", () => {
     itExpectsOnlyMaster(
       "createEventPlace",
