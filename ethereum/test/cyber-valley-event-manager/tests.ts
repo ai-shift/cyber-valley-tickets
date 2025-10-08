@@ -13,6 +13,7 @@ import {
   loadFixture,
   stringify,
   submitEventRequest,
+  timestamp,
 } from "./helpers";
 
 import {
@@ -317,33 +318,96 @@ describe("CyberValleyEventManager", () => {
     ]);
 
     it("emits EventUpdated", async () => {
-      assert(false);
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+        { startDate: timestamp(5), daysAmount: 3 },
+        {},
+      );
+      const updatedRequest = {
+        ...defaultSubmitEventRequest,
+        startDate: timestamp(10),
+        daysAmount: 2,
+        ticketPrice: 50,
+      };
+      const tx = await eventManager
+        .connect(master)
+        .updateEvent(eventId, ...submitEventRequestArgsToArray(updatedRequest));
+      await expect(tx)
+        .to.emit(eventManager, "EventUpdated")
+        .withArgs(eventId, ...submitEventRequestArgsToArray(updatedRequest));
     });
 
     it("reverts on unexisting event", async () => {
-      assert(false);
+      const { eventManager, master } = await loadFixture(deployContract);
+      const nonExistentEventId = BigInt(9999);
+      await expect(
+        eventManager
+          .connect(master)
+          .updateEvent(
+            nonExistentEventId,
+            ...submitEventRequestArgsToArray(defaultSubmitEventRequest),
+          ),
+      ).to.be.revertedWith("Event with given id does not exist");
     });
 
     it("checks date ranges overlap", async () => {
-      assert(false);
+      const { eventManager, ERC20, master, creator } =
+        await loadFixture(deployContract);
+      const { eventId: firstEventId } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+        { startDate: timestamp(5), daysAmount: 4 },
+        {},
+      );
+      const { eventId: secondEventId } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+        { startDate: timestamp(15), daysAmount: 4 },
+        {},
+      );
+      const updatedRequest = {
+        ...defaultSubmitEventRequest,
+        startDate: timestamp(5),
+        daysAmount: 4,
+      };
+      await expect(
+        eventManager
+          .connect(master)
+          .updateEvent(
+            secondEventId,
+            ...submitEventRequestArgsToArray(updatedRequest),
+          ),
+      ).to.be.revertedWith("Requested event overlaps with existing");
     });
   });
 
   describe("buyTicket", () => {
     it("emits TicketBought", async () => {
-      assert(false);
+      assert(false, "buyTicket function not implemented in contract");
     });
 
     it("reverts on sold out", async () => {
-      assert(false);
+      assert(false, "buyTicket function not implemented in contract");
     });
 
     it("transfers required amount of tokens", async () => {
-      assert(false);
+      assert(false, "buyTicket function not implemented in contract");
     });
 
     it("mints NFT with proper metadata", async () => {
-      assert(false);
+      assert(false, "buyTicket function not implemented in contract");
     });
   });
 
