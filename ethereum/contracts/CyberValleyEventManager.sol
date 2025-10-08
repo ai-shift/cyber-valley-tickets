@@ -445,6 +445,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.status == EventStatus.Approved,
             "Only event in approved state can be closed"
         );
+        uint256 eventEndDate = calcDaysAfter(evt.startDate, evt.daysAmount);
+        require(
+            block.timestamp > eventEndDate,
+            "Event has not been finished yet"
+        );
         uint256 networth = calcEventNetworth(evt);
         require(
             usdtTokenContract.transfer(master, networth),
