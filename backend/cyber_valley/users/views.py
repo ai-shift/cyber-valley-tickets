@@ -36,8 +36,11 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     @action(detail=False, methods=["get"], name="Current user")
     def staff(self, request: Request) -> Response:
         assert request.user.is_authenticated
-        if request.user.role != CyberValleyUser.MASTER:
-            return Response("Available only to master", status=401)
+        if request.user.role not in (
+            CyberValleyUser.LOCAL_PROVIDER,
+            CyberValleyUser.MASTER,
+        ):
+            return Response("Available only to local provider or master", status=401)
         staff = User.objects.filter(role=CyberValleyUser.STAFF)
         serializer = CurrentUserSerializer(staff, many=True)
         return Response(serializer.data)
