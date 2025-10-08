@@ -51,6 +51,7 @@ export type ContractsFixture = {
   eventTicket: CyberValleyEventTicket & BaseContract;
   owner: Signer;
   master: Signer;
+  localProvider: Signer;
   creator: Signer;
   staff: Signer;
 };
@@ -73,7 +74,7 @@ const loadFixture = blockchainRestoreDisabled
 export { loadFixture };
 
 export async function deployContract(): Promise<ContractsFixture> {
-  const [owner, master, creator, staff] = await ethers.getSigners();
+  const [owner, master, localProvider, creator, staff] = await ethers.getSigners();
   const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
     "CyberValleyEventManager",
@@ -97,16 +98,17 @@ export async function deployContract(): Promise<ContractsFixture> {
   await eventTicket
     .connect(master)
     .setEventManagerAddress(await eventManager.getAddress());
-  await eventManager.connect(master).setMasterShare(100);
-  return { ERC20, eventManager, eventTicket, owner, master, creator, staff };
+  await eventManager.connect(master).setMasterShare(50);
+  await eventManager.connect(master).grantLocalProvider(await localProvider.getAddress(), 100);
+  return { ERC20, eventManager, eventTicket, owner, master, localProvider, creator, staff };
 }
 
 export async function createEventPlace(
   eventManager: CyberValleyEventManager,
-  master: Signer,
+  localProvider: Signer,
   patch?: Partial<CreateEventPlaceArgs>,
 ): Promise<{ eventPlaceId: BigNumberish; tx: ContractTransactionResponse }> {
-  const tx = await eventManager.connect(master).createEventPlace(
+  const tx = await eventManager.connect(localProvider).createEventPlace(
     ...createEventPlaceArgsToArray({
       ...defaultCreateEventPlaceRequest,
       ...patch,
@@ -123,32 +125,32 @@ export async function createEventPlace(
 
 export async function createValidEventPlace(
   eventManager: CyberValleyEventManager,
-  master: Signer,
+  localProvider: Signer,
 ): ReturnType<typeof createEventPlace> {
   return await createEventPlace(
     eventManager,
-    master,
+    localProvider,
     defaultCreateEventPlaceRequest,
   );
 }
 
 export async function updateEventPlace(
   eventManager: CyberValleyEventManager,
-  master: Signer,
+  localProvider: Signer,
   request: UpdateEventPlaceArgs,
 ) {
   return await eventManager
-    .connect(master)
+    .connect(localProvider)
     .updateEventPlace(...updateEventPlaceArgsToArray(request));
 }
 
 export async function createAndUpdateEventPlace(
   eventManager: CyberValleyEventManager,
-  master: Signer,
+  localProvider: Signer,
   request: Partial<UpdateEventPlaceArgs>,
 ) {
-  const { eventPlaceId } = await createValidEventPlace(eventManager, master);
-  return await updateEventPlace(eventManager, master, {
+  const { eventPlaceId } = await createValidEventPlace(eventManager, localProvider);
+  return await updateEventPlace(eventManager, localProvider, {
     ...defaultUpdateEventPlaceRequest,
     eventPlaceId,
     ...request,
@@ -158,7 +160,7 @@ export async function createAndUpdateEventPlace(
 export async function createEvent(
   eventManager: CyberValleyEventManager,
   ERC20: SimpleERC20Xylose,
-  master: Signer,
+  localProvider: Signer,
   creator: Signer,
   eventPlacePatch: Partial<CreateEventPlaceArgs>,
   submitEventPatch: Partial<Event>,
@@ -178,7 +180,7 @@ export async function createEvent(
   // Create event place
   const { eventPlaceId } = await createEventPlace(
     eventManager,
-    master,
+    localProvider,
     eventPlacePatch,
   );
 
@@ -192,7 +194,7 @@ export async function createEvent(
   const eventId = await getEventId();
 
   // Approve
-  const tx = eventManager.connect(master).approveEvent(
+  const tx = eventManager.connect(localProvider).approveEvent(
     ...approveEventArgsToArray({
       eventId,
       ...approveEventPatch,
@@ -233,7 +235,7 @@ export async function submitEventRequest(
 
 export async function closeEvent(
   eventManager: CyberValleyEventManager,
-  master: Signer,
+  localProvider: Signer,
   patch: Partial<CloseEventArgs>,
 ): Promise<{
   request: CloseEventArgs;
@@ -244,7 +246,7 @@ export async function closeEvent(
     ...patch,
   };
   const tx = eventManager
-    .connect(master)
+    .connect(localProvider)
     .closeEvent(...closeEventArgsToArray(request));
   return { request, tx };
 }
@@ -252,14 +254,14 @@ export async function closeEvent(
 export async function createAndCloseEvent(
   eventManager: CyberValleyEventManager,
   ERC20: SimpleERC20Xylose,
-  master: Signer,
+  localProvider: Signer,
   creator: Signer,
   patch: Partial<CloseEventArgs>,
 ): ReturnType<typeof closeEvent> {
   const { tx: createEventTx, eventId } = await createEvent(
     eventManager,
     ERC20,
-    master,
+    localProvider,
     creator,
     {},
     {},
@@ -267,12 +269,12 @@ export async function createAndCloseEvent(
   );
   await createEventTx;
   await time.increase(100_000_000);
-  return await closeEvent(eventManager, master, { eventId, ...patch });
+  return await closeEvent(eventManager, localProvider, { eventId, ...patch });
 }
 
 export async function cancelEvent(
   eventManager: CyberValleyEventManager,
-  master: Signer,
+  localProvider: Signer,
   patch: Partial<CancelEventArgs>,
 ): Promise<{
   request: CancelEventArgs;
@@ -283,7 +285,7 @@ export async function cancelEvent(
     ...patch,
   };
   const tx = eventManager
-    .connect(master)
+    .connect(localProvider)
     .cancelEvent(...cancelEventArgsToArray(request));
   return { request, tx };
 }
@@ -291,14 +293,14 @@ export async function cancelEvent(
 export async function createAndCancelEvent(
   eventManager: CyberValleyEventManager,
   ERC20: SimpleERC20Xylose,
-  master: Signer,
+  localProvider: Signer,
   creator: Signer,
   patch: Partial<CancelEventArgs>,
 ): ReturnType<typeof cancelEvent> {
   const { tx: createEventTx, eventId } = await createEvent(
     eventManager,
     ERC20,
-    master,
+    localProvider,
     creator,
     {},
     {},
@@ -306,7 +308,7 @@ export async function createAndCancelEvent(
   );
   await createEventTx;
   await time.increase(100_000_000);
-  return await cancelEvent(eventManager, master, { eventId, ...patch });
+  return await cancelEvent(eventManager, localProvider, { eventId, ...patch });
 }
 
 export function extractEvent<T>(
@@ -335,6 +337,20 @@ export function itExpectsOnlyMaster<K extends keyof CyberValleyEventManager>(
     assert(method != null);
     await expect(method.apply(eventManager, request)).to.be.revertedWith(
       "Must have master role",
+    );
+  });
+}
+
+export function itExpectsOnlyLocalProvider<K extends keyof CyberValleyEventManager>(
+  methodName: K,
+  request: Parameters<CyberValleyEventManager[K]>,
+) {
+  it(`${String(methodName)} allowed only to local provider`, async () => {
+    const { eventManager } = await loadFixture(deployContract);
+    const method = eventManager[methodName];
+    assert(method != null);
+    await expect(method.apply(eventManager, request)).to.be.revertedWith(
+      "Must have local provider role",
     );
   });
 }
