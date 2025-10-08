@@ -473,10 +473,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Event has not been finished yet"
         );
         uint256 networth = calcEventNetworth(evt);
-        require(
-            usdtTokenContract.transfer(master, networth),
-            "Failed to transfer means to master"
-        );
+        distributeEventFunds(evt.eventPlaceId, networth);
         evt.status = EventStatus.Closed;
         emit EventStatusChanged(eventId, evt.status);
     }
@@ -491,10 +488,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Only event in approved state can be cancelled"
         );
         uint256 networth = calcEventNetworth(evt);
-        require(
-            usdtTokenContract.transfer(master, networth),
-            "Failed to transfer means to master"
-        );
+        distributeEventFunds(evt.eventPlaceId, networth);
         evt.status = EventStatus.Cancelled;
         emit EventStatusChanged(eventId, evt.status);
     }
@@ -503,6 +497,32 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         Event storage evt
     ) internal view returns (uint256) {
         return evt.ticketPrice * evt.customers.length + eventRequestPrice;
+    }
+
+    function distributeEventFunds(
+        uint256 eventPlaceId,
+        uint256 totalAmount
+    ) internal {
+        address provider = eventPlaces[eventPlaceId].provider;
+        uint8 providerSharePercentage = localProviderShare[provider];
+        
+        uint256 masterAmount = (totalAmount * masterShare) / 100;
+        uint256 remainder = totalAmount - masterAmount;
+        uint256 providerAmount = (remainder * providerSharePercentage) / 100;
+        
+        if (masterAmount > 0) {
+            require(
+                usdtTokenContract.transfer(master, masterAmount),
+                "Failed to transfer master share"
+            );
+        }
+        
+        if (providerAmount > 0) {
+            require(
+                usdtTokenContract.transfer(provider, providerAmount),
+                "Failed to transfer provider share"
+            );
+        }
     }
 
     function floorTimestampToDate(
