@@ -102,10 +102,9 @@ def _sync_new_event_request(
         title="Event request sent",
         body=f"Title: {event.title}",
     )
-    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    for user in masters:
+    if place.provider:
         Notification.objects.create(
-            user=user,
+            user=place.provider,
             title="New event request",
             body=f"Title: {event.title}. From {socials['network']}: {socials['value']}",
         )
@@ -136,8 +135,11 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
     event.image_url = f"{settings.IPFS_PUBLIC_HOST}/ipfs/{data['cover']}"
     event.save()
 
-    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    for user in (*masters, event.creator):
+    notify_users = [event.creator]
+    if place.provider:
+        notify_users.append(place.provider)
+
+    for user in notify_users:
         Notification.objects.create(
             user=user,
             title="Event updated",
@@ -169,10 +171,9 @@ def _sync_event_place_updated(
         create_defaults=dict(id=event_data.event_place_id, **defaults),
     )
     log.info("Event place %s was created (%s)", event_data.event_place_id, created)
-    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    for user in masters:
+    if place.provider:
         Notification.objects.create(
-            user=user,
+            user=place.provider,
             title=f"Event place {'created' if created else 'updated'}",
             body=f"Title: {place.title}",
         )
@@ -242,16 +243,14 @@ def _sync_event_status_changed(
         body=f"Event {event.title}. New status: {new_status}",
     )
 
-    # Notify master(s)
-    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    body = f"Event {event.title}. New status: {new_status}"
-    if event.status in ("cancelled", "closed"):
-        # Some funds were sent
-        networth = event.tickets_bought * event.ticket_price + 100
-        body += f"\nEarned {networth} USDT"
-    for user in masters:
+    # Notify provider
+    if event.place.provider:
+        body = f"Event {event.title}. New status: {new_status}"
+        if event.status in ("cancelled", "closed"):
+            networth = event.tickets_bought * event.ticket_price + 100
+            body += f"\nEarned {networth} USDT"
         Notification.objects.create(
-            user=user,
+            user=event.place.provider,
             title="Event status updated",
             body=body,
         )
@@ -286,12 +285,14 @@ def _sync_role_granted(
         title="Role granted",
         body=f"{user.role} granted to you",
     )
-    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    for master in masters:
-        if user.address == master.address:
+    admins = CyberValleyUser.objects.filter(
+        role__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
+    )
+    for admin in admins:
+        if user.address == admin.address:
             continue
         Notification.objects.create(
-            user=master,
+            user=admin,
             title="Role granted",
             body=f"{user.role} granted to {user.address}",
         )
@@ -312,12 +313,14 @@ def _sync_role_revoked(
         title="Role revoked",
         body="Staff role was revoked",
     )
-    masters = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER)
-    for master in masters:
-        if user.address == master.address:
+    admins = CyberValleyUser.objects.filter(
+        role__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
+    )
+    for admin in admins:
+        if user.address == admin.address:
             continue
         Notification.objects.create(
-            user=master,
+            user=admin,
             title="Role revoked",
             body=f"Staff role was revoked from {user.address}",
         )

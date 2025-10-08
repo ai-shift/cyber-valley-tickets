@@ -8,6 +8,9 @@ User = get_user_model()
 
 class EventPlace(models.Model):
     id = models.IntegerField(primary_key=True)
+    provider = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="event_places", null=True
+    )
     title = models.CharField(max_length=200, null=False)
     max_tickets = models.PositiveSmallIntegerField(null=False)
     min_tickets = models.PositiveSmallIntegerField(null=False)

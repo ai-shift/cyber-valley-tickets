@@ -46,6 +46,10 @@ class Command(BaseCommand):
 
         users = [
             ("0x2789023F36933E208675889869c7d3914A422921", CyberValleyUser.MASTER),
+            (
+                "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+                CyberValleyUser.LOCAL_PROVIDER,
+            ),
             ("0x96e37a0cD915c38dE8B5aAC0db61eB7eB839CeeB", CyberValleyUser.CUSTOMER),
             ("0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e", CyberValleyUser.CUSTOMER),
         ]

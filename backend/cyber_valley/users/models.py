@@ -23,12 +23,14 @@ class CyberValleyUser(AbstractBaseUser):
     CUSTOMER = "customer"
     STAFF = "staff"
     CREATOR = "creator"
+    LOCAL_PROVIDER = "localprovider"
     MASTER = "master"
 
     ROLE_CHOICES = (
         (CUSTOMER, "Customer"),
         (STAFF, "Staff"),
         (CREATOR, "Creator"),
+        (LOCAL_PROVIDER, "Local Provider"),
         (MASTER, "Master"),
     )
 
@@ -42,11 +44,15 @@ class CyberValleyUser(AbstractBaseUser):
 
     @property
     def is_staff(self) -> bool:
-        return self.role in (self.STAFF, self.MASTER)
+        return self.role in (self.STAFF, self.LOCAL_PROVIDER, self.MASTER)
 
     @property
     def is_creator(self) -> bool:
-        return self.role in (self.CREATOR, self.MASTER)
+        return self.role in (self.CREATOR, self.LOCAL_PROVIDER, self.MASTER)
+
+    @property
+    def is_local_provider(self) -> bool:
+        return self.role == self.LOCAL_PROVIDER
 
     @property
     def is_master(self) -> bool:
