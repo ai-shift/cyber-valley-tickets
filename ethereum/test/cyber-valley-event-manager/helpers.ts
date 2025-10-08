@@ -83,6 +83,7 @@ export async function deployContract(): Promise<ContractsFixture> {
     "CyberValleyEventTicket",
     "CVET",
     master,
+    "",
   );
   const eventManager = await CyberValleyEventManagerFactory.deploy(
     await ERC20.getAddress(),
