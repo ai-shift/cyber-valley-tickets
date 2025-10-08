@@ -34,8 +34,9 @@ async function main() {
   await eventTicket.setEventManagerAddress(await eventManager.getAddress());
 
   // Seed state
-  const [master, creatorSlave, completeSlave] = await hre.ethers.getSigners();
-  await eventManager.connect(master).setMasterShare(100);
+  const [master, localProvider, creatorSlave, completeSlave] = await hre.ethers.getSigners();
+  await eventManager.connect(master).setMasterShare(50);
+  await eventManager.connect(master).grantLocalProvider(localProvider.address, 100);
   console.log(
     "master",
     master.address,
@@ -73,7 +74,7 @@ async function main() {
     const result = await resp.json();
     const mh = getBytes32FromMultiash(result.cid);
     await eventManager
-      .connect(master)
+      .connect(localProvider)
       .createEventPlace(
         100,
         20,
@@ -198,7 +199,7 @@ async function main() {
 
   // Approve some events
   for (let eventId = 0; eventId < events.length - 1; eventId++) {
-    await eventManager.connect(master).approveEvent(eventId);
+    await eventManager.connect(localProvider).approveEvent(eventId);
     console.log("event", events[eventId].title, "approved");
   }
 
