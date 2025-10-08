@@ -35,6 +35,7 @@ async function main() {
 
   // Seed state
   const [master, creatorSlave, completeSlave] = await hre.ethers.getSigners();
+  await eventManager.connect(master).setMasterShare(100);
   console.log(
     "master",
     master.address,

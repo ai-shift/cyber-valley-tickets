@@ -94,9 +94,10 @@ export async function deployContract(): Promise<ContractsFixture> {
     eventRequestSubmitionPrice,
     timestamp(0),
   );
-  eventTicket
+  await eventTicket
     .connect(master)
     .setEventManagerAddress(await eventManager.getAddress());
+  await eventManager.connect(master).setMasterShare(100);
   return { ERC20, eventManager, eventTicket, owner, master, creator, staff };
 }
 

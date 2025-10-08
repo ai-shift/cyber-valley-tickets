@@ -88,6 +88,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     address public master;
     // TODO: Make it changeable & add to Event struct
     uint256 public eventRequestPrice;
+    uint8 public masterShare;
 
     EventPlace[] public eventPlaces;
     Event[] public events;
@@ -129,6 +130,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     function revokeLocalProvider(address eoa) external onlyMaster {
         delete localProviderShare[eoa];
         _revokeRole(LOCAL_PROVIDER_ROLE, eoa);
+    }
+
+    function setMasterShare(uint8 share) external onlyMaster {
+        require(share > 0, "share should be greater than 0");
+        require(share <= 100, "share should be less or equal to 100");
+        masterShare = share;
     }
 
     function createEventPlace(
