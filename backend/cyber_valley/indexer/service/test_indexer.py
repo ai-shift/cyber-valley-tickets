@@ -149,11 +149,11 @@ def test_create_event_place(events_factory: EventsFactory) -> None:
 
     #  begin-region -- RoleGranted
     role_to_count = {
-        "MASTER_ROLE": 16,
-        "LOCAL_PROVIDER_ROLE": 8,
-        "STAFF_ROLE": 8,
-        "DEFAULT_ADMIN_ROLE": 16,
-        "EVENT_MANAGER_ROLE": 8,
+        "MASTER_ROLE": 14,
+        "LOCAL_PROVIDER_ROLE": 7,
+        "STAFF_ROLE": 7,
+        "DEFAULT_ADMIN_ROLE": 14,
+        "EVENT_MANAGER_ROLE": 7,
     }
     for role, count in role_to_count.items():
         role_granted_events = [
@@ -202,11 +202,11 @@ def test_update_event_place(events_factory: EventsFactory) -> None:
 
     #  begin-region -- RoleGranted
     role_to_count = {
-        "MASTER_ROLE": 16,
-        "LOCAL_PROVIDER_ROLE": 8,
-        "STAFF_ROLE": 8,
-        "DEFAULT_ADMIN_ROLE": 16,
-        "EVENT_MANAGER_ROLE": 8,
+        "MASTER_ROLE": 14,
+        "LOCAL_PROVIDER_ROLE": 7,
+        "STAFF_ROLE": 7,
+        "DEFAULT_ADMIN_ROLE": 14,
+        "EVENT_MANAGER_ROLE": 7,
     }
     for role, count in role_to_count.items():
         role_granted_events = [
@@ -298,11 +298,11 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
 
     #  begin-region -- RoleGranted
     role_to_count = {
-        "MASTER_ROLE": 20,
-        "LOCAL_PROVIDER_ROLE": 10,
-        "STAFF_ROLE": 10,
-        "DEFAULT_ADMIN_ROLE": 20,
-        "EVENT_MANAGER_ROLE": 10,
+        "MASTER_ROLE": 22,
+        "LOCAL_PROVIDER_ROLE": 11,
+        "STAFF_ROLE": 11,
+        "DEFAULT_ADMIN_ROLE": 22,
+        "EVENT_MANAGER_ROLE": 11,
     }
     for role, count in role_to_count.items():
         role_granted_events = [
@@ -656,11 +656,11 @@ def test_update_event(events_factory: EventsFactory) -> None:
 
     #  begin-region -- RoleGranted
     role_to_count = {
-        "MASTER_ROLE": 18,
-        "LOCAL_PROVIDER_ROLE": 9,
-        "STAFF_ROLE": 9,
-        "DEFAULT_ADMIN_ROLE": 18,
-        "EVENT_MANAGER_ROLE": 9,
+        "MASTER_ROLE": 22,
+        "LOCAL_PROVIDER_ROLE": 11,
+        "STAFF_ROLE": 11,
+        "DEFAULT_ADMIN_ROLE": 22,
+        "EVENT_MANAGER_ROLE": 11,
     }
     for role, count in role_to_count.items():
         role_granted_events = [
