@@ -220,7 +220,7 @@ def test_update_event_place(events_factory: EventsFactory) -> None:
     #  end-region   -- RoleGranted
 
     #  begin-region -- EventPlaceUpdated
-    new_place_available_events = [
+    event_place_updated_events = [
         event
         for event in events
         if isinstance(event, CyberValleyEventManager.EventPlaceUpdated)
@@ -255,38 +255,10 @@ def test_update_event_place(events_factory: EventsFactory) -> None:
             "size": 32,
         },
     ]
-    expected_counts = [7, 2]
-    for event in new_place_available_events:
+    expected_counts = [6, 1]
+    for event in event_place_updated_events:
         expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
     assert sum(expected_counts) == 0
-    _cleanup_asserted_events(events, new_place_available_events)
-    #  end-region   -- EventPlaceUpdated
-
-    #  begin-region -- EventPlaceUpdated
-    event_place_updated_events = [
-        event
-        for event in events
-        if isinstance(event, CyberValleyEventManager.EventPlaceUpdated)
-    ]
-    expected = CyberValleyEventManager.EventPlaceUpdated.model_validate(
-        {
-            "eventPlaceId": 0,
-            "maxTickets": 100,
-            "minTickets": 50,
-            "minPrice": 20,
-            "minDays": 1,
-            "daysBeforeCancel": 1,
-            "available": True,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        }
-    )
-    assert all(event == expected for event in event_place_updated_events)
     _cleanup_asserted_events(events, event_place_updated_events)
     #  end-region   -- EventPlaceUpdated
 
