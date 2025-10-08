@@ -510,6 +510,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 remainder = totalAmount - masterAmount;
         uint256 providerAmount = (remainder * providerSharePercentage) / 100;
         
+        uint256 dust = totalAmount - masterAmount - providerAmount;
+        masterAmount += dust;
+        
         if (masterAmount > 0) {
             require(
                 usdtTokenContract.transfer(master, masterAmount),

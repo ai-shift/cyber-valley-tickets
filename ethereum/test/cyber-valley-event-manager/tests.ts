@@ -1,3 +1,4 @@
+import { time } from "@nomicfoundation/hardhat-network-helpers";
 import { assert, expect } from "chai";
 import type { EventLog } from "ethers";
 import {
@@ -877,6 +878,154 @@ describe("CyberValleyEventManager", () => {
         [masterAmount, providerAmount, -(masterAmount + providerAmount)],
       );
       assert(false, "Requires `verifyTicket` implementation");
+    });
+  });
+
+  describe("Fund Distribution", () => {
+    const testDistribution = async (
+      totalAmount: number,
+      masterSharePercent: number,
+      providerSharePercent: number,
+    ) => {
+      const {
+        ERC20,
+        eventManager,
+        eventTicket,
+        master,
+        localProvider,
+        creator,
+        staff,
+      } = await loadFixture(deployContract);
+
+      await eventManager.connect(master).setMasterShare(masterSharePercent);
+      await eventManager
+        .connect(master)
+        .grantLocalProvider(
+          await localProvider.getAddress(),
+          providerSharePercent,
+        );
+
+      // Mint tokens for event submission (100 tokens)
+      await ERC20.connect(creator).mint(100);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        100,
+      );
+
+      const { eventPlaceId } = await createEventPlace(
+        eventManager,
+        localProvider,
+        {
+          maxTickets: 1000,
+          minTickets: 1,
+          minPrice: 1,
+        },
+      );
+
+      // Submit event with ticket price = 1 token
+      const { tx: submitEventRequestTx, getEventId } =
+        await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          ticketPrice: 1,
+        });
+      await submitEventRequestTx;
+      const eventId = await getEventId();
+
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      // Buy exactly totalAmount tickets to reach the desired amount
+      await ERC20.connect(staff).mint(totalAmount);
+      await ERC20.connect(staff).approve(
+        await eventManager.getAddress(),
+        totalAmount,
+      );
+
+      const multihash = {
+        digest:
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        hashFunction: 18,
+        size: 32,
+      };
+
+      for (let i = 0; i < totalAmount; i++) {
+        await eventManager
+          .connect(staff)
+          .mintTicket(
+            eventId,
+            multihash.digest,
+            multihash.hashFunction,
+            multihash.size,
+          );
+      }
+
+      await time.increase(100_000_000);
+
+      const tx = await eventManager.connect(localProvider).closeEvent(eventId);
+
+      // Total funds = submission price (100) + ticket sales (totalAmount)
+      const actualTotalAmount = 100 + totalAmount;
+
+      const masterAmount = Math.floor(
+        (actualTotalAmount * masterSharePercent) / 100,
+      );
+      const remainder = actualTotalAmount - masterAmount;
+      const providerAmount = Math.floor(
+        (remainder * providerSharePercent) / 100,
+      );
+      const dust = actualTotalAmount - masterAmount - providerAmount;
+      const finalMasterAmount = masterAmount + dust;
+
+      await expect(tx).to.changeTokenBalances(
+        ERC20,
+        [
+          await master.getAddress(),
+          await localProvider.getAddress(),
+          await eventManager.getAddress(),
+        ],
+        [finalMasterAmount, providerAmount, -actualTotalAmount],
+      );
+
+      expect(finalMasterAmount + providerAmount).to.equal(actualTotalAmount);
+    };
+
+    it("distributes 100 tokens correctly (50/50 split)", async () => {
+      await testDistribution(100, 50, 100);
+    });
+
+    it("distributes 1 token correctly (rounds to master)", async () => {
+      await testDistribution(1, 50, 100);
+    });
+
+    it("distributes 3 tokens correctly (odd number)", async () => {
+      await testDistribution(3, 50, 100);
+    });
+
+    it("distributes 99 tokens correctly (large odd)", async () => {
+      await testDistribution(99, 50, 100);
+    });
+
+    it("distributes with 30/70 master/provider split", async () => {
+      await testDistribution(100, 30, 100);
+    });
+
+    it("distributes with 70/30 master/provider split", async () => {
+      await testDistribution(100, 70, 100);
+    });
+
+    it("distributes with 33/50 master/provider split", async () => {
+      await testDistribution(100, 33, 50);
+    });
+
+    it("distributes random amount: 137 tokens", async () => {
+      await testDistribution(137, 50, 100);
+    });
+
+    it("distributes random amount: 271 tokens", async () => {
+      await testDistribution(271, 50, 100);
+    });
+
+    it("distributes with provider getting 25% of remainder", async () => {
+      await testDistribution(100, 50, 25);
     });
   });
 });
