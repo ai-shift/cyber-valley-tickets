@@ -14,6 +14,7 @@ import type {
 import { ethers } from "hardhat";
 import type {
   CyberValleyEventManager,
+  CyberValleyEventTicket,
   SimpleERC20Xylose,
 } from "../../typechain-types";
 import {
@@ -47,6 +48,7 @@ import {
 export type ContractsFixture = {
   ERC20: SimpleERC20Xylose & BaseContract;
   eventManager: CyberValleyEventManager & BaseContract;
+  eventTicket: CyberValleyEventTicket & BaseContract;
   owner: Signer;
   master: Signer;
   creator: Signer;
@@ -95,7 +97,7 @@ export async function deployContract(): Promise<ContractsFixture> {
   eventTicket
     .connect(master)
     .setEventManagerAddress(await eventManager.getAddress());
-  return { ERC20, eventManager, owner, master, creator, staff };
+  return { ERC20, eventManager, eventTicket, owner, master, creator, staff };
 }
 
 export async function createEventPlace(

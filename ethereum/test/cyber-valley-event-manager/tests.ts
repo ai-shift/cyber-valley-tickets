@@ -1,4 +1,5 @@
 import { assert, expect } from "chai";
+import type { EventLog } from "ethers";
 import {
   cancelEvent,
   closeEvent,
@@ -393,21 +394,168 @@ describe("CyberValleyEventManager", () => {
     });
   });
 
-  describe("buyTicket", () => {
-    it("emits TicketBought", async () => {
-      assert(false, "buyTicket function not implemented in contract");
+  describe("mintTicket", () => {
+    it("emits TicketMinted", async () => {
+      const { eventManager, eventTicket, ERC20, master, creator, owner } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+        {},
+        {},
+      );
+      const ticketPrice = 20;
+      const multihash = {
+        digest:
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        hashFunction: 18,
+        size: 32,
+      };
+      await ERC20.connect(owner).mint(ticketPrice);
+      await ERC20.connect(owner).approve(
+        await eventManager.getAddress(),
+        ticketPrice,
+      );
+      const tx = await eventManager
+        .connect(owner)
+        .mintTicket(
+          eventId,
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+        );
+      await expect(tx).to.emit(eventTicket, "TicketMinted");
     });
 
     it("reverts on sold out", async () => {
-      assert(false, "buyTicket function not implemented in contract");
+      const { eventManager, ERC20, master, creator, owner } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        { maxTickets: 1, minTickets: 1 },
+        {},
+        {},
+      );
+      const ticketPrice = 20;
+      const multihash = {
+        digest:
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        hashFunction: 18,
+        size: 32,
+      };
+      await ERC20.connect(owner).mint(ticketPrice * 2);
+      await ERC20.connect(owner).approve(
+        await eventManager.getAddress(),
+        ticketPrice * 2,
+      );
+      await eventManager
+        .connect(owner)
+        .mintTicket(
+          eventId,
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+        );
+      await expect(
+        eventManager
+          .connect(owner)
+          .mintTicket(
+            eventId,
+            multihash.digest,
+            multihash.hashFunction,
+            multihash.size,
+          ),
+      ).to.be.revertedWith("Sold out");
     });
 
     it("transfers required amount of tokens", async () => {
-      assert(false, "buyTicket function not implemented in contract");
+      const { eventManager, ERC20, master, creator, owner } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+        {},
+        {},
+      );
+      const ticketPrice = 20;
+      const multihash = {
+        digest:
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        hashFunction: 18,
+        size: 32,
+      };
+      await ERC20.connect(owner).mint(ticketPrice);
+      await ERC20.connect(owner).approve(
+        await eventManager.getAddress(),
+        ticketPrice,
+      );
+      const tx = await eventManager
+        .connect(owner)
+        .mintTicket(
+          eventId,
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+        );
+      await expect(tx).to.changeTokenBalances(
+        ERC20,
+        [await eventManager.getAddress(), await owner.getAddress()],
+        [ticketPrice, -ticketPrice],
+      );
     });
 
     it("mints NFT with proper metadata", async () => {
-      assert(false, "buyTicket function not implemented in contract");
+      const { eventManager, eventTicket, ERC20, master, creator, owner } =
+        await loadFixture(deployContract);
+      const { eventId, tx: createEventTx } = await createEvent(
+        eventManager,
+        ERC20,
+        master,
+        creator,
+        {},
+        {},
+        {},
+      );
+      await createEventTx;
+      const ticketPrice = 20;
+      const multihash = {
+        digest:
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        hashFunction: 18,
+        size: 32,
+      };
+      await ERC20.connect(owner).mint(ticketPrice);
+      await ERC20.connect(owner).approve(
+        await eventManager.getAddress(),
+        ticketPrice,
+      );
+      const tx = eventManager
+        .connect(owner)
+        .mintTicket(
+          eventId,
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+        );
+      await expect(tx)
+        .to.emit(eventTicket, "TicketMinted")
+        .withArgs(
+          eventId,
+          1,
+          await owner.getAddress(),
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+        );
     });
   });
 
