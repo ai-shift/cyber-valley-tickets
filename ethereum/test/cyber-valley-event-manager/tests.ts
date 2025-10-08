@@ -729,10 +729,18 @@ describe("CyberValleyEventManager", () => {
         creator,
         {},
       );
+      const totalFunds = Number(eventRequestSubmitionPrice);
+      const masterAmount = Math.floor((totalFunds * 50) / 100);
+      const remainder = totalFunds - masterAmount;
+      const providerAmount = Math.floor((remainder * 100) / 100);
       await expect(tx).to.changeTokenBalances(
         ERC20,
-        [await master.getAddress(), await eventManager.getAddress()],
-        [Number(eventRequestSubmitionPrice), -eventRequestSubmitionPrice],
+        [
+          await master.getAddress(),
+          await localProvider.getAddress(),
+          await eventManager.getAddress(),
+        ],
+        [masterAmount, providerAmount, -(masterAmount + providerAmount)],
       );
     });
   });
@@ -855,10 +863,18 @@ describe("CyberValleyEventManager", () => {
         creator,
         {},
       );
+      const totalFunds = Number(eventRequestSubmitionPrice);
+      const masterAmount = Math.floor((totalFunds * 50) / 100);
+      const remainder = totalFunds - masterAmount;
+      const providerAmount = Math.floor((remainder * 100) / 100);
       await expect(tx).to.changeTokenBalances(
         ERC20,
-        [await master.getAddress(), await eventManager.getAddress()],
-        [eventRequestSubmitionPrice, -eventRequestSubmitionPrice],
+        [
+          await master.getAddress(),
+          await localProvider.getAddress(),
+          await eventManager.getAddress(),
+        ],
+        [masterAmount, providerAmount, -(masterAmount + providerAmount)],
       );
       assert(false, "Requires `verifyTicket` implementation");
     });
