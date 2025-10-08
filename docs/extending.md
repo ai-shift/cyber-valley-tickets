@@ -20,16 +20,16 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
 
 **Tasks**:
 1. **Rename `Master` to `LocalProvider` role** (~2 hours)
-    - @naqerl Update backend user model and migrations
-    - @naqerl Update smart contract role constants
-    - @redmoor Update frontend role-based components and permissions
+    - [ ] @naqerl Update backend user model and migrations
+    - [ ] @naqerl Update smart contract role constants
+    - [ ] @redmoor Update frontend role-based components and permissions
 2. **Add new `Master` role to the smart contract** (~3 hours)
     - [ ] @naqerl Implement multi-LocalProvider share management in contract
     - [x] @naqerl Add LocalProvider registration/removal functions
 3. **Implement LocalProvider management system** (~8 hours)
-    - @naqerl Create LocalProvider model with telegram/share fields (1h)
-    - @naqerl Back-end syncer for LocalProvider management (2h)
-    - @redmoor Front-end LocalProvider management page (5h)
+    - [ ] @naqerl Create LocalProvider model with telegram/share fields (1h)
+    - [ ] @naqerl Back-end syncer for LocalProvider management (2h)
+    - [ ] @redmoor Front-end LocalProvider management page (5h)
 
 ## Verified Shaman - New Role
 
@@ -86,15 +86,15 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
 
 **Tasks**:
 1. **Add new `VerifiedShaman` role** (~4 hours)
-    - @naqerl Back-end role enumeration and migration (1h)
-    - @redmoor Update role-based permissions and views (1h)
-    - @redmoor Migrate `Manage` page from OldMaster's event place to VerifiedShaman (2h)
+    - [ ] @naqerl Back-end role enumeration and migration (1h)
+    - [ ] @redmoor Update role-based permissions and views (1h)
+    - [ ] @redmoor Migrate `Manage` page from OldMaster's event place to VerifiedShaman (2h)
 2. **Implement Telegram bot verification flow** (~12 hours)
-    - @redmoor Document upload web form (2h)
-    - @naqerl Implement web form upload endpoint (1h)
-    - @naqerl Verification request workflow with approval/decline (4h)
-    - @naqerl LocalProvider notification and decision system (3h)
-    - @naqerl Database integration for role granting (2h)
+    - [ ] @redmoor Document upload web form (2h)
+    - [ ] @naqerl Implement web form upload endpoint (1h)
+    - [ ] @naqerl Verification request workflow with approval/decline (4h)
+    - [ ] @naqerl LocalProvider notification and decision system (3h)
+    - [ ] @naqerl Database integration for role granting (2h)
 
 ## Map Integration
 
@@ -138,16 +138,16 @@ To prevent potentially cumbersome situations in the future, a setter for the `Ma
 
 **Tasks**:
 1. **Include share setting in event approval flow** (~4 hours)
-    - @redmoor Add 'shares' field to the `LocalProvider` approve form (input) (2h)
-    - @naqerl Backend integration for per-event share storage (1h)
-    - @naqerl Smart contract integration for share distribution (1h)
+    - [ ] @redmoor Add 'shares' field to the `LocalProvider` approve form (input) (2h)
+    - [ ] @naqerl Backend integration for per-event share storage (1h)
+    - [ ] @naqerl Smart contract integration for share distribution (1h)
 2. **Add Master role management to smart contract** (~3 hours)
-    - @naqerl Implement Master share and address setters (2h)
-    - @naqerl Update contract deployment and migration scripts (1h)
+    - [ ] @naqerl Implement Master share and address setters (2h)
+    - [ ] @naqerl Update contract deployment and migration scripts (1h)
 3. **Update payment distribution system** (~4 hours)
-    - @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
-    - @naqerl Update indexer to sync share changes (1h)
-    - @naqerl Add share calculation validation (1h)
+    - [ ] @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
+    - [ ] @naqerl Update indexer to sync share changes (1h)
+    - [ ] @naqerl Add share calculation validation (1h)
 
 ## Event Request Updates
 
@@ -161,12 +161,12 @@ Due to the previous features, the event request flow should/could be improved in
 
 **Tasks**:
 1. **Add zone marker selection to event form** (~7 hours)
-    - @redmoor Integrate map component into event creation form (3h)
-    - @redmoor Implement zone marker placement and validation (2h)
-    - @naqerl Store zone coordinates in event model (2h)
+    - [ ] @redmoor Integrate map component into event creation form (3h)
+    - [ ] @redmoor Implement zone marker placement and validation (2h)
+    - [ ] @naqerl Store zone coordinates in event model (2h)
 2. **Add Telegram bot notifications for event requests** (~2 hours)
-    - @naqerl Extend notification system to support Telegram (1h)
-    - @naqerl Integrate with LocalProvider notification flow (1h)
+    - [ ] @naqerl Extend notification system to support Telegram (1h)
+    - [ ] @naqerl Integrate with LocalProvider notification flow (1h)
 
 ## Telegram integration
 
@@ -178,13 +178,13 @@ Because of tight Telegram integration, it's possible to move social selection to
 
 **Tasks**:
 1. **Move social selection to account page** (~4 hours)
-    - @redmoor Create account settings page with social management (2h)
-    - @redmoor Remove social selection from event creation flow (1h)
-    - @redmoor Update event creation to use stored socials (1h)
+    - [ ] @redmoor Create account settings page with social management (2h)
+    - [ ] @redmoor Remove social selection from event creation flow (1h)
+    - [ ] @redmoor Update event creation to use stored socials (1h)
 2. **Implement smart Telegram detection** (~3 hours)
-    - @naqerl Detect Telegram registration source (1h)
-    - @naqerl Auto-populate Telegram info for verified users (1h)
-    - @naqerl TBD Fallback flow for missing Telegram info (1h)
+    - [ ] @naqerl Detect Telegram registration source (1h)
+    - [ ] @naqerl Auto-populate Telegram info for verified users (1h)
+    - [ ] @naqerl TBD Fallback flow for missing Telegram info (1h)
 
 ## Total Estimated Time
 
