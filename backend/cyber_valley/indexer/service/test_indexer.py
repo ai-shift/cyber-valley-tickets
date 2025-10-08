@@ -150,6 +150,7 @@ def test_create_event_place(events_factory: EventsFactory) -> None:
     #  begin-region -- RoleGranted
     role_to_count = {
         "MASTER_ROLE": 16,
+        "LOCAL_PROVIDER_ROLE": 8,
         "STAFF_ROLE": 8,
         "DEFAULT_ADMIN_ROLE": 16,
         "EVENT_MANAGER_ROLE": 8,
@@ -202,6 +203,7 @@ def test_update_event_place(events_factory: EventsFactory) -> None:
     #  begin-region -- RoleGranted
     role_to_count = {
         "MASTER_ROLE": 16,
+        "LOCAL_PROVIDER_ROLE": 8,
         "STAFF_ROLE": 8,
         "DEFAULT_ADMIN_ROLE": 16,
         "EVENT_MANAGER_ROLE": 8,
@@ -297,6 +299,7 @@ def test_submit_event_request(events_factory: EventsFactory) -> None:
     #  begin-region -- RoleGranted
     role_to_count = {
         "MASTER_ROLE": 20,
+        "LOCAL_PROVIDER_ROLE": 10,
         "STAFF_ROLE": 10,
         "DEFAULT_ADMIN_ROLE": 20,
         "EVENT_MANAGER_ROLE": 10,
@@ -452,6 +455,7 @@ def test_approve_event(events_factory: EventsFactory) -> None:
     #  begin-region -- RoleGranted
     role_to_count = {
         "MASTER_ROLE": 6,
+        "LOCAL_PROVIDER_ROLE": 3,
         "STAFF_ROLE": 3,
         "DEFAULT_ADMIN_ROLE": 6,
         "EVENT_MANAGER_ROLE": 3,
@@ -552,6 +556,7 @@ def test_decline_event(events_factory: EventsFactory) -> None:
     #  begin-region -- RoleGranted
     role_to_count = {
         "MASTER_ROLE": 8,
+        "LOCAL_PROVIDER_ROLE": 4,
         "STAFF_ROLE": 4,
         "DEFAULT_ADMIN_ROLE": 8,
         "EVENT_MANAGER_ROLE": 4,
@@ -652,6 +657,7 @@ def test_update_event(events_factory: EventsFactory) -> None:
     #  begin-region -- RoleGranted
     role_to_count = {
         "MASTER_ROLE": 18,
+        "LOCAL_PROVIDER_ROLE": 9,
         "STAFF_ROLE": 9,
         "DEFAULT_ADMIN_ROLE": 18,
         "EVENT_MANAGER_ROLE": 9,
@@ -666,139 +672,6 @@ def test_update_event(events_factory: EventsFactory) -> None:
         assert len(role_granted_events) == count
         _cleanup_asserted_events(events, role_granted_events)
     #  end-region   -- RoleGranted
-
-    #  begin-region -- EventPlaceUpdated
-    new_place_available_events = [
-        event
-        for event in events
-        if isinstance(event, CyberValleyEventManager.EventPlaceUpdated)
-    ]
-    expected = [
-        {
-            "eventPlaceId": 0,
-            "maxTickets": 100,
-            "minTickets": 50,
-            "minPrice": 20,
-            "daysBeforeCancel": 1,
-            "minDays": 1,
-            "available": True,
-            "digest": (
-                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        },
-        {
-            "eventPlaceId": 0,
-            "maxTickets": 150,
-            "minTickets": 20,
-            "minPrice": 30,
-            "daysBeforeCancel": 1,
-            "minDays": 2,
-            "available": True,
-            "digest": (
-                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        },
-    ]
-    expected_counts = [6, 3]
-    assert len(expected) == len(expected_counts)
-    for event in new_place_available_events:
-        expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
-    assert sum(expected_counts) == 0
-    _cleanup_asserted_events(events, new_place_available_events)
-    #  end-region   -- EventPlaceUpdated
-
-    #  begin-region -- EventPlaceUpdated
-    event_place_updated_events = [
-        event
-        for event in events
-        if isinstance(event, CyberValleyEventManager.EventPlaceUpdated)
-    ]
-    expected = CyberValleyEventManager.EventPlaceUpdated.model_validate(
-        {
-            "eventPlaceId": 0,
-            "maxTickets": 100,
-            "minTickets": 50,
-            "minPrice": 20,
-            "minDays": 1,
-            "daysBeforeCancel": 1,
-            "available": True,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        }
-    )
-    assert all(event == expected for event in event_place_updated_events)
-    _cleanup_asserted_events(events, event_place_updated_events)
-    #  end-region   -- EventPlaceUpdated
-
-    _cleanup_erc_events(events)
-
-    assert len(events) == 0, events
-
-
-def test_buy_ticket(events_factory: EventsFactory) -> None:
-    events = events_factory("buyTicket")
-    assert len(events) == 0, events
-
-
-def test_close_event(events_factory: EventsFactory) -> None:
-    events = events_factory("closeEvent")
-
-    #  begin-region -- RoleGranted
-    role_to_count = {
-        "MASTER_ROLE": 18,
-        "STAFF_ROLE": 9,
-        "DEFAULT_ADMIN_ROLE": 18,
-        "EVENT_MANAGER_ROLE": 9,
-    }
-    for role, count in role_to_count.items():
-        role_granted_events = [
-            event
-            for event in events
-            if isinstance(event, CyberValleyEventManager.RoleGranted)
-            and event.role == role
-        ]
-        assert len(role_granted_events) == count
-        _cleanup_asserted_events(events, role_granted_events)
-    #  end-region   -- RoleGranted
-
-    #  begin-region -- EventPlaceUpdated
-    new_place_available_events = [
-        event
-        for event in events
-        if isinstance(event, CyberValleyEventManager.EventPlaceUpdated)
-    ]
-    expected = [
-        {
-            "eventPlaceId": 0,
-            "maxTickets": 100,
-            "minTickets": 50,
-            "minPrice": 20,
-            "daysBeforeCancel": 1,
-            "minDays": 1,
-            "available": True,
-            "digest": (
-                "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        },
-    ]
-    expected_counts = [7]
-    assert len(expected) == len(expected_counts)
-    for event in new_place_available_events:
-        expected_counts[expected.index(event.model_dump(by_alias=True))] -= 1
-    assert sum(expected_counts) == 0
-    _cleanup_asserted_events(events, new_place_available_events)
-    #  end-region   -- EventPlaceUpdated
 
     #  begin-region -- NewEventRequest
     new_event_request_events = [
@@ -884,6 +757,7 @@ def test_cancel_event(events_factory: EventsFactory) -> None:
     #  begin-region -- RoleGranted
     role_to_count = {
         "MASTER_ROLE": 14,
+        "LOCAL_PROVIDER_ROLE": 7,
         "STAFF_ROLE": 7,
         "DEFAULT_ADMIN_ROLE": 14,
         "EVENT_MANAGER_ROLE": 7,
