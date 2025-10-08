@@ -2,6 +2,8 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import bs58 from "bs58";
 import { expect } from "chai";
 import type { BaseContract, Signer } from "ethers";
+import { ethers } from "hardhat";
+import type { CyberValleyEventTicket } from "../../typechain-types";
 
 const IPFS_HOST = "http://test.ipfs.host";
 
@@ -45,7 +47,7 @@ async function deployContract(): Promise<ContractFixture> {
   return { master, eventManager, undertest: eventTicket };
 }
 
-function getBytes32FromMultiash(multihash) {
+function getBytes32FromMultiash(multihash: string) {
   const decoded = bs58.decode(multihash);
   return {
     digest: `0x${Buffer.from(decoded.slice(2)).toString("hex")}`,
