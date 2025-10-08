@@ -1,10 +1,17 @@
-import { AdvancedMarker, Map as GMap } from "@vis.gl/react-google-maps";
+import {
+  AdvancedMarker,
+  Map as GMap,
+  InfoWindow,
+} from "@vis.gl/react-google-maps";
+import { useState } from "react";
 import { Polygon } from "../ui/components/polygon.tsx";
 import { Polyline } from "../ui/components/polyline.tsx";
 
 import type { Placemark as PlacemarkType } from "../model/types.ts";
 
+import { findApproximatePolygonCenter } from "../lib/approximateCenter.ts";
 import { truncateColorString } from "../lib/colorTruncator.ts";
+import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
 
 import bpn_data from "@/data/geodata/bpn_data.json";
 import bridge from "@/data/geodata/bridge.json";
@@ -15,7 +22,6 @@ import lots from "@/data/geodata/lots.json";
 import objects from "@/data/geodata/objects.json";
 import paths from "@/data/geodata/paths.json";
 import regions from "@/data/geodata/regions.json";
-import { useState } from "react";
 
 const geodata = {
   "Bpn data": bpn_data,
@@ -33,6 +39,42 @@ type GeodataKeys = keyof typeof geodata;
 
 export const EbaliMap: React.FC = () => {
   const [displayed, setDisplayed] = useState<GeodataKeys[]>([]);
+
+  const [selectedId, setSelectedId] = useState("");
+  const [selectedPlacemark, setSelectedPlacemark] =
+    useState<PlacemarkType | null>(null);
+  const [infoWindowShown, setInfoWindowShown] = useState(false);
+
+  const onPlacemarkClick = (placemark: PlacemarkType) => {
+    const id = extractPlacemarkId(placemark);
+    setSelectedId(id);
+    if (placemark) {
+      setSelectedPlacemark(placemark);
+    }
+
+    if (id !== selectedId) {
+      setInfoWindowShown(true);
+    } else {
+      setInfoWindowShown((isShown) => !isShown);
+    }
+  };
+
+  const onMapClick = () => {
+    setSelectedId("");
+    setSelectedPlacemark(null);
+    setInfoWindowShown(false);
+  };
+
+  const getInfoWindowPosition = (mark: PlacemarkType) => {
+    switch (mark.type) {
+      case "point":
+        return mark.coordinates;
+      case "polygon":
+        return findApproximatePolygonCenter(mark.coordinates);
+      case "line":
+        return mark.coordinates[Math.floor(mark.coordinates.length / 2)];
+    }
+  };
 
   return (
     <div>
@@ -60,6 +102,7 @@ export const EbaliMap: React.FC = () => {
         mapId="fb99876bf33e90419a932304"
         defaultCenter={{ lat: -8.2980705, lng: 115.088186 }}
         defaultZoom={16}
+        onClick={onMapClick}
         gestureHandling="greedy"
         colorScheme="DARK"
         disableDefaultUI
@@ -67,10 +110,21 @@ export const EbaliMap: React.FC = () => {
         {displayed.map((layer) =>
           geodata[layer].map((placemark, idx) => (
             <Placemark
+              onClick={(placemark) => onPlacemarkClick(placemark)}
               key={`${placemark.name}-${idx}`}
               placemark={placemark as PlacemarkType}
             />
           )),
+        )}
+        {infoWindowShown && selectedPlacemark && (
+          <InfoWindow
+            pixelOffset={[0, -2]}
+            position={getInfoWindowPosition(selectedPlacemark)}
+            onCloseClick={() => setInfoWindowShown(false)}
+            className="p-3"
+          >
+            <h2>{selectedPlacemark.name}</h2>
+          </InfoWindow>
         )}
       </GMap>
     </div>
@@ -79,13 +133,15 @@ export const EbaliMap: React.FC = () => {
 
 type PlacemarkProps = {
   placemark: PlacemarkType;
+  onClick: (placemark: PlacemarkType) => void;
 };
 
-const Placemark: React.FC<PlacemarkProps> = ({ placemark }) => {
+const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
+  const clickHandler = () => onClick(placemark);
   switch (placemark.type) {
     case "point":
       return (
-        <AdvancedMarker position={placemark.coordinates}>
+        <AdvancedMarker onClick={clickHandler} position={placemark.coordinates}>
           <img
             src={placemark.iconUrl}
             alt={`${placemark.name} marker`}
@@ -97,6 +153,7 @@ const Placemark: React.FC<PlacemarkProps> = ({ placemark }) => {
     case "polygon":
       return (
         <Polygon
+          onClick={clickHandler}
           paths={placemark.coordinates}
           fillColor={truncateColorString(placemark.polygon_color)}
           strokeColor={truncateColorString(placemark.line_color)}
@@ -105,6 +162,7 @@ const Placemark: React.FC<PlacemarkProps> = ({ placemark }) => {
     case "line":
       return (
         <Polyline
+          onClick={clickHandler}
           path={placemark.coordinates}
           strokeColor={truncateColorString(placemark.line_color)}
         />
