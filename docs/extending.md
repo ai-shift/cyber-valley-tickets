@@ -24,11 +24,11 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
     - @naqerl Update smart contract role constants
     - @redmoor Update frontend role-based components and permissions
 2. **Add new `Master` role to the smart contract** (~3 hours)
-    - @naqerl Implement multi-LocalProvider share management in contract
-    - @naqerl Add LocalProvider registration/removal functions
+    - [ ] @naqerl Implement multi-LocalProvider share management in contract
+    - [x] @naqerl Add LocalProvider registration/removal functions
 3. **Implement LocalProvider management system** (~8 hours)
     - @naqerl Create LocalProvider model with telegram/share fields (1h)
-    - @naqerl Back-end CRUD endpoints for LocalProvider management (2h)
+    - @naqerl Back-end syncer for LocalProvider management (2h)
     - @redmoor Front-end LocalProvider management page (5h)
 
 ## Verified Shaman - New Role

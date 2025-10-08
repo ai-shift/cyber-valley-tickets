@@ -14,6 +14,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     using CyberValley for CyberValley.Multihash;
 
     bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
+    bytes32 public constant LOCAL_PROVIDER_ROLE = keccak256("LOCAL_PROVIDER_ROLE");
 
     struct EventPlace {
         uint16 maxTickets;
@@ -90,6 +91,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     EventPlace[] public eventPlaces;
     Event[] public events;
+    mapping(address => uint8) public localProviderShare;
 
     modifier onlyMaster() {
         require(hasRole(MASTER_ROLE, msg.sender), "Must have master role");
@@ -115,6 +117,18 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
+    }
+
+    function grantLocalProvider(address eoa, uint8 share) external onlyMaster {
+        require(share > 0, "share should be greater than 0");
+        require(share <= 100, "share should be less or eqaul to 100 ");
+        localProviderShare[eoa] = share;
+        _grantRole(LOCAL_PROVIDER_ROLE, eoa);
+    }
+
+    function revokeLocalProvider(address eoa) external onlyMaster {
+        delete localProviderShare[eoa];
+        _revokeRole(LOCAL_PROVIDER_ROLE, eoa);
     }
 
     function createEventPlace(
