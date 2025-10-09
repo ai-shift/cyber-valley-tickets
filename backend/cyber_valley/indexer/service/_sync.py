@@ -295,7 +295,7 @@ def _sync_role_granted(
         )
 
     if user.role == CyberValleyUser.LOCAL_PROVIDER:
-        // TODO: Find telegram info in socials and send message
+        # TODO: Find telegram info in socials and send message
         raise NotImplemented
 
 
