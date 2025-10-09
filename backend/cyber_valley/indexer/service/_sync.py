@@ -214,23 +214,31 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     log.info(
         "Saving ticket for event %s, owner %s from event %s", event, owner, event_data
     )
-    Ticket.objects.create(
-        event=event,
-        owner=owner,
+    ticket, created = Ticket.objects.get_or_create(
         id=str(event_data.ticket_id),
+        defaults={
+            "event": event,
+            "owner": owner,
+        },
     )
 
-    event.tickets_bought += 1
-    event.save()
+    if created:
+        event.tickets_bought += 1
+        event.save()
 
-    Notification.objects.create(
-        user=owner,
-        title="Your ticket minted",
-        body=(
-            f"A new ticket with id {event_data.ticket_id} "
-            f"has been minted for event {event.title}."
-        ),
-    )
+        Notification.objects.create(
+            user=owner,
+            title="Your ticket minted",
+            body=(
+                f"A new ticket with id {event_data.ticket_id} "
+                f"has been minted for event {event.title}."
+            ),
+        )
+        log.info(
+            "Ticket %s created for event %s", event_data.ticket_id, event_data.event_id
+        )
+    else:
+        log.info("Ticket %s already exists, skipping", event_data.ticket_id)
 
 
 def _sync_event_status_changed(
