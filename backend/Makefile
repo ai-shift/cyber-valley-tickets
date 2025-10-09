@@ -29,7 +29,7 @@ open-api-schema:
 	$(python) manage.py spectacular --format openapi-json --validate > schema.json
 
 tests:
-	uv run pytest -vvv -s
+	uv run pytest -vvv -s $(NAME)
 
 run-indexer: migrate
 	$(python) manage.py indexer
