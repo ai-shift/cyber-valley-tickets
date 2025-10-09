@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.db import models
 
 
@@ -8,7 +10,7 @@ class SMSVerification(models.Model):
     verified = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering: ClassVar[list[str]] = ["-created_at"]
 
     def __str__(self) -> str:
         return f"SMS verification for {self.phone_number}"

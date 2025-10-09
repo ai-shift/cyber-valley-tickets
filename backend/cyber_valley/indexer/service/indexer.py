@@ -142,7 +142,7 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
     log.debug("=== Processing log receipt ===")
     log.debug("Log address: %s", log_receipt.get("address"))
     log.debug("Log topics: %s", log_receipt.get("topics"))
-    
+
     for contract_idx, contract in enumerate(contracts):
         log.debug("Trying contract %d", contract_idx)
         event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
@@ -174,13 +174,17 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
                         event["args"]
                     )
                     log.debug("Successfully validated event: %s", event["event"])
-                    return result
                 except (ValueError, ValidationError) as e:
                     log.debug("Validation failed for %s: %s", event["event"], str(e))
                     continue
+                else:
+                    return result
 
-    log.warning("Event not recognized! Address: %s, Topics: %s", 
-                log_receipt.get("address"), log_receipt.get("topics"))
+    log.warning(
+        "Event not recognized! Address: %s, Topics: %s",
+        log_receipt.get("address"),
+        log_receipt.get("topics"),
+    )
     raise EventNotRecognizedError(log_receipt)
 
 
