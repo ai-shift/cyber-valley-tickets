@@ -151,26 +151,47 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
 def _sync_event_place_updated(
     event_data: CyberValleyEventManager.EventPlaceUpdated,
 ) -> None:
-    place = EventPlace.objects.get(id=event_data.event_place_id)
-
     cid = _multihash2cid(event_data)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
 
-    place.title = data["title"]
-    place.location_url = data["location_url"]
-    place.max_tickets = event_data.max_tickets
-    place.min_tickets = event_data.min_tickets
-    place.min_price = event_data.min_price
-    place.min_days = event_data.min_days
-    place.days_before_cancel = event_data.days_before_cancel
-    place.available = event_data.available
-    place.save()
-    log.info("Event place %s was updated", event_data.event_place_id)
+    provider, _ = CyberValleyUser.objects.get_or_create(address=event_data.provider)
+
+    place, created = EventPlace.objects.get_or_create(
+        id=event_data.event_place_id,
+        defaults={
+            "provider": provider,
+            "title": data["title"],
+            "location_url": data["location_url"],
+            "max_tickets": event_data.max_tickets,
+            "min_tickets": event_data.min_tickets,
+            "min_price": event_data.min_price,
+            "min_days": event_data.min_days,
+            "days_before_cancel": event_data.days_before_cancel,
+            "available": event_data.available,
+        },
+    )
+
+    if not created:
+        place.provider = provider
+        place.title = data["title"]
+        place.location_url = data["location_url"]
+        place.max_tickets = event_data.max_tickets
+        place.min_tickets = event_data.min_tickets
+        place.min_price = event_data.min_price
+        place.min_days = event_data.min_days
+        place.days_before_cancel = event_data.days_before_cancel
+        place.available = event_data.available
+        place.save()
+        log.info("Event place %s was updated", event_data.event_place_id)
+    else:
+        log.info("Event place %s was created", event_data.event_place_id)
+
     if place.provider:
+        action = "created" if created else "updated"
         Notification.objects.create(
             user=place.provider,
-            title="Event place updated",
+            title=f"Event place {action}",
             body=f"Title: {place.title}",
         )
 
@@ -296,7 +317,7 @@ def _sync_role_granted(
 
     if user.role == CyberValleyUser.LOCAL_PROVIDER:
         # TODO: Find telegram info in socials and send message
-        raise NotImplemented
+        raise NotImplementedError
 
 
 @transaction.atomic
