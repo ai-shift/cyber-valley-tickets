@@ -223,4 +223,7 @@ def test_update_event(events_factory: EventsFactory) -> None:
     _assert_events_match_snapshot("updateEvent", events, snapshot)
 
 
-
+def test_cancel_event(events_factory: EventsFactory) -> None:
+    events = events_factory("cancelEvent")
+    snapshot = _load_snapshot("cancelEvent")
+    _assert_events_match_snapshot("cancelEvent", events, snapshot)
