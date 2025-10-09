@@ -120,13 +120,10 @@ def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
         pass
 
 
-def _load_snapshot(test_name: str) -> dict[str, Any]:
+def _load_snapshot(test_name: str) -> dict[str, Any] | None:
     snapshot_file = SNAPSHOTS_DIR / f"{test_name}.json"
     if not snapshot_file.exists():
-        raise FileNotFoundError(
-            f"Snapshot file not found: {snapshot_file}. "
-            f"Run 'make update-indexer-snapshots' to generate snapshots."
-        )
+        return None
     return json.loads(snapshot_file.read_text())
 
 
@@ -141,9 +138,7 @@ def _get_logs(w3: Web3) -> list[LogReceipt]:
     return w3.eth.filter({"fromBlock": 0, "toBlock": "latest"}).get_all_entries()
 
 
-def _assert_events_match_snapshot(
-    events: list[BaseModel], snapshot_data: dict[str, Any]
-) -> None:
+def _serialize_events(events: list[BaseModel]) -> dict[str, list[dict[str, Any]]]:
     events_by_type: dict[str, list[dict[str, Any]]] = {}
     for event in events:
         event_type = event.__class__.__name__
@@ -155,46 +150,77 @@ def _assert_events_match_snapshot(
             events_by_type[full_type] = []
         events_by_type[full_type].append(serialized)
 
-    assert events_by_type == snapshot_data["events_by_type"], (
-        f"Events do not match snapshot. "
-        f"Run 'make update-indexer-snapshots' to update snapshots if this is expected."
-    )
+    return events_by_type
+
+
+def _assert_events_match_snapshot(
+    test_name: str, events: list[BaseModel], snapshot_data: dict[str, Any] | None
+) -> None:
+    events_by_type = _serialize_events(events)
+    new_snapshot_data = {
+        "test_name": test_name,
+        "events_count": len(events),
+        "events_by_type": events_by_type,
+    }
+
+    if snapshot_data is None:
+        new_snapshot_file = SNAPSHOTS_DIR / f"new_{test_name}.json"
+        new_snapshot_file.write_text(json.dumps(new_snapshot_data, indent=2, sort_keys=True))
+        pytest.fail(
+            f"Snapshot file not found!\n"
+            f"New snapshot created at: {new_snapshot_file}\n"
+            f"Review it and if correct:\n"
+            f"  mv {new_snapshot_file} {SNAPSHOTS_DIR / f'{test_name}.json'}\n"
+            f"Then re-run the test."
+        )
+
+    if events_by_type != snapshot_data["events_by_type"]:
+        new_snapshot_file = SNAPSHOTS_DIR / f"new_{test_name}.json"
+        new_snapshot_file.write_text(json.dumps(new_snapshot_data, indent=2, sort_keys=True))
+
+        pytest.fail(
+            f"Events do not match snapshot!\n"
+            f"New snapshot saved to: {new_snapshot_file}\n"
+            f"Review the changes and if correct:\n"
+            f"  mv {new_snapshot_file} {SNAPSHOTS_DIR / f'{test_name}.json'}\n"
+            f"Or compare with: diff {SNAPSHOTS_DIR / f'{test_name}.json'} {new_snapshot_file}"
+        )
 
 
 def test_create_event_place(events_factory: EventsFactory) -> None:
     events = events_factory("createEventPlace")
     snapshot = _load_snapshot("createEventPlace")
-    _assert_events_match_snapshot(events, snapshot)
+    _assert_events_match_snapshot("createEventPlace", events, snapshot)
 
 
 def test_update_event_place(events_factory: EventsFactory) -> None:
     events = events_factory("updateEventPlace")
     snapshot = _load_snapshot("updateEventPlace")
-    _assert_events_match_snapshot(events, snapshot)
+    _assert_events_match_snapshot("updateEventPlace", events, snapshot)
 
 
 def test_submit_event_request(events_factory: EventsFactory) -> None:
     events = events_factory("submitEventRequest")
     snapshot = _load_snapshot("submitEventRequest")
-    _assert_events_match_snapshot(events, snapshot)
+    _assert_events_match_snapshot("submitEventRequest", events, snapshot)
 
 
 def test_approve_event(events_factory: EventsFactory) -> None:
     events = events_factory("approveEvent")
     snapshot = _load_snapshot("approveEvent")
-    _assert_events_match_snapshot(events, snapshot)
+    _assert_events_match_snapshot("approveEvent", events, snapshot)
 
 
 def test_decline_event(events_factory: EventsFactory) -> None:
     events = events_factory("declineEvent")
     snapshot = _load_snapshot("declineEvent")
-    _assert_events_match_snapshot(events, snapshot)
+    _assert_events_match_snapshot("declineEvent", events, snapshot)
 
 
 def test_update_event(events_factory: EventsFactory) -> None:
     events = events_factory("updateEvent")
     snapshot = _load_snapshot("updateEvent")
-    _assert_events_match_snapshot(events, snapshot)
+    _assert_events_match_snapshot("updateEvent", events, snapshot)
 
 
 
