@@ -48,7 +48,10 @@ def run_hardhat_test(printer_session: Printer) -> HardhatTestRunner:
         printer_session(f"Starting hardhat test of {test_to_run}")
         yield from _execute(
             f"pnpm exec hardhat --network localhost test --grep {test_to_run}",
-            env={"DISABLE_BLOCKHAIN_RESTORE": "1"},
+            env={
+                "DISABLE_BLOCKHAIN_RESTORE": "1",
+                "HARDHAT_INITIAL_DATE": "2024-01-01T00:00:00Z",
+            },
         )
         printer_session(f"Hardhat test finished of {test_to_run}")
 
