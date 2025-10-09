@@ -1,3 +1,5 @@
+import type { BigNumberish } from "ethers";
+
 export const createEventPlaceCornerCases = [
   {
     patch: {
@@ -34,7 +36,7 @@ export const createEventPlaceCornerCases = [
 ];
 
 export async function getSubmitEventCases(
-  timestamp: (days: number) => Promise<bigint>,
+  timestamp: (days: number) => Promise<BigNumberish>,
 ) {
   return [
     {
@@ -83,7 +85,7 @@ export async function getSubmitEventCases(
 }
 
 export async function getSubmitEventDateRangeOverlapCornerCases(
-  timestamp: (days: number) => Promise<bigint>,
+  timestamp: (days: number) => Promise<BigNumberish>,
 ) {
   return [
     {

@@ -376,12 +376,12 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         creator,
         {},
-        { startDate: timestamp(5), daysAmount: 3 },
+        { startDate: await timestamp(5), daysAmount: 3 },
         {},
       );
       const updatedRequest = {
         ...defaultSubmitEventRequest,
-        startDate: timestamp(10),
+        startDate: await timestamp(10),
         daysAmount: 2,
         ticketPrice: 50,
       };
@@ -415,7 +415,7 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         creator,
         {},
-        { startDate: timestamp(5), daysAmount: 4 },
+        { startDate: await timestamp(5), daysAmount: 4 },
         {},
       );
       const { eventId: secondEventId } = await createEvent(
@@ -424,12 +424,12 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         creator,
         {},
-        { startDate: timestamp(15), daysAmount: 4 },
+        { startDate: await timestamp(15), daysAmount: 4 },
         {},
       );
       const updatedRequest = {
         ...defaultSubmitEventRequest,
-        startDate: timestamp(5),
+        startDate: await timestamp(5),
         daysAmount: 4,
       };
       await expect(
