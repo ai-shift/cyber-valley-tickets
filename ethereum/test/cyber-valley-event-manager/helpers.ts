@@ -74,7 +74,8 @@ const loadFixture = blockchainRestoreDisabled
 export { loadFixture };
 
 export async function deployContract(): Promise<ContractsFixture> {
-  const [owner, master, localProvider, creator, staff] = await ethers.getSigners();
+  const [owner, master, localProvider, creator, staff] =
+    await ethers.getSigners();
   const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
     "CyberValleyEventManager",
@@ -99,8 +100,19 @@ export async function deployContract(): Promise<ContractsFixture> {
     .connect(master)
     .setEventManagerAddress(await eventManager.getAddress());
   await eventManager.connect(master).setMasterShare(50);
-  await eventManager.connect(master).grantLocalProvider(await localProvider.getAddress(), 100);
-  return { ERC20, eventManager, eventTicket, owner, master, localProvider, creator, staff };
+  await eventManager
+    .connect(master)
+    .grantLocalProvider(await localProvider.getAddress(), 100);
+  return {
+    ERC20,
+    eventManager,
+    eventTicket,
+    owner,
+    master,
+    localProvider,
+    creator,
+    staff,
+  };
 }
 
 export async function createEventPlace(
@@ -149,7 +161,10 @@ export async function createAndUpdateEventPlace(
   localProvider: Signer,
   request: Partial<UpdateEventPlaceArgs>,
 ) {
-  const { eventPlaceId } = await createValidEventPlace(eventManager, localProvider);
+  const { eventPlaceId } = await createValidEventPlace(
+    eventManager,
+    localProvider,
+  );
   return await updateEventPlace(eventManager, localProvider, {
     ...defaultUpdateEventPlaceRequest,
     eventPlaceId,
@@ -341,10 +356,9 @@ export function itExpectsOnlyMaster<K extends keyof CyberValleyEventManager>(
   });
 }
 
-export function itExpectsOnlyLocalProvider<K extends keyof CyberValleyEventManager>(
-  methodName: K,
-  request: Parameters<CyberValleyEventManager[K]>,
-) {
+export function itExpectsOnlyLocalProvider<
+  K extends keyof CyberValleyEventManager,
+>(methodName: K, request: Parameters<CyberValleyEventManager[K]>) {
   it(`${String(methodName)} allowed only to local provider`, async () => {
     const { eventManager } = await loadFixture(deployContract);
     const method = eventManager[methodName];
