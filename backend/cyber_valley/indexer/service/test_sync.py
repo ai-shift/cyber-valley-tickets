@@ -47,6 +47,7 @@ def event_place() -> EventPlace:
         min_price=50,
         min_days=7,
         days_before_cancel=3,
+        location_url="https://maps.example.com/test-place",
     )
 
 
@@ -232,6 +233,7 @@ def test_sync_event_place_updated(event_place: EventPlace) -> None:
             {
                 "title": "Changed event place title",
                 "description": "Change evenet place description",
+                "location_url": "https://maps.example.com/new-location",
             }
         )
     multihash = cid2multihash(cid)
