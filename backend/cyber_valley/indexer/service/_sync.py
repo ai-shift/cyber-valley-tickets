@@ -281,6 +281,7 @@ def _sync_role_granted(
         title="Role granted",
         body=f"{user.role} granted to you",
     )
+
     admins = CyberValleyUser.objects.filter(
         role__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
     )
@@ -292,6 +293,10 @@ def _sync_role_granted(
             title="Role granted",
             body=f"{user.role} granted to {user.address}",
         )
+
+    if user.role == CyberValleyUser.LOCAL_PROVIDER:
+        // TODO: Find telegram info in socials and send message
+        raise NotImplemented
 
 
 @transaction.atomic
