@@ -1,4 +1,3 @@
-import { timestamp } from "./helpers";
 import type {
   CancelEventArgs,
   CloseEventArgs,
@@ -38,7 +37,7 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
 export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
   eventPlaceId: defaultUpdateEventPlaceRequest.eventPlaceId,
   ticketPrice: defaultCreateEventPlaceRequest.minPrice,
-  startDate: timestamp(5),
+  startDate: 0,
   daysAmount: defaultCreateEventPlaceRequest.minDays,
   ...multihash,
 };
