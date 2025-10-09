@@ -94,7 +94,7 @@ export async function deployContract(): Promise<ContractsFixture> {
     await eventTicket.getAddress(),
     master,
     eventRequestSubmitionPrice,
-    timestamp(0),
+    await timestamp(0),
   );
   await eventTicket
     .connect(master)
