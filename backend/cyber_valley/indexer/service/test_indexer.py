@@ -31,6 +31,7 @@ def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
         yield from _execute(
             "node_modules/.bin/hardhat node",
             yield_after_line="Started HTTP and WebSocket JSON-RPC server at ",
+            env={"HARDHAT_INITIAL_DATE": "2024-01-01T00:00:00Z"},
         )
     subprocess.run("pkill -f node.*hardhat.*.js", shell=True, check=False)
     (ETHEREUM_DIR / "cache/solidity-files-cache.json").unlink(missing_ok=True)
@@ -74,10 +75,17 @@ def events_factory(w3: Web3, run_hardhat_test: HardhatTestRunner) -> EventsFacto
             for idx, log in enumerate(logs):
                 print(f"\n--- Processing log {idx + 1}/{len(logs)} ---")
                 print(f"Address: {log.get('address')}")
-                print(f"Topics: {[t.hex() if hasattr(t, 'hex') else t for t in log.get('topics', [])]}")
+                topics = [
+                    t.hex() if hasattr(t, "hex") else t for t in log.get("topics", [])
+                ]
+                print(f"Topics: {topics}")
                 try:
                     event = indexer.parse_log(log, _get_all_contracts(w3)).unwrap()
-                    print(f"✓ Successfully parsed as: {event.__class__.__module__}.{event.__class__.__name__}")
+                    event_class = event.__class__
+                    print(
+                        f"✓ Successfully parsed as: "
+                        f"{event_class.__module__}.{event_class.__name__}"
+                    )
                     events.append(event)
                 except Exception as e:
                     print(f"✗ Failed to parse: {type(e).__name__}: {e}")
@@ -172,7 +180,9 @@ def _assert_events_match_snapshot(
 
     if snapshot_data is None:
         new_snapshot_file = SNAPSHOTS_DIR / f"new_{test_name}.json"
-        new_snapshot_file.write_text(json.dumps(new_snapshot_data, indent=2, sort_keys=True))
+        new_snapshot_file.write_text(
+            json.dumps(new_snapshot_data, indent=2, sort_keys=True)
+        )
         pytest.fail(
             f"Snapshot file not found!\n"
             f"New snapshot created at: {new_snapshot_file}\n"
@@ -183,14 +193,17 @@ def _assert_events_match_snapshot(
 
     if events_by_type != snapshot_data["events_by_type"]:
         new_snapshot_file = SNAPSHOTS_DIR / f"new_{test_name}.json"
-        new_snapshot_file.write_text(json.dumps(new_snapshot_data, indent=2, sort_keys=True))
+        new_snapshot_file.write_text(
+            json.dumps(new_snapshot_data, indent=2, sort_keys=True)
+        )
 
         pytest.fail(
             f"Events do not match snapshot!\n"
             f"New snapshot saved to: {new_snapshot_file}\n"
             f"Review the changes and if correct:\n"
             f"  mv {new_snapshot_file} {SNAPSHOTS_DIR / f'{test_name}.json'}\n"
-            f"Or compare with: diff {SNAPSHOTS_DIR / f'{test_name}.json'} {new_snapshot_file}"
+            f"Or compare with: "
+            f"diff {SNAPSHOTS_DIR / f'{test_name}.json'} {new_snapshot_file}"
         )
 
 
