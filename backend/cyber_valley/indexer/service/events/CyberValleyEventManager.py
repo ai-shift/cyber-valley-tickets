@@ -14,6 +14,7 @@ class EventPlaceUpdated(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
+    provider: str
     event_place_id: int = Field(..., alias="eventPlaceId")
     max_tickets: int = Field(..., alias="maxTickets")
     min_tickets: int = Field(..., alias="minTickets")
