@@ -33,7 +33,7 @@ def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
             yield_after_line="Started HTTP and WebSocket JSON-RPC server at ",
             env={"HARDHAT_INITIAL_DATE": "2024-01-01T00:00:00Z"},
         )
-    subprocess.run("pkill -f node.*hardhat.*.js", shell=True, check=False)
+    subprocess.run("pkill -f node.*hardhat.*.js", shell=True, check=False)  # noqa: S602, S607
     (ETHEREUM_DIR / "cache/solidity-files-cache.json").unlink(missing_ok=True)
     printer_session("Hardhat node terminated")
 
@@ -104,7 +104,7 @@ def _execute(
     timeout: int = 5,
     env: None | dict[str, str] = None,
 ) -> ProcessStarter:
-    proc = subprocess.Popen(
+    proc = subprocess.Popen(  # noqa: S602
         command,
         cwd=ETHEREUM_DIR,
         stdout=subprocess.PIPE,
@@ -142,7 +142,8 @@ def _load_snapshot(test_name: str) -> dict[str, Any] | None:
     snapshot_file = SNAPSHOTS_DIR / f"{test_name}.json"
     if not snapshot_file.exists():
         return None
-    return json.loads(snapshot_file.read_text())
+    content: dict[str, Any] = json.loads(snapshot_file.read_text())
+    return content
 
 
 def _get_all_contracts(w3: Web3) -> list[type[Contract]]:

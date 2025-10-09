@@ -28,7 +28,7 @@ def send_sms(request: Request) -> Response:
 
     # Store verification in database
     SMSVerification.objects.filter(phone_number=phone_number, verified=False).delete()
-    sms_verification = SMSVerification.objects.create(
+    SMSVerification.objects.create(
         phone_number=phone_number, verification_code=verification_code
     )
 
@@ -36,11 +36,12 @@ def send_sms(request: Request) -> Response:
     # For development, we just log it
     print(f"📱 SMS sent to {phone_number}: {verification_code}")
 
+    dev_note = f"Using mocked SMS. Code is always: {verification_code}"
     return Response(
         {
             "success": True,
             "message": f"Verification code sent to {phone_number}",
-            "development_note": f"Using mocked SMS. Code is always: {verification_code}",
+            "development_note": dev_note,
         }
     )
 
