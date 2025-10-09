@@ -9,7 +9,12 @@ const config: HardhatUserConfig = {
   solidity: "0.8.28",
   networks: {
     hardhat: {
-      loggingEnabled: false
+      loggingEnabled: false,
+      initialDate: process.env.HARDHAT_INITIAL_DATE || undefined,
+    },
+    localhost: {
+      url: "http://127.0.0.1:8545",
+      timeout: 60000,
     },
     cvlandTest: {
       url: "https://cvland-tickets.aishift.co/ganache"
