@@ -31,9 +31,6 @@ open-api-schema:
 tests:
 	uv run pytest -vvv -s
 
-update-indexer-snapshots:
-	$(python) manage.py capture_snapshots
-
 run-indexer: migrate
 	$(python) manage.py indexer
 
