@@ -158,7 +158,7 @@ def _sync_event_place_updated(
         data = client.get_json(cid)
 
     place.title = data["title"]
-    place.location_url = data.get("location_url", "")
+    place.location_url = data["location_url"]
     place.max_tickets = event_data.max_tickets
     place.min_tickets = event_data.min_tickets
     place.min_price = event_data.min_price
