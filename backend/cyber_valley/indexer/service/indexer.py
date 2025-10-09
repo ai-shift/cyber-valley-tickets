@@ -139,7 +139,12 @@ class EventNotRecognizedError(Exception):
 
 @safe
 def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseModel:
-    for contract in contracts:
+    log.debug("=== Processing log receipt ===")
+    log.debug("Log address: %s", log_receipt.get("address"))
+    log.debug("Log topics: %s", log_receipt.get("topics"))
+    
+    for contract_idx, contract in enumerate(contracts):
+        log.debug("Trying contract %d", contract_idx)
         event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
         duplicated_event_names = {
             name for name in event_names if event_names.count(name) > 1
@@ -148,24 +153,34 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
         for event_name in event_names:
             try:
                 event = getattr(contract.events, event_name).process_log(log_receipt)
-            except (MismatchedABI, LogTopicError):
+                log.debug("Successfully processed event: %s", event_name)
+            except (MismatchedABI, LogTopicError) as e:
+                log.debug("Failed to process as %s: %s", event_name, type(e).__name__)
                 continue
 
+            log.debug("Looking for event model for: %s", event["event"])
             for module in _EVENTS_MODULES:
                 try:
                     event_model = getattr(module, event["event"])
+                    log.debug("Found event model in module: %s", module.__name__)
                 except AttributeError:
+                    log.debug("Event not found in module: %s", module.__name__)
                     continue
                 assert issubclass(event_model, BaseModel), (
                     f"Excpected BaseModel got {type(event_model)}"
                 )
-                try:  # Some events have the same names e.g. Transfer or Approval
-                    return cast(type[BaseModel], event_model).model_validate(
+                try:
+                    result = cast(type[BaseModel], event_model).model_validate(
                         event["args"]
                     )
-                except (ValueError, ValidationError):
+                    log.debug("Successfully validated event: %s", event["event"])
+                    return result
+                except (ValueError, ValidationError) as e:
+                    log.debug("Validation failed for %s: %s", event["event"], str(e))
                     continue
 
+    log.warning("Event not recognized! Address: %s, Topics: %s", 
+                log_receipt.get("address"), log_receipt.get("topics"))
     raise EventNotRecognizedError(log_receipt)
 
 

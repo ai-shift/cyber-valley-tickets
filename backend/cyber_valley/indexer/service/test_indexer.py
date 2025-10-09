@@ -68,13 +68,20 @@ EventsFactory = Callable[[str], list[BaseModel]]
 def events_factory(w3: Web3, run_hardhat_test: HardhatTestRunner) -> EventsFactory:
     def inner(test_to_run: str) -> list[BaseModel]:
         with run_hardhat_test(test_to_run):
-            contracts = _get_all_contracts(w3)
             logs = _get_logs(w3)
-            return [
-                indexer.parse_log(log, contracts).unwrap()
-                for log in logs
-                if log["topics"]
-            ]
+            print(f"\n=== Total logs retrieved: {len(logs)} ===")
+            events = []
+            for idx, log in enumerate(logs):
+                print(f"\n--- Processing log {idx + 1}/{len(logs)} ---")
+                print(f"Address: {log.get('address')}")
+                print(f"Topics: {[t.hex() if hasattr(t, 'hex') else t for t in log.get('topics', [])]}")
+                try:
+                    event = indexer.parse_log(log, _get_all_contracts(w3)).unwrap()
+                    print(f"✓ Successfully parsed as: {event.__class__.__module__}.{event.__class__.__name__}")
+                    events.append(event)
+                except Exception as e:
+                    print(f"✗ Failed to parse: {type(e).__name__}: {e}")
+            return events
 
     return inner
 
