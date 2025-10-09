@@ -144,7 +144,7 @@
         "hashFunction": 18,
         "id": 0,
         "size": 32,
-        "startDate": 1760832000,
+        "startDate": 1704931200,
         "ticketPrice": 50
       }
     ],
@@ -157,7 +157,7 @@
         "hashFunction": 18,
         "id": 0,
         "size": 32,
-        "startDate": 1760400000,
+        "startDate": 1704499200,
         "ticketPrice": 20
       },
       {
@@ -168,7 +168,7 @@
         "hashFunction": 18,
         "id": 0,
         "size": 32,
-        "startDate": 1760400000,
+        "startDate": 1704499200,
         "ticketPrice": 20
       },
       {
@@ -179,7 +179,7 @@
         "hashFunction": 18,
         "id": 1,
         "size": 32,
-        "startDate": 1761264000,
+        "startDate": 1705363200,
         "ticketPrice": 20
       }
     ],

@@ -385,9 +385,11 @@ export function itExpectsOnlyStaff<K extends keyof CyberValleyEventManager>(
 }
 
 export async function timestamp(daysFromNow: number): Promise<BigNumberish> {
-  const now = await time.latest(); // Get EVM block timestamp
+  // Use genesis block timestamp for consistent results across test runs
+  const genesisBlock = await ethers.provider.getBlock(0);
+  const baseTimestamp = genesisBlock?.timestamp || 0;
   const days = daysFromNow * 24 * 60 * 60;
-  return now + days;
+  return baseTimestamp + days;
 }
 
 export function stringify<T>(obj: T): string {
