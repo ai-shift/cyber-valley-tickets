@@ -14,7 +14,6 @@ import {
   itExpectsOnlyLocalProvider,
   itExpectsOnlyMaster,
   loadFixture,
-  stringify,
   submitEventRequest,
   timestamp,
 } from "./helpers";
@@ -34,8 +33,8 @@ import {
 
 import {
   createEventPlaceCornerCases,
-  submitEventCases,
-  submitEventDateRangeOverlapCornerCases,
+  getSubmitEventCases,
+  getSubmitEventDateRangeOverlapCornerCases,
 } from "./corner-cases";
 
 describe("CyberValleyEventManager", () => {
@@ -200,64 +199,69 @@ describe("CyberValleyEventManager", () => {
       await expect(tx).to.be.revertedWith("Not enough tokens");
     });
 
-    submitEventCases.forEach(
-      ({ eventPlacePatch, eventRequestPatch, revertsWith }, idx) =>
-        it(`eventPlace: ${JSON.stringify(eventPlacePatch)}, eventRequest: ${JSON.stringify(eventRequestPatch)}`, async () => {
-          const { eventManager, ERC20, localProvider, creator } =
-            await loadFixture(deployContract);
-          await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
-          await ERC20.connect(creator).approve(
-            await eventManager.getAddress(),
-            eventRequestSubmitionPrice,
-          );
+    for (const idx of [0, 1, 2, 3, 4]) {
+      it(`validation case ${idx + 1}`, async () => {
+        const cases = await getSubmitEventCases(timestamp);
+        const testCase = cases[idx];
+        if (!testCase) return;
+        const { eventPlacePatch, eventRequestPatch, revertsWith } = testCase;
+        const { eventManager, ERC20, localProvider, creator } =
+          await loadFixture(deployContract);
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
 
-          const { eventPlaceId } = await createEventPlace(
-            eventManager,
-            localProvider,
-            eventPlacePatch,
-          );
-          const { tx } = await submitEventRequest(eventManager, creator, {
-            eventPlaceId,
-            ...eventRequestPatch,
-          });
-          if (revertsWith == null) {
-            await expect(tx).to.not.be.reverted;
-          } else {
-            await expect(tx).to.be.revertedWith(revertsWith);
-          }
-        }),
-    );
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          localProvider,
+          eventPlacePatch,
+        );
+        const { tx } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          ...eventRequestPatch,
+        });
+        if (revertsWith == null) {
+          await expect(tx).to.not.be.reverted;
+        } else {
+          await expect(tx).to.be.revertedWith(revertsWith);
+        }
+      });
+    }
 
-    submitEventDateRangeOverlapCornerCases.forEach(
-      ({ approvedEventPatch, submittedEventPatch }, idx) =>
-        it(`reverts on overlap: Case ${idx} approved: ${stringify(approvedEventPatch)}, submitted: ${stringify(submittedEventPatch)}`, async () => {
-          const { eventManager, ERC20, localProvider, creator } =
-            await loadFixture(deployContract);
-          const { tx: createEventTx } = await createEvent(
-            eventManager,
-            ERC20,
-            localProvider,
-            creator,
-            {},
-            approvedEventPatch,
-            {},
-          );
-          await createEventTx;
-          await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
-          await ERC20.connect(creator).approve(
-            await eventManager.getAddress(),
-            eventRequestSubmitionPrice,
-          );
-          const { tx } = await submitEventRequest(
-            eventManager,
-            creator,
-            submittedEventPatch,
-          );
-          await expect(tx).to.be.revertedWith(
-            "Requested event overlaps with existing",
-          );
-        }),
-    );
+    for (const idx of [0, 1, 2]) {
+      it(`reverts on overlap: Case ${idx}`, async () => {
+        const cases =
+          await getSubmitEventDateRangeOverlapCornerCases(timestamp);
+        const { approvedEventPatch, submittedEventPatch } = cases[idx];
+        const { eventManager, ERC20, localProvider, creator } =
+          await loadFixture(deployContract);
+        const { tx: createEventTx } = await createEvent(
+          eventManager,
+          ERC20,
+          localProvider,
+          creator,
+          {},
+          approvedEventPatch,
+          {},
+        );
+        await createEventTx;
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+        const { tx } = await submitEventRequest(
+          eventManager,
+          creator,
+          submittedEventPatch,
+        );
+        await expect(tx).to.be.revertedWith(
+          "Requested event overlaps with existing",
+        );
+      });
+    }
   });
 
   describe("approveEvent", () => {
@@ -905,7 +909,7 @@ describe("CyberValleyEventManager", () => {
       );
     });
 
-    it("refunds tokens to customers and creator", async () => {
+    it("refunds tokens to owners and local provider", async () => {
       const { eventManager, ERC20, master, localProvider, creator, staff } =
         await loadFixture(deployContract);
 

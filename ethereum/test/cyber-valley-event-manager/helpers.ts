@@ -229,6 +229,7 @@ export async function submitEventRequest(
 }> {
   const request = {
     ...defaultSubmitEventRequest,
+    startDate: await timestamp(5),
     ...patch,
   };
   assert(request.eventPlaceId != null);
@@ -383,15 +384,10 @@ export function itExpectsOnlyStaff<K extends keyof CyberValleyEventManager>(
   });
 }
 
-export function timestamp(daysFromNow: number): BigNumberish {
-  return Math.floor(
-    new Date(new Date().setDate(new Date().getDate() + daysFromNow)).setHours(
-      0,
-      0,
-      0,
-      0,
-    ) / 1000,
-  );
+export async function timestamp(daysFromNow: number): Promise<BigNumberish> {
+  const now = await time.latest(); // Get EVM block timestamp
+  const days = daysFromNow * 24 * 60 * 60;
+  return now + days;
 }
 
 export function stringify<T>(obj: T): string {
