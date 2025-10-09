@@ -34,9 +34,12 @@ async function main() {
   await eventTicket.setEventManagerAddress(await eventManager.getAddress());
 
   // Seed state
-  const [master, localProvider, creatorSlave, completeSlave] = await hre.ethers.getSigners();
+  const [master, localProvider, creatorSlave, completeSlave] =
+    await hre.ethers.getSigners();
   await eventManager.connect(master).setMasterShare(50);
-  await eventManager.connect(master).grantLocalProvider(localProvider.address, 100);
+  await eventManager
+    .connect(master)
+    .grantLocalProvider(localProvider.address, 100);
   console.log(
     "master",
     master.address,
