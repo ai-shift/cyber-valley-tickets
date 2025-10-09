@@ -90,6 +90,12 @@ export const eventManager = getContract({
       inputs: [
         {
           indexed: false,
+          internalType: "address",
+          name: "provider",
+          type: "address",
+        },
+        {
+          indexed: false,
           internalType: "uint256",
           name: "eventPlaceId",
           type: "uint256",
@@ -403,6 +409,19 @@ export const eventManager = getContract({
     },
     {
       inputs: [],
+      name: "LOCAL_PROVIDER_ROLE",
+      outputs: [
+        {
+          internalType: "bytes32",
+          name: "",
+          type: "bytes32",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
       name: "MASTER_ROLE",
       outputs: [
         {
@@ -542,6 +561,11 @@ export const eventManager = getContract({
       ],
       name: "eventPlaces",
       outputs: [
+        {
+          internalType: "address",
+          name: "provider",
+          type: "address",
+        },
         {
           internalType: "uint16",
           name: "maxTickets",
@@ -712,6 +736,24 @@ export const eventManager = getContract({
     {
       inputs: [
         {
+          internalType: "address",
+          name: "eoa",
+          type: "address",
+        },
+        {
+          internalType: "uint8",
+          name: "share",
+          type: "uint8",
+        },
+      ],
+      name: "grantLocalProvider",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
           internalType: "bytes32",
           name: "role",
           type: "bytes32",
@@ -752,6 +794,25 @@ export const eventManager = getContract({
       type: "function",
     },
     {
+      inputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      name: "localProviderShare",
+      outputs: [
+        {
+          internalType: "uint8",
+          name: "",
+          type: "uint8",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
       inputs: [],
       name: "master",
       outputs: [
@@ -759,6 +820,19 @@ export const eventManager = getContract({
           internalType: "address",
           name: "",
           type: "address",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "masterShare",
+      outputs: [
+        {
+          internalType: "uint8",
+          name: "",
+          type: "uint8",
         },
       ],
       stateMutability: "view",
@@ -813,6 +887,19 @@ export const eventManager = getContract({
     {
       inputs: [
         {
+          internalType: "address",
+          name: "eoa",
+          type: "address",
+        },
+      ],
+      name: "revokeLocalProvider",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
           internalType: "bytes32",
           name: "role",
           type: "bytes32",
@@ -824,6 +911,19 @@ export const eventManager = getContract({
         },
       ],
       name: "revokeRole",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint8",
+          name: "share",
+          type: "uint8",
+        },
+      ],
+      name: "setMasterShare",
       outputs: [],
       stateMutability: "nonpayable",
       type: "function",

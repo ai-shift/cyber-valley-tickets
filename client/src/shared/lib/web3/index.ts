@@ -271,6 +271,33 @@ export async function removeStaff(
   return transactionHash;
 }
 
+export async function grantLocalProvider(
+  account: Account,
+  address: string,
+  share: number,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "grantLocalProvider",
+    params: [address, share],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function removeRevokeLocalProvider(
+  account: Account,
+  address: string,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "revokeLocalProvider",
+    params: [address],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
 export async function hasEnoughtTokens(
   account: Account,
   tokens?: bigint,
