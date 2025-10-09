@@ -151,30 +151,26 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
 def _sync_event_place_updated(
     event_data: CyberValleyEventManager.EventPlaceUpdated,
 ) -> None:
+    place = EventPlace.objects.get(id=event_data.event_place_id)
+
     cid = _multihash2cid(event_data)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
 
-    defaults = {
-        "title": data["title"],
-        "location_url": data["location_url"],
-        "max_tickets": event_data.max_tickets,
-        "min_tickets": event_data.min_tickets,
-        "min_price": event_data.min_price,
-        "min_days": event_data.min_days,
-        "days_before_cancel": event_data.days_before_cancel,
-        "available": event_data.available,
-    }
-    place, created = EventPlace.objects.update_or_create(
-        id=event_data.event_place_id,
-        defaults=defaults,
-        create_defaults=dict(id=event_data.event_place_id, **defaults),
-    )
-    log.info("Event place %s was created (%s)", event_data.event_place_id, created)
+    place.title = data["title"]
+    place.location_url = data.get("location_url", "")
+    place.max_tickets = event_data.max_tickets
+    place.min_tickets = event_data.min_tickets
+    place.min_price = event_data.min_price
+    place.min_days = event_data.min_days
+    place.days_before_cancel = event_data.days_before_cancel
+    place.available = event_data.available
+    place.save()
+    log.info("Event place %s was updated", event_data.event_place_id)
     if place.provider:
         Notification.objects.create(
             user=place.provider,
-            title=f"Event place {'created' if created else 'updated'}",
+            title="Event place updated",
             body=f"Title: {place.title}",
         )
 
