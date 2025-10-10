@@ -28,6 +28,11 @@ lint-solidity:
 	pnpm exec solhint 'contracts/**/*.sol'
 
 ganache:
+	@echo "Master    (0) 0x2789023F36933E208675889869c7d3914A422921 (100 ETH)"
+	@echo "Customer1 (1) 0x96e37a0cD915c38dE8B5aAC0db61eB7eB839CeeB (100 ETH)"
+	@echo "Customer2 (2) 0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e (100 ETH)"
+	@echo "Customer3 (3) 0x7617b92b06c4ce513c53Df1c818ed25f95475f69 (100 ETH)"
+	@echo "Customer4 (4) 0x9772d9a6A104c162b97767e6a654Be54370A042F (100 ETH)"
 	podman run -d \
 	  --name cvland-ganache \
 	  --rm \
@@ -39,4 +44,4 @@ ganache:
 	  --wallet.accounts=0x39e6d142076a3898e7533b9095d0ac78867d6642a9c172b4a1bf41e32980263d,0X56BC75E2D63100000 \
 	  --wallet.accounts=0xf47ff34e4ac62439d984e415b48676bda8698ef2603d6bf984d0ebe1ba7d5e07,0X56BC75E2D63100000 \
 	  --wallet.accounts=0xa712ac767d58175ee0856679b6fb845bf1231b051e0531fcdac63b0b9476de3d,0X56BC75E2D63100000 \
-
+	  --wallet.accounts=0x96642ec34cca1c611b5b02547fe296f11b07c9dfc427f8c01cd6fb028f720dd4,0X56BC75E2D63100000 \
