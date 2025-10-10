@@ -49,6 +49,10 @@ class Command(BaseCommand):
             ("0x96e37a0cD915c38dE8B5aAC0db61eB7eB839CeeB", CyberValleyUser.CUSTOMER),
             ("0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e", CyberValleyUser.CUSTOMER),
             ("0x7617b92b06c4ce513c53Df1c818ed25f95475f69", CyberValleyUser.CUSTOMER),
+            (
+                "0x9772d9a6A104c162b97767e6a654Be54370A042F",
+                CyberValleyUser.LOCAL_PROVIDER,
+            ),
         ]
         with transaction.atomic():
             for address, role in users:
