@@ -77,6 +77,7 @@ def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None
                 "title": "eventTitle",
                 "description": "eventDescription",
                 "cover": "QmdfTbBqBPQ7VNxZEYEj14VmRuZBkqFbiwReogJgS1zR1n",
+                "website": "https://example.com",
                 "socialsCid": socials_cid,
             }
         )
@@ -152,6 +153,7 @@ def test_sync_event_updated(event: Event) -> None:
                 "title": "eventTitle",
                 "description": "eventDescription",
                 "cover": "QmdfTbBqBPQ7VNxZEYEj14VmRuZBkqFbiwReogJgS1zR1n",
+                "website": "https://example.com",
                 "socialsCid": socials_cid,
             }
         )
@@ -227,7 +229,7 @@ def test_sync_event_updated_event_place_not_found(event: Event) -> None:
 
 
 @pytest.mark.django_db
-def test_sync_event_place_updated(event_place: EventPlace) -> None:
+def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None:
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         cid = client.add_json(
             {
@@ -239,6 +241,7 @@ def test_sync_event_place_updated(event_place: EventPlace) -> None:
     multihash = cid2multihash(cid)
     event_data = CyberValleyEventManager.EventPlaceUpdated.model_validate(
         {
+            "provider": address,
             "eventPlaceId": event_place.id,
             "maxTickets": 150,
             "minTickets": 15,
@@ -263,9 +266,10 @@ def test_sync_event_place_updated(event_place: EventPlace) -> None:
 
 
 @pytest.mark.django_db
-def test_sync_event_place_updated_event_place_not_found() -> None:
+def test_sync_event_place_updated_event_place_not_found(address: str) -> None:
     event_data = CyberValleyEventManager.EventPlaceUpdated.model_validate(
         {
+            "provider": address,
             "eventPlaceId": 999,
             "maxTickets": 150,
             "minTickets": 15,
