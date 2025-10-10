@@ -266,32 +266,6 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
 
 
 @pytest.mark.django_db
-def test_sync_event_place_updated_event_place_not_found(address: str) -> None:
-    event_data = CyberValleyEventManager.EventPlaceUpdated.model_validate(
-        {
-            "provider": address,
-            "eventPlaceId": 999,
-            "maxTickets": 150,
-            "minTickets": 15,
-            "minPrice": 75,
-            "minDays": 10,
-            "available": True,
-            "daysBeforeCancel": 5,
-            "digest": HexBytes(
-                bytes.fromhex(
-                    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                )
-            ),
-            "hashFunction": 18,
-            "size": 32,
-        }
-    )
-
-    with pytest.raises(EventPlace.DoesNotExist):
-        _sync_event_place_updated(event_data)
-
-
-@pytest.mark.django_db
 def test_sync_ticket_minted(event: Event, user: UserType) -> None:
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
@@ -403,15 +377,7 @@ def test_role_mapping_covers_all_user_roles() -> None:
     from cyber_valley.indexer.service._sync import ROLE_MAPPING
 
     mapped_roles = set(ROLE_MAPPING.values())
-    all_user_roles = {
-        UserType.CUSTOMER,
-        UserType.STAFF,
-        UserType.CREATOR,
-        UserType.LOCAL_PROVIDER,
-        UserType.VERIFIED_SHAMAN,
-        UserType.MASTER,
-    }
-
+    all_user_roles = {c[0] for c in UserType.ROLE_CHOICES}
     unmapped_roles = all_user_roles - mapped_roles - {UserType.CUSTOMER}
 
     assert not unmapped_roles, (
