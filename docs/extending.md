@@ -146,12 +146,12 @@ To prevent potentially cumbersome situations in the future, a setter for the `Ma
     - [ ] @naqerl Backend integration for per-event share storage (1h)
     - [ ] @naqerl Smart contract integration for share distribution (1h)
 2. **Add Master role management to smart contract** (~3 hours)
-    - [ ] @naqerl Implement Master share and address setters (2h)
-    - [ ] @naqerl Update contract deployment and migration scripts (1h)
+    - [x] @naqerl Implement Master share and address setters (2h)
+    - [x] @naqerl Update contract deployment and migration scripts (1h)
 3. **Update payment distribution system** (~4 hours)
-    - [ ] @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
+    - [x] @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
     - [ ] @naqerl Update indexer to sync share changes (1h)
-    - [ ] @naqerl Add share calculation validation (1h)
+    - [x] @naqerl Add share calculation validation (1h)
 
 ## Event Request Updates
 
