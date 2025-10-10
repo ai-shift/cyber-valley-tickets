@@ -150,6 +150,17 @@ def _inject_imports_and_patch_fields(
     header_lines: list[str] = []
     in_header = True
 
+    import_lines = []
+    for imp in sorted(needed_imports):
+        import_lines.extend(imp.split("\n"))
+
+    unique_imports = []
+    seen = set()
+    for imp_line in import_lines:
+        if imp_line and imp_line not in seen:
+            unique_imports.append(imp_line)
+            seen.add(imp_line)
+
     for line in lines:
         if in_header and (line.startswith("#") or not line.strip()):
             header_lines.append(line)
@@ -162,7 +173,7 @@ def _inject_imports_and_patch_fields(
         if line.startswith("from __future__") and not imports_added:
             new_lines.append(line)
             new_lines.append("")
-            new_lines.extend(sorted(needed_imports))
+            new_lines.extend(unique_imports)
             imports_added = True
         elif not imports_added and line.startswith(("from ", "import ")):
             continue
@@ -177,7 +188,7 @@ def _patch_field_line(line: str, fields_to_patch: set[str]) -> str:
     patched = line
     for field_name in fields_to_patch:
         snake_field = to_snake_case(field_name)
-        if f"{snake_field}: str" in line and "Field(" in line:
+        if f"{snake_field}: str" in line:
             annotation = FIELD_PATCHES[field_name]["annotation"]
             patched = line.replace(
                 f"{snake_field}: str", f"{snake_field}: {annotation}"
