@@ -302,8 +302,22 @@ def _sync_role_granted(
 ) -> None:
     if event_data.role == "DEFAULT_ADMIN_ROLE":
         return
+
+    role_mapping = {
+        "MASTER_ROLE": CyberValleyUser.MASTER,
+        "LOCAL_PROVIDER_ROLE": CyberValleyUser.LOCAL_PROVIDER,
+        "VERIFIED_SHAMAN_ROLE": CyberValleyUser.VERIFIED_SHAMAN,
+        "STAFF_ROLE": CyberValleyUser.STAFF,
+        "EVENT_MANAGER_ROLE": CyberValleyUser.CREATOR,
+    }
+
+    user_role = role_mapping.get(event_data.role)
+    if user_role is None:
+        log.error("Unknown role %s", event_data.role)
+        return
+
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
-    user.role = event_data.role.split("_")[0].lower()
+    user.role = user_role
     user.save()
     Notification.objects.create(
         user=user,
@@ -333,15 +347,26 @@ def _sync_role_revoked(
     event_data: CyberValleyEventManager.RoleRevoked
     | CyberValleyEventTicket.RoleRevoked,
 ) -> None:
-    role = event_data.role.split("_")[0].lower()
-    assert role == "staff", f"Got unexpected {role=}"
+    role_mapping = {
+        "MASTER_ROLE": CyberValleyUser.MASTER,
+        "LOCAL_PROVIDER_ROLE": CyberValleyUser.LOCAL_PROVIDER,
+        "VERIFIED_SHAMAN_ROLE": CyberValleyUser.VERIFIED_SHAMAN,
+        "STAFF_ROLE": CyberValleyUser.STAFF,
+        "EVENT_MANAGER_ROLE": CyberValleyUser.CREATOR,
+    }
+
+    revoked_role = role_mapping.get(event_data.role)
+    if revoked_role is None:
+        log.error("Unknown role %s", event_data.role)
+        return
+
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = CyberValleyUser.CUSTOMER
     user.save()
     Notification.objects.create(
         user=user,
         title="Role revoked",
-        body="Staff role was revoked",
+        body=f"{revoked_role} role was revoked",
     )
     admins = CyberValleyUser.objects.filter(
         role__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
