@@ -147,8 +147,18 @@ def _inject_imports_and_patch_fields(
     lines = content.split("\n")
     new_lines: list[str] = []
     imports_added = False
+    header_lines: list[str] = []
+    in_header = True
 
     for line in lines:
+        if in_header and (line.startswith("#") or not line.strip()):
+            header_lines.append(line)
+            continue
+
+        if in_header:
+            in_header = False
+            new_lines.extend(header_lines)
+
         if line.startswith("from __future__") and not imports_added:
             new_lines.append(line)
             new_lines.append("")
