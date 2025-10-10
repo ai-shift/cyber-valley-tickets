@@ -1,9 +1,8 @@
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
-import type { Placemark as PlacemarkType } from "../model/types.ts"
-import { Polygon } from "./components/polygon.tsx";
 import { truncateColorString } from "../lib/colorTruncator.ts";
+import type { Placemark as PlacemarkType } from "../model/types.ts";
+import { Polygon } from "./components/polygon.tsx";
 import { Polyline } from "./components/polyline.tsx";
-
 
 type PlacemarkProps = {
   placemark: PlacemarkType;
