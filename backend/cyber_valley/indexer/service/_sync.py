@@ -203,8 +203,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
 
     cid = _multihash2cid(event_data)
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
-        data = client.get_json(cid)
-        socials = client.get_json(data["socials"])
+        socials = client.get_json(cid)
 
     with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
