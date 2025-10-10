@@ -10,13 +10,13 @@ import {
   EventsListPage,
   HomePage,
   LoginPage,
-  ShamanVerification,
   ManagePage,
   ManagePlacesPage,
   ManageStaffPage,
   NotificationsPage,
   Page404,
   PurchasePage,
+  ShamanVerificationPage,
   SocialsPage,
   UpdatePlacePage,
 } from "@/pages";
@@ -85,7 +85,7 @@ export const Router = () => {
               <Route path="/socials" element={<SocialsPage />} />
             </Route>
           </Route>
-          <Route path="verify" element={<ShamanVerification />}/>
+          <Route path="verify" element={<ShamanVerificationPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
