@@ -86,6 +86,11 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
 **Tasks**:
 1. **Add new `VerifiedShaman` role** (~4 hours)
     - [ ] @naqerl Back-end role enumeration and migration (1h)
+    - [ ] @naqerl Update smart contract (2h)
+        - [ ] Role & granting
+        - [ ] Event place request rework
+        - [ ] Add smart contract tests
+        - [ ] Update indexer
     - [ ] @redmoor Update role-based permissions and views (1h)
     - [ ] @redmoor Migrate `Manage` page from OldMaster's event place to VerifiedShaman (2h)
 2. **Implement Telegram bot verification flow** (~12 hours)
@@ -93,7 +98,6 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
     - [ ] @naqerl Implement web form upload endpoint (1h)
     - [ ] @naqerl Verification request workflow with approval/decline (4h)
     - [ ] @naqerl LocalProvider notification and decision system (3h)
-    - [ ] @naqerl Database integration for role granting (2h)
 
 ## Map Integration
 
