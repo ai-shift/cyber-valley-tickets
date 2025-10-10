@@ -10,6 +10,31 @@ from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 from .patches import validate_digest, validate_role
 
 
+class NewEventPlaceRequest(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    id: int
+    requester: str
+    max_tickets: int = Field(..., alias="maxTickets")
+    min_tickets: int = Field(..., alias="minTickets")
+    min_price: int = Field(..., alias="minPrice")
+    days_before_cancel: int = Field(..., alias="daysBeforeCancel")
+    min_days: int = Field(..., alias="minDays")
+    available: bool = Field(..., alias="available")
+    digest: Annotated[str, BeforeValidator(validate_digest)]
+    hash_function: int = Field(..., alias="hashFunction")
+    size: int
+
+
+class EventPlaceStatusChanged(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    event_place_id: int = Field(..., alias="eventPlaceId")
+    status: int
+
+
 class EventPlaceUpdated(BaseModel):
     model_config = ConfigDict(
         frozen=True,
