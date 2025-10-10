@@ -5,11 +5,11 @@
 #
 # To modify this file:
 #   1. Update the Solidity contract and recompile
-#   2. For field-specific patches (validators), edit:
-#      cyber_valley/indexer/management/commands/generate_types.py (FIELD_PATCHES)
+#   2. For field-specific patches (validators), edit `FIELD_PATCHES` at
+#      `cyber_valley/indexer/management/commands/generate_types.py`
 #   3. For custom validators, edit:
 #      cyber_valley/indexer/service/events/patches.py
-#   4. Then regenerate with: python manage.py generate_types
+#   4. Then regenerate with: make -C backend gen-types
 #
 # See: cyber_valley/indexer/service/events/README.md for details
 #
