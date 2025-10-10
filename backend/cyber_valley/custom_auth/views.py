@@ -3,7 +3,7 @@ import hmac
 import logging
 import secrets
 import time
-from typing import Any
+from typing import Any, assert_never
 
 from django.conf import settings
 from rest_framework import status
@@ -157,37 +157,24 @@ def submit_application(request: Request) -> Response:
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    if application_type == ApplicationType.INDIVIDUAL:
-        individual_serializer = IndividualApplicationSerializer(data=request.data)
-        if not individual_serializer.is_valid():
-            return Response(
-                individual_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        log.info("=" * 80)
-        log.info("NEW INDIVIDUAL APPLICATION")
-        log.info("KTP: %s", individual_serializer.validated_data["ktp"])
-        log.info("=" * 80)
-
-    else:
-        business_serializer = BusinessApplicationSerializer(data=request.data)
-        if not business_serializer.is_valid():
-            return Response(
-                business_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        log.info("=" * 80)
-        log.info("NEW BUSINESS APPLICATION")
-        log.info("Director ID: %s", business_serializer.validated_data["director_id"])
-        akta = business_serializer.validated_data["akta"]
-        sk = business_serializer.validated_data["sk_kemenkumham"]
-        log.info("Akta: %s (%d bytes)", akta.name, akta.size)
-        log.info("SK Kemenkumham: %s (%d bytes)", sk.name, sk.size)
-        log.info("=" * 80)
+    match application_type:
+        case ApplicationType.INDIVIDUAL:
+            individual_serializer = IndividualApplicationSerializer(data=request.data)
+            if not individual_serializer.is_valid():
+                return Response(
+                    individual_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+        case ApplicationType.BUSINESS:
+            business_serializer = BusinessApplicationSerializer(data=request.data)
+            if not business_serializer.is_valid():
+                return Response(
+                    business_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+        case _:
+            assert_never(application_type)
 
     return Response(
         {
-            "success": True,
             "message": "Application received successfully",
             "application_type": application_type.value,
         },
