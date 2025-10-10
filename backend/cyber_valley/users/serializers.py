@@ -25,3 +25,9 @@ class UploadSocialsSerializer(serializers.ModelSerializer[UserSocials]):
     class Meta:
         model = UserSocials
         fields = ("network", "value")
+
+
+class SaveSocialsSerializer(serializers.ModelSerializer[UserSocials]):
+    class Meta:
+        model = UserSocials
+        fields = ("network", "value")
