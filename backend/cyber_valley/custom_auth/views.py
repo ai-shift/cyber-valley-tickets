@@ -12,8 +12,13 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import SMSVerification
-from .serializers import ApplicationSerializer, SendSMSSerializer, VerifyCodeSerializer
+from .models import ApplicationType, SMSVerification
+from .serializers import (
+    BusinessApplicationSerializer,
+    IndividualApplicationSerializer,
+    SendSMSSerializer,
+    VerifyCodeSerializer,
+)
 
 log = logging.getLogger(__name__)
 
@@ -135,35 +140,56 @@ def generate_auth_payload(phone_number: str) -> dict[str, Any]:
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
 def submit_application(request: Request) -> Response:
-    serializer = ApplicationSerializer(data=request.data)
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    application_type_str = request.data.get("application_type")
 
-    application_type = serializer.validated_data["application_type"]
+    if not application_type_str:
+        return Response(
+            {"error": "application_type is required"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-    log.info("=" * 80)
-    log.info("NEW APPLICATION RECEIVED")
-    log.info("=" * 80)
-    log.info("Application Type: %s", application_type)
+    try:
+        application_type = ApplicationType(application_type_str)
+    except ValueError:
+        valid_types = [t.value for t in ApplicationType]
+        return Response(
+            {"error": f"Invalid application_type. Must be one of: {valid_types}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-    if application_type == "individual":
-        log.info("KTP: %s", serializer.validated_data["ktp"])
+    if application_type == ApplicationType.INDIVIDUAL:
+        individual_serializer = IndividualApplicationSerializer(data=request.data)
+        if not individual_serializer.is_valid():
+            return Response(
+                individual_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        log.info("=" * 80)
+        log.info("NEW INDIVIDUAL APPLICATION")
+        log.info("KTP: %s", individual_serializer.validated_data["ktp"])
+        log.info("=" * 80)
+
     else:
-        log.info("Director ID: %s", serializer.validated_data["director_id"])
-        akta = serializer.validated_data.get("akta")
-        sk = serializer.validated_data.get("sk_kemenkumham")
-        if akta:
-            log.info("Akta file: %s (size: %d bytes)", akta.name, akta.size)
-        if sk:
-            log.info("SK Kemenkumham file: %s (size: %d bytes)", sk.name, sk.size)
+        business_serializer = BusinessApplicationSerializer(data=request.data)
+        if not business_serializer.is_valid():
+            return Response(
+                business_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
 
-    log.info("=" * 80)
+        log.info("=" * 80)
+        log.info("NEW BUSINESS APPLICATION")
+        log.info("Director ID: %s", business_serializer.validated_data["director_id"])
+        akta = business_serializer.validated_data["akta"]
+        sk = business_serializer.validated_data["sk_kemenkumham"]
+        log.info("Akta: %s (%d bytes)", akta.name, akta.size)
+        log.info("SK Kemenkumham: %s (%d bytes)", sk.name, sk.size)
+        log.info("=" * 80)
 
     return Response(
         {
             "success": True,
             "message": "Application received successfully",
-            "application_type": application_type,
+            "application_type": application_type.value,
         },
         status=status.HTTP_201_CREATED,
     )
