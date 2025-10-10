@@ -15,8 +15,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
     bytes32 public constant LOCAL_PROVIDER_ROLE = keccak256("LOCAL_PROVIDER_ROLE");
+    bytes32 public constant VERIFIED_SHAMAN_ROLE = keccak256("VERIFIED_SHAMAN_ROLE");
+
+    enum EventPlaceStatus {
+        Submitted,
+        Approved,
+        Declined
+    }
 
     struct EventPlace {
+        address requester;
         address provider;
         uint16 maxTickets;
         uint16 minTickets;
@@ -24,6 +32,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 daysBeforeCancel;
         uint8 minDays;
         bool available;
+        EventPlaceStatus status;
         CyberValley.Multihash meta;
     }
 
@@ -47,6 +56,20 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         CyberValley.Multihash meta;
     }
 
+    event NewEventPlaceRequest(
+        uint256 id,
+        address requester,
+        uint16 maxTickets,
+        uint16 minTickets,
+        uint16 minPrice,
+        uint8 daysBeforeCancel,
+        uint8 minDays,
+        bool available,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
+    );
+    event EventPlaceStatusChanged(uint256 eventPlaceId, EventPlaceStatus status);
     event EventPlaceUpdated(
         address provider,
         uint256 eventPlaceId,
@@ -134,7 +157,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         masterShare = share;
     }
 
-    function createEventPlace(
+    function submitEventPlaceRequest(
         uint16 _maxTickets,
         uint16 _minTickets,
         uint16 _minPrice,
@@ -144,27 +167,29 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
-    ) external onlyRole(LOCAL_PROVIDER_ROLE) {
+    ) external onlyRole(VERIFIED_SHAMAN_ROLE) {
         CyberValley.Multihash memory meta = CyberValley.Multihash({
             digest: digest,
             hashFunction: hashFunction,
             size: size
         });
         EventPlace memory place = EventPlace({
-            provider: msg.sender,
+            requester: msg.sender,
+            provider: address(0),
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
             daysBeforeCancel: _daysBeforeCancel,
             minDays: _minDays,
             available: _available,
+            status: EventPlaceStatus.Submitted,
             meta: meta
         });
         _validateEventPlace(place);
         eventPlaces.push(place);
-        emit EventPlaceUpdated(
-            msg.sender,
+        emit NewEventPlaceRequest(
             eventPlaces.length - 1,
+            msg.sender,
             _maxTickets,
             _minTickets,
             _minPrice,
@@ -175,6 +200,33 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             hashFunction,
             size
         );
+    }
+
+    function approveEventPlace(
+        uint256 eventPlaceId
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) {
+        require(eventPlaceId < eventPlaces.length, "EventPlace does not exist");
+        EventPlace storage place = eventPlaces[eventPlaceId];
+        require(
+            place.status == EventPlaceStatus.Submitted,
+            "EventPlace status differs from submitted"
+        );
+        place.status = EventPlaceStatus.Approved;
+        place.provider = msg.sender;
+        emit EventPlaceStatusChanged(eventPlaceId, place.status);
+    }
+
+    function declineEventPlace(
+        uint256 eventPlaceId
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) {
+        require(eventPlaceId < eventPlaces.length, "EventPlace does not exist");
+        EventPlace storage place = eventPlaces[eventPlaceId];
+        require(
+            place.status == EventPlaceStatus.Submitted,
+            "EventPlace status differs from submitted"
+        );
+        place.status = EventPlaceStatus.Declined;
+        emit EventPlaceStatusChanged(eventPlaceId, place.status);
     }
 
     function updateEventPlace(
@@ -190,23 +242,29 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 size
     ) external onlyRole(LOCAL_PROVIDER_ROLE) {
         require(eventPlaceId < eventPlaces.length, "eventPlaceId should exist");
-        CyberValley.Multihash memory meta = CyberValley.Multihash({
+        EventPlace storage place = eventPlaces[eventPlaceId];
+        require(
+            place.provider == msg.sender,
+            "Given event place belongs to another provider"
+        );
+        require(
+            place.status == EventPlaceStatus.Approved,
+            "EventPlace must be approved to be updated"
+        );
+        
+        place.maxTickets = _maxTickets;
+        place.minTickets = _minTickets;
+        place.minPrice = _minPrice;
+        place.daysBeforeCancel = _daysBeforeCancel;
+        place.minDays = _minDays;
+        place.available = _available;
+        place.meta = CyberValley.Multihash({
             digest: digest,
             hashFunction: hashFunction,
             size: size
         });
-        EventPlace memory place = EventPlace({
-            provider: msg.sender,
-            maxTickets: _maxTickets,
-            minTickets: _minTickets,
-            minPrice: _minPrice,
-            daysBeforeCancel: _daysBeforeCancel,
-            minDays: _minDays,
-            available: _available,
-            meta: meta
-        });
+        
         _validateEventPlace(place);
-        eventPlaces[eventPlaceId] = place;
         emit EventPlaceUpdated(
             msg.sender,
             eventPlaceId,
@@ -385,6 +443,14 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     function validateEvent(Event storage evt) internal view {
         EventPlace storage place = eventPlaces[evt.eventPlaceId];
         require(evt.status <= EventStatus.Approved, "Event is not available");
+        require(
+            place.status == EventPlaceStatus.Approved,
+            "EventPlace must be approved"
+        );
+        require(
+            place.available,
+            "EventPlace is not available"
+        );
         require(
             place.minPrice <= evt.ticketPrice,
             "Ticket price is less than allowed"
