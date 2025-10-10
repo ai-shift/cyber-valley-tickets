@@ -20,6 +20,14 @@ from .events import CyberValleyEventManager, CyberValleyEventTicket
 
 log = logging.getLogger(__name__)
 
+ROLE_MAPPING: dict[str, str] = {
+    "MASTER_ROLE": CyberValleyUser.MASTER,
+    "LOCAL_PROVIDER_ROLE": CyberValleyUser.LOCAL_PROVIDER,
+    "VERIFIED_SHAMAN_ROLE": CyberValleyUser.VERIFIED_SHAMAN,
+    "STAFF_ROLE": CyberValleyUser.STAFF,
+    "EVENT_MANAGER_ROLE": CyberValleyUser.CREATOR,
+}
+
 
 @dataclass
 class UnknownEventError(Exception):
@@ -302,15 +310,7 @@ def _sync_role_granted(
     if event_data.role == "DEFAULT_ADMIN_ROLE":
         return
 
-    role_mapping = {
-        "MASTER_ROLE": CyberValleyUser.MASTER,
-        "LOCAL_PROVIDER_ROLE": CyberValleyUser.LOCAL_PROVIDER,
-        "VERIFIED_SHAMAN_ROLE": CyberValleyUser.VERIFIED_SHAMAN,
-        "STAFF_ROLE": CyberValleyUser.STAFF,
-        "EVENT_MANAGER_ROLE": CyberValleyUser.CREATOR,
-    }
-
-    user_role = role_mapping.get(event_data.role)
+    user_role = ROLE_MAPPING.get(event_data.role)
     if user_role is None:
         msg = f"Unknown role {event_data.role} in RoleGranted event"
         raise ValueError(msg)
@@ -346,15 +346,7 @@ def _sync_role_revoked(
     event_data: CyberValleyEventManager.RoleRevoked
     | CyberValleyEventTicket.RoleRevoked,
 ) -> None:
-    role_mapping = {
-        "MASTER_ROLE": CyberValleyUser.MASTER,
-        "LOCAL_PROVIDER_ROLE": CyberValleyUser.LOCAL_PROVIDER,
-        "VERIFIED_SHAMAN_ROLE": CyberValleyUser.VERIFIED_SHAMAN,
-        "STAFF_ROLE": CyberValleyUser.STAFF,
-        "EVENT_MANAGER_ROLE": CyberValleyUser.CREATOR,
-    }
-
-    revoked_role = role_mapping.get(event_data.role)
+    revoked_role = ROLE_MAPPING.get(event_data.role)
     if revoked_role is None:
         msg = f"Unknown role {event_data.role} in RoleRevoked event"
         raise ValueError(msg)

@@ -399,6 +399,26 @@ def test_sync_ticket_redeemed_ticket_not_found() -> None:
         _sync_ticket_redeemed(event_data)
 
 
+def test_role_mapping_covers_all_user_roles() -> None:
+    from cyber_valley.indexer.service._sync import ROLE_MAPPING
+
+    mapped_roles = set(ROLE_MAPPING.values())
+    all_user_roles = {
+        UserType.CUSTOMER,
+        UserType.STAFF,
+        UserType.CREATOR,
+        UserType.LOCAL_PROVIDER,
+        UserType.VERIFIED_SHAMAN,
+        UserType.MASTER,
+    }
+
+    unmapped_roles = all_user_roles - mapped_roles - {UserType.CUSTOMER}
+
+    assert not unmapped_roles, (
+        f"The following user roles are not covered by ROLE_MAPPING: {unmapped_roles}"
+    )
+
+
 @dataclass
 class Multihash:
     digest: HexBytes
