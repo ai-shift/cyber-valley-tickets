@@ -79,6 +79,26 @@ export type Event = {
 };
 
 // Method argument types
+export type SubmitEventPlaceRequestArgs = {
+  maxTickets: BigNumberish;
+  minTickets: BigNumberish;
+  minPrice: BigNumberish;
+  daysBeforeCancel: BigNumberish;
+  minDays: BigNumberish;
+  available: boolean;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
+};
+
+export type ApproveEventPlaceArgs = {
+  eventPlaceId: BigNumberish;
+};
+
+export type DeclineEventPlaceArgs = {
+  eventPlaceId: BigNumberish;
+};
+
 export type ApproveEventArgs = {
   eventId: BigNumberish;
 };
@@ -143,21 +163,9 @@ export type CancelEventArgs = {
 
 // Conversion functions
 
-export const approveEventArgsToArray = (
-  args: ApproveEventArgs,
-): Parameters<CyberValleyEventManager["approveEvent"]> => {
-  return [args.eventId];
-};
-
-export const declineEventArgsToArray = (
-  args: DeclineEventArgs,
-): Parameters<CyberValleyEventManager["declineEvent"]> => {
-  return [args.eventId];
-};
-
-export const createEventPlaceArgsToArray = (
-  args: CreateEventPlaceArgs,
-): Parameters<CyberValleyEventManager["createEventPlace"]> => {
+export const submitEventPlaceRequestArgsToArray = (
+  args: SubmitEventPlaceRequestArgs,
+): Parameters<CyberValleyEventManager["submitEventPlaceRequest"]> => {
   return [
     args.maxTickets,
     args.minTickets,
@@ -169,6 +177,30 @@ export const createEventPlaceArgsToArray = (
     args.hashFunction,
     args.size,
   ];
+};
+
+export const approveEventPlaceArgsToArray = (
+  args: ApproveEventPlaceArgs,
+): Parameters<CyberValleyEventManager["approveEventPlace"]> => {
+  return [args.eventPlaceId];
+};
+
+export const declineEventPlaceArgsToArray = (
+  args: DeclineEventPlaceArgs,
+): Parameters<CyberValleyEventManager["declineEventPlace"]> => {
+  return [args.eventPlaceId];
+};
+
+export const approveEventArgsToArray = (
+  args: ApproveEventArgs,
+): Parameters<CyberValleyEventManager["approveEvent"]> => {
+  return [args.eventId];
+};
+
+export const declineEventArgsToArray = (
+  args: DeclineEventArgs,
+): Parameters<CyberValleyEventManager["declineEvent"]> => {
+  return [args.eventId];
 };
 
 export const submitEventRequestArgsToArray = (

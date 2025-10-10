@@ -27,20 +27,25 @@ import {
 } from "./data";
 import type {
   ApproveEventArgs,
+  ApproveEventPlaceArgs,
   CancelEventArgs,
   CloseEventArgs,
   CreateEventPlaceArgs,
+  DeclineEventPlaceArgs,
   Event,
   NewEventRequestEvent,
+  SubmitEventPlaceRequestArgs,
   SubmitEventRequestArgs,
   UpdateEventPlaceArgs,
 } from "./types";
 
 import {
   approveEventArgsToArray,
+  approveEventPlaceArgsToArray,
   cancelEventArgsToArray,
   closeEventArgsToArray,
-  createEventPlaceArgsToArray,
+  declineEventPlaceArgsToArray,
+  submitEventPlaceRequestArgsToArray,
   submitEventRequestArgsToArray,
   updateEventPlaceArgsToArray,
 } from "./types";
@@ -52,6 +57,7 @@ export type ContractsFixture = {
   owner: Signer;
   master: Signer;
   localProvider: Signer;
+  verifiedShaman: Signer;
   creator: Signer;
   staff: Signer;
 };
@@ -74,7 +80,7 @@ const loadFixture = blockchainRestoreDisabled
 export { loadFixture };
 
 export async function deployContract(): Promise<ContractsFixture> {
-  const [owner, master, localProvider, creator, staff] =
+  const [owner, master, localProvider, verifiedShaman, creator, staff] =
     await ethers.getSigners();
   const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
@@ -103,6 +109,10 @@ export async function deployContract(): Promise<ContractsFixture> {
   await eventManager
     .connect(master)
     .grantLocalProvider(await localProvider.getAddress(), 100);
+  const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
+  await eventManager
+    .connect(master)
+    .grantRole(VERIFIED_SHAMAN_ROLE, await verifiedShaman.getAddress());
   return {
     ERC20,
     eventManager,
@@ -110,18 +120,19 @@ export async function deployContract(): Promise<ContractsFixture> {
     owner,
     master,
     localProvider,
+    verifiedShaman,
     creator,
     staff,
   };
 }
 
-export async function createEventPlace(
+export async function submitEventPlaceRequest(
   eventManager: CyberValleyEventManager,
-  localProvider: Signer,
-  patch?: Partial<CreateEventPlaceArgs>,
+  verifiedShaman: Signer,
+  patch?: Partial<SubmitEventPlaceRequestArgs>,
 ): Promise<{ eventPlaceId: BigNumberish; tx: ContractTransactionResponse }> {
-  const tx = await eventManager.connect(localProvider).createEventPlace(
-    ...createEventPlaceArgsToArray({
+  const tx = await eventManager.connect(verifiedShaman).submitEventPlaceRequest(
+    ...submitEventPlaceRequestArgsToArray({
       ...defaultCreateEventPlaceRequest,
       ...patch,
     }),
@@ -130,17 +141,54 @@ export async function createEventPlace(
   assert(receipt != null);
   const event = receipt.logs
     .filter((e): e is EventLog => "fragment" in e && "args" in e)
-    .find((e) => e.fragment?.name === "EventPlaceUpdated");
-  assert(event != null, "EventPlaceUpdated wasn't emitted");
-  return { tx, eventPlaceId: event.args.eventPlaceId };
+    .find((e) => e.fragment?.name === "NewEventPlaceRequest");
+  assert(event != null, "NewEventPlaceRequest wasn't emitted");
+  return { tx, eventPlaceId: event.args.id };
+}
+
+export async function approveEventPlace(
+  eventManager: CyberValleyEventManager,
+  localProvider: Signer,
+  request: ApproveEventPlaceArgs,
+) {
+  return await eventManager
+    .connect(localProvider)
+    .approveEventPlace(...approveEventPlaceArgsToArray(request));
+}
+
+export async function declineEventPlace(
+  eventManager: CyberValleyEventManager,
+  localProvider: Signer,
+  request: DeclineEventPlaceArgs,
+) {
+  return await eventManager
+    .connect(localProvider)
+    .declineEventPlace(...declineEventPlaceArgsToArray(request));
+}
+
+export async function createEventPlace(
+  eventManager: CyberValleyEventManager,
+  verifiedShaman: Signer,
+  localProvider: Signer,
+  patch?: Partial<SubmitEventPlaceRequestArgs>,
+): Promise<{ eventPlaceId: BigNumberish; tx: ContractTransactionResponse }> {
+  const { eventPlaceId, tx } = await submitEventPlaceRequest(
+    eventManager,
+    verifiedShaman,
+    patch,
+  );
+  await approveEventPlace(eventManager, localProvider, { eventPlaceId });
+  return { tx, eventPlaceId };
 }
 
 export async function createValidEventPlace(
   eventManager: CyberValleyEventManager,
+  verifiedShaman: Signer,
   localProvider: Signer,
 ): ReturnType<typeof createEventPlace> {
   return await createEventPlace(
     eventManager,
+    verifiedShaman,
     localProvider,
     defaultCreateEventPlaceRequest,
   );
@@ -158,11 +206,13 @@ export async function updateEventPlace(
 
 export async function createAndUpdateEventPlace(
   eventManager: CyberValleyEventManager,
+  verifiedShaman: Signer,
   localProvider: Signer,
   request: Partial<UpdateEventPlaceArgs>,
 ) {
   const { eventPlaceId } = await createValidEventPlace(
     eventManager,
+    verifiedShaman,
     localProvider,
   );
   return await updateEventPlace(eventManager, localProvider, {
@@ -175,6 +225,7 @@ export async function createAndUpdateEventPlace(
 export async function createEvent(
   eventManager: CyberValleyEventManager,
   ERC20: SimpleERC20Xylose,
+  verifiedShaman: Signer,
   localProvider: Signer,
   creator: Signer,
   eventPlacePatch: Partial<CreateEventPlaceArgs>,
@@ -195,6 +246,7 @@ export async function createEvent(
   // Create event place
   const { eventPlaceId } = await createEventPlace(
     eventManager,
+    verifiedShaman,
     localProvider,
     eventPlacePatch,
   );
@@ -270,6 +322,7 @@ export async function closeEvent(
 export async function createAndCloseEvent(
   eventManager: CyberValleyEventManager,
   ERC20: SimpleERC20Xylose,
+  verifiedShaman: Signer,
   localProvider: Signer,
   creator: Signer,
   patch: Partial<CloseEventArgs>,
@@ -277,6 +330,7 @@ export async function createAndCloseEvent(
   const { tx: createEventTx, eventId } = await createEvent(
     eventManager,
     ERC20,
+    verifiedShaman,
     localProvider,
     creator,
     {},
@@ -309,6 +363,7 @@ export async function cancelEvent(
 export async function createAndCancelEvent(
   eventManager: CyberValleyEventManager,
   ERC20: SimpleERC20Xylose,
+  verifiedShaman: Signer,
   localProvider: Signer,
   creator: Signer,
   patch: Partial<CancelEventArgs>,
@@ -316,6 +371,7 @@ export async function createAndCancelEvent(
   const { tx: createEventTx, eventId } = await createEvent(
     eventManager,
     ERC20,
+    verifiedShaman,
     localProvider,
     creator,
     {},
@@ -375,6 +431,23 @@ export function itExpectsOnlyLocalProvider<
         "AccessControlUnauthorizedAccount",
       )
       .withArgs(await owner.getAddress(), localProviderRole);
+  });
+}
+
+export function itExpectsOnlyVerifiedShaman<
+  K extends keyof CyberValleyEventManager,
+>(methodName: K, request: Parameters<CyberValleyEventManager[K]>) {
+  it(`${String(methodName)} allowed only to verified shaman`, async () => {
+    const { eventManager, owner } = await loadFixture(deployContract);
+    const method = eventManager[methodName];
+    assert(method != null);
+    const verifiedShamanRole = await eventManager.VERIFIED_SHAMAN_ROLE();
+    await expect(method.apply(eventManager, request))
+      .to.be.revertedWithCustomError(
+        eventManager,
+        "AccessControlUnauthorizedAccount",
+      )
+      .withArgs(await owner.getAddress(), verifiedShamanRole);
   });
 }
 
