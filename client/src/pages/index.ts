@@ -6,7 +6,7 @@ export { EventsDetailsPage } from "./events/details";
 export { EditEventPage } from "./events/edit";
 export { NotificationsPage } from "./notifications";
 export { ManagePage } from "./manage";
-export { ShamanVerification } from "./shaman-verificatrion"
+export { ShamanVerificationPage } from "./shaman-verificatrion";
 export { ManagePlacesPage } from "./manage/place";
 export { CreatePlacePage } from "./manage/place/create";
 export { UpdatePlacePage } from "./manage/place/update";
