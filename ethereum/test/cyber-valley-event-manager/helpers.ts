@@ -348,12 +348,16 @@ export function itExpectsOnlyMaster<K extends keyof CyberValleyEventManager>(
   request: Parameters<CyberValleyEventManager[K]>,
 ) {
   it(`${String(methodName)} allowed only to master`, async () => {
-    const { eventManager } = await loadFixture(deployContract);
+    const { eventManager, owner } = await loadFixture(deployContract);
     const method = eventManager[methodName];
     assert(method != null);
-    await expect(method.apply(eventManager, request)).to.be.revertedWith(
-      "Must have master role",
-    );
+    const masterRole = await eventManager.MASTER_ROLE();
+    await expect(method.apply(eventManager, request))
+      .to.be.revertedWithCustomError(
+        eventManager,
+        "AccessControlUnauthorizedAccount",
+      )
+      .withArgs(await owner.getAddress(), masterRole);
   });
 }
 
@@ -361,12 +365,16 @@ export function itExpectsOnlyLocalProvider<
   K extends keyof CyberValleyEventManager,
 >(methodName: K, request: Parameters<CyberValleyEventManager[K]>) {
   it(`${String(methodName)} allowed only to local provider`, async () => {
-    const { eventManager } = await loadFixture(deployContract);
+    const { eventManager, owner } = await loadFixture(deployContract);
     const method = eventManager[methodName];
     assert(method != null);
-    await expect(method.apply(eventManager, request)).to.be.revertedWith(
-      "Must have local provider role",
-    );
+    const localProviderRole = await eventManager.LOCAL_PROVIDER_ROLE();
+    await expect(method.apply(eventManager, request))
+      .to.be.revertedWithCustomError(
+        eventManager,
+        "AccessControlUnauthorizedAccount",
+      )
+      .withArgs(await owner.getAddress(), localProviderRole);
   });
 }
 

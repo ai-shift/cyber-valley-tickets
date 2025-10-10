@@ -88,23 +88,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     CyberValleyEventTicket public eventTicketContract;
 
     address public master;
-    // TODO: Make it changeable & add to Event struct
     uint256 public eventRequestPrice;
     uint8 public masterShare;
 
     EventPlace[] public eventPlaces;
     Event[] public events;
     mapping(address => uint8) public localProviderShare;
-
-    modifier onlyMaster() {
-        require(hasRole(MASTER_ROLE, msg.sender), "Must have master role");
-        _;
-    }
-
-    modifier onlyLocalProvider() {
-        require(hasRole(LOCAL_PROVIDER_ROLE, msg.sender), "Must have local provider role");
-        _;
-    }
 
     modifier onlyExistingEvent(uint256 eventId) {
         require(eventId < events.length, "Event with given id does not exist");
@@ -127,19 +116,19 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _grantRole(MASTER_ROLE, _master);
     }
 
-    function grantLocalProvider(address eoa, uint8 share) external onlyMaster {
+    function grantLocalProvider(address eoa, uint8 share) external onlyRole(MASTER_ROLE) {
         require(share > 0, "share should be greater than 0");
         require(share <= 100, "share should be less or eqaul to 100 ");
         localProviderShare[eoa] = share;
         _grantRole(LOCAL_PROVIDER_ROLE, eoa);
     }
 
-    function revokeLocalProvider(address eoa) external onlyMaster {
+    function revokeLocalProvider(address eoa) external onlyRole(MASTER_ROLE) {
         delete localProviderShare[eoa];
         _revokeRole(LOCAL_PROVIDER_ROLE, eoa);
     }
 
-    function setMasterShare(uint8 share) external onlyMaster {
+    function setMasterShare(uint8 share) external onlyRole(MASTER_ROLE) {
         require(share > 0, "share should be greater than 0");
         require(share <= 100, "share should be less or equal to 100");
         masterShare = share;
@@ -155,7 +144,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
-    ) external onlyLocalProvider {
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) {
         CyberValley.Multihash memory meta = CyberValley.Multihash({
             digest: digest,
             hashFunction: hashFunction,
@@ -199,7 +188,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
-    ) external onlyLocalProvider {
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) {
         require(eventPlaceId < eventPlaces.length, "eventPlaceId should exist");
         CyberValley.Multihash memory meta = CyberValley.Multihash({
             digest: digest,
@@ -306,7 +295,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function approveEvent(
         uint256 eventId
-    ) external onlyLocalProvider onlyExistingEvent(eventId) {
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProvider(evt.eventPlaceId);
         require(
@@ -324,7 +313,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function declineEvent(
         uint256 eventId
-    ) external onlyLocalProvider onlyExistingEvent(eventId) {
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProvider(evt.eventPlaceId);
         require(
@@ -353,7 +342,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
-    ) external onlyLocalProvider onlyExistingEvent(eventId) {
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProvider(evt.eventPlaceId);
         bool realloc = evt.eventPlaceId != eventPlaceId ||
@@ -460,7 +449,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function closeEvent(
         uint256 eventId
-    ) external onlyLocalProvider onlyExistingEvent(eventId) {
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProvider(evt.eventPlaceId);
         require(
@@ -480,7 +469,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function cancelEvent(
         uint256 eventId
-    ) external onlyLocalProvider onlyExistingEvent(eventId) {
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProvider(evt.eventPlaceId);
         require(
