@@ -15,7 +15,7 @@ export const CompanyForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
       <FileField
         label="KTP or passport director/authorized person (if applicable)"
         file={ktpFile}
