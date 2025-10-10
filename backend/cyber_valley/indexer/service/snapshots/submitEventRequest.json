@@ -1,137 +1,49 @@
 {
   "events_by_type": {
-    "CyberValleyEventManager.EventPlaceUpdated": [
+    "CyberValleyEventManager.EventPlaceStatusChanged": [
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 30,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 2,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 5,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       },
       {
-        "available": true,
-        "daysBeforeCancel": 1,
-        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
-        "hashFunction": 18,
-        "maxTickets": 100,
-        "minDays": 1,
-        "minPrice": 20,
-        "minTickets": 50,
-        "size": 32
+        "status": 1
       }
     ],
     "CyberValleyEventManager.EventStatusChanged": [
@@ -148,9 +60,154 @@
         "status": 1
       }
     ],
+    "CyberValleyEventManager.NewEventPlaceRequest": [
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 30,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 2,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 5,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      }
+    ],
     "CyberValleyEventManager.NewEventRequest": [
       {
-        "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "creator": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "daysAmount": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
@@ -161,7 +218,7 @@
         "ticketPrice": 20
       },
       {
-        "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "creator": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "daysAmount": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
@@ -172,7 +229,7 @@
         "ticketPrice": 20
       },
       {
-        "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "creator": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "daysAmount": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
@@ -183,7 +240,7 @@
         "ticketPrice": 20
       },
       {
-        "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "creator": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "daysAmount": 4,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
@@ -194,7 +251,7 @@
         "ticketPrice": 20
       },
       {
-        "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "creator": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "daysAmount": 4,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
@@ -205,7 +262,7 @@
         "ticketPrice": 20
       },
       {
-        "creator": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "creator": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "daysAmount": 4,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
@@ -605,67 +662,67 @@
     ],
     "SimpleERC20Xylose.Approval": [
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x9A676e781A523b5d0C0e43731313A708CB607508",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
         "value": 100
       },
       {
-        "owner": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
         "value": 100
       }
@@ -673,101 +730,101 @@
     "SimpleERC20Xylose.Transfer": [
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
-        "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "to": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
-        "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "to": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
-        "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "to": "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
-        "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "to": "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
-        "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "to": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       },
       {
-        "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "to": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
         "value": 100
       },
       {
         "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "value": 100
       }
     ]
   },
-  "events_count": 129,
+  "events_count": 140,
   "test_name": "submitEventRequest"
 }

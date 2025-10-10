@@ -211,10 +211,22 @@ def _assert_events_match_snapshot(
         )
 
 
-def test_create_event_place(events_factory: EventsFactory) -> None:
-    events = events_factory("createEventPlace")
-    snapshot = _load_snapshot("createEventPlace")
-    _assert_events_match_snapshot("createEventPlace", events, snapshot)
+def test_submit_event_place_request(events_factory: EventsFactory) -> None:
+    events = events_factory("submitEventPlaceRequest")
+    snapshot = _load_snapshot("submitEventPlaceRequest")
+    _assert_events_match_snapshot("submitEventPlaceRequest", events, snapshot)
+
+
+def test_approve_event_place(events_factory: EventsFactory) -> None:
+    events = events_factory("approveEventPlace")
+    snapshot = _load_snapshot("approveEventPlace")
+    _assert_events_match_snapshot("approveEventPlace", events, snapshot)
+
+
+def test_decline_event_place(events_factory: EventsFactory) -> None:
+    events = events_factory("declineEventPlace")
+    snapshot = _load_snapshot("declineEventPlace")
+    _assert_events_match_snapshot("declineEventPlace", events, snapshot)
 
 
 def test_update_event_place(events_factory: EventsFactory) -> None:
