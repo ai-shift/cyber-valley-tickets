@@ -84,14 +84,10 @@ def events_factory(w3: Web3, run_hardhat_test: HardhatTestRunner) -> EventsFacto
                 print(f"Topics: {topics}")
                 try:
                     event = indexer.parse_log(log, _get_all_contracts(w3)).unwrap()
-                    event_class = event.__class__
-                    print(
-                        f"✓ Successfully parsed as: "
-                        f"{event_class.__module__}.{event_class.__name__}"
-                    )
                     events.append(event)
                 except Exception as e:
                     print(f"✗ Failed to parse: {type(e).__name__}: {e}")
+                    raise
             return events
 
     return inner

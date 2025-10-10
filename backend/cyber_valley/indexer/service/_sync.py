@@ -313,8 +313,8 @@ def _sync_role_granted(
 
     user_role = role_mapping.get(event_data.role)
     if user_role is None:
-        log.error("Unknown role %s", event_data.role)
-        return
+        msg = f"Unknown role {event_data.role} in RoleGranted event"
+        raise ValueError(msg)
 
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = user_role
@@ -357,8 +357,8 @@ def _sync_role_revoked(
 
     revoked_role = role_mapping.get(event_data.role)
     if revoked_role is None:
-        log.error("Unknown role %s", event_data.role)
-        return
+        msg = f"Unknown role {event_data.role} in RoleRevoked event"
+        raise ValueError(msg)
 
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = CyberValleyUser.CUSTOMER
