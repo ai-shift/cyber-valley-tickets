@@ -6,11 +6,15 @@ import time
 from typing import Any, assert_never
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from rest_framework import status
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from cyber_valley.users.models import UserSocials
 
 from .models import ApplicationType, SMSVerification
 from .serializers import (
@@ -139,7 +143,19 @@ def generate_auth_payload(phone_number: str) -> dict[str, Any]:
 
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
+@permission_classes([IsAuthenticated])
 def submit_application(request: Request) -> Response:
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+
+    if not UserSocials.objects.filter(
+        user=user, network=UserSocials.Network.TELEGRAM
+    ).exists():
+        return Response(
+            {"error": "Telegram social is required to submit an application"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     application_type_str = request.data.get("application_type")
 
     if not application_type_str:

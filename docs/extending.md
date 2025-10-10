@@ -95,7 +95,7 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
     - [ ] @redmoor Migrate `Manage` page from OldMaster's event place to VerifiedShaman (2h)
 2. **Implement Telegram bot verification flow** (~12 hours)
     - [ ] @redmoor Document upload web form (2h)
-    - [ ] @naqerl Implement web form upload endpoint (1h)
+    - [x] @naqerl Implement web form upload endpoint (1h)
     - [ ] @naqerl Verification request workflow with approval/decline (4h)
     - [ ] @naqerl LocalProvider notification and decision system (3h)
 
