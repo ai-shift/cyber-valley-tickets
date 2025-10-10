@@ -1,17 +1,21 @@
 import hashlib
 import hmac
+import logging
 import secrets
 import time
 from typing import Any
 
 from django.conf import settings
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import SMSVerification
-from .serializers import SendSMSSerializer, VerifyCodeSerializer
+from .serializers import ApplicationSerializer, SendSMSSerializer, VerifyCodeSerializer
+
+log = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
@@ -126,3 +130,40 @@ def generate_auth_payload(phone_number: str) -> dict[str, Any]:
         "phoneNumber": phone_number,
         "timestamp": timestamp,
     }
+
+
+@api_view(["POST"])
+@parser_classes([MultiPartParser])
+def submit_application(request: Request) -> Response:
+    serializer = ApplicationSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    application_type = serializer.validated_data["application_type"]
+
+    log.info("=" * 80)
+    log.info("NEW APPLICATION RECEIVED")
+    log.info("=" * 80)
+    log.info("Application Type: %s", application_type)
+
+    if application_type == "individual":
+        log.info("KTP: %s", serializer.validated_data["ktp"])
+    else:
+        log.info("Director ID: %s", serializer.validated_data["director_id"])
+        akta = serializer.validated_data.get("akta")
+        sk = serializer.validated_data.get("sk_kemenkumham")
+        if akta:
+            log.info("Akta file: %s (size: %d bytes)", akta.name, akta.size)
+        if sk:
+            log.info("SK Kemenkumham file: %s (size: %d bytes)", sk.name, sk.size)
+
+    log.info("=" * 80)
+
+    return Response(
+        {
+            "success": True,
+            "message": "Application received successfully",
+            "application_type": application_type,
+        },
+        status=status.HTTP_201_CREATED,
+    )
