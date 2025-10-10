@@ -1,49 +1,36 @@
 import {
-  AdvancedMarker,
   Map as GMap,
   InfoWindow,
+  useMap,
 } from "@vis.gl/react-google-maps";
 import { useState } from "react";
-import { Polygon } from "../ui/components/polygon.tsx";
-import { Polyline } from "../ui/components/polyline.tsx";
 
 import type { Placemark as PlacemarkType } from "../model/types.ts";
 
 import { findApproximatePolygonCenter } from "../lib/approximateCenter.ts";
-import { truncateColorString } from "../lib/colorTruncator.ts";
 import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
 
-import bpn_data from "@/data/geodata/bpn_data.json";
-import bridge from "@/data/geodata/bridge.json";
-import districts from "@/data/geodata/districts.json";
-import dots from "@/data/geodata/dots.json";
-import leasehold from "@/data/geodata/leasehold.json";
-import lots from "@/data/geodata/lots.json";
-import objects from "@/data/geodata/objects.json";
-import paths from "@/data/geodata/paths.json";
-import regions from "@/data/geodata/regions.json";
+import { geodata } from "../data/data.ts"
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/shared/ui/sheet.tsx";
+import { Placemark } from "./Placemark.tsx";
 
-const geodata = {
-  "Bpn data": bpn_data,
-  Bridge: bridge,
-  Districts: districts,
-  Dots: dots,
-  Leasehold: leasehold,
-  Lots: lots,
-  Objects: objects,
-  Path: paths,
-  Regions: regions,
-};
-
-type GeodataKeys = keyof typeof geodata;
+type GeodataKey = keyof typeof geodata;
 
 export const EbaliMap: React.FC = () => {
-  const [displayed, setDisplayed] = useState<GeodataKeys[]>([]);
+  const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
 
   const [selectedId, setSelectedId] = useState("");
   const [selectedPlacemark, setSelectedPlacemark] =
     useState<PlacemarkType | null>(null);
   const [infoWindowShown, setInfoWindowShown] = useState(false);
+
+  const displayGroupHandler = (value: GeodataKey,) => {
+    if (displayedGroups.includes(value)) {
+      setDisplayedGroups((prev) => prev.filter((el) => el !== value));
+    } else {
+      setDisplayedGroups((prev) => [...prev, value as GeodataKey]);
+    }
+  }
 
   const onPlacemarkClick = (placemark: PlacemarkType) => {
     const id = extractPlacemarkId(placemark);
@@ -78,27 +65,8 @@ export const EbaliMap: React.FC = () => {
 
   return (
     <div>
-      <div className="flex flex-col py-3">
-        {Object.keys(geodata).map((key) => (
-          <label key={key} className="flex gap-3 text-xl">
-            <input
-              type="checkbox"
-              checked={displayed.includes(key as GeodataKeys)}
-              onChange={() => {
-                if (displayed.includes(key as GeodataKeys)) {
-                  setDisplayed((prev) => prev.filter((el) => el !== key));
-                } else {
-                  setDisplayed((prev) => [...prev, key as GeodataKeys]);
-                }
-              }}
-            />
-            {key}
-          </label>
-        ))}
-      </div>
-
       <GMap
-        style={{ width: "full", height: "500px" }}
+        style={{ width: "full", height: "50dvh" }}
         mapId="fb99876bf33e90419a932304"
         defaultCenter={{ lat: -8.2980705, lng: 115.088186 }}
         defaultZoom={16}
@@ -107,7 +75,27 @@ export const EbaliMap: React.FC = () => {
         colorScheme="DARK"
         disableDefaultUI
       >
-        {displayed.map((layer) =>
+        <Sheet>
+          <SheetTrigger>
+            <div className="absolute top-3 right-3 aspect-square h-10 rounded-full bg-primary" />
+          </SheetTrigger>
+          <SheetContent side="left" aria-describedby={undefined}>
+            <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
+            <div className="h-full overflow-y-auto px-4">
+            {
+              Object.keys(geodata).map((group) =>
+                <PlacemarkGroup
+                  key={group}
+                  value={group}
+                  isDisplayed={displayedGroups.includes(group as GeodataKey)}
+                  setDisplayed={() => displayGroupHandler(group as GeodataKey)}
+                  placemarks={geodata[group as GeodataKey] as PlacemarkType[]}
+                />)
+            }
+            </div>
+          </SheetContent>
+        </Sheet>
+        {displayedGroups.map((layer) =>
           geodata[layer].map((placemark, idx) => (
             <Placemark
               onClick={(placemark) => onPlacemarkClick(placemark)}
@@ -131,41 +119,33 @@ export const EbaliMap: React.FC = () => {
   );
 };
 
-type PlacemarkProps = {
-  placemark: PlacemarkType;
-  onClick: (placemark: PlacemarkType) => void;
-};
+type PlacemarkGroupProps = {
+  isDisplayed: boolean;
+  value: string;
+  setDisplayed: (groupName: string) => void;
+  placemarks: PlacemarkType[];
+}
 
-const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
-  const clickHandler = () => onClick(placemark);
-  switch (placemark.type) {
-    case "point":
-      return (
-        <AdvancedMarker onClick={clickHandler} position={placemark.coordinates}>
-          <img
-            src={placemark.iconUrl}
-            alt={`${placemark.name} marker`}
-            width={32}
-            height={32}
-          />
-        </AdvancedMarker>
-      );
-    case "polygon":
-      return (
-        <Polygon
-          onClick={clickHandler}
-          paths={placemark.coordinates}
-          fillColor={truncateColorString(placemark.polygon_color)}
-          strokeColor={truncateColorString(placemark.line_color)}
+export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({ value, isDisplayed, setDisplayed, placemarks }) => {
+  return (
+    <div>
+      <label className="flex gap-3 text-xl">
+        <input
+          type="checkbox"
+          checked={isDisplayed}
+          onChange={() => setDisplayed(value)}
         />
-      );
-    case "line":
-      return (
-        <Polyline
-          onClick={clickHandler}
-          path={placemark.coordinates}
-          strokeColor={truncateColorString(placemark.line_color)}
-        />
-      );
-  }
-};
+        {value}
+      </label>
+      {isDisplayed &&
+        <div className="flex flex-col items-start">
+          {placemarks.map((placemark, idx) =>
+            <button key={`${placemark.name}-${idx}`}>
+              <p className="text-lg">{placemark.name}</p>
+            </button>
+          )}
+        </div>
+      }
+    </div>
+  )
+}
