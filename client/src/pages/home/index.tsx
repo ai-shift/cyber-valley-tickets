@@ -5,6 +5,8 @@ import { EventsList, uniteFilter } from "@/features/events-list/";
 import { NotificationIcon } from "@/features/notifications";
 import { Button } from "@/shared/ui/button";
 
+import { EbaliMap } from "@/features/map";
+
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthSlice();
@@ -26,6 +28,7 @@ export const HomePage: React.FC = () => {
       >
         Become SHAMAN
       </Button>
+      <EbaliMap />
       <section className="mt-8">
         <EventsList filterFn={uniteFilter} />
       </section>
