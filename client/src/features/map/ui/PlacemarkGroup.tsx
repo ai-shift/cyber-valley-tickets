@@ -1,6 +1,6 @@
+import { useMap } from "@vis.gl/react-google-maps";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
-import type { Placemark } from "../model/types.ts"
-import { useMap } from "@vis.gl/react-google-maps"
+import type { Placemark } from "../model/types.ts";
 
 type PlacemarkGroupProps = {
   isDisplayed: boolean;

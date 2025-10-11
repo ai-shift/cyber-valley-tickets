@@ -16,6 +16,7 @@ import {
   NotificationsPage,
   Page404,
   PurchasePage,
+  ShamanVerificationPage,
   SocialsPage,
   UpdatePlacePage,
 } from "@/pages";
@@ -92,6 +93,7 @@ export const Router = () => {
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<Page404 />} />
+            <Route path="verify" element={<ShamanVerificationPage />} />
           </Routes>
         </GoogleMapsProvider>
       </QueryProvider>
