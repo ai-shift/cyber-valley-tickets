@@ -1,9 +1,8 @@
-import { Map as GMap, InfoWindow, useMap } from "@vis.gl/react-google-maps";
+import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
 import { useState } from "react";
 
 import type { Placemark as PlacemarkType } from "../model/types.ts";
 
-import { findApproximatePolygonCenter } from "../lib/approximateCenter.ts";
 import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
 
 import {
@@ -14,19 +13,10 @@ import {
 } from "@/shared/ui/sheet.tsx";
 import { geodata } from "../data/data.ts";
 import { Placemark } from "./Placemark.tsx";
+import { PlacemarkGroup } from "./PlacemarkGroup.tsx";
+import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 
 type GeodataKey = keyof typeof geodata;
-
-const getPlacemarkPosition = (mark: PlacemarkType) => {
-  switch (mark.type) {
-    case "point":
-      return mark.coordinates;
-    case "polygon":
-      return findApproximatePolygonCenter(mark.coordinates);
-    case "line":
-      return mark.coordinates[Math.floor(mark.coordinates.length / 2)];
-  }
-};
 
 export const EbaliMap: React.FC = () => {
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
@@ -84,17 +74,23 @@ export const EbaliMap: React.FC = () => {
           <SheetContent side="left" aria-describedby={undefined}>
             <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
             <div className="h-full overflow-y-auto px-4">
-              {Object.keys(geodata).map((group) => (
-                <PlacemarkGroup
-                  key={group}
-                  value={group}
-                  isDisplayed={displayedGroups.includes(group as GeodataKey)}
-                  setDisplayed={() => displayGroupHandler(group as GeodataKey)}
-                  placemarks={geodata[group as GeodataKey] as PlacemarkType[]}
-                  showInfo={showPlacemarkInfo}
-                  closeGroups={() => setShowGroups(false)}
-                />
-              ))}
+              {Object.keys(geodata).map((group) => {
+                const placemarks = geodata[group as GeodataKey] as PlacemarkType[];
+                if (placemarks.length > 0) {
+                  return (
+                    <PlacemarkGroup
+                      key={group}
+                      value={group}
+                      isDisplayed={displayedGroups.includes(group as GeodataKey)}
+                      setDisplayed={() => displayGroupHandler(group as GeodataKey)}
+                      placemarks={placemarks}
+                      showInfo={showPlacemarkInfo}
+                      closeGroups={() => setShowGroups(false)}
+                    />
+                  )
+                }
+              }
+              )}
             </div>
           </SheetContent>
         </Sheet>
@@ -118,66 +114,6 @@ export const EbaliMap: React.FC = () => {
           </InfoWindow>
         )}
       </GMap>
-    </div>
-  );
-};
-
-type PlacemarkGroupProps = {
-  isDisplayed: boolean;
-  value: string;
-  setDisplayed: (groupName: string) => void;
-  placemarks: PlacemarkType[];
-  showInfo: (placemark: PlacemarkType) => void;
-  closeGroups: () => void;
-};
-
-export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({
-  value,
-  isDisplayed,
-  setDisplayed,
-  placemarks,
-  showInfo,
-  closeGroups,
-}) => {
-  const map = useMap();
-
-  const handleClick = (placemark: PlacemarkType) => {
-    if (!map) {
-      return;
-    }
-    const coordinates = getPlacemarkPosition(placemark);
-    if (!coordinates) {
-      return;
-    }
-    map.panTo(coordinates);
-    map.setZoom(18);
-    showInfo(placemark);
-    closeGroups();
-  };
-
-  return (
-    <div>
-      <label className="flex gap-3 text-xl">
-        <input
-          type="checkbox"
-          checked={isDisplayed}
-          onChange={() => setDisplayed(value)}
-        />
-        {value}
-      </label>
-      {isDisplayed && (
-        <div className="flex flex-col items-start">
-          {placemarks.map((placemark, idx) => (
-            <button
-              type="button"
-              key={`${placemark.name}-${idx}`}
-              onClick={() => handleClick(placemark)}
-            >
-              <p className="text-lg">{placemark.name}</p>
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
