@@ -1,6 +1,7 @@
 import { useMap } from "@vis.gl/react-google-maps";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import type { Placemark } from "../model/types.ts";
+import { getThumbUrl } from "../lib/getThumbUrl.ts";
 
 type PlacemarkGroupProps = {
   isDisplayed: boolean;
@@ -50,9 +51,11 @@ export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({
           {placemarks.map((placemark, idx) => (
             <button
               type="button"
+              className="flex gap-1 items-center justify-center"
               key={`${placemark.name}-${idx}`}
               onClick={() => handleClick(placemark)}
             >
+              <img className="aspect-square h-6" alt={placemark.name} src={getThumbUrl(placemark)}/>
               <p className="text-lg">{placemark.name}</p>
             </button>
           ))}
