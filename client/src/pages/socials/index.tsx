@@ -1,23 +1,19 @@
-import { Navigate, useNavigate } from "react-router";
-
-import { type Socials, useOrderStore } from "@/entities/order";
 import { SocialsForm } from "@/features/socials-form";
 import { PageContainer } from "@/shared/ui/PageContainer";
+import { Socials } from "@/entities/socials";
+import { useAuthSlice } from "@/app/providers";
 
 export const SocialsPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { order, setSocials } = useOrderStore();
-
-  if (!order?.type) return <Navigate to="/events" />;
+  const {user} = useAuthSlice()
 
   function handleSubmit(socials: Socials) {
-    setSocials(socials);
-    navigate("/purchase");
+    // FIXME: ADD fetch call when ready
+    console.log(socials)
   }
 
   return (
     <PageContainer name="Socials">
-      <SocialsForm existingSocials={order.socials} onSubmit={handleSubmit} />
+      <SocialsForm onSubmit={handleSubmit} existingSocials={user.socials} />
     </PageContainer>
   );
 };
