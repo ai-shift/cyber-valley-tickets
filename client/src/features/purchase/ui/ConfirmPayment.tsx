@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { purchase } from "../api/purchase";
+import { useAuthSlice } from "@/app/providers";
 
 export type ConfirmPaymentProps = {
   order: Order;
@@ -15,12 +16,14 @@ export type ConfirmPaymentProps = {
 
 export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   const navigate = useNavigate();
-  const [isSuccess, setIsSuccess] = useState(false);
   const account = useActiveAccount();
+  const { user } = useAuthSlice();
   const { sendTx, data: txHash, error } = useSendTx();
+  const [isSuccess, setIsSuccess] = useState(false);
+
   if (!account) return <p>Failed to connect wallet</p>;
   const { mutate, isPending } = useMutation({
-    mutationFn: (order: Order) => purchase(sendTx, account, order),
+    mutationFn: (order: Order) => purchase(sendTx, account, order, user.socials),
     onSuccess: () => {
       setIsSuccess(true);
     },
