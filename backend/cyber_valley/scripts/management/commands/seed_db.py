@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.indexer.models import LastProcessedBlock, LogProcessingError
 from cyber_valley.notifications.models import Notification
-from cyber_valley.users.models import CyberValleyUser
+from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 
 class Command(BaseCommand):
@@ -36,6 +36,7 @@ class Command(BaseCommand):
             Ticket.objects.all().delete()
             Event.objects.all().delete()
             EventPlace.objects.all().delete()
+            UserSocials.objects.all().delete()
             CyberValleyUser.objects.all().delete()
             LastProcessedBlock.objects.all().delete()
             LogProcessingError.objects.all().delete()
@@ -55,7 +56,7 @@ class Command(BaseCommand):
             ),
         ]
         with transaction.atomic():
-            for address, role in users:
+            for idx, (address, role) in enumerate(users):
                 u = CyberValleyUser.objects.create(
                     address=address,
                     role=role,
@@ -63,5 +64,26 @@ class Command(BaseCommand):
                 )
                 Token.objects.create(user=u, key=address)
                 self.stdout.write(f"Created {role} user: {address}")
+
+                # Add socials for master (2 socials) and first customer (1 social)
+                if role == CyberValleyUser.MASTER:
+                    UserSocials.objects.create(
+                        user=u,
+                        network=UserSocials.Network.TELEGRAM,
+                        value="@cybervalley_master",
+                    )
+                    UserSocials.objects.create(
+                        user=u,
+                        network=UserSocials.Network.DISCORD,
+                        value="cybervalley#1234",
+                    )
+                    self.stdout.write("  Added 2 socials for master user")
+                elif role == CyberValleyUser.CUSTOMER and idx == 1:
+                    UserSocials.objects.create(
+                        user=u,
+                        network=UserSocials.Network.TELEGRAM,
+                        value="@first_customer",
+                    )
+                    self.stdout.write("  Added 1 social for first customer")
 
         self.stdout.write(self.style.SUCCESS("Database seeding complete."))
