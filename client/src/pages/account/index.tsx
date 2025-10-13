@@ -19,7 +19,7 @@ import { useActiveAccount } from "thirdweb/react";
 
 export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
-  const { logout: signOut } = useAuthSlice();
+  const { logout: signOut, user } = useAuthSlice();
   const account = useActiveAccount();
   const { data: tokenBalance, isLoading: isLoadingBalance } = useTokenBalance();
   const queryClient = useQueryClient();
@@ -78,8 +78,16 @@ export const AccountPage: React.FC = () => {
         </div>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <div className="flex flex-col gap-4">
-            <Button filling="outline" type="button" onClick={() => navigate("/socials")}>
-              Socials
+            { user?.socials[0] && <div>
+              <h3 className="capitalize font-semibold text-lg">{user.socials[0].network}:</h3>
+              <p className="italic">{user.socials[0].value}</p>
+            </div>}
+            <Button
+              filling="outline"
+              type="button"
+              onClick={() => navigate("/socials")}
+            >
+             {user?.socials[0] ? "Update" : "Set"} socials
             </Button>
             <Button
               className="mt-8"
