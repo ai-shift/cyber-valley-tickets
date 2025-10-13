@@ -3,7 +3,7 @@ import type { User } from "@/entities/user";
 import { getUnixTime } from "date-fns";
 
 export const uniteFilter = (event: Event, user: User) => {
-  if (user.role === "master") return true;
+  if (user.role === "localprovider") return true;
   if (event.creator.address === user.address) return true;
   return event.status === "approved";
 };
@@ -20,7 +20,7 @@ export const myEventsFilter = (
     upcoming: isUpcoming(user),
   };
 
-  if (user.role === "master") {
+  if (user.role === "localprovider") {
     return mapper[option](event);
   }
 
@@ -44,7 +44,7 @@ const isUpcoming = (user: User) => (event: Event) => {
   }
   if (
     event.status === "submitted" &&
-    (user.role === "master" || user.address === event.creator.address)
+    (user.role === "localprovider" || user.address === event.creator.address)
   ) {
     return true;
   }

@@ -1,28 +1,27 @@
-import { useStaffState } from "@/entities/staff";
+import { useLocalproviderState } from "@/entities/localprovider";
 import { useSendTx } from "@/shared/hooks";
-import { removeStaff } from "@/shared/lib/web3";
+import { removeRevokeLocalProvider } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 
-type RemoveStaffIconProps = {
-  staffAddress: string;
+type RemoveLocalproviderBtnProps = {
+  localproviderAddress: string;
 };
 
-// TODO: Rename, it's a button, not a simple icon
-export const RemoveStaffIcon: React.FC<RemoveStaffIconProps> = ({
-  staffAddress,
+export const RemoveLocalproviderBtn: React.FC<RemoveLocalproviderBtnProps> = ({
+  localproviderAddress,
 }) => {
   const account = useActiveAccount();
   const [isOpen, setIsOpen] = useState(false);
   const { sendTx, error, isLoading, data: txHash } = useSendTx();
-  const { optimisticRemoveStaff } = useStaffState();
+  const { optimisticRemoveLocalprovider } = useLocalproviderState();
   async function deleteHandler() {
     if (!account) throw new Error("Account should be connected");
     sendTx(
-      removeStaff(account, staffAddress).then(() =>
-        optimisticRemoveStaff(staffAddress),
+      removeRevokeLocalProvider(account, localproviderAddress).then(() =>
+        optimisticRemoveLocalprovider(localproviderAddress),
       ),
     );
   }
@@ -51,7 +50,7 @@ export const RemoveStaffIcon: React.FC<RemoveStaffIconProps> = ({
         open={isOpen}
         setOpen={setIsOpen}
         title="Transaction sent!"
-        body={"Staff role will be removed soon."}
+        body={"Localprovider role will be removed soon."}
         onConfirm={() => {
           setIsOpen(false);
         }}

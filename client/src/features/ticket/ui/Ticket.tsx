@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useActiveAccount } from "thirdweb/react";
 import { useOrderStore } from "@/entities/order";
+import { checkPermission } from "@/shared/lib/RBAC";
 import { Button } from "@/shared/ui/button";
 import { hasEnoughtTokens } from "@/shared/lib/web3";
 
@@ -49,7 +50,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
     navigate("/purchase");
   }
 
-  if (user.role === "master" || user.role === "staff")
+  if (checkPermission(user.role, "ticket:redeem"))
     return <Redeem eventId={event.id} />;
   if (isCreator) return null;
   return (

@@ -16,8 +16,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import CyberValleyUser
-from .serializers import CurrentUserSerializer, StaffSerializer, UploadSocialsSerializer
+from .models import CyberValleyUser, UserSocials
+from .serializers import (
+    CurrentUserSerializer,
+    SaveSocialsSerializer,
+    StaffSerializer,
+    UploadSocialsSerializer,
+)
 
 User = get_user_model()
 
@@ -45,6 +50,16 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
         serializer = CurrentUserSerializer(staff, many=True)
         return Response(serializer.data)
 
+    @extend_schema(responses=CurrentUserSerializer(many=True))
+    @action(detail=False, methods=["get"], name="Local Providers")
+    def local_providers(self, request: Request) -> Response:
+        assert request.user.is_authenticated
+        if request.user.role != CyberValleyUser.MASTER:
+            return Response("Available only to master", status=401)
+        local_providers = User.objects.filter(role=CyberValleyUser.LOCAL_PROVIDER)
+        serializer = CurrentUserSerializer(local_providers, many=True)
+        return Response(serializer.data)
+
 
 @extend_schema(
     request=UploadSocialsSerializer,
@@ -67,3 +82,30 @@ def upload_user_socials_to_ipfs(request: Request) -> Response:
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_hash = client.add_json(socials.data)
     return Response({"cid": socials_hash})
+
+
+@extend_schema(
+    request=SaveSocialsSerializer,
+    responses={201: SaveSocialsSerializer},
+)
+@api_view(["POST"])
+@parser_classes([JSONParser])
+@permission_classes([IsAuthenticated])
+def save_user_socials(request: Request) -> Response:
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+
+    serializer = SaveSocialsSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    network = serializer.validated_data["network"]
+    value = serializer.validated_data["value"]
+
+    social, created = UserSocials.objects.update_or_create(
+        user=user, network=network, defaults={"value": value}
+    )
+
+    response_serializer = SaveSocialsSerializer(social)
+    status_code = 201 if created else 200
+
+    return Response(response_serializer.data, status=status_code)

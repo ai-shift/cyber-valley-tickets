@@ -10,6 +10,7 @@ import {
   EventsListPage,
   HomePage,
   LoginPage,
+  ManageLocalprovidersPage,
   ManagePage,
   ManagePlacesPage,
   ManageStaffPage,
@@ -60,10 +61,15 @@ export const Router = () => {
                 <Route element={<ProtectedRoute />}>
                   <Route
                     path="/manage"
-                    element={<RestrictedTo userRole="master" />}
+                    element={
+                      <RestrictedTo userRoles={["master", "localprovider"]} />
+                    }
                   >
                     <Route index element={<ManagePage />} />
-                    <Route path="/manage/place">
+                    <Route
+                      path="/manage/place"
+                      element={<RestrictedTo userRoles={["localprovider"]} />}
+                    >
                       <Route index element={<ManagePlacesPage />} />
                       <Route
                         path="/manage/place/create"
@@ -74,8 +80,17 @@ export const Router = () => {
                         element={<UpdatePlacePage />}
                       />
                     </Route>
-                    <Route path="/manage/staff">
+                    <Route
+                      path="/manage/staff"
+                      element={<RestrictedTo userRoles={["localprovider"]} />}
+                    >
                       <Route index element={<ManageStaffPage />} />
+                    </Route>
+                    <Route
+                      path="/manage/localproviders"
+                      element={<RestrictedTo userRoles={["master"]} />}
+                    >
+                      <Route index element={<ManageLocalprovidersPage />} />
                     </Route>
                   </Route>
 

@@ -2,7 +2,13 @@ import type { components } from "@/shared/api";
 
 export type Role = components["schemas"]["RoleEnum"];
 
-export type Resource = "*" | "event" | "place" | "ticket";
+export type Resource =
+  | "*"
+  | "event"
+  | "place"
+  | "ticket"
+  | "staff"
+  | "localprovider";
 export type Action =
   | "*"
   | "create"
@@ -33,21 +39,31 @@ export const RBAC_ROLES: RoleControl = {
     event: ["read", "create"],
     ticket: ["redeem"],
   },
-  master: {
+  localprovider: {
     "*": ["*"],
+  },
+  master: {
+    localprovider: ["create", "delete"],
   },
 };
 
 export type Permissions = `${Exclude<Resource, "*">}:${Exclude<Action, "*">}`;
 
-export function checkPermission(role: Role, permission: Permissions) {
-  const [source, action] = permission.split(":") as [Resource, Action];
+export function checkPermission(role: Role, ...permissions: Permissions[]) {
+  for (const permission in permissions) {
+    const [source, action] = permission.split(":") as [Resource, Action];
 
-  const rolePermissions = RBAC_ROLES[role];
-  if (!rolePermissions) return false;
+    const rolePermissions = RBAC_ROLES[role];
+    if (!rolePermissions) return false;
 
-  const permittedActions = rolePermissions["*"] || rolePermissions[source];
-  if (!permittedActions) return false;
+    const permittedActions = rolePermissions["*"] || rolePermissions[source];
+    if (!permittedActions) return false;
 
-  return permittedActions.includes("*") || permittedActions.includes(action);
+    if (
+      !(permittedActions.includes("*") || permittedActions.includes(action))
+    ) {
+      return false;
+    }
+  }
+  return true;
 }
