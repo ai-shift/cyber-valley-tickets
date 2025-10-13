@@ -31,7 +31,11 @@ from .events.views import (
     verify_ticket,
 )
 from .notifications.views import NotificationViewSet
-from .users.views import CurrentUserViewSet, upload_user_socials_to_ipfs
+from .users.views import (
+    CurrentUserViewSet,
+    save_user_socials,
+    upload_user_socials_to_ipfs,
+)
 from .web3_auth.views import login, logout, nonce, refresh, verify
 
 router = routers.DefaultRouter()
@@ -63,6 +67,7 @@ urlpatterns = [
     path("api/ipfs/places/meta", upload_place_meta_to_ipfs, name="ipfs-events"),
     path("api/ipfs/users/socials", upload_user_socials_to_ipfs, name="ipfs-socials"),
     path("api/ipfs/tickets/meta", upload_ticket_meta_to_ipfs, name="ipfs-tickets"),
+    path("api/users/socials", save_user_socials, name="save-socials"),
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/auth/web3/nonce/<str:address>", nonce, name="web3_nonce"),
     path("api/auth/verify", verify, name="jwt_verify"),
