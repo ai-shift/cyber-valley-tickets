@@ -37,6 +37,9 @@ class UnknownEventError(Exception):
 @safe
 def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
     match event_data:
+        case CyberValleyEventManager.NewEventPlaceRequest():
+            _sync_new_event_place_request(event_data)
+            log.info("New event place request")
         case CyberValleyEventManager.EventPlaceUpdated():
             _sync_event_place_updated(event_data)
             log.info("Event place updated")
@@ -152,6 +155,45 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
             user=user,
             title="Event updated",
             body=f"Title: {event.title}",
+        )
+
+
+@transaction.atomic
+def _sync_new_event_place_request(
+    event_data: CyberValleyEventManager.NewEventPlaceRequest,
+) -> None:
+    requester, _ = CyberValleyUser.objects.get_or_create(address=event_data.requester)
+
+    cid = _multihash2cid(event_data)
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        data = client.get_json(cid)
+
+    # Create event place in Submitted state (provider is not set yet)
+    place, created = EventPlace.objects.get_or_create(
+        id=event_data.id,
+        defaults={
+            "provider": None,
+            "title": data["title"],
+            "location_url": data["location_url"],
+            "max_tickets": event_data.max_tickets,
+            "min_tickets": event_data.min_tickets,
+            "min_price": event_data.min_price,
+            "min_days": event_data.min_days,
+            "days_before_cancel": event_data.days_before_cancel,
+            "available": event_data.available,
+        },
+    )
+
+    if created:
+        log.info(
+            "Event place request %s submitted by %s",
+            event_data.id,
+            event_data.requester,
+        )
+        Notification.objects.create(
+            user=requester,
+            title="Event place request submitted",
+            body=f"Title: {place.title}",
         )
 
 
