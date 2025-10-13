@@ -171,11 +171,22 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         {},
       );
+      const args = updateEventPlaceArgsToArray(defaultUpdateEventPlaceRequest);
       await expect(tx)
         .to.emit(eventManager, "EventPlaceUpdated")
         .withArgs(
           await localProvider.getAddress(),
-          ...updateEventPlaceArgsToArray(defaultUpdateEventPlaceRequest),
+          args[0], // eventPlaceId
+          args[1], // maxTickets
+          args[2], // minTickets
+          args[3], // minPrice
+          args[4], // daysBeforeCancel
+          args[5], // minDays
+          args[6], // available
+          1, // status (Approved)
+          args[7], // digest
+          args[8], // hashFunction
+          args[9], // size
         );
     });
 
