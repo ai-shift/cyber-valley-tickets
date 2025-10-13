@@ -3,11 +3,11 @@ import { Navigate, Outlet } from "react-router";
 import { useAuthSlice } from "../authProvider";
 
 type RestrictedToProps = {
-  userRole: Role;
+  userRoles: Role[];
 };
 
-export const RestrictedTo: React.FC<RestrictedToProps> = ({ userRole }) => {
+export const RestrictedTo: React.FC<RestrictedToProps> = ({ userRoles }) => {
   const { user } = useAuthSlice();
 
-  return userRole === user?.role ? <Outlet /> : <Navigate to="/" />;
+  return userRoles.includes(user?.role) ? <Outlet /> : <Navigate to="/" />;
 };
