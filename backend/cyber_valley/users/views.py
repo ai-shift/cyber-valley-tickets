@@ -50,6 +50,16 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
         serializer = CurrentUserSerializer(staff, many=True)
         return Response(serializer.data)
 
+    @extend_schema(responses=CurrentUserSerializer(many=True))
+    @action(detail=False, methods=["get"], name="Local Providers")
+    def local_providers(self, request: Request) -> Response:
+        assert request.user.is_authenticated
+        if request.user.role != CyberValleyUser.MASTER:
+            return Response("Available only to master", status=401)
+        local_providers = User.objects.filter(role=CyberValleyUser.LOCAL_PROVIDER)
+        serializer = CurrentUserSerializer(local_providers, many=True)
+        return Response(serializer.data)
+
 
 @extend_schema(
     request=UploadSocialsSerializer,
