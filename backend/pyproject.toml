@@ -104,6 +104,7 @@ allow_redefinition = true
 strict = true
 local_partial_types = true
 warn_unreachable = true
+exclude = ["geodata_scripts/"]
 plugins = [
   "mypy_django_plugin.main",
   "mypy_drf_plugin.main",
