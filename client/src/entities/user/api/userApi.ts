@@ -5,3 +5,7 @@ export const getCurrentUser = async () =>
 
 export const getUsersStaff = async () =>
   await apiClient.GET("/api/users/staff/");
+
+//FIXME: Pass an actual URL to local providers retrieval
+export const getUsersLocalproviders = async () =>
+  await apiClient.GET("/api/users/staff/");

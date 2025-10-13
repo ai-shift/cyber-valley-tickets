@@ -8,11 +8,11 @@ import { useActiveAccount } from "thirdweb/react";
 import { useOrderStore } from "@/entities/order";
 import { useNavigate } from "react-router";
 
+import { checkPermission } from "@/shared/lib/RBAC";
 import { Button } from "@/shared/ui/button";
 import { isEventPassed } from "../lib/eventPassed";
 import { Redeem } from "./Redeem";
 import { ShowTicket } from "./ShowTicket";
-import { checkPermission } from "@/shared/lib/RBAC";
 
 type TicketProps = {
   user: User;
