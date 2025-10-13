@@ -19,10 +19,13 @@
 from __future__ import annotations
 
 from typing import Annotated
+from pydantic import BeforeValidator
+from .patches import validate_digest
+from .patches import validate_role
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+from typing import Optional
 
-from .patches import validate_digest, validate_role
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Approval(BaseModel):
@@ -48,12 +51,8 @@ class RoleAdminChanged(BaseModel):
         frozen=True,
     )
     role: Annotated[str, BeforeValidator(validate_role)]
-    previous_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(
-        ..., alias="previousAdminRole"
-    )
-    new_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(
-        ..., alias="newAdminRole"
-    )
+    previous_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(..., alias="previousAdminRole")
+    new_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(..., alias="newAdminRole")
 
 
 class RoleGranted(BaseModel):
@@ -106,11 +105,13 @@ class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    approval: Approval | None = Field(None, alias="Approval")
-    approval_for_all: ApprovalForAll | None = Field(None, alias="ApprovalForAll")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
-    role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
-    role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
-    ticket_minted: TicketMinted | None = Field(None, alias="TicketMinted")
-    ticket_redeemed: TicketRedeemed | None = Field(None, alias="TicketRedeemed")
-    transfer: Transfer | None = Field(None, alias="Transfer")
+    approval: Optional[Approval] = Field(None, alias="Approval")
+    approval_for_all: Optional[ApprovalForAll] = Field(None, alias="ApprovalForAll")
+    role_admin_changed: Optional[RoleAdminChanged] = Field(
+        None, alias="RoleAdminChanged"
+    )
+    role_granted: Optional[RoleGranted] = Field(None, alias="RoleGranted")
+    role_revoked: Optional[RoleRevoked] = Field(None, alias="RoleRevoked")
+    ticket_minted: Optional[TicketMinted] = Field(None, alias="TicketMinted")
+    ticket_redeemed: Optional[TicketRedeemed] = Field(None, alias="TicketRedeemed")
+    transfer: Optional[Transfer] = Field(None, alias="Transfer")

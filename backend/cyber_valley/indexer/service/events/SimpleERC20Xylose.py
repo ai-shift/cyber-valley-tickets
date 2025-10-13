@@ -18,7 +18,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -45,8 +45,8 @@ class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    approval: Approval | None = Field(None, alias="Approval")
-    eip712_domain_changed: dict[str, Any] | None = Field(
+    approval: Optional[Approval] = Field(None, alias="Approval")
+    eip712_domain_changed: Optional[Dict[str, Any]] = Field(
         None, alias="EIP712DomainChanged"
     )
-    transfer: Transfer | None = Field(None, alias="Transfer")
+    transfer: Optional[Transfer] = Field(None, alias="Transfer")

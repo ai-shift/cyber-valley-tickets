@@ -109,7 +109,7 @@ describe("CyberValleyEventManager", () => {
       approveEventPlaceArgsToArray({ eventPlaceId: 0 }),
     );
 
-    it("emits EventPlaceStatusChanged", async () => {
+    it("emits EventPlaceUpdated", async () => {
       const { eventManager, verifiedShaman, localProvider } =
         await loadFixture(deployContract);
       const { eventPlaceId } = await submitEventPlaceRequest(
@@ -118,9 +118,7 @@ describe("CyberValleyEventManager", () => {
       );
       await expect(
         approveEventPlace(eventManager, localProvider, { eventPlaceId }),
-      )
-        .to.emit(eventManager, "EventPlaceStatusChanged")
-        .withArgs(eventPlaceId, 1);
+      ).to.emit(eventManager, "EventPlaceUpdated");
     });
 
     it("reverts on non-existing event place", async () => {
@@ -149,20 +147,6 @@ describe("CyberValleyEventManager", () => {
       "declineEventPlace",
       declineEventPlaceArgsToArray({ eventPlaceId: 0 }),
     );
-
-    it("emits EventPlaceStatusChanged", async () => {
-      const { eventManager, verifiedShaman, localProvider } =
-        await loadFixture(deployContract);
-      const { eventPlaceId } = await submitEventPlaceRequest(
-        eventManager,
-        verifiedShaman,
-      );
-      await expect(
-        declineEventPlace(eventManager, localProvider, { eventPlaceId }),
-      )
-        .to.emit(eventManager, "EventPlaceStatusChanged")
-        .withArgs(eventPlaceId, 2);
-    });
 
     it("reverts on non-existing event place", async () => {
       const { eventManager, localProvider } = await loadFixture(deployContract);
