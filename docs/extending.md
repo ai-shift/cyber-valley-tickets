@@ -29,6 +29,7 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
 3. **Implement LocalProvider management system** (~8 hours)
     - [x] @naqerl Back-end syncer for LocalProvider management (3h)
     - [ ] @redmoor Front-end LocalProvider management page (5h)
+    - [ ] @naqerl Back-end add an endpoint that returnes the list of LocalProviders
 
 ## Verified Shaman - New Role
 
