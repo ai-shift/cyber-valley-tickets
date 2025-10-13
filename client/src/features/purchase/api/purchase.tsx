@@ -62,7 +62,7 @@ const updateEvent = async (
   sendTx: SendTx<unknown>,
   account: Account,
   order: Order,
-  socials: Socials
+  socials: Socials,
 ) => {
   if (order.type !== "update_event")
     throw new Error("There is no event in the order");
@@ -137,7 +137,7 @@ const getSocialsCid = async (socials: Socials) => {
     body: {
       //@ts-ignore
       network: socials.type.toLocaleLowerCase(),
-      value: socials.contactInfo,
+      value: socials.value,
     },
   });
 };
@@ -153,7 +153,7 @@ const getTicketCid = async (socials: Socials, ticket: OrderTicket) => {
       socials: {
         //@ts-ignore
         network: order.socials.type.toLocaleLowerCase(),
-        value: socials.contactInfo,
+        value: socials.value,
       },
       eventid: ticket.eventId,
     },
