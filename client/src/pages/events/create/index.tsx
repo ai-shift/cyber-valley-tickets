@@ -11,7 +11,7 @@ export const CreateEventPage: React.FC = () => {
 
   function initOrderPurchase(order: EventDto) {
     setEventOrder(order);
-    navigate("/socials");
+    navigate("/purchase");
   }
 
   return (
