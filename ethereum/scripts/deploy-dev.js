@@ -34,12 +34,19 @@ async function main() {
   await eventTicket.setEventManagerAddress(await eventManager.getAddress());
 
   // Seed state
-  const [master, creatorSlave, completeSlave, _, localProvider] =
+  const [master, creatorSlave, completeSlave, verifiedShaman, localProvider] =
     await hre.ethers.getSigners();
   await eventManager.connect(master).setMasterShare(50);
   await eventManager
     .connect(master)
     .grantLocalProvider(localProvider.address, 100);
+
+  // Grant VERIFIED_SHAMAN_ROLE to verifiedShaman
+  const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
+  await eventManager
+    .connect(master)
+    .grantRole(VERIFIED_SHAMAN_ROLE, verifiedShaman.address);
+
   console.log(
     "master",
     master.address,
@@ -47,6 +54,8 @@ async function main() {
     creatorSlave.address,
     "completeSlave",
     completeSlave.address,
+    "verifiedShaman",
+    verifiedShaman.address,
   );
 
   // Create places
@@ -76,9 +85,11 @@ async function main() {
     }
     const result = await resp.json();
     const mh = getBytes32FromMultiash(result.cid);
-    await eventManager
-      .connect(localProvider)
-      .createEventPlace(
+
+    // Submit event place request as verified shaman
+    const submitTx = await eventManager
+      .connect(verifiedShaman)
+      .submitEventPlaceRequest(
         100,
         20,
         5,
@@ -89,7 +100,19 @@ async function main() {
         mh.hashFunction,
         mh.size,
       );
-    console.log("place created", "config", cfg, "multihash", mh);
+    const submitReceipt = await submitTx.wait();
+    const newEventPlaceRequestEvent = submitReceipt.logs
+      .filter((e) => e.fragment?.name === "NewEventPlaceRequest")
+      .find((e) => e);
+    if (!newEventPlaceRequestEvent) {
+      throw new Error("NewEventPlaceRequest event not found");
+    }
+    const eventPlaceId = newEventPlaceRequestEvent.args.id;
+
+    // Approve event place as local provider
+    await eventManager.connect(localProvider).approveEventPlace(eventPlaceId);
+
+    console.log("place created", "config", cfg, "multihash", mh, "id", eventPlaceId.toString());
   }
 
   // Submit event requests

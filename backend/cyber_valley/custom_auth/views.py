@@ -1,17 +1,30 @@
 import hashlib
 import hmac
+import logging
 import secrets
 import time
-from typing import Any
+from typing import Any, assert_never
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import SMSVerification
-from .serializers import SendSMSSerializer, VerifyCodeSerializer
+from cyber_valley.users.models import UserSocials
+
+from .models import ApplicationType, SMSVerification
+from .serializers import (
+    BusinessApplicationSerializer,
+    IndividualApplicationSerializer,
+    SendSMSSerializer,
+    VerifyCodeSerializer,
+)
+
+log = logging.getLogger(__name__)
 
 
 @api_view(["POST"])
@@ -126,3 +139,60 @@ def generate_auth_payload(phone_number: str) -> dict[str, Any]:
         "phoneNumber": phone_number,
         "timestamp": timestamp,
     }
+
+
+@api_view(["POST"])
+@parser_classes([MultiPartParser])
+@permission_classes([IsAuthenticated])
+def submit_application(request: Request) -> Response:
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+
+    if not UserSocials.objects.filter(
+        user=user, network=UserSocials.Network.TELEGRAM
+    ).exists():
+        return Response(
+            {"error": "Telegram social is required to submit an application"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    application_type_str = request.data.get("application_type")
+
+    if not application_type_str:
+        return Response(
+            {"error": "application_type is required"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        application_type = ApplicationType(application_type_str)
+    except ValueError:
+        valid_types = [t.value for t in ApplicationType]
+        return Response(
+            {"error": f"Invalid application_type. Must be one of: {valid_types}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    match application_type:
+        case ApplicationType.INDIVIDUAL:
+            individual_serializer = IndividualApplicationSerializer(data=request.data)
+            if not individual_serializer.is_valid():
+                return Response(
+                    individual_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+        case ApplicationType.BUSINESS:
+            business_serializer = BusinessApplicationSerializer(data=request.data)
+            if not business_serializer.is_valid():
+                return Response(
+                    business_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+        case _:
+            assert_never(application_type)
+
+    return Response(
+        {
+            "message": "Application received successfully",
+            "application_type": application_type.value,
+        },
+        status=status.HTTP_201_CREATED,
+    )

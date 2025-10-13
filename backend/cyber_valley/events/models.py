@@ -7,6 +7,12 @@ User = get_user_model()
 
 
 class EventPlace(models.Model):
+    STATUS_CHOICES: ClassVar[dict[int, str]] = {
+        0: "submitted",
+        1: "approved",
+        2: "declined",
+    }
+
     id = models.IntegerField(primary_key=True)
     provider = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="event_places", null=True
@@ -19,6 +25,9 @@ class EventPlace(models.Model):
     location_url = models.CharField()
     days_before_cancel = models.PositiveSmallIntegerField(null=False)
     available = models.BooleanField(null=False, default=True)
+    status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default="submitted", null=False
+    )
 
     def __str__(self) -> str:
         return (

@@ -71,3 +71,6 @@ podman-build:
 	test -n "$(BACKEND_IMAGE)" || exit 1
 	podman build --tag $(BACKEND_IMAGE) .
 	rm -rf ./ethereum_artifacts_temp
+
+gen-types:
+	uv run manage.py generate_types
