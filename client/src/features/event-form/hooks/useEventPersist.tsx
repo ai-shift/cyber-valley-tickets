@@ -43,10 +43,11 @@ export const useEventPersist = (
       JSON.stringify({ ...storedValues, ...cloneFormData }),
     );
   } else {
+    const imgToBig = formData.image.size > 3000000;
     getBase64(formData.image).then((data) => {
       localStorage.setItem(
         EVENT_LOCAL_KEY,
-        JSON.stringify({ ...formData, image: data }),
+        JSON.stringify({ ...formData, image: imgToBig ? "" : data }),
       );
     });
   }
