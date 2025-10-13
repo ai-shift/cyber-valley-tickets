@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RemoveLocalproviderBtn } from "./RemoveLocalproviderBtn";
 
 export const LocalproviderList: React.FC = () => {
-  const { data: users, isLoading, error } = useQuery(userQueries.staff());
+  const { data: users, isLoading, error } = useQuery(userQueries.localproviders());
   const { removedLocalprovider, addedLocalprovider } = useLocalproviderState();
 
   const addresses = users?.map((user) => user.address) ?? [];

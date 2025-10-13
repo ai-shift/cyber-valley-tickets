@@ -21,8 +21,8 @@ export const userQueries = {
     }),
   localproviders: () =>
     queryOptions({
-      queryKey: ["user", "list", "localprovicers"],
-      queryFn: getUsersLocalproviders(),
+      queryKey: ["user", "list", "localproviders"],
+      queryFn: getUsersLocalproviders,
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),
