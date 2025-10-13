@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
-import { ResultDialog } from "@/shared/ui/ResultDialog";
-import { useActiveAccount } from "thirdweb/react";
 import { useOrderStore } from "@/entities/order";
 import { checkPermission } from "@/shared/lib/RBAC";
-import { Button } from "@/shared/ui/button";
 import { hasEnoughtTokens } from "@/shared/lib/web3";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
+import { Button } from "@/shared/ui/button";
+import { useActiveAccount } from "thirdweb/react";
 
 import { isEventPassed } from "../lib/eventPassed";
 import { Redeem } from "./Redeem";

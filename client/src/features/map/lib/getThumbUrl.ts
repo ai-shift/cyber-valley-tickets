@@ -1,7 +1,7 @@
 import type { Placemark } from "../model/types.ts";
 import { swapBR } from "./colorTruncator.ts";
 
-const BASE_ICON_URL = "https://mt.googleapis.com/vt/icon/name=icons/onion/"
+const BASE_ICON_URL = "https://mt.googleapis.com/vt/icon/name=icons/onion/";
 
 export const getThumbUrl = (mark: Placemark) => {
   switch (mark.type) {
