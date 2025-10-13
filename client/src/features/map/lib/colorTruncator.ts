@@ -15,10 +15,10 @@ export function swapBR(kmlColor: string): string {
     throw new Error("Invalid KML color format (expected 8 hex chars).");
   }
 
-  const ops = kmlColor.substring(0,2);
+  const ops = kmlColor.substring(0, 2);
   const b = kmlColor.substring(2, 4);
   const g = kmlColor.substring(4, 6);
   const r = kmlColor.substring(6, 8);
 
-  return `${ops}${r}${g}${b}`
+  return `${ops}${r}${g}${b}`;
 }
