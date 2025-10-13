@@ -8,7 +8,8 @@ import {
 import type { Account } from "thirdweb/wallets";
 
 import type { EventDto } from "@/entities/event";
-import type { Order } from "@/entities/order";
+import type { Order, OrderTicket } from "@/entities/order";
+import type { Socials } from "@/entities/socials";
 import { cleanEventLocal } from "@/features/event-form";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
@@ -17,12 +18,14 @@ export const purchase = async (
   sendTx: SendTx<unknown>,
   account: Account,
   order: Order,
+  socials: Socials,
 ) => {
   const pickFetch: {
     [K in typeof order.type]: (
       sendTx: SendTx<unknown>,
       account: Account,
       order: Order,
+      socials: Socials,
     ) => Promise<void>;
   } = {
     create_event: createEvent,
@@ -30,18 +33,19 @@ export const purchase = async (
     update_event: updateEvent,
   };
 
-  await pickFetch[order.type](sendTx, account, order);
+  await pickFetch[order.type](sendTx, account, order, socials);
 };
 
 const purchaseTicket = async (
   sendTx: SendTx<unknown>,
   account: Account,
   order: Order,
+  socials: Socials,
 ) => {
   if (order.type !== "buy_ticket")
     throw new Error("There is no ticket in the order");
 
-  const { data } = await getTicketCid(order);
+  const { data } = await getTicketCid(socials, order.ticket);
 
   if (!data || !data.cid) throw new Error("Can't fetch CID");
 
@@ -58,11 +62,12 @@ const updateEvent = async (
   sendTx: SendTx<unknown>,
   account: Account,
   order: Order,
+  socials: Socials
 ) => {
   if (order.type !== "update_event")
     throw new Error("There is no event in the order");
 
-  const { data: socialsData } = await getSocialsCid(order);
+  const { data: socialsData } = await getSocialsCid(socials);
   if (!socialsData || !socialsData.cid) throw new Error("Can't fetch CID");
 
   const { data: eventData } = await getEventCid(order.event, socialsData.cid);
@@ -91,14 +96,15 @@ const createEvent = async (
   sendTx: SendTx<unknown>,
   account: Account,
   order: Order,
+  socials: Socials,
 ) => {
   if (order.type !== "create_event")
     throw new Error("There is no event in the order");
-  if (!order.socials) throw new Error("There is no socials in the order");
+  if (!socials) throw new Error("There is no socials in the order");
 
   const { place, ticketPrice, startTimeTimeStamp, daysAmount } = order.event;
 
-  const { data: socialsData } = await getSocialsCid(order);
+  const { data: socialsData } = await getSocialsCid(socials);
   if (!socialsData || !socialsData.cid) throw new Error("Can't fetch CID");
 
   const { data: eventData } = await getEventCid(order.event, socialsData.cid);
@@ -125,31 +131,31 @@ const createEvent = async (
   cleanEventLocal();
 };
 
-const getSocialsCid = async (order: Order) => {
-  if (!order.socials) throw new Error("There is no socials in the order");
+const getSocialsCid = async (socials: Socials) => {
+  if (!socials) throw new Error("There is no socials in the order");
   return await apiClient.PUT("/api/ipfs/users/socials", {
     body: {
       //@ts-ignore
-      network: order.socials.type.toLocaleLowerCase(),
-      value: order.socials.contactInfo,
+      network: socials.type.toLocaleLowerCase(),
+      value: socials.contactInfo,
     },
   });
 };
 
-const getTicketCid = async (order: Order) => {
-  if (!order.socials) throw new Error("There is no socials in the order");
-  if (!order.ticket)
+const getTicketCid = async (socials: Socials, ticket: OrderTicket) => {
+  if (!socials) throw new Error("There is no socials in the order");
+  if (!ticket)
     throw new Error(
-      `Unexpected order type in a ticket flow: ${JSON.stringify(order)}`,
+      `Unexpected order type in a ticket flow: ${JSON.stringify(ticket)}`,
     );
   return await apiClient.PUT("/api/ipfs/tickets/meta", {
     body: {
       socials: {
         //@ts-ignore
         network: order.socials.type.toLocaleLowerCase(),
-        value: order.socials.contactInfo,
+        value: socials.contactInfo,
       },
-      eventid: order.ticket.eventId,
+      eventid: ticket.eventId,
     },
   });
 };
