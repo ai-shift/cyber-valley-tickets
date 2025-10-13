@@ -1,2 +1,2 @@
-export type { Order, Socials, OrderTicket } from "./model/types";
+export type { Order, OrderTicket } from "./model/types";
 export { useOrderStore } from "./model/slice";
