@@ -1,4 +1,4 @@
-import type { components } from "@/shared/api/apiTypes";
+import type { NetworkEnum } from "@/entities/socials";
 import {
   Select,
   SelectContent,
@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 
-type NetworkEnum = components["schemas"]["NetworkEnum"];
 const networks: NetworkEnum[] = [
   "telegram",
   "whatsapp",

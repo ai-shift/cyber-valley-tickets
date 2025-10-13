@@ -1,7 +1,7 @@
-import type { Socials } from "@/entities/order";
+import type { Socials } from "@/entities/socials";
 import { type ZodType, z } from "zod";
 
 export const formSchema: ZodType<Socials> = z.object({
-  type: z.string().min(1, "Pick one of social networks"),
-  contactInfo: z.string().min(1, "Enter contact information"),
+  network: z.enum(["telegram", "whatsapp", "instagram", "discord"]),
+  value: z.string().min(1, "Enter contact information"),
 });

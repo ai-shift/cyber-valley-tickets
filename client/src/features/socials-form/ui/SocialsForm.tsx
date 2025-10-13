@@ -30,7 +30,7 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: existingSocials
       ? existingSocials
-      : { type: "", contactInfo: "" },
+      : { network: "telegram", value: "" },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -42,7 +42,7 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-10">
         <FormField
           control={form.control}
-          name="type"
+          name="network"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Network</FormLabel>
@@ -58,7 +58,7 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
         />
         <FormField
           control={form.control}
-          name="contactInfo"
+          name="value"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Contact information</FormLabel>
