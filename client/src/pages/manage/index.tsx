@@ -25,12 +25,12 @@ export const ManagePage: React.FC = () => {
           </>
         )}
         {user?.role === "master" && (
-            <Link
-              className="card border-primary/30 text-center text-xl py-5"
-              to="/manage/localproviders"
-            >
-              Manage local providers
-            </Link>
+          <Link
+            className="card border-primary/30 text-center text-xl py-5"
+            to="/manage/localproviders"
+          >
+            Manage local providers
+          </Link>
         )}
       </div>
     </PageContainer>
