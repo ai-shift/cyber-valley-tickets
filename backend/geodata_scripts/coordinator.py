@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 from pathlib import Path
 
 # --- Core Transformation Logic ---
@@ -129,7 +128,7 @@ def main():
 
     # Save the transformed JSON file
     try:
-        with open(args.output, "w", encoding="utf-8") as f:
+        with Path(args.output).open("w", encoding="utf-8") as f:
             json.dump(transformed_data, f, indent=2)
         print(f"\nCoordinate transformation complete. Output saved to: {args.output}")
     except Exception as e:
@@ -141,32 +140,40 @@ if __name__ == "__main__":
     # a dummy input JSON generation here for demonstration purposes only.
     DUMMY_INPUT_PATH = "dummy_input_for_transformer.json"
 
-    if not os.path.exists(DUMMY_INPUT_PATH):
+    if not Path(DUMMY_INPUT_PATH).exists():
         print(
-            f"Creating a dummy input JSON file '{DUMMY_INPUT_PATH}' for demonstration..."
+            f"Creating a dummy input JSON file '{DUMMY_INPUT_PATH}' "
+            "for demonstration..."
         )
         DUMMY_INPUT = [
             {
                 "name": "sinwood",
                 "type": "polygon",
-                "coordinates": "115.0893669,-8.3006452,0 115.0895493,-8.3007647,0 115.0897464,-8.3009399,0",
+                "coordinates": (
+                    "115.0893669,-8.3006452,0 115.0895493,-8.3007647,0 "
+                    "115.0897464,-8.3009399,0"
+                ),
                 "polygon_color": "24589d0f",
                 "line_color": "ff589d0f",
             },
             {
                 "name": "road",
                 "type": "line",
-                "coordinates": "115.090725,-8.3024748,0 115.090761,-8.3024598,0 115.090689,-8.3024878,0",
+                "coordinates": (
+                    "115.090725,-8.3024748,0 115.090761,-8.3024598,0 "
+                    "115.090689,-8.3024878,0"
+                ),
                 "line_color": "ff757575",
             },
             {
                 "name": "helipad",
                 "type": "point",
-                "coordinates": "115.0882602,-8.2955132,0",  # Included raw coords for point parsing
+                # Included raw coords for point parsing
+                "coordinates": "115.0882602,-8.2955132,0",
                 "iconUrl": "images/icon-15.png",
             },
         ]
-        with open(DUMMY_INPUT_PATH, "w", encoding="utf-8") as f:
+        with Path(DUMMY_INPUT_PATH).open("w", encoding="utf-8") as f:
             json.dump(DUMMY_INPUT, f, indent=2)
 
         print(f"To run manually: python coordinate_transformer.py {DUMMY_INPUT_PATH}")

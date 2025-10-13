@@ -52,7 +52,7 @@ def resolve_normal_style(style_element, global_styles):
 # --- Core Conversion Function ---
 
 
-def placemark_to_json(placemark, global_styles):  # noqa: C901
+def placemark_to_json(placemark, global_styles):  # noqa: C901, PLR0912
     """
     Converts a single KML Placemark to a JSON object based on its geometry and style.
     Handles Polygon (Case 1), LineString (Case 2), and Point (Case 3).
