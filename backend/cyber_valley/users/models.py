@@ -24,6 +24,7 @@ class CyberValleyUser(AbstractBaseUser):
     STAFF = "staff"
     CREATOR = "creator"
     LOCAL_PROVIDER = "localprovider"
+    VERIFIED_SHAMAN = "verifiedshaman"
     MASTER = "master"
 
     ROLE_CHOICES = (
@@ -31,6 +32,7 @@ class CyberValleyUser(AbstractBaseUser):
         (STAFF, "Staff"),
         (CREATOR, "Creator"),
         (LOCAL_PROVIDER, "Local Provider"),
+        (VERIFIED_SHAMAN, "Verified Shaman"),
         (MASTER, "Master"),
     )
 
@@ -48,11 +50,20 @@ class CyberValleyUser(AbstractBaseUser):
 
     @property
     def is_creator(self) -> bool:
-        return self.role in (self.CREATOR, self.LOCAL_PROVIDER, self.MASTER)
+        return self.role in (
+            self.CREATOR,
+            self.VERIFIED_SHAMAN,
+            self.LOCAL_PROVIDER,
+            self.MASTER,
+        )
 
     @property
     def is_local_provider(self) -> bool:
         return self.role == self.LOCAL_PROVIDER
+
+    @property
+    def is_verified_shaman(self) -> bool:
+        return self.role == self.VERIFIED_SHAMAN
 
     @property
     def is_master(self) -> bool:

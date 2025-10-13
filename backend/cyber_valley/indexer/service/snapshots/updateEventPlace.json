@@ -11,7 +11,9 @@
         "minDays": 1,
         "minPrice": 20,
         "minTickets": 50,
-        "size": 32
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
       },
       {
         "available": true,
@@ -23,7 +25,9 @@
         "minDays": 2,
         "minPrice": 30,
         "minTickets": 20,
-        "size": 32
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
       },
       {
         "available": true,
@@ -35,7 +39,9 @@
         "minDays": 1,
         "minPrice": 20,
         "minTickets": 50,
-        "size": 32
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
       },
       {
         "available": true,
@@ -47,7 +53,9 @@
         "minDays": 1,
         "minPrice": 20,
         "minTickets": 50,
-        "size": 32
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
       },
       {
         "available": true,
@@ -59,7 +67,9 @@
         "minDays": 1,
         "minPrice": 20,
         "minTickets": 50,
-        "size": 32
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
       },
       {
         "available": true,
@@ -71,7 +81,9 @@
         "minDays": 1,
         "minPrice": 20,
         "minTickets": 50,
-        "size": 32
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
       },
       {
         "available": true,
@@ -83,6 +95,88 @@
         "minDays": 1,
         "minPrice": 20,
         "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      }
+    ],
+    "CyberValleyEventManager.NewEventPlaceRequest": [
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
         "size": 32
       }
     ],
@@ -123,6 +217,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "role": "DEFAULT_ADMIN_ROLE",
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -155,6 +254,11 @@
       {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -193,6 +297,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "role": "DEFAULT_ADMIN_ROLE",
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -225,6 +334,11 @@
       {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -263,6 +377,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "role": "DEFAULT_ADMIN_ROLE",
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -295,6 +414,11 @@
       {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -331,9 +455,14 @@
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "LOCAL_PROVIDER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       }
     ]
   },
-  "events_count": 56,
+  "events_count": 69,
   "test_name": "updateEventPlace"
 }

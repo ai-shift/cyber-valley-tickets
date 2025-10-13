@@ -5,3 +5,6 @@ export const getCurrentUser = async () =>
 
 export const getUsersStaff = async () =>
   await apiClient.GET("/api/users/staff/");
+
+export const getUsersLocalproviders = async () =>
+  await apiClient.GET("/api/users/local_providers/");

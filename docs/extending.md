@@ -22,13 +22,14 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
 1. **Rename `Master` to `LocalProvider` role** (~2 hours)
     - [x] @naqerl Update backend user model and migrations
     - [x] @naqerl Update smart contract role constants
-    - [ ] @redmoor Update frontend role-based components and permissions
+    - [x] @redmoor Update frontend role-based components and permissions
 2. **Add new `Master` role to the smart contract** (~3 hours)
     - [x] @naqerl Implement multi-LocalProvider share management in contract
     - [x] @naqerl Add LocalProvider registration/removal functions
 3. **Implement LocalProvider management system** (~8 hours)
     - [x] @naqerl Back-end syncer for LocalProvider management (3h)
-    - [ ] @redmoor Front-end LocalProvider management page (5h)
+    - [x] @redmoor Front-end LocalProvider management page (5h)
+    - [x] @naqerl Back-end add an endpoint that returnes the list of LocalProviders
 
 ## Verified Shaman - New Role
 
@@ -85,15 +86,19 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
 
 **Tasks**:
 1. **Add new `VerifiedShaman` role** (~4 hours)
-    - [ ] @naqerl Back-end role enumeration and migration (1h)
+    - [x] @naqerl Back-end role enumeration and migration (1h)
+    - [x] @naqerl Update smart contract (2h)
+        - [x] Role & granting
+        - [x] Event place request rework
+        - [x] Add smart contract tests
+        - [x] Update indexer
     - [ ] @redmoor Update role-based permissions and views (1h)
     - [ ] @redmoor Migrate `Manage` page from OldMaster's event place to VerifiedShaman (2h)
 2. **Implement Telegram bot verification flow** (~12 hours)
     - [ ] @redmoor Document upload web form (2h)
-    - [ ] @naqerl Implement web form upload endpoint (1h)
+    - [x] @naqerl Implement web form upload endpoint (1h)
     - [ ] @naqerl Verification request workflow with approval/decline (4h)
     - [ ] @naqerl LocalProvider notification and decision system (3h)
-    - [ ] @naqerl Database integration for role granting (2h)
 
 ## Map Integration
 
@@ -141,12 +146,12 @@ To prevent potentially cumbersome situations in the future, a setter for the `Ma
     - [ ] @naqerl Backend integration for per-event share storage (1h)
     - [ ] @naqerl Smart contract integration for share distribution (1h)
 2. **Add Master role management to smart contract** (~3 hours)
-    - [ ] @naqerl Implement Master share and address setters (2h)
-    - [ ] @naqerl Update contract deployment and migration scripts (1h)
+    - [x] @naqerl Implement Master share and address setters (2h)
+    - [x] @naqerl Update contract deployment and migration scripts (1h)
 3. **Update payment distribution system** (~4 hours)
-    - [ ] @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
+    - [x] @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
     - [ ] @naqerl Update indexer to sync share changes (1h)
-    - [ ] @naqerl Add share calculation validation (1h)
+    - [x] @naqerl Add share calculation validation (1h)
 
 ## Event Request Updates
 

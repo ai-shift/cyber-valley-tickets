@@ -1,5 +1,9 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getCurrentUser, getUsersStaff } from "./userApi";
+import {
+  getCurrentUser,
+  getUsersLocalproviders,
+  getUsersStaff,
+} from "./userApi";
 
 export const userQueries = {
   current: () =>
@@ -12,6 +16,13 @@ export const userQueries = {
     queryOptions({
       queryKey: ["user", "list", "staff"],
       queryFn: getUsersStaff,
+      select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
+    }),
+  localproviders: () =>
+    queryOptions({
+      queryKey: ["user", "list", "localproviders"],
+      queryFn: getUsersLocalproviders,
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),

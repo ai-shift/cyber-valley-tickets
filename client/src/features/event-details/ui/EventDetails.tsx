@@ -46,7 +46,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   } = event;
 
   const isCreator = user?.address === event.creator.address;
-  const isMaster = user?.role === "master";
+  const isLocalprovider = user?.role === "localprovider";
 
   return (
     <div className="flex flex-col">
@@ -100,7 +100,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           icon="/icons/calendar.svg"
           title="Date and time"
           information={`${formatTimestamp(startDateTimestamp)} (${getTimeString(startDateTimestamp)})`}
-          className={cn(isCreator || isMaster || "col-span-2")}
+          className={cn(isCreator || isLocalprovider || "col-span-2")}
         />
         <DetailsBlock
           icon="/icons/duration_2.svg"
@@ -108,7 +108,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${daysAmount} ${pluralDays(daysAmount)}`}
         />
 
-        {(isCreator || isMaster) && (
+        {(isCreator || isLocalprovider) && (
           <DetailsBlock
             icon="/icons/Attendees_2.svg"
             title="Tickets available"
@@ -132,7 +132,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         <>
           <MaybeManageEvent
             eventId={eventId}
-            canEdit={isMaster}
+            canEdit={isLocalprovider}
             role={user.role}
             status={event.status}
           />
