@@ -69,7 +69,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 hashFunction,
         uint8 size
     );
-    event EventPlaceStatusChanged(uint256 eventPlaceId, EventPlaceStatus status);
     event EventPlaceUpdated(
         address provider,
         uint256 eventPlaceId,
@@ -79,6 +78,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 daysBeforeCancel,
         uint8 minDays,
         bool available,
+        EventPlaceStatus status,
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
@@ -213,7 +213,20 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
         place.status = EventPlaceStatus.Approved;
         place.provider = msg.sender;
-        emit EventPlaceStatusChanged(eventPlaceId, place.status);
+        emit EventPlaceUpdated(
+            msg.sender,
+            eventPlaceId,
+            place.maxTickets,
+            place.minTickets,
+            place.minPrice,
+            place.daysBeforeCancel,
+            place.minDays,
+            place.available,
+            place.status,
+            place.meta.digest,
+            place.meta.hashFunction,
+            place.meta.size
+        );
     }
 
     function declineEventPlace(
@@ -226,7 +239,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "EventPlace status differs from submitted"
         );
         place.status = EventPlaceStatus.Declined;
-        emit EventPlaceStatusChanged(eventPlaceId, place.status);
+        // No event emitted for declined places
     }
 
     function updateEventPlace(
@@ -274,6 +287,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             _daysBeforeCancel,
             _minDays,
             _available,
+            place.status,
             digest,
             hashFunction,
             size

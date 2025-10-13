@@ -1,28 +1,88 @@
 {
   "events_by_type": {
-    "CyberValleyEventManager.EventPlaceStatusChanged": [
+    "CyberValleyEventManager.EventPlaceUpdated": [
       {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
         "status": 1
       },
       {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
         "status": 1
       },
       {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
         "status": 1
       },
       {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
         "status": 1
       },
       {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
         "status": 1
       },
       {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 10,
+        "minTickets": 1,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
         "status": 1
       }
     ],
