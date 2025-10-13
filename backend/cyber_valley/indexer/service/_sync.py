@@ -215,6 +215,7 @@ def _sync_event_place_updated(
             "min_days": event_data.min_days,
             "days_before_cancel": event_data.days_before_cancel,
             "available": event_data.available,
+            "status": EventPlace.STATUS_CHOICES.get(event_data.status, "submitted"),
         },
     )
 
@@ -231,6 +232,7 @@ def _sync_event_place_updated(
     place.min_days = event_data.min_days
     place.days_before_cancel = event_data.days_before_cancel
     place.available = event_data.available
+    place.status = EventPlace.STATUS_CHOICES.get(event_data.status, "submitted")
     place.save()
 
     if created:
