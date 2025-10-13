@@ -142,3 +142,15 @@ pyshen = { git = "https://github.com/ai-shift/pyshen", rev = "c869ba2676a89dc05f
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "cyber_valley.settings"
+log_cli = false
+log_cli_level = "WARNING"
+log_level = "WARNING"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.pytest.ini_options.logging]
+disable_loggers = [
+    "web3.providers.HTTPProvider",
+    "web3.providers.rpc",
+]

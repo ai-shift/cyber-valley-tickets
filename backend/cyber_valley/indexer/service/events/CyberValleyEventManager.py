@@ -19,18 +19,13 @@
 from __future__ import annotations
 
 from typing import Annotated
+from pydantic import BeforeValidator
+from .patches import validate_digest
+from .patches import validate_role
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+from typing import Optional
 
-from .patches import validate_digest, validate_role
-
-
-class EventPlaceStatusChanged(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    event_place_id: int = Field(..., alias="eventPlaceId")
-    status: int
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EventPlaceUpdated(BaseModel):
@@ -116,12 +111,8 @@ class RoleAdminChanged(BaseModel):
         frozen=True,
     )
     role: Annotated[str, BeforeValidator(validate_role)]
-    previous_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(
-        ..., alias="previousAdminRole"
-    )
-    new_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(
-        ..., alias="newAdminRole"
-    )
+    previous_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(..., alias="previousAdminRole")
+    new_admin_role: Annotated[str, BeforeValidator(validate_role)] = Field(..., alias="newAdminRole")
 
 
 class RoleGranted(BaseModel):
@@ -146,23 +137,22 @@ class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    event_place_status_changed: EventPlaceStatusChanged | None = Field(
-        None, alias="EventPlaceStatusChanged"
-    )
-    event_place_updated: EventPlaceUpdated | None = Field(
+    event_place_updated: Optional[EventPlaceUpdated] = Field(
         None, alias="EventPlaceUpdated"
     )
-    event_status_changed: EventStatusChanged | None = Field(
+    event_status_changed: Optional[EventStatusChanged] = Field(
         None, alias="EventStatusChanged"
     )
-    event_ticket_verified: EventTicketVerified | None = Field(
+    event_ticket_verified: Optional[EventTicketVerified] = Field(
         None, alias="EventTicketVerified"
     )
-    event_updated: EventUpdated | None = Field(None, alias="EventUpdated")
-    new_event_place_request: NewEventPlaceRequest | None = Field(
+    event_updated: Optional[EventUpdated] = Field(None, alias="EventUpdated")
+    new_event_place_request: Optional[NewEventPlaceRequest] = Field(
         None, alias="NewEventPlaceRequest"
     )
-    new_event_request: NewEventRequest | None = Field(None, alias="NewEventRequest")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
-    role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
-    role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
+    new_event_request: Optional[NewEventRequest] = Field(None, alias="NewEventRequest")
+    role_admin_changed: Optional[RoleAdminChanged] = Field(
+        None, alias="RoleAdminChanged"
+    )
+    role_granted: Optional[RoleGranted] = Field(None, alias="RoleGranted")
+    role_revoked: Optional[RoleRevoked] = Field(None, alias="RoleRevoked")
