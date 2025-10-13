@@ -12,6 +12,8 @@ import { Button } from "@/shared/ui/button";
 import { isEventPassed } from "../lib/eventPassed";
 import { Redeem } from "./Redeem";
 import { ShowTicket } from "./ShowTicket";
+import { checkPermission } from "@/shared/lib/RBAC";
+
 type TicketProps = {
   user: User;
   event: Event;
@@ -47,7 +49,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
     navigate("/socials");
   }
 
-  if (user.role === "master" || user.role === "staff")
+  if (checkPermission(user.role, "ticket:redeem"))
     return <Redeem eventId={event.id} />;
   if (isCreator) return;
   return (
