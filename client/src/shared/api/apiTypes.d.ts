@@ -4,6 +4,56 @@
  */
 
 export interface paths {
+    "/api/auth/custom/send-sms/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Send SMS verification code (mocked) */
+        post: operations["api_auth_custom_send_sms_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/custom/submit-application/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_auth_custom_submit_application_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/custom/verify-code/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Verify SMS code and return custom auth payload */
+        post: operations["api_auth_custom_verify_code_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/logout": {
         parameters: {
             query?: never;
@@ -341,6 +391,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/socials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_users_socials_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/users/staff/": {
         parameters: {
             query?: never;
@@ -361,6 +427,9 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ApiAuthCustomSendSmsCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthCustomSubmitApplicationCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiAuthCustomVerifyCodeCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiAuthLogoutRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiAuthRefreshRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiAuthVerifyRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
@@ -1007,6 +1076,63 @@ export interface components {
         ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
         ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiUsersSocialsCreateError: components["schemas"]["ApiUsersSocialsCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiUsersSocialsCreateNetworkErrorComponent"] | components["schemas"]["ApiUsersSocialsCreateValueErrorComponent"];
+        ApiUsersSocialsCreateErrorResponse400: components["schemas"]["ApiUsersSocialsCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiUsersSocialsCreateNetworkErrorComponent: {
+            /**
+             * @description * `network` - network (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "network";
+            /**
+             * @description * `invalid_choice` - invalid_choice
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid_choice" | "null" | "required";
+            detail: string;
+        };
+        ApiUsersSocialsCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiUsersSocialsCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiUsersSocialsCreateError"][];
+        };
+        ApiUsersSocialsCreateValueErrorComponent: {
+            /**
+             * @description * `value` - value (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "value";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
         ApiUsersStaffListErrorResponse400: components["schemas"]["ParseErrorResponse"];
         Attendee: {
             address: string;
@@ -1045,6 +1171,7 @@ export interface components {
             readonly address: string;
             readonly role: components["schemas"]["RoleEnum"];
             readonly tickets: components["schemas"]["Ticket"][];
+            readonly socials: components["schemas"]["SaveSocials"][];
         };
         Error401: {
             code: components["schemas"]["ErrorCode401Enum"];
@@ -1188,10 +1315,12 @@ export interface components {
          * @description * `customer` - Customer
          *     * `staff` - Staff
          *     * `creator` - Creator
+         *     * `localprovider` - Local Provider
+         *     * `verifiedshaman` - Verified Shaman
          *     * `master` - Master
          * @enum {string}
          */
-        RoleEnum: "customer" | "staff" | "creator" | "master";
+        RoleEnum: "customer" | "staff" | "creator" | "localprovider" | "verifiedshaman" | "master";
         SIWELogin: {
             address: string;
             chain_id: string;
@@ -1219,6 +1348,14 @@ export interface components {
             version: string;
             /** @description Message signed with user's private key */
             signature: string;
+        };
+        SaveSocials: {
+            network: components["schemas"]["NetworkEnum"];
+            value: string;
+        };
+        SaveSocialsRequest: {
+            network: components["schemas"]["NetworkEnum"];
+            value: string;
         };
         /**
          * @description * `server_error` - Server Error
@@ -1304,6 +1441,204 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    api_auth_custom_send_sms_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthCustomSendSmsCreateErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_auth_custom_submit_application_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthCustomSubmitApplicationCreateErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_auth_custom_verify_code_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiAuthCustomVerifyCodeCreateErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
     api_auth_logout_retrieve: {
         parameters: {
             query?: never;
@@ -2895,6 +3230,77 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiUsersCurrentRetrieveErrorResponse400"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse401"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
+    };
+    api_users_socials_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveSocialsRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaveSocials"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersSocialsCreateErrorResponse400"];
                 };
             };
             401: {
