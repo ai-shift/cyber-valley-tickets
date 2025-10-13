@@ -271,7 +271,15 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
 def test_sync_ticket_minted(event: Event, user: UserType) -> None:
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
-    multihash = cid2multihash(socials_cid)
+        ticket_meta_cid = client.add_json(
+            {
+                "description": "Your way to attend the event",
+                "image": event.image_url,
+                "name": f"Ticket to {event.title}",
+                "socials": socials_cid,
+            }
+        )
+    multihash = cid2multihash(ticket_meta_cid)
     event_data = CyberValleyEventTicket.TicketMinted.model_validate(
         {
             "eventId": event.id,
