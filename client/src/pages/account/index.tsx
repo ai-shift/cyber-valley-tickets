@@ -13,10 +13,12 @@ import { ExpandableTrigger } from "@/shared/ui/expandable/ui/ExpandableTrigger";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
 import { useActiveAccount } from "thirdweb/react";
 
 export const AccountPage: React.FC = () => {
+  const navigate = useNavigate();
   const { logout: signOut } = useAuthSlice();
   const account = useActiveAccount();
   const { data: tokenBalance, isLoading: isLoadingBalance } = useTokenBalance();
@@ -76,6 +78,9 @@ export const AccountPage: React.FC = () => {
         </div>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <div className="flex flex-col gap-4">
+            <Button filling="outline" type="button" onClick={() => navigate("/socials")}>
+              Socials
+            </Button>
             <Button
               className="mt-8"
               disabled={isMinting}
