@@ -6,12 +6,11 @@ import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 
-type RemoveStaffIconProps = {
+type RemoveStaffBtnProps = {
   staffAddress: string;
 };
 
-// TODO: Rename, it's a button, not a simple icon
-export const RemoveStaffIcon: React.FC<RemoveStaffIconProps> = ({
+export const RemoveStaffBtn: React.FC<RemoveStaffBtnProps> = ({
   staffAddress,
 }) => {
   const account = useActiveAccount();
