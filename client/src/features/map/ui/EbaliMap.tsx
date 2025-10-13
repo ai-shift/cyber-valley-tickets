@@ -63,7 +63,7 @@ export const EbaliMap: React.FC = () => {
         defaultCenter={{ lat: -8.2980705, lng: 115.088186 }}
         defaultZoom={16}
         onClick={onMapClick}
-        gestureHandling="greedy"
+        gestureHandling="cooperative"
         colorScheme="DARK"
         disableDefaultUI
       >
@@ -111,9 +111,10 @@ export const EbaliMap: React.FC = () => {
         {infoWindowShown && selectedPlacemark && (
           <InfoWindow
             pixelOffset={[0, -2]}
+            headerDisabled
             position={getPlacemarkPosition(selectedPlacemark)}
             onCloseClick={() => setInfoWindowShown(false)}
-            className="p-3"
+            className="text-lg"
           >
             <h2>{selectedPlacemark.name}</h2>
           </InfoWindow>
