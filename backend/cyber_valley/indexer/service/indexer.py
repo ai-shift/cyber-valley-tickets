@@ -139,7 +139,7 @@ class EventNotRecognizedError(Exception):
 
 @safe
 def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseModel:
-    for contract_idx, contract in enumerate(contracts):
+    for _contract_idx, contract in enumerate(contracts):
         event_names = [abi["name"] for abi in contract.abi if abi["type"] == "event"]
         duplicated_event_names = {
             name for name in event_names if event_names.count(name) > 1

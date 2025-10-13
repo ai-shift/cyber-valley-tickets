@@ -1,0 +1,14 @@
+# Disable certain rules for geodata scripts
+[lint]
+ignore = [
+    "PTH103",  # os.makedirs
+    "PTH110",  # os.path.exists
+    "PTH118",  # os.path.join
+    "PTH123",  # open
+    "S314",    # xml parse
+    "E501",    # line too long
+    "W293",    # blank line whitespace
+    "C901",    # too complex
+    "PLR0912", # too many branches
+    "PLR0915", # too many statements
+]

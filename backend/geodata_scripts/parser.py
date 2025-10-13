@@ -48,10 +48,13 @@ def resolve_dependencies(initial_ids, global_styles):
     return all_required_ids
 
 
-def split_kml_by_folder(input_kml_path, output_dir="output_kml_files"):
+def split_kml_by_folder(  # noqa: C901, PLR0912, PLR0915
+    input_kml_path, output_dir="output_kml_files"
+):
     """
-    Parses a large KML file and splits it into smaller KML files, one for each <Folder>.
-    Each new file includes the necessary <Style> definitions, including nested dependencies.
+    Parses a large KML file and splits it into smaller KML files, one for each
+    <Folder>. Each new file includes the necessary <Style> definitions,
+    including nested dependencies.
 
     Args:
         input_kml_path (str): Path to the large input KML file.
