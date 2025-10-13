@@ -249,6 +249,7 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
             "minDays": 10,
             "available": True,
             "daysBeforeCancel": 5,
+            "status": 1,  # Approved
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
@@ -263,6 +264,7 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
     assert event_place.min_price == event_data.min_price
     assert event_place.min_days == event_data.min_days
     assert event_place.title == "Changed event place title"
+    assert event_place.status == "approved"
 
 
 @pytest.mark.django_db
