@@ -1,4 +1,6 @@
+import { useAuthSlice } from "@/app/providers";
 import type { Order } from "@/entities/order";
+import type { Socials } from "@/entities/socials";
 import { useSendTx } from "@/shared/hooks/sendTx";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
@@ -8,8 +10,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { purchase } from "../api/purchase";
-import { useAuthSlice } from "@/app/providers";
-import { Socials } from "@/entities/socials";
 
 export type ConfirmPaymentProps = {
   order: Order;
@@ -24,14 +24,16 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
 
   if (!user) return null;
   if (!account) return <p>Failed to connect wallet</p>;
-  if (user.socials.length === 0) return (
-    <div className="flex flex-col items-center gap-2 py-5">
-      <p className="text-lg">No socials are provided</p>
-      <Button onClick={() => navigate("/socials")}>Set socials</Button>
-    </div>
-  )
+  if (user.socials.length === 0)
+    return (
+      <div className="flex flex-col items-center gap-2 py-5">
+        <p className="text-lg">No socials are provided</p>
+        <Button onClick={() => navigate("/socials")}>Set socials</Button>
+      </div>
+    );
   const { mutate, isPending } = useMutation({
-    mutationFn: (order: Order) => purchase(sendTx, account, order, user.socials[0] as Socials),
+    mutationFn: (order: Order) =>
+      purchase(sendTx, account, order, user.socials[0] as Socials),
     onSuccess: () => {
       setIsSuccess(true);
     },

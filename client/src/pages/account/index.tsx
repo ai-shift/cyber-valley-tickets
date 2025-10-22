@@ -78,16 +78,20 @@ export const AccountPage: React.FC = () => {
         </div>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <div className="flex flex-col gap-4">
-            { user?.socials[0] && <div>
-              <h3 className="capitalize font-semibold text-lg">{user.socials[0].network}:</h3>
-              <p className="italic">{user.socials[0].value}</p>
-            </div>}
+            {user?.socials[0] && (
+              <div>
+                <h3 className="capitalize font-semibold text-lg">
+                  {user.socials[0].network}:
+                </h3>
+                <p className="italic">{user.socials[0].value}</p>
+              </div>
+            )}
             <Button
               filling="outline"
               type="button"
               onClick={() => navigate("/socials")}
             >
-             {user?.socials[0] ? "Update" : "Set"} socials
+              {user?.socials[0] ? "Update" : "Set"} socials
             </Button>
             <Button
               className="mt-8"
