@@ -1,7 +1,9 @@
-import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
-import { useState } from "react";
-
 import type { Placemark as PlacemarkType } from "../model/types.ts";
+
+import { useState } from "react";
+import { twMerge } from "tailwind-merge";
+import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
+import { useLongPress } from "@uidotdev/usehooks";
 
 import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
 
@@ -18,7 +20,11 @@ import { PlacemarkGroup } from "./PlacemarkGroup.tsx";
 
 type GeodataKey = keyof typeof geodata;
 
-export const EbaliMap: React.FC = () => {
+type EbaliMapProps = {
+  className?: string;
+}
+
+export const EbaliMap: React.FC<EbaliMapProps> = ({className}) => {
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
   const [showGroups, setShowGroups] = useState(false);
 
@@ -56,9 +62,8 @@ export const EbaliMap: React.FC = () => {
   };
 
   return (
-    <div>
       <GMap
-        style={{ width: "full", height: "50dvh" }}
+        className={twMerge("w-full h-[50dvh]", className)}
         mapId="fb99876bf33e90419a932304"
         defaultCenter={{ lat: -8.2980705, lng: 115.088186 }}
         defaultZoom={16}
@@ -120,6 +125,5 @@ export const EbaliMap: React.FC = () => {
           </InfoWindow>
         )}
       </GMap>
-    </div>
   );
 };
