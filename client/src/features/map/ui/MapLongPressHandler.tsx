@@ -37,7 +37,9 @@ export const MapLongPressHandler: React.FC<HandlerProps> = ({
         timerRef.current = null;
         if (pressedRef.current) {
           if (onLongPress && e && e.latLng) {
-            onLongPress({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+            const coords = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+            onLongPress(coords);
+            map.panTo(coords)
           }
         }
       }, onLongPressMs);
