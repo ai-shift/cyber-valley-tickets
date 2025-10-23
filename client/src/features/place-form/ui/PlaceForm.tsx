@@ -93,7 +93,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           )}
         />
         <div className="relative">
-          <p className={twMerge("absolute pointer-events-none top-0 left-1 z-100 transition-all duration-500", (selectedLocation || formLocation) && "opacity-0")}>Long press to place marker</p>
+          <p className={twMerge("absolute pointer-events-none top-0 left-1 z-1 transition-all duration-500", (selectedLocation || formLocation) && "opacity-0")}>Long press to place marker</p>
           <EbaliMap
             className={twMerge(
               "h-[55dvh] transition-all duration-300",
