@@ -14,6 +14,7 @@ export type Action =
   | "create"
   | "read"
   | "edit"
+  | "request"
   | "delete"
   | "purchase"
   | "redeem"
@@ -38,6 +39,11 @@ export const RBAC_ROLES: RoleControl = {
   staff: {
     event: ["read", "create"],
     ticket: ["redeem"],
+  },
+  verifiedshaman: {
+    event: ["read", "create"],
+    ticket: ["purchase"],
+    place: ["request"],
   },
   localprovider: {
     "*": ["*"],
