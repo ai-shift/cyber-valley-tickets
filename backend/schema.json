@@ -7377,7 +7377,7 @@
                         "$ref": "#/components/schemas/Creator"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/StatusEnum"
+                        "$ref": "#/components/schemas/Status925Enum"
                     },
                     "title": {
                         "type": "string",
@@ -7830,6 +7830,9 @@
                     "available": {
                         "type": "boolean"
                     },
+                    "status": {
+                        "$ref": "#/components/schemas/EventPlaceStatusEnum"
+                    },
                     "isUsed": {
                         "type": "boolean",
                         "readOnly": true
@@ -7846,6 +7849,15 @@
                     "minTickets",
                     "title"
                 ]
+            },
+            "EventPlaceStatusEnum": {
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "type": "integer",
+                "description": "* `0` - submitted\n* `1` - approved\n* `2` - declined"
             },
             "NetworkEnum": {
                 "enum": [
@@ -8144,7 +8156,7 @@
                         "$ref": "#/components/schemas/Creator"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/StatusEnum"
+                        "$ref": "#/components/schemas/Status925Enum"
                     },
                     "title": {
                         "type": "string",
@@ -8219,7 +8231,7 @@
                     "website"
                 ]
             },
-            "StatusEnum": {
+            "Status925Enum": {
                 "enum": [
                     "submitted",
                     "approved",

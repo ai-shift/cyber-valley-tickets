@@ -1168,7 +1168,7 @@ export interface components {
         CreatorEvent: {
             readonly id: number;
             creator: components["schemas"]["Creator"];
-            status?: components["schemas"]["StatusEnum"];
+            status?: components["schemas"]["Status925Enum"];
             title: string;
             description: string;
             place: components["schemas"]["EventPlace"];
@@ -1296,8 +1296,16 @@ export interface components {
             /** Format: int64 */
             daysBeforeCancel: number;
             available?: boolean;
+            status?: components["schemas"]["EventPlaceStatusEnum"];
             readonly isUsed: boolean;
         };
+        /**
+         * @description * `0` - submitted
+         *     * `1` - approved
+         *     * `2` - declined
+         * @enum {integer}
+         */
+        EventPlaceStatusEnum: 0 | 1 | 2;
         /**
          * @description * `telegram` - Telegram
          *     * `instagram` - Instagram
@@ -1390,7 +1398,7 @@ export interface components {
         StaffEvent: {
             readonly id: number;
             creator: components["schemas"]["Creator"];
-            status?: components["schemas"]["StatusEnum"];
+            status?: components["schemas"]["Status925Enum"];
             title: string;
             description: string;
             place: components["schemas"]["EventPlace"];
@@ -1416,7 +1424,7 @@ export interface components {
          *     * `closed` - closed
          * @enum {string}
          */
-        StatusEnum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
+        Status925Enum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
         Ticket: {
             readonly id: string;
             readonly eventId: number;
