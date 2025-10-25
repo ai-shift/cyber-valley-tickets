@@ -11,7 +11,7 @@ Meanwhile, the `Master` role is only capable of adding and removing `LocalProvid
 
 **Questions**:
 - If there are multiple `LocalProvider`s, how should shares be calculated for them? (This is crucial for smart contract development)
-    - Each `LocalProvider` receives a share for events from `VerifiedShaman`s they have approved
+    - [x] Each `LocalProvider` receives a share for events from `Shaman`s they have approved
     - There is a general share of the total income that is divided among all `LocalProvider`s (i.e., the sum of all their shares equals 1)
 - Telegram bots are forbidden to send messages to users who haven't sent any messages to them. So `LocalProvider` would not work properly (receive any notifications from the bot) until they send the `/start` command
     - We may implement a message queue at the DB level and send all unreceived notifications when `LocalProvider` contacts the bot
@@ -82,7 +82,7 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
 - SK Kemenkumham (registration with the Ministry of Law and Human Rights);
 
 **Questions**:
-- Do `LocalProvider`s can add / remove `EventPlace`'s the same way as OldMaster or only accept / decline requests from `VerifiedShaman`
+- [x] Do `LocalProvider`s can add / remove `EventPlace`'s the same way as OldMaster or only accept / decline requests from `VerifiedShaman`
 
 **Tasks**:
 1. **Add new `VerifiedShaman` role** (~4 hours)
@@ -160,7 +160,7 @@ Due to the previous features, the event request flow should/could be improved in
 2. Notify the `LocalProvider` not only through in-app notifications, but also via the Telegram bot about new requests
 
 **Questions**:
-- Should the `Shaman` choose only one marker, or could they place multiple markers on single/multiple zones?
+- [-] Should the `Shaman` choose only one marker, or could they place multiple markers on single/multiple zones?
 - What is the exact flow of putting the marker on the tile?
 
 **Tasks**:
