@@ -9,5 +9,13 @@ type RestrictedToProps = {
 export const RestrictedTo: React.FC<RestrictedToProps> = ({ userRoles }) => {
   const { user } = useAuthSlice();
 
-  return userRoles.includes(user?.role) ? <Outlet /> : <Navigate to="/" />;
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
+  if (!userRoles.includes(user.role)) {
+    return <Navigate to="/" />;
+  }
+
+  return <Outlet />;
 };
