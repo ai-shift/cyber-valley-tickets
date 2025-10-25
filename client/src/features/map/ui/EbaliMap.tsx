@@ -1,7 +1,8 @@
+import type { LatLng, Placemark as PlacemarkType } from "../model/types.ts";
+
 import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
 import { useState } from "react";
-
-import type { Placemark as PlacemarkType } from "../model/types.ts";
+import { twMerge } from "tailwind-merge";
 
 import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
 
@@ -13,12 +14,23 @@ import {
 } from "@/shared/ui/sheet.tsx";
 import { geodata } from "../data/data.ts";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
+import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
 import { PlacemarkGroup } from "./PlacemarkGroup.tsx";
 
 type GeodataKey = keyof typeof geodata;
 
-export const EbaliMap: React.FC = () => {
+type EbaliMapProps = {
+  className?: string;
+  longPressHandler?: (latLng: LatLng) => void;
+  children?: React.ReactNode;
+};
+
+export const EbaliMap: React.FC<EbaliMapProps> = ({
+  className,
+  longPressHandler,
+  children,
+}) => {
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
   const [showGroups, setShowGroups] = useState(false);
 
@@ -56,70 +68,68 @@ export const EbaliMap: React.FC = () => {
   };
 
   return (
-    <div>
-      <GMap
-        style={{ width: "full", height: "50dvh" }}
-        mapId="fb99876bf33e90419a932304"
-        defaultCenter={{ lat: -8.2980705, lng: 115.088186 }}
-        defaultZoom={16}
-        onClick={onMapClick}
-        gestureHandling="cooperative"
-        colorScheme="DARK"
-        disableDefaultUI
-      >
-        <Sheet open={showGroups} onOpenChange={setShowGroups}>
-          <SheetTrigger>
-            <div className="absolute top-3 right-3 aspect-square h-10 rounded-full bg-primary" />
-          </SheetTrigger>
-          <SheetContent side="left" aria-describedby={undefined}>
-            <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
-            <div className="h-full overflow-y-auto px-4">
-              {Object.keys(geodata).map((group) => {
-                const placemarks = geodata[
-                  group as GeodataKey
-                ] as PlacemarkType[];
-                if (placemarks.length > 0) {
-                  return (
-                    <PlacemarkGroup
-                      key={group}
-                      value={group}
-                      isDisplayed={displayedGroups.includes(
-                        group as GeodataKey,
-                      )}
-                      setDisplayed={() =>
-                        displayGroupHandler(group as GeodataKey)
-                      }
-                      placemarks={placemarks}
-                      showInfo={showPlacemarkInfo}
-                      closeGroups={() => setShowGroups(false)}
-                    />
-                  );
-                }
-              })}
-            </div>
-          </SheetContent>
-        </Sheet>
-        {displayedGroups.map((layer) =>
-          geodata[layer].map((placemark, idx) => (
-            <Placemark
-              onClick={(placemark) => showPlacemarkInfo(placemark)}
-              key={`${placemark.name}-${idx}`}
-              placemark={placemark as PlacemarkType}
-            />
-          )),
-        )}
-        {infoWindowShown && selectedPlacemark && (
-          <InfoWindow
-            pixelOffset={[0, -2]}
-            headerDisabled
-            position={getPlacemarkPosition(selectedPlacemark)}
-            onCloseClick={() => setInfoWindowShown(false)}
-            className="text-lg"
-          >
-            <h2>{selectedPlacemark.name}</h2>
-          </InfoWindow>
-        )}
-      </GMap>
-    </div>
+    <GMap
+      className={twMerge("w-full h-[50dvh] relative", className)}
+      mapId="fb99876bf33e90419a932304"
+      defaultCenter={{ lat: -8.2980705, lng: 115.088186 }}
+      defaultZoom={16}
+      onClick={onMapClick}
+      gestureHandling="cooperative"
+      colorScheme="DARK"
+      disableDefaultUI
+    >
+      <Sheet open={showGroups} onOpenChange={setShowGroups}>
+        <SheetTrigger>
+          <div className="absolute top-3 right-3 aspect-square h-10 rounded-full bg-primary" />
+        </SheetTrigger>
+        <SheetContent side="left" aria-describedby={undefined}>
+          <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
+          <div className="h-full overflow-y-auto px-4">
+            {Object.keys(geodata).map((group) => {
+              const placemarks = geodata[
+                group as GeodataKey
+              ] as PlacemarkType[];
+              if (placemarks.length > 0) {
+                return (
+                  <PlacemarkGroup
+                    key={group}
+                    value={group}
+                    isDisplayed={displayedGroups.includes(group as GeodataKey)}
+                    setDisplayed={() =>
+                      displayGroupHandler(group as GeodataKey)
+                    }
+                    placemarks={placemarks}
+                    showInfo={showPlacemarkInfo}
+                    closeGroups={() => setShowGroups(false)}
+                  />
+                );
+              }
+            })}
+          </div>
+        </SheetContent>
+      </Sheet>
+      {displayedGroups.map((layer) =>
+        geodata[layer].map((placemark, idx) => (
+          <Placemark
+            onClick={(placemark) => showPlacemarkInfo(placemark)}
+            key={`${placemark.name}-${idx}`}
+            placemark={placemark as PlacemarkType}
+          />
+        )),
+      )}
+      {infoWindowShown && selectedPlacemark && (
+        <InfoWindow
+          pixelOffset={[0, -2]}
+          headerDisabled
+          position={getPlacemarkPosition(selectedPlacemark)}
+          onCloseClick={() => setInfoWindowShown(false)}
+          className="text-lg"
+        >
+          <h2>{selectedPlacemark.name}</h2>
+        </InfoWindow>
+      )}
+      <MapLongPressHandler onLongPressMs={700} onLongPress={longPressHandler} />
+      {children}
+    </GMap>
   );
 };

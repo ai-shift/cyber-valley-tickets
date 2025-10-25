@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { z } from "zod";
 import type { EventPlaceForm } from "../model/types";
 
@@ -22,6 +23,11 @@ import type { UseMutateFunction } from "@tanstack/react-query";
 import { cleanPlaceLocal, usePlacePersist } from "../hooks/usePlacePersist";
 import { formSchema } from "../model/formSchema";
 
+import { EbaliMap } from "@/features/map";
+import type { LatLng } from "@/features/map/model/types";
+import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
+import { twMerge } from "tailwind-merge";
+
 type PlaceFormProps = {
   existingPlace?: EventPlace;
   onSubmit: UseMutateFunction<unknown, Error, EventPlaceForm, unknown>;
@@ -39,7 +45,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
       ? { ...existingPlace }
       : {
           title: "",
-          locationUrl: "",
+          location: null,
           minTickets: 1,
           maxTickets: 100,
           daysBeforeCancel: 1,
@@ -59,6 +65,12 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
       },
     });
   }
+
+  const [selectedLocation, setSelectedLocation] = useState<LatLng | null>(null);
+
+  const formLocation = form.watch("location");
+  const setFormLocation = (coords: LatLng | null) =>
+    form.setValue("location", coords);
 
   return (
     <Form {...form}>
@@ -80,23 +92,69 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          disabled={disableFields}
-          name="locationUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Loaction URL</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://maps.app.goo.gl/SS9jofi43afx7Z4EA"
-                  {...field}
+        <div className="relative">
+          <p className={twMerge("absolute pointer-events-none top-0 left-1 z-1 transition-all duration-500", (selectedLocation || formLocation) && "opacity-0")}>Long press to place marker</p>
+          <EbaliMap
+            className={twMerge(
+              "h-[55dvh] transition-all duration-300",
+              selectedLocation  && "h-[40dvh]",
+              formLocation && "h-[30dvh]"
+            )}
+            longPressHandler={formLocation ? () => {} : (latLng) => setSelectedLocation(latLng)}
+          >
+            {selectedLocation && (
+              <AdvancedMarker position={selectedLocation}>
+                <Pin
+                  background={"#ffc107"}
+                  borderColor={"#ff9800"}
+                  glyphColor={"#ffe082"}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </AdvancedMarker>
+            )}
+            {formLocation && (
+              <AdvancedMarker position={formLocation}>
+                <Pin
+                  background={"#76ff05"}
+                  borderColor={"#006400"}
+                  glyphColor={"#b2ff59"}
+                />
+              </AdvancedMarker>
+            )}
+          </EbaliMap>
+          {selectedLocation && (
+            <div className="py-1">
+              <p className="text-lg py-2">Place set correctly?</p>
+              <div className="flex flex-row justify-between items-center">
+                <Button
+                  variant="secondary"
+                  className="w-1/4"
+                  onClick={() => {
+                  setFormLocation(selectedLocation)
+                  setSelectedLocation(null)
+                  }}
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="w-1/4"
+                  onClick={() => setSelectedLocation(null)}
+                >
+                  No
+                </Button>
+              </div>
+            </div>
           )}
-        />
+          {formLocation && (
+            <Button className="w-full mt-4" onClick={() => {
+              setSelectedLocation(formLocation) 
+              setFormLocation(null)
+            }}>
+              Change
+            </Button>
+          )}
+        </div>
+
         <CustomFormComponent
           control={form.control}
           fieldDisabled={disableFields}
