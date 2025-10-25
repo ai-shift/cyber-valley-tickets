@@ -93,14 +93,23 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           )}
         />
         <div className="relative">
-          <p className={twMerge("absolute pointer-events-none top-0 left-1 z-1 transition-all duration-500", (selectedLocation || formLocation) && "opacity-0")}>Long press to place marker</p>
+          <p
+            className={twMerge(
+              "absolute pointer-events-none top-0 left-1 z-1 transition-all duration-500",
+              (selectedLocation || formLocation) && "opacity-0",
+            )}
+          >
+            Long press to place marker
+          </p>
           <EbaliMap
             className={twMerge(
               "h-[55dvh] transition-all duration-300",
-              selectedLocation  && "h-[40dvh]",
-              formLocation && "h-[30dvh]"
+              selectedLocation && "h-[40dvh]",
+              formLocation && "h-[30dvh]",
             )}
-            longPressHandler={formLocation ? () => {} : (latLng) => setSelectedLocation(latLng)}
+            longPressHandler={
+              formLocation ? () => {} : (latLng) => setSelectedLocation(latLng)
+            }
           >
             {selectedLocation && (
               <AdvancedMarker position={selectedLocation}>
@@ -129,8 +138,8 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
                   variant="secondary"
                   className="w-1/4"
                   onClick={() => {
-                  setFormLocation(selectedLocation)
-                  setSelectedLocation(null)
+                    setFormLocation(selectedLocation);
+                    setSelectedLocation(null);
                   }}
                 >
                   Yes
@@ -146,10 +155,13 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
             </div>
           )}
           {formLocation && (
-            <Button className="w-full mt-4" onClick={() => {
-              setSelectedLocation(formLocation) 
-              setFormLocation(null)
-            }}>
+            <Button
+              className="w-full mt-4"
+              onClick={() => {
+                setSelectedLocation(formLocation);
+                setFormLocation(null);
+              }}
+            >
               Change
             </Button>
           )}
