@@ -22,7 +22,7 @@ class EventPlace(models.Model):
     min_tickets = models.PositiveSmallIntegerField(null=False)
     min_price = models.PositiveSmallIntegerField(null=False)
     min_days = models.PositiveSmallIntegerField(null=False)
-    location_url = models.CharField()
+    geometry = models.JSONField(null=False)
     days_before_cancel = models.PositiveSmallIntegerField(null=False)
     available = models.BooleanField(null=False, default=True)
     status = models.CharField(

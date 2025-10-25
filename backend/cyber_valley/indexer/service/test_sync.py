@@ -47,7 +47,7 @@ def event_place() -> EventPlace:
         min_price=50,
         min_days=7,
         days_before_cancel=3,
-        location_url="https://maps.example.com/test-place",
+        geometry={"type": "Point", "coordinates": [11.576124, 48.137154]},
     )
 
 
@@ -145,6 +145,7 @@ def test_sync_event_updated(event: Event) -> None:
         min_price=75,
         min_days=10,
         days_before_cancel=2,
+        geometry={"type": "Point", "coordinates": [11.580000, 48.140000]},
     )
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
@@ -235,7 +236,10 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
             {
                 "title": "Changed event place title",
                 "description": "Change evenet place description",
-                "location_url": "https://maps.example.com/new-location",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [11.577124, 48.138154],
+                },
             }
         )
     multihash = cid2multihash(cid)
@@ -265,6 +269,7 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
     assert event_place.min_days == event_data.min_days
     assert event_place.title == "Changed event place title"
     assert event_place.status == "approved"
+    assert event_place.geometry["type"] == "Point"
 
 
 @pytest.mark.django_db

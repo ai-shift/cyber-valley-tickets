@@ -62,16 +62,24 @@ async function main() {
   const places = [
     {
       title: "foo",
+      geometry: {
+        type: "Point",
+        coordinates: [11.576124, 48.137154],
+      },
     },
     {
       title: "bar",
+      geometry: {
+        type: "Point",
+        coordinates: [11.577124, 48.138154],
+      },
     },
   ];
   for (const cfg of places) {
     const body = new FormData();
     body.append("title", cfg.title);
     body.append("description", "foo");
-    body.append("location_url", `https://example/place/${cfg.title}`);
+    body.append("geometry", JSON.stringify(cfg.geometry));
     const resp = await fetch(`${API_HOST}/api/ipfs/places/meta`, {
       body,
       method: "PUT",
