@@ -47,7 +47,7 @@ def event_place() -> EventPlace:
         min_price=50,
         min_days=7,
         days_before_cancel=3,
-        geometry={"type": "Point", "coordinates": [11.576124, 48.137154]},
+        geometry={"type": "Point", "coordinates": {"lat": 48.137154, "lng": 11.576124}},
     )
 
 
@@ -145,7 +145,7 @@ def test_sync_event_updated(event: Event) -> None:
         min_price=75,
         min_days=10,
         days_before_cancel=2,
-        geometry={"type": "Point", "coordinates": [11.580000, 48.140000]},
+        geometry={"type": "Point", "coordinates": {"lat": 48.140000, "lng": 11.580000}},
     )
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
@@ -238,7 +238,7 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
                 "description": "Change evenet place description",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [11.577124, 48.138154],
+                    "coordinates": {"lat": 48.138154, "lng": 11.577124},
                 },
             }
         )
@@ -270,6 +270,8 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
     assert event_place.title == "Changed event place title"
     assert event_place.status == "approved"
     assert event_place.geometry["type"] == "Point"
+    assert event_place.geometry["coordinates"]["lat"] == 48.138154
+    assert event_place.geometry["coordinates"]["lng"] == 11.577124
 
 
 @pytest.mark.django_db
