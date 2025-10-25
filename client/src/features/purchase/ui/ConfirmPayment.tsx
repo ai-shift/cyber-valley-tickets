@@ -1,6 +1,6 @@
 import { useAuthSlice } from "@/app/providers";
 import type { Order } from "@/entities/order";
-import type { Socials } from "@/entities/socials";
+import type { Socials } from "@/entities/user";
 import { useSendTx } from "@/shared/hooks/sendTx";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";

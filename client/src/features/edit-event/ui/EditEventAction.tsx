@@ -1,6 +1,6 @@
 import { useAuthSlice } from "@/app/providers";
 import type { EventDto } from "@/entities/event";
-import { type Socials, useOrderStore } from "@/entities/order";
+import { useOrderStore } from "@/entities/order";
 import { EditEvent, canUserEdit } from "@/features/create-edit-event";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { useNavigate } from "react-router";
@@ -14,16 +14,13 @@ export const EditEventAction: React.FC<EditEventActionProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useAuthSlice();
-  const { setEventOrder, setSocials } = useOrderStore();
+  const { setEventOrder } = useOrderStore();
 
   if (!user)
     return <ErrorMessage errors={new Error("No user found, login please!")} />;
 
-  function onSubmit(values: EventDto, socials?: Socials) {
+  function onSubmit(values: EventDto) {
     setEventOrder({ ...values, id: numbericId });
-    if (socials) {
-      setSocials(socials);
-    }
     navigate("/socials");
   }
 

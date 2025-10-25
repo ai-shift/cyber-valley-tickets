@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useAuthSlice } from "@/app/providers";
-import { type Socials, upsertSocials } from "@/entities/socials";
+import { type Socials, upsertUserSocials } from "@/entities/user";
 import { SocialsForm } from "@/features/socials-form";
 import { PageContainer } from "@/shared/ui/PageContainer";
 
@@ -15,7 +15,7 @@ export const SocialsPage: React.FC = () => {
 
   async function handleSubmit(socials: Socials) {
     setError(false);
-    const { response } = await upsertSocials(socials);
+    const { response } = await upsertUserSocials(socials);
     if (!response.ok) {
       setError(true);
       console.error("Failed to set socials");
