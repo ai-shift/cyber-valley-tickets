@@ -28,7 +28,7 @@ export function getEventSubmitionPrice(): bigint {
 
 export type TxHash = `0x${string}`;
 
-export async function createPlace(
+export async function submitEventPlaceRequest(
   account: Account,
   maxTickets: number,
   minTickets: number,
@@ -41,7 +41,7 @@ export async function createPlace(
   const multihash = getBytes32FromMultiash(metaCID);
   const transaction = prepareContractCall({
     contract: eventManager,
-    method: "createEventPlace",
+    method: "submitEventPlaceRequest",
     params: [
       maxTickets,
       minTickets,
@@ -53,6 +53,32 @@ export async function createPlace(
       multihash.hashFunction,
       multihash.size,
     ],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function approveEventPlace(
+  account: Account,
+  placeId: bigint,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "approveEventPlace",
+    params: [placeId],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function declineEventPlace(
+  account: Account,
+  placeId: bigint,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "declineEventPlace",
+    params: [placeId],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;

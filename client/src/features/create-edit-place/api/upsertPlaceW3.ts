@@ -1,7 +1,7 @@
 import type { EventPlaceForm } from "@/features/place-form";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
-import { createPlace, updatePlace } from "@/shared/lib/web3";
+import { submitEventPlaceRequest, updatePlace } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
 export const upsertPlaceW3 = async (
@@ -49,7 +49,7 @@ export const upsertPlaceW3 = async (
       data.cid,
     );
   } else {
-    promise = createPlace(
+    promise = submitEventPlaceRequest(
       account,
       maxTickets,
       minTickets,
