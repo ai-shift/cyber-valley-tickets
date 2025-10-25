@@ -32,6 +32,21 @@ export const HomePage: React.FC = () => {
       <section className="mt-8">
         <EventsList filterFn={uniteFilter} />
       </section>
+      <div className="w-full sticky bottom-1 pt-3">
+        <Button
+          asChild
+          variant="ghost"
+          className="w-full bg-black border-secondary text-secondary clip-corners hover:bg-secondary hover:text-black"
+        >
+          <a
+            href="https://t.me/+ELgY3iRp1-RkYWMy"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Apply new event space
+          </a>
+        </Button>
+      </div>
     </div>
   );
 };
