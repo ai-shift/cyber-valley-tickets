@@ -1,4 +1,4 @@
-import type { Socials } from "@/entities/socials";
+import type { Socials } from "@/entities/user";
 import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";

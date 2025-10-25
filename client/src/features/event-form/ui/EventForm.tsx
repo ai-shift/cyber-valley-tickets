@@ -18,7 +18,7 @@ import { Textarea } from "@/shared/ui/textarea";
 import { DatePicker } from "./DatePicker";
 import { PlaceSelect } from "./PlaceSelect";
 
-import type { Socials } from "@/entities/order";
+import type { Socials } from "@/entities/user";
 import { Camera } from "@/features/camera";
 import { TimePicker } from "@/features/time-input";
 import { assertIsDefined } from "@/shared/lib/assert";
@@ -128,12 +128,11 @@ export const EventForm: React.FC<EventFormProps> = ({
     const eventDto = mapEventFormToEventDto(values);
     if (existingEvent) {
       submitHandler(eventDto, {
-        contactInfo: existingEvent.creator.socials.value,
-        type: existingEvent.creator.socials.network,
+        value: existingEvent.creator.socials.value,
+        network: existingEvent.creator.socials.network,
       });
-    } else {
-      submitHandler(eventDto);
     }
+    submitHandler(eventDto);
   }
 
   const isIphoneDevice =

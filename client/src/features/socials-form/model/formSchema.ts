@@ -1,4 +1,4 @@
-import type { Socials } from "@/entities/socials";
+import type { Socials } from "@/entities/user";
 import { type ZodType, z } from "zod";
 
 export const formSchema: ZodType<Socials> = z.object({

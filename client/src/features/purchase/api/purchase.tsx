@@ -9,7 +9,7 @@ import type { Account } from "thirdweb/wallets";
 
 import type { EventDto } from "@/entities/event";
 import type { Order, OrderTicket } from "@/entities/order";
-import type { Socials } from "@/entities/socials";
+import type { Socials } from "@/entities/user";
 import { cleanEventLocal } from "@/features/event-form";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";

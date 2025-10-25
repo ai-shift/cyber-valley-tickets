@@ -1,4 +1,4 @@
-import type { NetworkEnum } from "@/entities/socials";
+import type { NetworkEnum } from "@/entities/user";
 import {
   Select,
   SelectContent,

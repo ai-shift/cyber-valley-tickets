@@ -1,4 +1,5 @@
 import { apiClient } from "@/shared/api";
+import type { Socials } from "../model/types";
 
 export const getCurrentUser = async () =>
   await apiClient.GET("/api/users/current/");
@@ -8,3 +9,10 @@ export const getUsersStaff = async () =>
 
 export const getUsersLocalproviders = async () =>
   await apiClient.GET("/api/users/local_providers/");
+
+export const upsertUserSocials = async (socials: Socials) =>
+  await apiClient.POST("/api/users/socials", {
+    body: {
+      ...socials,
+    },
+  });
