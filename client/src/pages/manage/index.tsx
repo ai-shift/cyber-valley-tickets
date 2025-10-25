@@ -12,9 +12,7 @@ export const ManagePage: React.FC = () => {
 
   return (
     <PageContainer hasBackIcon={false} name="Manage">
-      <div className="flex flex-col gap-7 px-5 py-9">
-        {manageView(user)}
-      </div>
+      <div className="flex flex-col gap-7 px-5 py-9">{manageView(user)}</div>
     </PageContainer>
   );
 };
@@ -22,24 +20,24 @@ export const ManagePage: React.FC = () => {
 const manageView = (user: User): React.ReactNode => {
   switch (user.role) {
     case "master":
-      return <MasterView />
+      return <MasterView />;
     case "localprovider":
-      return <LocalProviderView />
+      return <LocalProviderView />;
     case "verifiedshaman":
-      return <VerifiedShamanView />
+      return <VerifiedShamanView />;
     default:
-      return null
+      return null;
   }
-}
+};
 
 const VerifiedShamanView = (): React.ReactNode => (
-<Link
+  <Link
     className="card border-primary/30 text-center text-xl py-5"
     to="/request-place"
   >
     Request event place
   </Link>
-)
+);
 
 const LocalProviderView = (): React.ReactNode => (
   <>
@@ -58,7 +56,7 @@ const LocalProviderView = (): React.ReactNode => (
   </>
 );
 
-const MasterView = (): React.ReactNode=> (
+const MasterView = (): React.ReactNode => (
   <Link
     className="card border-primary/30 text-center text-xl py-5"
     to="/manage/localproviders"

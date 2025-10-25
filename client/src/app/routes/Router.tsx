@@ -17,10 +17,10 @@ import {
   NotificationsPage,
   Page404,
   PurchasePage,
+  RequestPlacePage,
   ShamanVerificationPage,
   SocialsPage,
   UpdatePlacePage,
-  RequestPlacePage,
 } from "@/pages";
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { AuthProvider, GoogleMapsProvider, QueryProvider } from "../providers";
@@ -60,13 +60,22 @@ export const Router = () => {
                 </Route>
 
                 <Route element={<ProtectedRoute />}>
-                  <Route path="/request-place" element={<RestrictedTo userRoles={["verifiedshaman"]}/>}>
+                  <Route
+                    path="/request-place"
+                    element={<RestrictedTo userRoles={["verifiedshaman"]} />}
+                  >
                     <Route index element={<RequestPlacePage />} />
                   </Route>
                   <Route
                     path="/manage"
                     element={
-                      <RestrictedTo userRoles={["master", "localprovider", "verifiedshaman"]} />
+                      <RestrictedTo
+                        userRoles={[
+                          "master",
+                          "localprovider",
+                          "verifiedshaman",
+                        ]}
+                      />
                     }
                   >
                     <Route index element={<ManagePage />} />
