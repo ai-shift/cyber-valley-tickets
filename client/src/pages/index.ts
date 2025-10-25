@@ -9,6 +9,7 @@ export { ManagePage } from "./manage";
 export { ShamanVerificationPage } from "./shaman-verification";
 export { ManagePlacesPage } from "./manage/place";
 export { CreatePlacePage } from "./manage/place/create";
+export { RequestPlacePage } from "./manage/place/request";
 export { UpdatePlacePage } from "./manage/place/update";
 export { ManageStaffPage } from "./manage/staff";
 export { ManageLocalprovidersPage } from "./manage/localprovider";
