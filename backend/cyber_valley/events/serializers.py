@@ -56,6 +56,7 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
             "geometry",
             "days_before_cancel",
             "available",
+            "status",
             "is_used",
         )
 
