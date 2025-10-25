@@ -533,7 +533,33 @@ export const eventManager = getContract({
           type: "uint8",
         },
       ],
-      name: "createEventPlace",
+      name: "submitEventPlaceRequest",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "eventPlaceId",
+          type: "uint256",
+        },
+      ],
+      name: "approveEventPlace",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "eventPlaceId",
+          type: "uint256",
+        },
+      ],
+      name: "declineEventPlace",
       outputs: [],
       stateMutability: "nonpayable",
       type: "function",
