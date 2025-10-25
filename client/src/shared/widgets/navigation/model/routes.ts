@@ -18,6 +18,6 @@ export const routes: Route[] = [
   {
     path: "/manage",
     title: "Manage",
-    restrictedTo: ["master", "localprovider"],
+    restrictedTo: ["master", "localprovider", "verifiedshaman"],
   },
 ];
