@@ -20,6 +20,7 @@ import {
   ShamanVerificationPage,
   SocialsPage,
   UpdatePlacePage,
+  RequestPlacePage,
 } from "@/pages";
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { AuthProvider, GoogleMapsProvider, QueryProvider } from "../providers";
@@ -59,6 +60,9 @@ export const Router = () => {
                 </Route>
 
                 <Route element={<ProtectedRoute />}>
+                  <Route path="/request-place" element={<RestrictedTo userRoles={["verifiedshaman"]}/>}>
+                    <Route index element={<RequestPlacePage />} />
+                  </Route>
                   <Route
                     path="/manage"
                     element={

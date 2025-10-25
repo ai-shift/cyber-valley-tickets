@@ -25,10 +25,21 @@ const manageView = (user: User): React.ReactNode => {
       return <MasterView />
     case "localprovider":
       return <LocalProviderView />
+    case "verifiedshaman":
+      return <VerifiedShamanView />
     default:
       return null
   }
 }
+
+const VerifiedShamanView = (): React.ReactNode => (
+<Link
+    className="card border-primary/30 text-center text-xl py-5"
+    to="/request-place"
+  >
+    Request event place
+  </Link>
+)
 
 const LocalProviderView = (): React.ReactNode => (
   <>
