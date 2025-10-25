@@ -123,9 +123,14 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
         200: {
             "type": "object",
             "properties": {"cid": {"type": "string"}},
-            "description": "IPFS CID of stored data",
+            "description": "IPFS CID of stored place metadata",
         }
     },
+    description=(
+        "Upload event place metadata to IPFS. The metadata includes "
+        "the place title and GeoJSON Point geometry with coordinates."
+    ),
+    summary="Upload place metadata to IPFS",
 )
 @api_view(["PUT"])
 @parser_classes([MultiPartParser])
@@ -135,7 +140,7 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     meta.is_valid(raise_exception=True)
     meta = meta.save()
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
-        event_meta = {"title": meta.title, "location_url": meta.location_url}
+        event_meta = {"title": meta.title, "geometry": meta.geometry}
         meta_hash = client.add_json(event_meta)
     return Response({"cid": meta_hash})
 

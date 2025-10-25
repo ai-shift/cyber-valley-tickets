@@ -3245,6 +3245,8 @@
         "/api/ipfs/places/meta": {
             "put": {
                 "operationId": "api_ipfs_places_meta_update",
+                "description": "Upload event place metadata to IPFS. The metadata includes the place title and GeoJSON Point geometry with coordinates.",
+                "summary": "Upload place metadata to IPFS",
                 "tags": [
                     "api"
                 ],
@@ -3419,7 +3421,7 @@
                                             "type": "string"
                                         }
                                     },
-                                    "description": "IPFS CID of stored data"
+                                    "description": "IPFS CID of stored place metadata"
                                 }
                             }
                         },
@@ -6440,7 +6442,7 @@
                         "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent"
                     },
                     {
-                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent"
+                        "$ref": "#/components/schemas/ApiIpfsPlacesMetaUpdateGeometryErrorComponent"
                     }
                 ],
                 "discriminator": {
@@ -6448,7 +6450,7 @@
                     "mapping": {
                         "non_field_errors": "#/components/schemas/ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent",
                         "title": "#/components/schemas/ApiIpfsPlacesMetaUpdateTitleErrorComponent",
-                        "location_url": "#/components/schemas/ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent"
+                        "geometry": "#/components/schemas/ApiIpfsPlacesMetaUpdateGeometryErrorComponent"
                     }
                 }
             },
@@ -6469,27 +6471,24 @@
                     }
                 }
             },
-            "ApiIpfsPlacesMetaUpdateLocationUrlErrorComponent": {
+            "ApiIpfsPlacesMetaUpdateGeometryErrorComponent": {
                 "type": "object",
                 "properties": {
                     "attr": {
                         "enum": [
-                            "location_url"
+                            "geometry"
                         ],
                         "type": "string",
-                        "description": "* `location_url` - location_url"
+                        "description": "* `geometry` - geometry"
                     },
                     "code": {
                         "enum": [
-                            "blank",
                             "invalid",
                             "null",
-                            "null_characters_not_allowed",
-                            "required",
-                            "surrogate_characters_not_allowed"
+                            "required"
                         ],
                         "type": "string",
-                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
+                        "description": "* `invalid` - invalid\n* `null` - null\n* `required` - required"
                     },
                     "detail": {
                         "type": "string"
@@ -7798,8 +7797,29 @@
                         "minimum": 0,
                         "format": "int64"
                     },
-                    "locationUrl": {
-                        "type": "string"
+                    "geometry": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "Point"
+                                ]
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "type": "number"
+                                },
+                                "minItems": 2,
+                                "maxItems": 2
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "coordinates"
+                        ],
+                        "readOnly": true
                     },
                     "daysBeforeCancel": {
                         "type": "integer",
@@ -7817,9 +7837,9 @@
                 },
                 "required": [
                     "daysBeforeCancel",
+                    "geometry",
                     "id",
                     "isUsed",
-                    "locationUrl",
                     "maxTickets",
                     "minDays",
                     "minPrice",
@@ -8274,15 +8294,35 @@
                 "properties": {
                     "title": {
                         "type": "string",
-                        "minLength": 1
+                        "minLength": 1,
+                        "description": "Title of the event place"
                     },
-                    "locationUrl": {
-                        "type": "string",
-                        "minLength": 1
+                    "geometry": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "Point"
+                                ]
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "type": "number"
+                                },
+                                "minItems": 2,
+                                "maxItems": 2
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "coordinates"
+                        ]
                     }
                 },
                 "required": [
-                    "locationUrl",
+                    "geometry",
                     "title"
                 ]
             },

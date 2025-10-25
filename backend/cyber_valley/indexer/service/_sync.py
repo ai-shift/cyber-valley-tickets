@@ -174,7 +174,7 @@ def _sync_new_event_place_request(
         defaults={
             "provider": None,
             "title": data["title"],
-            "location_url": data["location_url"],
+            "geometry": data["geometry"],
             "max_tickets": event_data.max_tickets,
             "min_tickets": event_data.min_tickets,
             "min_price": event_data.min_price,
@@ -208,7 +208,7 @@ def _sync_event_place_updated(
         defaults={
             "provider": provider,
             "title": "",
-            "location_url": "",
+            "geometry": {},
             "max_tickets": event_data.max_tickets,
             "min_tickets": event_data.min_tickets,
             "min_price": event_data.min_price,
@@ -225,7 +225,7 @@ def _sync_event_place_updated(
 
     place.provider = provider
     place.title = data["title"]
-    place.location_url = data["location_url"]
+    place.geometry = data["geometry"]
     place.max_tickets = event_data.max_tickets
     place.min_tickets = event_data.min_tickets
     place.min_price = event_data.min_price

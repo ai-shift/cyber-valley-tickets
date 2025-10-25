@@ -20,8 +20,29 @@ from .models import Event, EventPlace
 User = get_user_model()
 
 
+@extend_schema_field(
+    {
+        "type": "object",
+        "properties": {
+            "type": {"type": "string", "enum": ["Point"]},
+            "coordinates": {
+                "type": "array",
+                "items": {"type": "number"},
+                "minItems": 2,
+                "maxItems": 2,
+            },
+        },
+        "required": ["type", "coordinates"],
+    }
+)
+class GeoJSONPointField(serializers.JSONField):
+    """Custom field for GeoJSON Point geometry with proper OpenAPI schema."""
+
+
+
 class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
     is_used = serializers.SerializerMethodField()
+    geometry = GeoJSONPointField(read_only=True)
 
     class Meta:
         model = EventPlace
@@ -32,7 +53,7 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
             "min_tickets",
             "min_price",
             "min_days",
-            "location_url",
+            "geometry",
             "days_before_cancel",
             "available",
             "is_used",
@@ -176,12 +197,79 @@ class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
 @dataclass
 class PlaceMetaData:
     title: str
-    location_url: str
+    geometry: dict[str, Any]
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            name="Example Event Place",
+            value={
+                "title": "Example Venue",
+                "geometry": {"type": "Point", "coordinates": [10.123456, 50.789012]},
+            },
+            request_only=True,
+        ),
+    ]
+)
 class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
-    title = serializers.CharField()
-    location_url = serializers.CharField()
+    title = serializers.CharField(help_text="Title of the event place")
+    geometry = GeoJSONPointField()
+
+    def validate_geometry(self, value: dict[str, Any]) -> dict[str, Any]:
+        """Validate GeoJSON Point geometry structure and coordinate ranges."""
+        if not isinstance(value, dict):
+            msg = "Geometry must be a JSON object"  # type: ignore[unreachable]
+            raise serializers.ValidationError(msg)
+
+        # Validate GeoJSON structure
+        if "type" not in value:
+            msg = "Geometry must have a 'type' field"
+            raise serializers.ValidationError(msg)
+
+        if "coordinates" not in value:
+            msg = "Geometry must have a 'coordinates' field"
+            raise serializers.ValidationError(msg)
+
+        geom_type = value.get("type")
+        coordinates = value.get("coordinates")
+
+        # Support only Point type
+        if geom_type != "Point":
+            msg = "Geometry type must be 'Point'"
+            raise serializers.ValidationError(msg)
+
+        # Validate coordinates
+        coord_pair_length = 2
+        if not isinstance(coordinates, list) or len(coordinates) != coord_pair_length:
+            msg = "Point coordinates must be [longitude, latitude]"
+            raise serializers.ValidationError(msg)
+        self._validate_coordinate_pair(coordinates)
+
+        return value
+
+    def _validate_coordinate_pair(self, coord: Any) -> None:
+        """Validate a single [longitude, latitude] pair."""
+        coord_pair_length = 2
+        if not isinstance(coord, list) or len(coord) != coord_pair_length:
+            msg = "Each coordinate must be [longitude, latitude]"
+            raise serializers.ValidationError(msg)
+
+        lng, lat = coord
+        if not isinstance(lng, int | float) or not isinstance(lat, int | float):
+            msg = "Coordinates must be numeric values"
+            raise serializers.ValidationError(msg)
+
+        # Validate ranges: longitude [-180, 180], latitude [-90, 90]
+        min_lng, max_lng = -180, 180
+        min_lat, max_lat = -90, 90
+        if not min_lng <= lng <= max_lng:
+            msg = f"Longitude must be between {min_lng} and {max_lng}, got {lng}"
+            raise serializers.ValidationError(msg)
+
+        if not min_lat <= lat <= max_lat:
+            msg = f"Latitude must be between {min_lat} and {max_lat}, got {lat}"
+            raise serializers.ValidationError(msg)
 
     def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:
         return PlaceMetaData(**validated_data)
