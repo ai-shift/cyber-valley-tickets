@@ -62,7 +62,7 @@ export const Router = () => {
                   <Route
                     path="/manage"
                     element={
-                      <RestrictedTo userRoles={["master", "localprovider"]} />
+                      <RestrictedTo userRoles={["master", "localprovider", "verifiedshaman"]} />
                     }
                   >
                     <Route index element={<ManagePage />} />
