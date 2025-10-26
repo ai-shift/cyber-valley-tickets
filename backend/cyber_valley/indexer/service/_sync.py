@@ -35,7 +35,7 @@ class UnknownEventError(Exception):
 
 
 @safe
-def synchronize_event(event_data: BaseModel) -> None:  # noqa: C901
+def synchronize_event(event_data: BaseModel) -> None:
     match event_data:
         case CyberValleyEventManager.NewEventPlaceRequest():
             _sync_new_event_place_request(event_data)

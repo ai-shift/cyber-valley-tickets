@@ -8,6 +8,7 @@ def convert_array_to_latng(apps, schema_editor):
     EventPlace = apps.get_model("events", "EventPlace")
     # Check if geometry column exists
     from django.db import connection
+
     with connection.cursor() as cursor:
         cursor.execute("PRAGMA table_info(events_eventplace)")
         columns = [row[1] for row in cursor.fetchall()]
@@ -20,7 +21,11 @@ def convert_array_to_latng(apps, schema_editor):
             coordinates = place.geometry.get("coordinates")
             geom_type = place.geometry.get("type")
 
-            if geom_type == "Point" and isinstance(coordinates, list) and len(coordinates) == 2:
+            if (
+                geom_type == "Point"
+                and isinstance(coordinates, list)
+                and len(coordinates) == 2
+            ):
                 # Convert [lng, lat] to {lat, lng}
                 place.geometry["coordinates"] = {
                     "lng": coordinates[0],

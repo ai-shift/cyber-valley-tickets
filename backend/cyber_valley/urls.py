@@ -30,6 +30,7 @@ from .events.views import (
     upload_ticket_meta_to_ipfs,
     verify_ticket,
 )
+from .geodata.views import GeodataViewSet
 from .notifications.views import NotificationViewSet
 from .users.views import (
     CurrentUserViewSet,
@@ -43,6 +44,7 @@ router.register(r"places", EventPlaceViewSet)
 router.register(r"events", EventViewSet)
 router.register(r"notifications", NotificationViewSet, basename="Notification")
 router.register(r"users", CurrentUserViewSet, basename="users")
+router.register(r"geodata", GeodataViewSet, basename="geodata")
 
 urlpatterns = [
     path("", SpectacularSwaggerView.as_view(), name="swagger"),
