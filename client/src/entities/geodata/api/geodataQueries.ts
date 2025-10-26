@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getGeodataLayer } from "./queries";
+import { getGeodata, getGeodataLayer } from "./queries";
 
 export const geodataQueries = {
   layer: (layerName: string) =>
@@ -8,5 +8,11 @@ export const geodataQueries = {
       queryFn: () => getGeodataLayer(layerName),
       select: (queryData) => queryData?.data,
       staleTime: 1000 * 60 * 60,
+    }),
+  geodata: () =>
+    queryOptions({
+      queryKey: ["geodata", "layers", "all"],
+      queryFn: getGeodata,
+      select: (queryData) => queryData?.data,
     }),
 };
