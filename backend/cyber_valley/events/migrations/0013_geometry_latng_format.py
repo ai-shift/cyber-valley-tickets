@@ -1,9 +1,13 @@
 # Generated manually for geometry coordinates format migration
 
+from typing import Any
+
+from django.apps.registry import Apps
 from django.db import migrations
+from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
-def convert_array_to_latng(apps, schema_editor):
+def convert_array_to_latng(apps: Apps, schema_editor: BaseDatabaseSchemaEditor) -> None:
     """Convert geometry coordinates from [lng, lat] array to {lat, lng} object."""
     EventPlace = apps.get_model("events", "EventPlace")
     # Check if geometry column exists
@@ -34,7 +38,7 @@ def convert_array_to_latng(apps, schema_editor):
                 place.save()
 
 
-def convert_latng_to_array(apps, schema_editor):
+def convert_latng_to_array(apps: Apps, schema_editor: BaseDatabaseSchemaEditor) -> None:
     """Reverse: Convert {lat, lng} back to [lng, lat] array."""
     EventPlace = apps.get_model("events", "EventPlace")
     for place in EventPlace.objects.all():
