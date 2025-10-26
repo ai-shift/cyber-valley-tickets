@@ -1,14 +1,16 @@
 import json
+from typing import Any
 
 from django.http import HttpResponse, JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 
 from .models import GeodataLayer
 
 
-class ErrorResponseSerializer(serializers.Serializer):
+class ErrorResponseSerializer(serializers.Serializer[Any]):
     error = serializers.CharField()
 
 
@@ -18,16 +20,12 @@ class GeodataViewSet(viewsets.ViewSet):
     @extend_schema(
         summary="List available geodata layers",
         description="Returns a list of available geodata layer names",
-        responses={
-            200: {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "List of layer names",
-            },
-        },
+        responses={200: serializers.ListSerializer(child=serializers.CharField())},
     )
-    def list(self, request):
-        layers = GeodataLayer.objects.filter(is_active=True).values_list("name", flat=True)
+    def list(self, _request: Request) -> JsonResponse:
+        layers = GeodataLayer.objects.filter(is_active=True).values_list(
+            "name", flat=True
+        )
         return JsonResponse(list(layers), safe=False)
 
     @extend_schema(
@@ -42,7 +40,9 @@ class GeodataViewSet(viewsets.ViewSet):
             404: ErrorResponseSerializer,
         },
     )
-    def retrieve(self, request, pk=None):
+    def retrieve(
+        self, _request: Request, pk: str | None = None
+    ) -> HttpResponse | JsonResponse:
         try:
             layer = GeodataLayer.objects.get(name=pk, is_active=True)
             return HttpResponse(

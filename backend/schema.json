@@ -3219,11 +3219,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "description": "List of layer names"
+                                        "type": "string"
                                     }
                                 }
                             }

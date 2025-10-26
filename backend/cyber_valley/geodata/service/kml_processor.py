@@ -1,11 +1,11 @@
 import base64
 import json
 import logging
-import xml.etree.ElementTree as ET
-from pathlib import Path
 import tempfile
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
+from typing import Any
 
 import requests
 
@@ -23,16 +23,14 @@ def sync_geodata(url: str) -> None:
         kmz_file = tmpdir_path / "map.kmz"
 
         # Download KMZ
-        log.info(f"Downloading KMZ from {url}...")
+        log.info("Downloading KMZ from %s...", url)
         response = requests.get(url, timeout=30)
         response.raise_for_status()
 
-        with open(kmz_file, "wb") as f:
+        with kmz_file.open("wb") as f:
             f.write(response.content)
 
-        log.info(
-            f"Downloaded {len(response.content)} bytes"
-        )
+        log.info("Downloaded %d bytes", len(response.content))
 
         # Extract KMZ (it's a ZIP file)
         log.info("Extracting KMZ...")
@@ -46,10 +44,10 @@ def sync_geodata(url: str) -> None:
             log.error("No KML file found in KMZ")
             return
 
-        log.info(f"Found {len(kml_files)=}")
+        log.info("Found %d KML files", len(kml_files))
 
         for kml_file in kml_files:
-            log.info(f"Found KML: {kml_file.name}")
+            log.info("Found KML: %s", kml_file.name)
             layers = process_kml_by_folders(kml_file)
 
             for folder_name, geodata in layers.items():
@@ -64,13 +62,12 @@ def sync_geodata(url: str) -> None:
                     },
                 )
 
-                log.info(
-                    f"Saved geodata layer: {layer_name}"
-                )
+                log.info("Saved geodata layer: %s", layer_name)
 
 
-
-def get_style_element_by_url(style_url, global_styles):
+def get_style_element_by_url(
+    style_url: str | None, global_styles: dict[str, ET.Element]
+) -> ET.Element | None:
     """Resolves a style URL (e.g., #styleID) to its corresponding XML Element."""
     if style_url and style_url.startswith("#"):
         style_id = style_url.lstrip("#")
@@ -78,7 +75,9 @@ def get_style_element_by_url(style_url, global_styles):
     return None
 
 
-def resolve_normal_style(style_element, global_styles):
+def resolve_normal_style(
+    style_element: ET.Element | None, global_styles: dict[str, ET.Element]
+) -> ET.Element | None:
     """
     If the style_element is a StyleMap, resolves it to the specific 'normal'
     Style element. If it's a regular Style, returns it as is.
@@ -97,7 +96,7 @@ def resolve_normal_style(style_element, global_styles):
     return style_element
 
 
-def get_coordinates(geometry_tag):
+def get_coordinates(geometry_tag: ET.Element) -> str:
     """Helper to extract coordinates from geometry tag."""
     coords_tag = geometry_tag.find(f".//{{{KML_NAMESPACE}}}coordinates")
     return (
@@ -107,7 +106,9 @@ def get_coordinates(geometry_tag):
     )
 
 
-def parse_coordinates(coord_string, geom_type):
+def parse_coordinates(
+    coord_string: str, geom_type: str
+) -> list[dict[str, float]] | dict[str, float]:
     """
     Parses a KML coordinate string (LON,LAT,ALT) into a structured list of
     {"lat": float, "lng": float} objects.
@@ -131,7 +132,7 @@ def parse_coordinates(coord_string, geom_type):
     return transformed_coords
 
 
-def resolve_icon_url(icon_url, kml_path):
+def resolve_icon_url(icon_url: str, kml_path: Path) -> str:
     """
     Resolves icon URL to base64 data URI.
     If it's a local file relative to KML, read and encode it.
@@ -161,17 +162,22 @@ def resolve_icon_url(icon_url, kml_path):
                 ".svg": "image/svg+xml",
             }.get(suffix, "image/png")
 
+        except Exception:
+            log.exception("Failed to encode icon %s", icon_url)
+            return ""
+        else:
             base64_data = base64.b64encode(image_data).decode("utf-8")
             return f"data:{mime_type};base64,{base64_data}"
-        except Exception as e:
-            log.error(f"Failed to encode icon {icon_url}: {e}")
-            return ""
 
-    log.warning(f"Icon file not found: {icon_path}")
+    log.warning("Icon file not found: %s", icon_path)
     return ""
 
 
-def placemark_to_json(placemark, global_styles, kml_path=None):
+def placemark_to_json(
+    placemark: ET.Element,
+    global_styles: dict[str, ET.Element],
+    kml_path: Path | None = None,
+) -> dict[str, Any] | None:
     """
     Converts a single KML Placemark to a JSON object based on its geometry and style.
     Handles Polygon, LineString, and Point.
@@ -282,7 +288,7 @@ def placemark_to_json(placemark, global_styles, kml_path=None):
     return None
 
 
-def process_kml_file(kml_path):
+def process_kml_file(kml_path: Path | str) -> list[dict[str, Any]]:
     """
     Processes a KML file and returns a list of geodata objects.
     Combines conversion and coordinate transformation in one step.
@@ -319,7 +325,7 @@ def process_kml_file(kml_path):
     return all_placemarks_json
 
 
-def process_kml_by_folders(kml_path):
+def process_kml_by_folders(kml_path: Path | str) -> dict[str, list[dict[str, Any]]]:
     """
     Processes a KML file and returns a dict mapping folder names to geodata lists.
     Each folder becomes a separate layer.
@@ -368,7 +374,7 @@ def process_kml_by_folders(kml_path):
     return layers
 
 
-def load_json_file(json_path):
+def load_json_file(json_path: Path | str) -> Any:
     """Load geodata from a JSON file."""
     json_path = Path(json_path)
     if not json_path.exists():
