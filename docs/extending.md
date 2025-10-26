@@ -117,7 +117,7 @@ The API was massively improved this spring and provides a wide variety of drawin
 
 **Tasks**:
 1. **Setup Google Maps integration** (~4 hours)
-    - [ ] @naqerl Setup dynamic map data endpoint & sync via HTTP
+    - [x] @naqerl Setup dynamic map data endpoint & sync via HTTP
     - [x] @redmoor Configure Google Maps API and authentication
     - [x] @redmoor Create base map component with responsive design
 2. **Implement upcoming events map view** (~3 hours)
@@ -167,7 +167,7 @@ Due to the previous features, the event request flow should/could be improved in
 1. **Add zone marker selection to event form** (~7 hours)
     - [ ] @redmoor Integrate map component into event creation form (3h)
     - [ ] @redmoor Implement zone marker placement and validation (2h)
-    - [ ] @naqerl Store zone coordinates in event model (2h)
+    - [x] @naqerl Store zone coordinates in event model (2h)
 2. **Add Telegram bot notifications for event requests** (~2 hours)
     - [ ] @naqerl Extend notification system to support Telegram (1h)
     - [ ] @naqerl Integrate with LocalProvider notification flow (1h)
