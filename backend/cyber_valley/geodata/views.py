@@ -18,13 +18,7 @@ class GeodataViewSet(viewsets.ViewSet):
     @extend_schema(
         summary="List available geodata layers",
         description="Returns a list of available geodata layer names",
-        responses={
-            200: {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "List of layer names",
-            },
-        },
+        responses={200: serializers.ListSerializer(child=serializers.CharField())},
     )
     def list(self, request):
         layers = GeodataLayer.objects.filter(is_active=True).values_list("name", flat=True)
