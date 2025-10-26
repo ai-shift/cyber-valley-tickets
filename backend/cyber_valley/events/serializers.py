@@ -217,10 +217,6 @@ class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
 
     def validate_geometry(self, value: dict[str, Any]) -> dict[str, Any]:
         """Validate geometry structure with {lat, lng} coordinate objects."""
-        if not isinstance(value, dict):
-            msg = "Geometry must be a JSON object"
-            raise serializers.ValidationError(msg)
-
         if "type" not in value:
             msg = "Geometry must have a 'type' field"
             raise serializers.ValidationError(msg)
@@ -258,7 +254,7 @@ class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
         lat = coord["lat"]
         lng = coord["lng"]
 
-        if not isinstance(lat, (int, float)) or not isinstance(lng, (int, float)):
+        if not isinstance(lat, int | float) or not isinstance(lng, int | float):
             msg = "Coordinates must be numeric values"
             raise serializers.ValidationError(msg)
 
