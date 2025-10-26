@@ -64,14 +64,14 @@ async function main() {
       title: "foo",
       geometry: {
         type: "Point",
-        coordinates: {lat: 11.576124, lng: 48.137154},
+        coordinates: {lat: -8.291059, lng: 115.0841631},
       },
     },
     {
       title: "bar",
       geometry: {
         type: "Point",
-        coordinates: {lat: 11.577124, lng: 48.138154},
+        coordinates: {lat: -8.299827, lng: 115.098407},
       },
     },
   ];
