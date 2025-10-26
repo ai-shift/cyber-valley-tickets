@@ -1861,6 +1861,10 @@ TBD
 
 ## How to run
 
+Use `./launch.sh`, it works like a charm
+
+If it didn't, here is a documented way of starting all the things manually
+
 ```bash
 make -C ethereum/ ganache
 make -C backend/ run # New terminal
