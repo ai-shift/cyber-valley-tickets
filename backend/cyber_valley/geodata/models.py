@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.db import models
 
 
@@ -10,7 +12,7 @@ class GeodataLayer(models.Model):
 
     class Meta:
         db_table = "geodata_layer"
-        ordering = ["name"]
+        ordering: ClassVar[list[str]] = ["name"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
