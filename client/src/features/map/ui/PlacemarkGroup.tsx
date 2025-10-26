@@ -35,16 +35,15 @@ export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({
     showInfo(placemark);
     closeGroups();
   };
-
   return (
     <div>
-      <label className="flex gap-3 text-xl">
+      <label className="capitalize flex gap-3 text-xl">
         <input
           type="checkbox"
           checked={isDisplayed}
           onChange={() => setDisplayed(value)}
         />
-        {value}
+        {value.replace(/_/, " ")}
       </label>
       {isDisplayed && (
         <div className="flex flex-col items-start">
