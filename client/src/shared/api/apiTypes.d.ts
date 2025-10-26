@@ -2634,7 +2634,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": string[][];
+                    "application/json": string[];
                 };
             };
             400: {
