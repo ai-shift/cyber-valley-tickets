@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "cyber_valley.indexer",
     "cyber_valley.event_reaper",
     "cyber_valley.custom_auth",
+    "cyber_valley.geodata",
 ]
 
 REST_FRAMEWORK = {

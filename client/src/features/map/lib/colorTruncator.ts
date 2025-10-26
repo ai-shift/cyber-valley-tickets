@@ -1,5 +1,6 @@
 export function truncateColorString(kmlColor: string): string {
   if (!kmlColor || kmlColor.length !== 8) {
+    console.error("Invalid KML color format:", kmlColor);
     throw new Error("Invalid KML color format (expected 8 hex chars).");
   }
 
@@ -12,6 +13,7 @@ export function truncateColorString(kmlColor: string): string {
 
 export function swapBR(kmlColor: string): string {
   if (!kmlColor || kmlColor.length !== 8) {
+    console.error("Invalid KML color format:", kmlColor);
     throw new Error("Invalid KML color format (expected 8 hex chars).");
   }
 

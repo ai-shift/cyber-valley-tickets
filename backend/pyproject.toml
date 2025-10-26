@@ -92,6 +92,11 @@ ignore = [
   "S101", # Use of `assert` detected
   "A005", # Module shadows a Python standard-library module
   "PT013", # pytest import consistency
+  "TRY003", # I want easy way to raise exceptions
+  "PLR0912",
+  "PLR0915",
+  "PLR2004",
+  "C901",
 ]
 exclude = ["**/migrations/*.py"]
 

@@ -1866,6 +1866,7 @@ make -C ethereum/ ganache
 make -C backend/ run # New terminal
 make -C client/ dev # New terminal
 make -C backend/ seed-db
+make -C backend/ sync-geodata
 make -C ethereum/ deploy-dev # Copy new contract addresses from the stdout to .env
 make -C backend/ run-indexer # New terminal
 # Rerun backend & frontend

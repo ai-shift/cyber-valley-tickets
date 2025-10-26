@@ -25,6 +25,9 @@ migrate:
 seed-db: migrate
 	$(python) manage.py seed_db --flush
 
+sync-geodata: migrate
+	$(python) manage.py sync_geodata
+
 open-api-schema:
 	$(python) manage.py spectacular --format openapi-json --validate > schema.json
 
