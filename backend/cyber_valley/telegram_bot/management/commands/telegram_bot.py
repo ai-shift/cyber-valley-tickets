@@ -9,6 +9,7 @@ from django.core.management.base import BaseCommand
 from cyber_valley.shaman_verification.models import VerificationRequest
 from cyber_valley.telegram_bot.verification_helpers import (
     create_verification_caption,
+    notify_shaman_of_decision,
     send_all_pending_verifications_to_provider,
 )
 from cyber_valley.users.models import CyberValleyUser, UserSocials
@@ -103,12 +104,19 @@ class Command(BaseCommand):
             # Update verification status in database
             verification_request = VerificationRequest.objects.get(id=verification_id)
             assert verification_request.requester_id is not None
-            verification_request.status = (
+
+            old_status = verification_request.status
+            new_status = (
                 VerificationRequest.Status.APPROVED
                 if action == "approve"
                 else VerificationRequest.Status.DECLINED
             )
+            is_update = old_status != VerificationRequest.Status.PENDING
+
+            verification_request.status = new_status
             verification_request.save()
+
+            notify_shaman_of_decision(verification_request, is_update=is_update)
 
             # Delete the confirmation message
             bot.delete_message(

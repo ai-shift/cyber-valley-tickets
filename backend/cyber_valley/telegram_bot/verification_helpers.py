@@ -7,6 +7,7 @@ import ipfshttpclient
 import telebot
 from django.conf import settings
 
+from cyber_valley.notifications.models import Notification
 from cyber_valley.shaman_verification.models import VerificationRequest
 from cyber_valley.users.models import UserSocials
 
@@ -187,4 +188,72 @@ def send_all_pending_verifications_to_provider(
             log.exception(
                 "Failed to send verification request %s to provider",
                 verification_request.id,
+            )
+
+
+def notify_shaman_of_decision(
+    verification_request: VerificationRequest, is_update: bool = False
+) -> None:
+    """Notify shaman about verification decision via web and Telegram."""
+    if verification_request.status == VerificationRequest.Status.PENDING:
+        return
+
+    status_display = (
+        "Approved"
+        if verification_request.status == VerificationRequest.Status.APPROVED
+        else "Declined"
+    )
+    update_prefix = "Updated: " if is_update else ""
+
+    web_title = f"{update_prefix}Verification Request {status_display}"
+    web_body = (
+        f"Your {verification_request.verification_type} verification request "
+        f"has been {status_display.lower()}."
+    )
+
+    Notification.objects.create(
+        user=verification_request.requester,
+        title=web_title,
+        body=web_body,
+    )
+    log.info(
+        "Created web notification for shaman %s about verification %s status: %s",
+        verification_request.requester_id,
+        verification_request.id,
+        status_display,
+    )
+
+    telegram_social = verification_request.requester.socials.filter(
+        network=UserSocials.Network.TELEGRAM
+    ).first()
+
+    if telegram_social:
+        token = os.environ["TELEGRAM_BOT_TOKEN"]
+        bot = telebot.TeleBot(token)
+        chat_id = int(telegram_social.value)
+
+        status_emoji = (
+            "✅"
+            if verification_request.status == VerificationRequest.Status.APPROVED
+            else "❌"
+        )
+        update_text = " (Updated)" if is_update else ""
+
+        message = (
+            f"{status_emoji} <b>Verification {status_display}{update_text}</b>\n\n"
+            f"Your <b>{verification_request.verification_type}</b> verification request "
+            f"has been <b>{status_display.lower()}</b>."
+        )
+
+        try:
+            bot.send_message(chat_id, message, parse_mode="HTML")
+            log.info(
+                "Sent Telegram notification to shaman %s about verification %s",
+                verification_request.requester_id,
+                verification_request.id,
+            )
+        except Exception:
+            log.exception(
+                "Failed to send Telegram notification to shaman %s",
+                verification_request.requester_id,
             )
