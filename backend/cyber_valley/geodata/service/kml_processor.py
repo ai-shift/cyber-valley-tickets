@@ -108,13 +108,13 @@ def get_coordinates(geometry_tag: ET.Element) -> str:
 
 def parse_coordinates(
     coord_string: str, geom_type: str
-) -> list[dict[str, float]] | dict[str, float]:
+) -> list[dict[str, float]]:
     """
     Parses a KML coordinate string (LON,LAT,ALT) into a structured list of
     {"lat": float, "lng": float} objects.
     """
     if not coord_string:
-        return [] if geom_type != "point" else {}
+        return []
 
     coord_sets = coord_string.strip().split()
     transformed_coords = []
@@ -125,9 +125,6 @@ def parse_coordinates(
             transformed_coords.append({"lat": lat, "lng": lon})
         except ValueError:
             continue
-
-    if geom_type == "point" and transformed_coords:
-        return transformed_coords[0]
 
     return transformed_coords
 
