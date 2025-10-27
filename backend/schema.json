@@ -8581,10 +8581,7 @@
                         "format": "int64"
                     },
                     "geometry": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Coordinate"
-                        }
+                        "$ref": "#/components/schemas/GeoFeature"
                     },
                     "daysBeforeCancel": {
                         "type": "integer",
