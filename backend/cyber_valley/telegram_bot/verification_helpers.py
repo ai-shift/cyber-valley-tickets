@@ -8,6 +8,7 @@ import telebot
 from django.conf import settings
 
 from cyber_valley.shaman_verification.models import VerificationRequest
+from cyber_valley.users.models import UserSocials
 
 log = logging.getLogger(__name__)
 
@@ -69,13 +70,23 @@ def send_verification_request_to_provider(
             verification_request_id,
         )
         return
+    assert verification_request.requester_id is not None
+
+    telegram_social = verification_request.requester.socials.filter(
+        network=UserSocials.Network.TELEGRAM
+    ).first()
+    assert telegram_social is not None
+    requester_chat_id = int(telegram_social.value)
+    requester_username = (
+        telegram_social.metadata.get("username") if telegram_social.metadata else None
+    )
 
     caption = create_verification_caption(
         metadata_cid=verification_request.metadata_cid,
         verification_type=verification_request.verification_type,
         status="pending",
-        requester_chat_id=verification_request.requester_telegram_chat_id,
-        requester_username=verification_request.requester_telegram_username,
+        requester_chat_id=requester_chat_id,
+        requester_username=requester_username,
     )
 
     markup = telebot.types.InlineKeyboardMarkup()
