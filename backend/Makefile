@@ -1,6 +1,6 @@
 -include ../.env
-ipfs_container_name := "cyber-valley-ipfs"
-valkey_container_name := "cyber-valley-valkey"
+ipfs_container_name := "cvland-ipfs"
+valkey_container_name := "cvland-valkey"
 python := .venv/bin/python
 VIRTUALIZER ?= podman
 BACKEND_PORT ?= 8000
@@ -39,6 +39,9 @@ run-indexer: migrate
 
 run-reaper: migrate
 	$(python) manage.py reaper
+
+run-telegram-bot: migrate
+	$(python) manage.py telegram_bot
 
 run-server: migrate
 	$(python) manage.py runserver $(BACKEND_PORT)

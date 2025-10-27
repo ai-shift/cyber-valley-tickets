@@ -15,7 +15,7 @@ import { createWallet, injectedProvider } from "thirdweb/wallets";
 const wallets = [
   createWallet("inApp", {
     auth: {
-      options: ["phone", "email"],
+      options: ["phone", "email", "telegram"],
       mode: "popup",
     },
   }),

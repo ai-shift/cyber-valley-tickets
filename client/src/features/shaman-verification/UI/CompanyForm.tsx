@@ -1,17 +1,34 @@
 import { Button } from "@/shared/ui/button";
 import { useState } from "react";
+import { submitCompanyVerification } from "../api/shamanApi";
 import { FileField } from "./FileField";
 
 export const CompanyForm: React.FC = () => {
   const [ktpFile, setKtpFile] = useState<File | null>(null);
   const [aktaFile, setAktaFile] = useState<File | null>(null);
   const [skFile, setSkFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const allFilesPresent = ktpFile && aktaFile && skFile;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting company documents:", { ktpFile, aktaFile, skFile });
+
+    if (!ktpFile || !aktaFile || !skFile) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const result = await submitCompanyVerification(ktpFile, aktaFile, skFile);
+      console.log("Verification submitted successfully:", result);
+      // TODO: Show success message to user
+    } catch (error) {
+      console.error("Failed to submit verification:", error);
+      // TODO: Show error message to user
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -34,8 +51,12 @@ export const CompanyForm: React.FC = () => {
         setFile={setSkFile}
         id="sk-kemenkumham"
       />
-      <Button type="submit" className="mt-4" disabled={!allFilesPresent}>
-        Submit
+      <Button
+        type="submit"
+        className="mt-4"
+        disabled={!allFilesPresent || isSubmitting}
+      >
+        {isSubmitting ? "Submitting..." : "Submit"}
       </Button>
     </form>
   );

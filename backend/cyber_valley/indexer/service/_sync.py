@@ -382,10 +382,6 @@ def _sync_role_granted(
             body=f"{user.role} granted to {user.address}",
         )
 
-    if user.role == CyberValleyUser.LOCAL_PROVIDER:
-        # TODO: Find telegram info in socials and send message
-        raise NotImplementedError
-
 
 @transaction.atomic
 def _sync_role_revoked(

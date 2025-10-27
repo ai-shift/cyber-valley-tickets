@@ -132,7 +132,7 @@ async function main() {
       price: 100,
       startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       daysAmount: 3,
-      cover: "https://picsum.photos/1920/1080",
+      cover: "https://www.toei-animation.com/wp-content/uploads/2023/12/Egghead-KV_with-copyright-for-website-scaled.jpg",
       creator: creatorSlave,
       socials: {
         network: "telegram",
@@ -146,7 +146,7 @@ async function main() {
       price: 50,
       startDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
-      cover: "https://picsum.photos/1920/1080",
+      cover: "https://images.gog-statics.com/8e401209b82f9a43ff803287e3970e703b1eaeb505ae25c96108499dd7a210e5_product_card_v2_mobile_slider_639.jpg",
       creator: creatorSlave,
       socials: {
         network: "telegram",
@@ -160,7 +160,7 @@ async function main() {
       price: 69,
       startDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
       daysAmount: 5,
-      cover: "https://picsum.photos/1920/1080",
+      cover: "https://i.imgur.com/TOHh4OL.png",
       creator: creatorSlave,
       socials: {
         network: "telegram",
@@ -169,12 +169,8 @@ async function main() {
     },
   ];
   for (const cfg of events) {
-    // Fetch cover
-    const imgResponse = await fetch(cfg.cover);
-    if (!imgResponse.ok) {
-      const body = await imgResponse.text();
-      throw new Error(`failed to fetch cover with ${body}`);
-    }
+    // Fetch cover with retry logic
+    const imgResponse = await fetchWithRetry(cfg.cover);
     const imgBlob = await imgResponse.blob();
 
     // Upload socials
@@ -312,6 +308,29 @@ async function main() {
   console.log(
     `export PUBLIC_EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`,
   );
+}
+
+async function fetchWithRetry(url, maxRetries = 3, delayMs = 5000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        return response;
+      }
+      if (attempt === maxRetries) {
+        const body = await response.text();
+        throw new Error(`failed to fetch ${url} after ${maxRetries} attempts: ${body}`);
+      }
+      console.log(`Attempt ${attempt} failed for ${url}, retrying in ${delayMs}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw new Error(`failed to fetch ${url} after ${maxRetries} attempts: ${error.message}`);
+      }
+      console.log(`Attempt ${attempt} failed for ${url} with error: ${error.message}, retrying in ${delayMs}ms...`);
+      await new Promise(resolve => setTimeout(resolve, attempt * delayMs));
+    }
+  }
 }
 
 function getBytes32FromMultiash(multihash) {

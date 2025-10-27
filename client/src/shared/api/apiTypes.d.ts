@@ -419,6 +419,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/shaman/verify/company": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["api_shaman_verify_company_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/shaman/verify/individual": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["api_shaman_verify_individual_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/current/": {
     parameters: {
       query?: never;
@@ -1303,6 +1335,8 @@ export interface components {
     };
     ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiShamanVerifyCompanyCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiShamanVerifyIndividualCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersLocalProvidersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersSocialsCreateError:
@@ -3581,6 +3615,138 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ErrorResponse404"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_shaman_verify_company_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiShamanVerifyCompanyCreateErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_shaman_verify_individual_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiShamanVerifyIndividualCreateErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
         };
       };
       405: {
