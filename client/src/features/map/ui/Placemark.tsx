@@ -14,7 +14,10 @@ export const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
   switch (placemark.type) {
     case "point":
       return (
-        <AdvancedMarker onClick={clickHandler} position={placemark.coordinates}>
+        <AdvancedMarker
+          onClick={clickHandler}
+          position={placemark.coordinates[0]}
+        >
           <img
             src={placemark.iconUrl}
             alt={`${placemark.name} marker`}

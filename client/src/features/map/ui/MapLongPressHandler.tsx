@@ -1,6 +1,6 @@
+import type { LatLng } from "@/entities/geodata";
 import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef } from "react";
-import type { LatLng } from "../model/types";
 
 type MouseClickEvent = {
   domEvent: MouseClickEvent;

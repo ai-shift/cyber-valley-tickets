@@ -85,6 +85,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           title="Location"
           information={
             <a
+              // TODO: Update to navigate to / with search parameters to pan into the marker
               href={place.locationUrl}
               target="_blank"
               className="underline underline-offset-2 text-secondary"
