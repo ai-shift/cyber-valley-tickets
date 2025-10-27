@@ -9,7 +9,11 @@
         <link rel="manifest" href="/fav/site.webmanifest">
         <title>Cyber Valley</title>
         <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-        <script>eruda.init();</script>
+        <script>
+          if (navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile/i)) {
+            eruda.init()
+          }
+        </script>
     </head>
   <body>
     <div id="root"></div>
