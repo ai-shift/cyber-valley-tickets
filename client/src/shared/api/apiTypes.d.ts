@@ -1378,7 +1378,7 @@ export interface components {
             minPrice: number;
             /** Format: int64 */
             minDays: number;
-            geometry: components["schemas"]["Coordinate"][];
+            geometry: components["schemas"]["GeoFeature"];
             /** Format: int64 */
             daysBeforeCancel: number;
             available?: boolean;
