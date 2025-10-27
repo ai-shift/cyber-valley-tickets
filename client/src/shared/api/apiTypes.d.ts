@@ -1260,6 +1260,8 @@ export interface components {
             description: string;
             place: components["schemas"]["EventPlace"];
             /** Format: int64 */
+            readonly placeId: number;
+            /** Format: int64 */
             ticketPrice: number;
             /** Format: int64 */
             daysAmount: number;
@@ -1500,6 +1502,8 @@ export interface components {
             title: string;
             description: string;
             place: components["schemas"]["EventPlace"];
+            /** Format: int64 */
+            readonly placeId: number;
             /** Format: int64 */
             ticketPrice: number;
             /** Format: int64 */
