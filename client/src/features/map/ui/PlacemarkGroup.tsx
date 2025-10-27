@@ -4,9 +4,9 @@ import { getThumbUrl } from "../lib/getThumbUrl.ts";
 import type { Placemark } from "../model/types.ts";
 
 type PlacemarkGroupProps = {
-  isDisplayed: boolean;
   value: string;
-  setDisplayed: (groupName: string) => void;
+  isDisplayed: boolean;
+  setIsDisplayed: (groupName: string) => void;
   placemarks: Placemark[];
   showInfo: (placemark: Placemark) => void;
   closeGroups: () => void;
@@ -15,7 +15,7 @@ type PlacemarkGroupProps = {
 export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({
   value,
   isDisplayed,
-  setDisplayed,
+  setIsDisplayed,
   placemarks,
   showInfo,
   closeGroups,
@@ -35,19 +35,20 @@ export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({
     showInfo(placemark);
     closeGroups();
   };
+
   return (
     <div>
       <label className="capitalize flex gap-3 text-xl">
         <input
           type="checkbox"
           checked={isDisplayed}
-          onChange={() => setDisplayed(value)}
+          onChange={() => setIsDisplayed(value)}
         />
         {value.replace(/_/, " ")}
       </label>
       {isDisplayed && (
         <div className="flex flex-col items-start">
-          {placemarks.map((placemark, idx) => (
+          {placemarks?.map((placemark, idx) => (
             <button
               type="button"
               className="flex gap-1 items-center justify-center"

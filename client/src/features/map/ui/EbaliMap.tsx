@@ -12,7 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/shared/ui/sheet.tsx";
-import { useGeodata } from "../hooks/useGodata.tsx";
+import { useGeodata } from "../hooks/useGeodata.tsx";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
@@ -34,7 +34,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
   const [showGroups, setShowGroups] = useState(false);
 
-  const { layersTitles, loadingGeodata, geodata } = useGeodata(displayedGroups);
+  const { layersTitles, geodata } = useGeodata(displayedGroups);
 
   const [selectedId, setSelectedId] = useState("");
   const [selectedPlacemark, setSelectedPlacemark] =
@@ -87,37 +87,32 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         <SheetContent side="left" aria-describedby={undefined}>
           <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
           <div className="h-full overflow-y-auto px-4">
-            {loadingGeodata ? (
-              <p>Loading</p>
-            ) : (
-              layersTitles.map((title) => {
-                const placemarks = geodata[title] as PlacemarkType[];
-                return (
-                  <PlacemarkGroup
-                    key={title}
-                    value={title}
-                    isDisplayed={displayedGroups.includes(title)}
-                    setDisplayed={() => displayGroupHandler(title)}
-                    placemarks={placemarks}
-                    showInfo={showPlacemarkInfo}
-                    closeGroups={() => setShowGroups(false)}
-                  />
-                );
-              })
-            )}
+            {layersTitles.map((title) => {
+              const placemarks = geodata[title] as PlacemarkType[];
+              return (
+                <PlacemarkGroup
+                  key={title}
+                  value={title}
+                  isDisplayed={displayedGroups.includes(title)}
+                  setIsDisplayed={() => displayGroupHandler(title)}
+                  placemarks={placemarks}
+                  showInfo={showPlacemarkInfo}
+                  closeGroups={() => setShowGroups(false)}
+                />
+              );
+            })}
           </div>
         </SheetContent>
       </Sheet>
-      {!loadingGeodata &&
-        displayedGroups.map((layer) => {
-          return geodata[layer].map((placemark, idx) => (
-            <Placemark
-              onClick={(placemark) => showPlacemarkInfo(placemark)}
-              key={`${placemark.name}-${idx}`}
-              placemark={placemark as PlacemarkType}
-            />
-          ));
-        })}
+      {displayedGroups.map((layer) => {
+        return geodata[layer]?.map((placemark, idx) => (
+          <Placemark
+            onClick={(placemark) => showPlacemarkInfo(placemark)}
+            key={`${placemark.name}-${idx}`}
+            placemark={placemark as PlacemarkType}
+          />
+        ));
+      })}
       {infoWindowShown && selectedPlacemark && (
         <InfoWindow
           pixelOffset={[0, -2]}
