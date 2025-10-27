@@ -1,4 +1,4 @@
-import apiClient from "@/shared/api/client";
+import { apiClient } from "@/shared/api";
 
 export const submitIndividualVerification = async (ktp: File) => {
   const formData = new FormData();

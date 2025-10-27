@@ -48,6 +48,115 @@ class Command(BaseCommand):
 
             matched_strategies[0].execute(bot, message)
 
+        @bot.callback_query_handler(
+            func=lambda call: call.data.startswith(("approve:", "decline:"))
+        )
+        def handle_verification_action(call: telebot.types.CallbackQuery) -> None:
+            assert call.data is not None
+            assert call.message is not None
+
+            parts = call.data.split(":")
+            action = parts[0]  # approve or decline
+            metadata_cid = parts[1]
+
+            bot.edit_message_reply_markup(
+                chat_id=call.message.chat.id,
+                message_id=call.message.message_id,
+                reply_markup=None,
+            )
+
+            markup = telebot.types.InlineKeyboardMarkup()
+            markup.add(
+                telebot.types.InlineKeyboardButton(
+                    "✔️ Confirm",
+                    callback_data=f"confirm_{action}:{metadata_cid}:{call.message.message_id}",
+                ),
+                telebot.types.InlineKeyboardButton(
+                    "↩️ Cancel",
+                    callback_data=f"cancel:{metadata_cid}:{call.message.message_id}:{action}",
+                ),
+            )
+
+            action_text = "approve" if action == "approve" else "decline"
+            bot.send_message(
+                call.message.chat.id,
+                f"Are you sure you want to {action_text} this verification request?",
+                reply_markup=markup,
+            )
+
+        @bot.callback_query_handler(func=lambda call: call.data.startswith("confirm_"))
+        def handle_confirmation(call: telebot.types.CallbackQuery) -> None:
+            assert call.data is not None
+            assert call.message is not None
+
+            parts = call.data.replace("confirm_", "").split(":")
+            action = parts[0]  # approve or decline
+            metadata_cid = parts[1]
+            _original_message_id = parts[2]
+
+            bot.edit_message_reply_markup(
+                chat_id=call.message.chat.id,
+                message_id=call.message.message_id,
+                reply_markup=None,
+            )
+
+            action_emoji = "✅" if action == "approve" else "❌"
+            action_text = "approved" if action == "approve" else "declined"
+
+            markup = telebot.types.InlineKeyboardMarkup()
+            opposite_action = "decline" if action == "approve" else "approve"
+            opposite_emoji = "❌" if action == "approve" else "✅"
+            opposite_text = "Decline" if action == "approve" else "Approve"
+
+            markup.add(
+                telebot.types.InlineKeyboardButton(
+                    f"{opposite_emoji} {opposite_text}",
+                    callback_data=f"{opposite_action}:{metadata_cid}",
+                )
+            )
+
+            bot.send_message(
+                call.message.chat.id,
+                f"{action_emoji} Verification request has been {action_text}.",
+                reply_markup=markup,
+            )
+
+            log.info("Verification %s %s by user", metadata_cid, action_text)
+
+        @bot.callback_query_handler(func=lambda call: call.data.startswith("cancel:"))
+        def handle_cancel(call: telebot.types.CallbackQuery) -> None:
+            assert call.data is not None
+            assert call.message is not None
+
+            parts = call.data.replace("cancel:", "").split(":")
+            metadata_cid = parts[0]
+            _original_message_id = parts[1]
+            _original_action = parts[2]
+
+            bot.edit_message_reply_markup(
+                chat_id=call.message.chat.id,
+                message_id=call.message.message_id,
+                reply_markup=None,
+            )
+
+            markup = telebot.types.InlineKeyboardMarkup()
+            markup.add(
+                telebot.types.InlineKeyboardButton(
+                    "✅ Approve",
+                    callback_data=f"approve:{metadata_cid}",
+                ),
+                telebot.types.InlineKeyboardButton(
+                    "❌ Decline",
+                    callback_data=f"decline:{metadata_cid}",
+                ),
+            )
+
+            bot.send_message(
+                call.message.chat.id,
+                "Action cancelled. Please review the verification request:",
+                reply_markup=markup,
+            )
+
         @bot.message_handler(func=lambda _: True)
         def echo_all(message: telebot.types.Message) -> None:
             bot.reply_to(message, f"You said: {message.text}")

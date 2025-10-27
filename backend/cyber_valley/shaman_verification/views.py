@@ -2,6 +2,7 @@ import logging
 import os
 import time
 from pathlib import Path
+from typing import cast
 
 import ipfshttpclient
 import telebot
@@ -41,19 +42,37 @@ def send_verification_to_local_providers(
             )
             continue
 
-        message = (
+        caption = (
             f"🔔 New Shaman Verification Request\n\n"
             f"Type: {verification_type}\n"
-            f"IPFS Metadata: {ipfs_url}\n\n"
-            f"Files attached below ⬇️"
+            f"IPFS Metadata: {ipfs_url}"
         )
 
         chat = telegram_social.value
-        bot.send_message(chat, message)
 
-        for _field_name, file_path in files:
-            with file_path.open("rb") as f:
-                bot.send_document(chat, f, visible_file_name=file_path.name)
+        markup = telebot.types.InlineKeyboardMarkup()
+        markup.add(
+            telebot.types.InlineKeyboardButton(
+                "✅ Approve", callback_data=f"approve:{metadata_cid}"
+            ),
+            telebot.types.InlineKeyboardButton(
+                "❌ Decline", callback_data=f"decline:{metadata_cid}"
+            ),
+        )
+
+        media_group = []
+        for idx, (_field_name, file_path) in enumerate(files):
+            file_obj = cast(telebot.types.InputFile, file_path.open("rb"))
+            media = telebot.types.InputMediaDocument(
+                file_obj, caption=caption if idx == 0 else None
+            )
+            media_group.append(media)
+
+        bot.send_media_group(chat, media_group)  # type: ignore[arg-type]
+
+        bot.send_message(
+            chat, "Please review the verification request:", reply_markup=markup
+        )
 
         log.info("Sent verification to local provider %s (@%s)", provider.address, chat)
 
