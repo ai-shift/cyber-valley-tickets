@@ -1,8 +1,8 @@
 import type { LatLng, Placemark as PlacemarkType } from "../model/types.ts";
 
 import { geodataQueries } from "@/entities/geodata";
-import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
 import { useQueries } from "@tanstack/react-query";
+import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
 import { useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
