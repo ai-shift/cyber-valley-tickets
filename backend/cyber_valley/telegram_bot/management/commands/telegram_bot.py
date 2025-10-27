@@ -1,11 +1,16 @@
 import logging
 import os
 import re
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
 import telebot
 from django.core.management.base import BaseCommand
 
+from cyber_valley.shaman_verification.models import VerificationRequest
+from cyber_valley.telegram_bot.verification_helpers import (
+    create_verification_caption,
+    send_all_pending_verifications_to_provider,
+)
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 log = logging.getLogger(__name__)
@@ -57,7 +62,8 @@ class Command(BaseCommand):
 
             parts = call.data.split(":")
             action = parts[0]  # approve or decline
-            metadata_cid = parts[1]
+            verification_id = int(parts[1])
+            original_message_id = call.message.message_id
 
             bot.edit_message_reply_markup(
                 chat_id=call.message.chat.id,
@@ -69,11 +75,11 @@ class Command(BaseCommand):
             markup.add(
                 telebot.types.InlineKeyboardButton(
                     "✔️ Confirm",
-                    callback_data=f"confirm_{action}:{metadata_cid}:{call.message.message_id}",
+                    callback_data=f"confirm_{action}:{verification_id}:{original_message_id}",
                 ),
                 telebot.types.InlineKeyboardButton(
                     "↩️ Cancel",
-                    callback_data=f"cancel:{metadata_cid}:{call.message.message_id}:{action}",
+                    callback_data=f"cancel_{action}:{verification_id}:{original_message_id}",
                 ),
             )
 
@@ -91,16 +97,24 @@ class Command(BaseCommand):
 
             parts = call.data.replace("confirm_", "").split(":")
             action = parts[0]  # approve or decline
-            metadata_cid = parts[1]
-            _original_message_id = parts[2]
+            verification_id = int(parts[1])
+            original_message_id = int(parts[2])
 
-            bot.edit_message_reply_markup(
+            # Update verification status in database
+            verification_request = VerificationRequest.objects.get(id=verification_id)
+            verification_request.status = (
+                VerificationRequest.Status.APPROVED
+                if action == "approve"
+                else VerificationRequest.Status.DECLINED
+            )
+            verification_request.save()
+
+            # Delete the confirmation message
+            bot.delete_message(
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
-                reply_markup=None,
             )
 
-            action_emoji = "✅" if action == "approve" else "❌"
             action_text = "approved" if action == "approve" else "declined"
 
             markup = telebot.types.InlineKeyboardMarkup()
@@ -111,49 +125,67 @@ class Command(BaseCommand):
             markup.add(
                 telebot.types.InlineKeyboardButton(
                     f"{opposite_emoji} {opposite_text}",
-                    callback_data=f"{opposite_action}:{metadata_cid}",
+                    callback_data=f"{opposite_action}:{verification_id}",
                 )
             )
 
-            bot.send_message(
-                call.message.chat.id,
-                f"{action_emoji} Verification request has been {action_text}.",
+            # Update the original message with the result
+            # Recreate caption with the new status
+            status_literal: Literal["pending", "approved", "declined"] = (
+                "approved" if action == "approve" else "declined"
+            )
+            new_caption = create_verification_caption(
+                metadata_cid=verification_request.metadata_cid,
+                verification_type=verification_request.verification_type,
+                status=status_literal,
+            )
+
+            bot.edit_message_caption(
+                chat_id=call.message.chat.id,
+                message_id=original_message_id,
+                caption=new_caption,
                 reply_markup=markup,
             )
 
-            log.info("Verification %s %s by user", metadata_cid, action_text)
+            log.info(
+                "Verification %s (ID: %s) %s by user",
+                verification_request.metadata_cid,
+                verification_id,
+                action_text,
+            )
 
-        @bot.callback_query_handler(func=lambda call: call.data.startswith("cancel:"))
+        @bot.callback_query_handler(func=lambda call: call.data.startswith("cancel_"))
         def handle_cancel(call: telebot.types.CallbackQuery) -> None:
             assert call.data is not None
             assert call.message is not None
 
-            parts = call.data.replace("cancel:", "").split(":")
-            metadata_cid = parts[0]
-            _original_message_id = parts[1]
-            _original_action = parts[2]
+            parts = call.data.replace("cancel_", "").split(":")
+            _original_action = parts[0]
+            verification_id = int(parts[1])
+            original_message_id = int(parts[2])
 
-            bot.edit_message_reply_markup(
+            # Delete the confirmation message
+            bot.delete_message(
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
-                reply_markup=None,
             )
 
             markup = telebot.types.InlineKeyboardMarkup()
             markup.add(
                 telebot.types.InlineKeyboardButton(
                     "✅ Approve",
-                    callback_data=f"approve:{metadata_cid}",
+                    callback_data=f"approve:{verification_id}",
                 ),
                 telebot.types.InlineKeyboardButton(
                     "❌ Decline",
-                    callback_data=f"decline:{metadata_cid}",
+                    callback_data=f"decline:{verification_id}",
                 ),
             )
 
-            bot.send_message(
-                call.message.chat.id,
-                "Action cancelled. Please review the verification request:",
+            # Restore buttons on the original message
+            bot.edit_message_reply_markup(
+                chat_id=call.message.chat.id,
+                message_id=original_message_id,
                 reply_markup=markup,
             )
 
@@ -166,15 +198,18 @@ class Command(BaseCommand):
 
 
 def link_user_telegram(
-    address: str, telegram_username: str
+    address: str, chat_id: int, telegram_username: str | None = None
 ) -> tuple[CyberValleyUser, bool]:
     user, created = CyberValleyUser.objects.get_or_create(
         address=address, defaults={"role": CyberValleyUser.CUSTOMER}
     )
+    defaults: dict[str, Any] = {"value": str(chat_id)}
+    if telegram_username:
+        defaults["metadata"] = {"username": telegram_username}
     UserSocials.objects.update_or_create(
         user=user,
         network=UserSocials.Network.TELEGRAM,
-        defaults={"value": telegram_username},
+        defaults=defaults,
     )
     return user, created
 
@@ -208,10 +243,16 @@ class AddressLinkingStrategy:
             handle_no_username(bot, message, address)
             return
 
+        chat_id = message.from_user.id
         telegram_username = message.from_user.username
-        _user, created = link_user_telegram(address, telegram_username)
+        user, created = link_user_telegram(address, chat_id, telegram_username)
         action = "created and linked" if created else "linked"
-        log.info("User %s with telegram @%s", action, telegram_username)
+        log.info(
+            "User %s with telegram @%s (chat_id: %s)",
+            action,
+            telegram_username,
+            chat_id,
+        )
 
         bot.reply_to(
             message,
@@ -219,6 +260,12 @@ class AddressLinkingStrategy:
             f"Your address {address[:6]}...{address[-4:]} has been {action} "
             f"to your Telegram account @{telegram_username}.",
         )
+
+        # If user is a local provider, send all pending verification requests
+        if user.role == CyberValleyUser.LOCAL_PROVIDER:
+            send_all_pending_verifications_to_provider(
+                chat_id=chat_id, username=telegram_username
+            )
 
 
 class ShamanVerificationStrategy:
@@ -241,13 +288,15 @@ class ShamanVerificationStrategy:
             handle_no_username(bot, message, address, "verifyshaman")
             return
 
+        chat_id = message.from_user.id
         telegram_username = message.from_user.username
-        _user, created = link_user_telegram(address, telegram_username)
+        _user, created = link_user_telegram(address, chat_id, telegram_username)
         action = "created and linked" if created else "linked"
         log.info(
-            "User %s with telegram @%s for shaman verification",
+            "User %s with telegram @%s (chat_id: %s) for shaman verification",
             action,
             telegram_username,
+            chat_id,
         )
 
         public_api_host = os.environ.get("PUBLIC_API_HOST", "http://localhost:8000")

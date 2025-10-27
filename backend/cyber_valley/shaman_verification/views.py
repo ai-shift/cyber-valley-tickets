@@ -1,35 +1,37 @@
 import logging
-import os
 import time
 from pathlib import Path
-from typing import cast
 
 import ipfshttpclient
-import telebot
 from django.conf import settings
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from cyber_valley.telegram_bot.verification_helpers import (
+    send_verification_request_to_provider,
+)
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
+from .models import VerificationRequest
 from .serializers import CompanyVerificationSerializer, IndividualVerificationSerializer
 
 log = logging.getLogger(__name__)
 
 
 def send_verification_to_local_providers(
-    verification_type: str, metadata_cid: str, files: list[tuple[str, Path]]
+    verification_type: str, metadata_cid: str, _files: list[tuple[str, Path]]
 ) -> None:
-    token = os.environ["TELEGRAM_BOT_TOKEN"]
-    bot = telebot.TeleBot(token)
+    # Create or get verification request in database
+    verification_request, _created = VerificationRequest.objects.get_or_create(
+        metadata_cid=metadata_cid,
+        defaults={"verification_type": verification_type},
+    )
 
     local_providers = CyberValleyUser.objects.filter(
         role=CyberValleyUser.LOCAL_PROVIDER
     )
-
-    ipfs_url = f"{settings.IPFS_PUBLIC_HOST}/ipfs/{metadata_cid}"
 
     for provider in local_providers:
         telegram_social = provider.socials.filter(
@@ -42,39 +44,18 @@ def send_verification_to_local_providers(
             )
             continue
 
-        caption = (
-            f"🔔 New Shaman Verification Request\n\n"
-            f"Type: {verification_type}\n"
-            f"IPFS Metadata: {ipfs_url}"
+        chat_id = int(telegram_social.value)
+        username = (
+            telegram_social.metadata.get("username")
+            if telegram_social.metadata
+            else None
         )
 
-        chat = telegram_social.value
-
-        markup = telebot.types.InlineKeyboardMarkup()
-        markup.add(
-            telebot.types.InlineKeyboardButton(
-                "✅ Approve", callback_data=f"approve:{metadata_cid}"
-            ),
-            telebot.types.InlineKeyboardButton(
-                "❌ Decline", callback_data=f"decline:{metadata_cid}"
-            ),
+        send_verification_request_to_provider(
+            chat_id=chat_id,
+            verification_request_id=verification_request.id,
+            username=username,
         )
-
-        media_group = []
-        for idx, (_field_name, file_path) in enumerate(files):
-            file_obj = cast(telebot.types.InputFile, file_path.open("rb"))
-            media = telebot.types.InputMediaDocument(
-                file_obj, caption=caption if idx == 0 else None
-            )
-            media_group.append(media)
-
-        bot.send_media_group(chat, media_group)  # type: ignore[arg-type]
-
-        bot.send_message(
-            chat, "Please review the verification request:", reply_markup=markup
-        )
-
-        log.info("Sent verification to local provider %s (@%s)", provider.address, chat)
 
 
 @api_view(["POST"])
@@ -100,7 +81,7 @@ def verify_individual(request: Request) -> Response:
     send_verification_to_local_providers(
         verification_type="Individual",
         metadata_cid=metadata_cid,
-        files=[("ktp", ktp_path)],
+        _files=[("ktp", ktp_path)],
     )
 
     return Response({"cid": metadata_cid, "ktp": ktp_cid})
@@ -141,7 +122,7 @@ def verify_company(request: Request) -> Response:
     send_verification_to_local_providers(
         verification_type="Company",
         metadata_cid=metadata_cid,
-        files=[("ktp", ktp_path), ("akta", akta_path), ("sk", sk_path)],
+        _files=[("ktp", ktp_path), ("akta", akta_path), ("sk", sk_path)],
     )
 
     return Response(
