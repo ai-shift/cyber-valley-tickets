@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 
 import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
 
+import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
 import {
   Sheet,
   SheetContent,
@@ -15,7 +16,6 @@ import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
-import { LatLng, Placemark as PlacemarkType} from "@/entities/geodata";
 
 type GeodataKey = string;
 

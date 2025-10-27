@@ -1,6 +1,6 @@
+import type { Placemark as PlacemarkType } from "@/entities/geodata/";
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { truncateColorString } from "../lib/colorTruncator.ts";
-import type { Placemark as PlacemarkType } from "@/entities/geodata/";
 import { Polygon } from "./components/polygon.tsx";
 import { Polyline } from "./components/polyline.tsx";
 
