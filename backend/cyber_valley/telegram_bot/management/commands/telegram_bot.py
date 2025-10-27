@@ -6,6 +6,8 @@ from typing import Any, Protocol
 import telebot
 from django.core.management.base import BaseCommand
 
+from cyber_valley.shaman_verification.models import VerificationRequest
+from cyber_valley.telegram_bot.verification_helpers import create_verification_caption
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 log = logging.getLogger(__name__)
@@ -57,7 +59,8 @@ class Command(BaseCommand):
 
             parts = call.data.split(":")
             action = parts[0]  # approve or decline
-            metadata_cid = parts[1]
+            verification_id = int(parts[1])
+            original_message_id = call.message.message_id
 
             bot.edit_message_reply_markup(
                 chat_id=call.message.chat.id,
@@ -69,11 +72,11 @@ class Command(BaseCommand):
             markup.add(
                 telebot.types.InlineKeyboardButton(
                     "✔️ Confirm",
-                    callback_data=f"confirm_{action}:{metadata_cid}:{call.message.message_id}",
+                    callback_data=f"confirm_{action}:{verification_id}:{original_message_id}",
                 ),
                 telebot.types.InlineKeyboardButton(
                     "↩️ Cancel",
-                    callback_data=f"cancel:{metadata_cid}:{call.message.message_id}:{action}",
+                    callback_data=f"cancel_{action}:{verification_id}:{original_message_id}",
                 ),
             )
 
@@ -91,13 +94,22 @@ class Command(BaseCommand):
 
             parts = call.data.replace("confirm_", "").split(":")
             action = parts[0]  # approve or decline
-            metadata_cid = parts[1]
-            _original_message_id = parts[2]
+            verification_id = int(parts[1])
+            original_message_id = int(parts[2])
 
-            bot.edit_message_reply_markup(
+            # Update verification status in database
+            verification_request = VerificationRequest.objects.get(id=verification_id)
+            verification_request.status = (
+                VerificationRequest.Status.APPROVED
+                if action == "approve"
+                else VerificationRequest.Status.DECLINED
+            )
+            verification_request.save()
+
+            # Delete the confirmation message
+            bot.delete_message(
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
-                reply_markup=None,
             )
 
             action_emoji = "✅" if action == "approve" else "❌"
@@ -111,49 +123,64 @@ class Command(BaseCommand):
             markup.add(
                 telebot.types.InlineKeyboardButton(
                     f"{opposite_emoji} {opposite_text}",
-                    callback_data=f"{opposite_action}:{metadata_cid}",
+                    callback_data=f"{opposite_action}:{verification_id}",
                 )
             )
 
-            bot.send_message(
-                call.message.chat.id,
-                f"{action_emoji} Verification request has been {action_text}.",
+            # Update the original message with the result
+            # Recreate caption with the new status
+            new_caption = create_verification_caption(
+                metadata_cid=verification_request.metadata_cid,
+                verification_type=verification_request.verification_type,
+                status=verification_request.status,
+            )
+
+            bot.edit_message_caption(
+                chat_id=call.message.chat.id,
+                message_id=original_message_id,
+                caption=new_caption,
                 reply_markup=markup,
             )
 
-            log.info("Verification %s %s by user", metadata_cid, action_text)
+            log.info(
+                "Verification %s (ID: %s) %s by user",
+                verification_request.metadata_cid,
+                verification_id,
+                action_text,
+            )
 
-        @bot.callback_query_handler(func=lambda call: call.data.startswith("cancel:"))
+        @bot.callback_query_handler(func=lambda call: call.data.startswith("cancel_"))
         def handle_cancel(call: telebot.types.CallbackQuery) -> None:
             assert call.data is not None
             assert call.message is not None
 
-            parts = call.data.replace("cancel:", "").split(":")
-            metadata_cid = parts[0]
-            _original_message_id = parts[1]
-            _original_action = parts[2]
+            parts = call.data.replace("cancel_", "").split(":")
+            _original_action = parts[0]
+            verification_id = int(parts[1])
+            original_message_id = int(parts[2])
 
-            bot.edit_message_reply_markup(
+            # Delete the confirmation message
+            bot.delete_message(
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
-                reply_markup=None,
             )
 
             markup = telebot.types.InlineKeyboardMarkup()
             markup.add(
                 telebot.types.InlineKeyboardButton(
                     "✅ Approve",
-                    callback_data=f"approve:{metadata_cid}",
+                    callback_data=f"approve:{verification_id}",
                 ),
                 telebot.types.InlineKeyboardButton(
                     "❌ Decline",
-                    callback_data=f"decline:{metadata_cid}",
+                    callback_data=f"decline:{verification_id}",
                 ),
             )
 
-            bot.send_message(
-                call.message.chat.id,
-                "Action cancelled. Please review the verification request:",
+            # Restore buttons on the original message
+            bot.edit_message_reply_markup(
+                chat_id=call.message.chat.id,
+                message_id=original_message_id,
                 reply_markup=markup,
             )
 

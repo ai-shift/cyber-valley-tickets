@@ -12,8 +12,10 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from cyber_valley.telegram_bot.verification_helpers import create_verification_caption
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
+from .models import VerificationRequest
 from .serializers import CompanyVerificationSerializer, IndividualVerificationSerializer
 
 log = logging.getLogger(__name__)
@@ -25,11 +27,21 @@ def send_verification_to_local_providers(
     token = os.environ["TELEGRAM_BOT_TOKEN"]
     bot = telebot.TeleBot(token)
 
+    # Create or get verification request in database
+    verification_request, _created = VerificationRequest.objects.get_or_create(
+        metadata_cid=metadata_cid,
+        defaults={"verification_type": verification_type},
+    )
+
     local_providers = CyberValleyUser.objects.filter(
         role=CyberValleyUser.LOCAL_PROVIDER
     )
 
-    ipfs_url = f"{settings.IPFS_PUBLIC_HOST}/ipfs/{metadata_cid}"
+    caption = create_verification_caption(
+        metadata_cid=metadata_cid,
+        verification_type=verification_type,
+        status="pending",
+    )
 
     for provider in local_providers:
         telegram_social = provider.socials.filter(
@@ -42,12 +54,6 @@ def send_verification_to_local_providers(
             )
             continue
 
-        caption = (
-            f"🔔 New Shaman Verification Request\n\n"
-            f"Type: {verification_type}\n"
-            f"IPFS Metadata: {ipfs_url}"
-        )
-
         chat_id = telegram_social.value
         username = (
             telegram_social.metadata.get("username")
@@ -58,10 +64,10 @@ def send_verification_to_local_providers(
         markup = telebot.types.InlineKeyboardMarkup()
         markup.add(
             telebot.types.InlineKeyboardButton(
-                "✅ Approve", callback_data=f"approve:{metadata_cid}"
+                "✅ Approve", callback_data=f"approve:{verification_request.id}"
             ),
             telebot.types.InlineKeyboardButton(
-                "❌ Decline", callback_data=f"decline:{metadata_cid}"
+                "❌ Decline", callback_data=f"decline:{verification_request.id}"
             ),
         )
 
@@ -73,11 +79,14 @@ def send_verification_to_local_providers(
             )
             media_group.append(media)
 
-        bot.send_media_group(chat_id, media_group)  # type: ignore[arg-type]
+        messages = bot.send_media_group(chat_id, media_group)  # type: ignore[arg-type]
 
-        bot.send_message(
-            chat_id, "Please review the verification request:", reply_markup=markup
-        )
+        if messages:
+            bot.edit_message_reply_markup(
+                chat_id=chat_id,
+                message_id=messages[-1].message_id,
+                reply_markup=markup,
+            )
 
         username_display = f"@{username}" if username else chat_id
         log.info(
