@@ -1,18 +1,17 @@
 import logging
-import os
 import time
 from pathlib import Path
-from typing import cast
 
 import ipfshttpclient
-import telebot
 from django.conf import settings
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from cyber_valley.telegram_bot.verification_helpers import create_verification_caption
+from cyber_valley.telegram_bot.verification_helpers import (
+    send_verification_request_to_provider,
+)
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 from .models import VerificationRequest
@@ -22,11 +21,8 @@ log = logging.getLogger(__name__)
 
 
 def send_verification_to_local_providers(
-    verification_type: str, metadata_cid: str, files: list[tuple[str, Path]]
+    verification_type: str, metadata_cid: str, _files: list[tuple[str, Path]]
 ) -> None:
-    token = os.environ["TELEGRAM_BOT_TOKEN"]
-    bot = telebot.TeleBot(token)
-
     # Create or get verification request in database
     verification_request, _created = VerificationRequest.objects.get_or_create(
         metadata_cid=metadata_cid,
@@ -35,12 +31,6 @@ def send_verification_to_local_providers(
 
     local_providers = CyberValleyUser.objects.filter(
         role=CyberValleyUser.LOCAL_PROVIDER
-    )
-
-    caption = create_verification_caption(
-        metadata_cid=metadata_cid,
-        verification_type=verification_type,
-        status="pending",
     )
 
     for provider in local_providers:
@@ -54,45 +44,17 @@ def send_verification_to_local_providers(
             )
             continue
 
-        chat_id = telegram_social.value
+        chat_id = int(telegram_social.value)
         username = (
             telegram_social.metadata.get("username")
             if telegram_social.metadata
             else None
         )
 
-        markup = telebot.types.InlineKeyboardMarkup()
-        markup.add(
-            telebot.types.InlineKeyboardButton(
-                "✅ Approve", callback_data=f"approve:{verification_request.id}"
-            ),
-            telebot.types.InlineKeyboardButton(
-                "❌ Decline", callback_data=f"decline:{verification_request.id}"
-            ),
-        )
-
-        media_group = []
-        for idx, (_field_name, file_path) in enumerate(files):
-            file_obj = cast(telebot.types.InputFile, file_path.open("rb"))
-            media = telebot.types.InputMediaDocument(
-                file_obj, caption=caption if idx == 0 else None
-            )
-            media_group.append(media)
-
-        messages = bot.send_media_group(chat_id, media_group)  # type: ignore[arg-type]
-
-        if messages:
-            bot.edit_message_reply_markup(
-                chat_id=chat_id,
-                message_id=messages[-1].message_id,
-                reply_markup=markup,
-            )
-
-        username_display = f"@{username}" if username else chat_id
-        log.info(
-            "Sent verification to local provider %s (%s)",
-            provider.address,
-            username_display,
+        send_verification_request_to_provider(
+            chat_id=chat_id,
+            verification_request_id=verification_request.id,
+            username=username,
         )
 
 
@@ -119,7 +81,7 @@ def verify_individual(request: Request) -> Response:
     send_verification_to_local_providers(
         verification_type="Individual",
         metadata_cid=metadata_cid,
-        files=[("ktp", ktp_path)],
+        _files=[("ktp", ktp_path)],
     )
 
     return Response({"cid": metadata_cid, "ktp": ktp_cid})
@@ -160,7 +122,7 @@ def verify_company(request: Request) -> Response:
     send_verification_to_local_providers(
         verification_type="Company",
         metadata_cid=metadata_cid,
-        files=[("ktp", ktp_path), ("akta", akta_path), ("sk", sk_path)],
+        _files=[("ktp", ktp_path), ("akta", akta_path), ("sk", sk_path)],
     )
 
     return Response(
