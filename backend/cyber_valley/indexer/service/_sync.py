@@ -14,6 +14,9 @@ from returns.result import safe
 
 from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.notifications.models import Notification
+from cyber_valley.telegram_bot.verification_helpers import (
+    send_all_pending_verifications_to_provider,
+)
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 from .events import CyberValleyEventManager, CyberValleyEventTicket
@@ -348,6 +351,30 @@ def _sync_ticket_redeemed(event_data: CyberValleyEventTicket.TicketRedeemed) -> 
     )
 
 
+def _send_pending_verifications_to_new_provider(user: CyberValleyUser) -> None:
+    """Send all pending verification requests to a newly created local provider."""
+    telegram_social = user.socials.filter(network=UserSocials.Network.TELEGRAM).first()
+
+    if not telegram_social:
+        log.info(
+            "New local provider %s has no telegram linked, "
+            "skipping pending verifications",
+            user.address,
+        )
+        return
+
+    chat_id = int(telegram_social.value)
+    username = (
+        telegram_social.metadata.get("username") if telegram_social.metadata else None
+    )
+
+    log.info(
+        "Sending pending verification requests to new local provider %s", user.address
+    )
+
+    send_all_pending_verifications_to_provider(chat_id=chat_id, username=username)
+
+
 @transaction.atomic
 def _sync_role_granted(
     event_data: CyberValleyEventManager.RoleGranted
@@ -381,6 +408,10 @@ def _sync_role_granted(
             title="Role granted",
             body=f"{user.role} granted to {user.address}",
         )
+
+    # Send all pending verification requests to newly created LOCAL_PROVIDER
+    if user_role == CyberValleyUser.LOCAL_PROVIDER:
+        _send_pending_verifications_to_new_provider(user)
 
 
 @transaction.atomic

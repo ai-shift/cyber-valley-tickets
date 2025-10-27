@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.db import models
 
 
@@ -12,7 +14,9 @@ class VerificationRequest(models.Model):
         COMPANY = "Company", "Company"
 
     metadata_cid = models.CharField(max_length=255, unique=True)
-    verification_type = models.CharField(max_length=20, choices=VerificationType.choices)
+    verification_type = models.CharField(
+        max_length=20, choices=VerificationType.choices
+    )
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.PENDING
     )
@@ -21,7 +25,10 @@ class VerificationRequest(models.Model):
 
     class Meta:
         db_table = "verification_requests"
-        ordering = ["-created_at"]
+        ordering: ClassVar[list[str]] = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"VerificationRequest #{self.id} - {self.metadata_cid[:10]}... ({self.status})"
+        return (
+            f"VerificationRequest #{self.id} - "
+            f"{self.metadata_cid[:10]}... ({self.status})"
+        )

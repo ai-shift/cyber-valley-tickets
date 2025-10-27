@@ -1,13 +1,16 @@
 import logging
 import os
 import re
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
 import telebot
 from django.core.management.base import BaseCommand
 
 from cyber_valley.shaman_verification.models import VerificationRequest
-from cyber_valley.telegram_bot.verification_helpers import create_verification_caption
+from cyber_valley.telegram_bot.verification_helpers import (
+    create_verification_caption,
+    send_all_pending_verifications_to_provider,
+)
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 log = logging.getLogger(__name__)
@@ -112,7 +115,6 @@ class Command(BaseCommand):
                 message_id=call.message.message_id,
             )
 
-            action_emoji = "✅" if action == "approve" else "❌"
             action_text = "approved" if action == "approve" else "declined"
 
             markup = telebot.types.InlineKeyboardMarkup()
@@ -129,10 +131,13 @@ class Command(BaseCommand):
 
             # Update the original message with the result
             # Recreate caption with the new status
+            status_literal: Literal["pending", "approved", "declined"] = (
+                "approved" if action == "approve" else "declined"
+            )
             new_caption = create_verification_caption(
                 metadata_cid=verification_request.metadata_cid,
                 verification_type=verification_request.verification_type,
-                status=verification_request.status,
+                status=status_literal,
             )
 
             bot.edit_message_caption(
@@ -240,7 +245,7 @@ class AddressLinkingStrategy:
 
         chat_id = message.from_user.id
         telegram_username = message.from_user.username
-        _user, created = link_user_telegram(address, chat_id, telegram_username)
+        user, created = link_user_telegram(address, chat_id, telegram_username)
         action = "created and linked" if created else "linked"
         log.info(
             "User %s with telegram @%s (chat_id: %s)",
@@ -255,6 +260,12 @@ class AddressLinkingStrategy:
             f"Your address {address[:6]}...{address[-4:]} has been {action} "
             f"to your Telegram account @{telegram_username}.",
         )
+
+        # If user is a local provider, send all pending verification requests
+        if user.role == CyberValleyUser.LOCAL_PROVIDER:
+            send_all_pending_verifications_to_provider(
+                chat_id=chat_id, username=telegram_username
+            )
 
 
 class ShamanVerificationStrategy:
