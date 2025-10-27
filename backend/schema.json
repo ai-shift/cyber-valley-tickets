@@ -3231,8 +3231,8 @@
         },
         "/api/geodata/{id}/": {
             "get": {
-                "operationId": "api_geodata_retrieve",
-                "description": "Returns the GeoJSON data for a specific geodata layer",
+                "operationId": "api_geodata_list_2",
+                "description": "Returns the geodata features for a specific layer. Each feature represents a geographical area with coordinates, name, type, and optional styling information.",
                 "summary": "Get geodata layer by name",
                 "parameters": [
                     {
@@ -3261,7 +3261,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiGeodataRetrieveErrorResponse400"
+                                    "$ref": "#/components/schemas/ApiGeodataListErrorResponse400"
                                 }
                             }
                         },
@@ -3405,9 +3405,8 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object"
-                                    },
-                                    "description": "GeoJSON feature collection for the requested layer"
+                                        "$ref": "#/components/schemas/GeoFeature"
+                                    }
                                 }
                             }
                         },
@@ -6906,19 +6905,6 @@
                     }
                 }
             },
-            "ApiGeodataRetrieveErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
             "ApiIpfsEventsMetaUpdateCoverErrorComponent": {
                 "type": "object",
                 "properties": {
@@ -8112,6 +8098,25 @@
                 "type": "string",
                 "description": "* `client_error` - Client Error"
             },
+            "Coordinate": {
+                "type": "object",
+                "properties": {
+                    "lat": {
+                        "type": "number",
+                        "format": "double",
+                        "description": "Latitude coordinate"
+                    },
+                    "lng": {
+                        "type": "number",
+                        "format": "double",
+                        "description": "Longitude coordinate"
+                    }
+                },
+                "required": [
+                    "lat",
+                    "lng"
+                ]
+            },
             "Creator": {
                 "type": "object",
                 "properties": {
@@ -8615,6 +8620,39 @@
                 ],
                 "type": "integer",
                 "description": "* `0` - submitted\n* `1` - approved\n* `2` - declined"
+            },
+            "GeoFeature": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the geographical feature"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Type of the feature (e.g., polygon, point)"
+                    },
+                    "coordinates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Coordinate"
+                        },
+                        "description": "List of coordinate points defining the feature"
+                    },
+                    "polygonColor": {
+                        "type": "string",
+                        "description": "RGBA hex color for the polygon fill (e.g., 24589d0f)"
+                    },
+                    "lineColor": {
+                        "type": "string",
+                        "description": "RGBA hex color for the polygon border (e.g., ff589d0f)"
+                    }
+                },
+                "required": [
+                    "coordinates",
+                    "name",
+                    "type"
+                ]
             },
             "NetworkEnum": {
                 "enum": [
