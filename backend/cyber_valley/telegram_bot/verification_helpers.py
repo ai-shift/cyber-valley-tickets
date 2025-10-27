@@ -137,23 +137,21 @@ def send_verification_request_to_provider(
 
     # Send media group with caption
     media_group = []
-    for idx, (_field_name, file_path) in enumerate(files):
+    for _, file_path in files:
         file_obj = cast(telebot.types.InputFile, file_path.open("rb"))
         media = telebot.types.InputMediaDocument(
             file_obj,
-            caption=caption if idx == 0 else None,
-            parse_mode="HTML" if idx == 0 else None,
         )
         media_group.append(media)
 
     messages = bot.send_media_group(chat_id, media_group)  # type: ignore[arg-type]
-
-    if messages:
-        bot.edit_message_reply_markup(
-            chat_id=chat_id,
-            message_id=messages[-1].message_id,
-            reply_markup=markup,
-        )
+    assert len(messages) == len(files)
+    bot.reply_to(
+        messages[-1],
+        caption,
+        parse_mode="HTML",
+        reply_markup=markup,
+    )
 
     username_display = f"@{username}" if username else chat_id
     log.info(

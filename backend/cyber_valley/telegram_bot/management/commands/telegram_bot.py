@@ -156,10 +156,10 @@ class Command(BaseCommand):
                 requester_username=requester_username,
             )
 
-            bot.edit_message_caption(
+            bot.edit_message_text(
                 chat_id=call.message.chat.id,
                 message_id=original_message_id,
-                caption=new_caption,
+                text=new_caption,
                 reply_markup=markup,
                 parse_mode="HTML",
             )
