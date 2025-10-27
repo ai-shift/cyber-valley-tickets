@@ -21,12 +21,18 @@ log = logging.getLogger(__name__)
 
 
 def send_verification_to_local_providers(
-    verification_type: str, metadata_cid: str, _files: list[tuple[str, Path]]
+    verification_type: str,
+    metadata_cid: str,
+    _files: list[tuple[str, Path]],
+    requester: CyberValleyUser,
 ) -> None:
     # Create or get verification request in database
     verification_request, _created = VerificationRequest.objects.get_or_create(
         metadata_cid=metadata_cid,
-        defaults={"verification_type": verification_type},
+        defaults={
+            "verification_type": verification_type,
+            "requester": requester,
+        },
     )
 
     local_providers = CyberValleyUser.objects.filter(
@@ -82,6 +88,7 @@ def verify_individual(request: Request) -> Response:
         verification_type="Individual",
         metadata_cid=metadata_cid,
         _files=[("ktp", ktp_path)],
+        requester=request.user,
     )
 
     return Response({"cid": metadata_cid, "ktp": ktp_cid})
@@ -123,6 +130,7 @@ def verify_company(request: Request) -> Response:
         verification_type="Company",
         metadata_cid=metadata_cid,
         _files=[("ktp", ktp_path), ("akta", akta_path), ("sk", sk_path)],
+        requester=request.user,
     )
 
     return Response(

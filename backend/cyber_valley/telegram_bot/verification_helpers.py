@@ -16,6 +16,8 @@ def create_verification_caption(
     metadata_cid: str,
     verification_type: str,
     status: Literal["pending", "approved", "declined"] = "pending",
+    requester_chat_id: int | None = None,
+    requester_username: str | None = None,
 ) -> str:
     """Create caption for verification request message based on status."""
     ipfs_url = f"{settings.IPFS_PUBLIC_HOST}/ipfs/{metadata_cid}"
@@ -31,7 +33,23 @@ def create_verification_caption(
         case _ as unreachable:
             assert_never(unreachable)
 
-    return f"{header}\n\nType: {verification_type}\nIPFS Metadata: {ipfs_url}"
+    # Format IPFS link as HTML
+    ipfs_link = f'<a href="{ipfs_url}">View on IPFS</a>'
+
+    # Build caption parts
+    caption_parts = [header, f"\nType: {verification_type}"]
+
+    # Add requester info if available
+    if requester_chat_id:
+        requester_display = requester_username or "User"
+        requester_link = (
+            f'<a href="tg://user?id={requester_chat_id}">@{requester_display}</a>'
+        )
+        caption_parts.append(f"Requester: {requester_link}")
+
+    caption_parts.append(f"IPFS Metadata: {ipfs_link}")
+
+    return "\n".join(caption_parts)
 
 
 def send_verification_request_to_provider(
@@ -56,6 +74,8 @@ def send_verification_request_to_provider(
         metadata_cid=verification_request.metadata_cid,
         verification_type=verification_request.verification_type,
         status="pending",
+        requester_chat_id=verification_request.requester_telegram_chat_id,
+        requester_username=verification_request.requester_telegram_username,
     )
 
     markup = telebot.types.InlineKeyboardMarkup()
@@ -101,7 +121,7 @@ def send_verification_request_to_provider(
             "No files found for verification request %s, sending message without media",
             verification_request_id,
         )
-        bot.send_message(chat_id, caption, reply_markup=markup)
+        bot.send_message(chat_id, caption, reply_markup=markup, parse_mode="HTML")
         return
 
     # Send media group with caption
@@ -109,7 +129,9 @@ def send_verification_request_to_provider(
     for idx, (_field_name, file_path) in enumerate(files):
         file_obj = cast(telebot.types.InputFile, file_path.open("rb"))
         media = telebot.types.InputMediaDocument(
-            file_obj, caption=caption if idx == 0 else None
+            file_obj,
+            caption=caption if idx == 0 else None,
+            parse_mode="HTML" if idx == 0 else None,
         )
         media_group.append(media)
 

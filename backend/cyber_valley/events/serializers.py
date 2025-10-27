@@ -11,10 +11,10 @@ from drf_spectacular.utils import (
 )
 from rest_framework import serializers
 
+from cyber_valley.geodata.serializers import CoordinateSerializer
 from cyber_valley.users.models import CyberValleyUser as UserType
 from cyber_valley.users.models import UserSocials
 from cyber_valley.users.serializers import UploadSocialsSerializer
-from cyber_valley.geodata.serializers import CoordinateSerializer
 
 from .models import Event, EventPlace
 
