@@ -1,5 +1,5 @@
 import polylabel from "polylabel";
-import type { LatLng } from "../model/types.ts";
+import type { LatLng } from "@/entities/geodata";
 
 export const findApproximatePolygonCenter = (coords: LatLng[]) => {
   const [lat, lng] = polylabel(

@@ -5,6 +5,7 @@ export const submitIndividualVerification = async (ktp: File) => {
   formData.append("ktp", ktp);
 
   return await apiClient.POST("/api/shaman/verify/individual", {
+    // @ts-ignore
     body: formData,
   });
 };
@@ -20,6 +21,7 @@ export const submitCompanyVerification = async (
   formData.append("sk", sk);
 
   return await apiClient.POST("/api/shaman/verify/company", {
+    // @ts-ignore
     body: formData,
   });
 };

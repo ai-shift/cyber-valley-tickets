@@ -1,5 +1,3 @@
-import type { LatLng, Placemark as PlacemarkType } from "../model/types.ts";
-
 import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -14,9 +12,10 @@ import {
 } from "@/shared/ui/sheet.tsx";
 import { useGeodata } from "../hooks/useGeodata.tsx";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
+import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
-import { LayerControl } from "./LayerControl.tsx";
+import { LatLng, Placemark as PlacemarkType} from "@/entities/geodata";
 
 type GeodataKey = string;
 
@@ -34,7 +33,8 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
   const [showGroups, setShowGroups] = useState(false);
 
-  const { layersTitles, loadingLayers, errorLayers, geodata } = useGeodata(displayedGroups);
+  const { layersTitles, loadingLayers, errorLayers, geodata } =
+    useGeodata(displayedGroups);
 
   const [selectedId, setSelectedId] = useState("");
   const [selectedPlacemark, setSelectedPlacemark] =

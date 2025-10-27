@@ -10,7 +10,7 @@ interface Geodata {
 export const useGeodata = (activeLayers: string[]) => {
   const [geodata, setGeodata] = useState<Geodata>({});
 
-  const { data: layersTitles, isLoading: loadingTitles} = useQuery(
+  const { data: layersTitles, isLoading: loadingTitles } = useQuery(
     geodataQueries.geodata(),
   );
 
@@ -27,18 +27,22 @@ export const useGeodata = (activeLayers: string[]) => {
   const modifiedResults = results.map((res, idx) => {
     return {
       layer: layersToLoad[idx],
-      res: res
-    }
-  })
-  
-  const loadingLayers = modifiedResults.filter(({res}) => res.isLoading).map(({layer}) => layer);
-  const errorLayers = modifiedResults.filter(({res}) => res.isError).map(({layer}) => layer);
+      res: res,
+    };
+  });
+
+  const loadingLayers = modifiedResults
+    .filter(({ res }) => res.isLoading)
+    .map(({ layer }) => layer);
+  const errorLayers = modifiedResults
+    .filter(({ res }) => res.isError)
+    .map(({ layer }) => layer);
 
   useEffect(() => {
     const newGeodata: Geodata = {};
     let shouldUpdate = false;
 
-    for (const {res, layer} of modifiedResults)  {
+    for (const { res, layer } of modifiedResults) {
       if (res.data && !geodata[layer]) {
         newGeodata[layer] = res.data as Placemark[];
         shouldUpdate = true;

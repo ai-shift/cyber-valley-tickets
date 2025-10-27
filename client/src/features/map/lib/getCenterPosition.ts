@@ -1,4 +1,4 @@
-import type { Placemark } from "../model/types.ts";
+import type { Placemark } from "@/entities/geodata";
 import { findApproximatePolygonCenter } from "./approximateCenter.ts";
 
 export const getPlacemarkPosition = (mark: Placemark) => {
