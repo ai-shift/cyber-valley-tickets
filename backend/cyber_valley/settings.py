@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "cyber_valley.custom_auth",
     "cyber_valley.geodata",
     "cyber_valley.telegram_bot",
+    "cyber_valley.shaman_verification",
 ]
 
 REST_FRAMEWORK = {
