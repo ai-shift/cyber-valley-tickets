@@ -76,5 +76,6 @@ urlpatterns = [
     path("api/auth/refresh", refresh, name="jwt_refresh"),
     path("api/auth/logout", logout, name="jwt_logout"),
     path("api/auth/custom/", include("cyber_valley.custom_auth.urls")),
+    path("api/shaman/verify/", include("cyber_valley.shaman_verification.urls")),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]
