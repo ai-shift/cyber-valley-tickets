@@ -18,6 +18,7 @@ dependencies = [
     "psycopg2-binary>=2.9.10",
     "pydantic>=2.11.3",
     "pyshen",
+    "pyTelegramBotAPI>=4.24.0",
     "returns[compatible-mypy]>=0.25.0",
     "tenacity>=9.1.2",
     "web3>=7.10.0",
