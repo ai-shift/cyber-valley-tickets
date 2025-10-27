@@ -106,9 +106,7 @@ def get_coordinates(geometry_tag: ET.Element) -> str:
     )
 
 
-def parse_coordinates(
-    coord_string: str, geom_type: str
-) -> list[dict[str, float]]:
+def parse_coordinates(coord_string: str, geom_type: str) -> list[dict[str, float]]:
     """
     Parses a KML coordinate string (LON,LAT,ALT) into a structured list of
     {"lat": float, "lng": float} objects.

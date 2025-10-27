@@ -8581,7 +8581,7 @@
                         "format": "int64"
                     },
                     "geometry": {
-                        "readOnly": true
+                        "$ref": "#/components/schemas/GeoFeature"
                     },
                     "daysBeforeCancel": {
                         "type": "integer",
