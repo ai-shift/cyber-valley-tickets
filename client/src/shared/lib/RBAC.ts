@@ -52,7 +52,7 @@ export const RBAC_ROLES: RoleControl = {
 export type Permissions = `${Resource}:${Action}`;
 
 export function checkPermission(role: Role, ...permissions: Permissions[]) {
-  for (const permission in permissions) {
+  for (const permission of permissions) {
     const [source, action] = permission.split(":") as [Resource, Action];
 
     const rolePermissions = RBAC_ROLES[role];
@@ -61,7 +61,7 @@ export function checkPermission(role: Role, ...permissions: Permissions[]) {
     const permittedActions = rolePermissions[source];
     if (!permittedActions) return false;
 
-    if (permittedActions.includes(action)) {
+    if (!permittedActions.includes(action)) {
       return false;
     }
   }
