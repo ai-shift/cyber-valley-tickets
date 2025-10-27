@@ -40,6 +40,9 @@ run-indexer: migrate
 run-reaper: migrate
 	$(python) manage.py reaper
 
+run-telegram-bot: migrate
+	$(python) manage.py telegram_bot
+
 run-server: migrate
 	$(python) manage.py runserver $(BACKEND_PORT)
 

@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "cyber_valley.event_reaper",
     "cyber_valley.custom_auth",
     "cyber_valley.geodata",
+    "cyber_valley.telegram_bot",
 ]
 
 REST_FRAMEWORK = {
