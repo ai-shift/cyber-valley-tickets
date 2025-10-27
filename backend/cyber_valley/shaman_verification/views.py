@@ -70,6 +70,10 @@ def verify_individual(request: Request) -> Response:
     serializer = IndividualVerificationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
+    # Ensure user is authenticated
+    assert request.user.is_authenticated
+    assert isinstance(request.user, CyberValleyUser)
+
     target_path = settings.IPFS_DATA_PATH / "verifications" / str(int(time.time()))
     target_path.mkdir(exist_ok=True, parents=True)
 
@@ -99,6 +103,10 @@ def verify_individual(request: Request) -> Response:
 def verify_company(request: Request) -> Response:
     serializer = CompanyVerificationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+
+    # Ensure user is authenticated
+    assert request.user.is_authenticated
+    assert isinstance(request.user, CyberValleyUser)
 
     target_path = settings.IPFS_DATA_PATH / "verifications" / str(int(time.time()))
     target_path.mkdir(exist_ok=True, parents=True)

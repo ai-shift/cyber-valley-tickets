@@ -102,6 +102,7 @@ class Command(BaseCommand):
 
             # Update verification status in database
             verification_request = VerificationRequest.objects.get(id=verification_id)
+            assert verification_request.requester_id is not None
             verification_request.status = (
                 VerificationRequest.Status.APPROVED
                 if action == "approve"
@@ -134,12 +135,25 @@ class Command(BaseCommand):
             status_literal: Literal["pending", "approved", "declined"] = (
                 "approved" if action == "approve" else "declined"
             )
+
+            # Get requester's Telegram info
+            telegram_social = verification_request.requester.socials.filter(
+                network=UserSocials.Network.TELEGRAM
+            ).first()
+            assert telegram_social is not None
+            requester_chat_id = int(telegram_social.value)
+            requester_username = (
+                telegram_social.metadata.get("username")
+                if telegram_social.metadata
+                else None
+            )
+
             new_caption = create_verification_caption(
                 metadata_cid=verification_request.metadata_cid,
                 verification_type=verification_request.verification_type,
                 status=status_literal,
-                requester_chat_id=verification_request.requester_telegram_chat_id,
-                requester_username=verification_request.requester_telegram_username,
+                requester_chat_id=requester_chat_id,
+                requester_username=requester_username,
             )
 
             bot.edit_message_caption(
