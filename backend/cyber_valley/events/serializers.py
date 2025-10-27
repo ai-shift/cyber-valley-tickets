@@ -11,7 +11,7 @@ from drf_spectacular.utils import (
 )
 from rest_framework import serializers
 
-from cyber_valley.geodata.serializers import CoordinateSerializer
+from cyber_valley.geodata.serializers import GeoFeatureSerializer
 from cyber_valley.users.models import CyberValleyUser as UserType
 from cyber_valley.users.models import UserSocials
 from cyber_valley.users.serializers import UploadSocialsSerializer
@@ -23,7 +23,7 @@ User = get_user_model()
 
 class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
     is_used = serializers.SerializerMethodField()
-    geometry = CoordinateSerializer(many=True)
+    geometry = GeoFeatureSerializer()
 
     class Meta:
         model = EventPlace
@@ -216,75 +216,6 @@ class PlaceMetaData:
 class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
     title = serializers.CharField(help_text="Title of the event place")
     geometry = serializers.JSONField(help_text="Geometry with type and coordinates")
-
-    def validate_geometry(self, value: dict[str, Any]) -> dict[str, Any]:
-        """Validate geometry structure with {lat, lng} coordinate objects."""
-        if "type" not in value:
-            msg = "Geometry must have a 'type' field"
-            raise serializers.ValidationError(msg)
-
-        if "coordinates" not in value:
-            msg = "Geometry must have a 'coordinates' field"
-            raise serializers.ValidationError(msg)
-
-        geom_type = value.get("type")
-        coordinates = value.get("coordinates")
-
-        # Support Point and Polygon types
-        if geom_type not in ("Point", "Polygon"):
-            msg = "Geometry type must be 'Point' or 'Polygon'"
-            raise serializers.ValidationError(msg)
-
-        # Validate coordinates based on type
-        if geom_type == "Point":
-            self._validate_point_coordinates(coordinates)
-        elif geom_type == "Polygon":
-            self._validate_polygon_coordinates(coordinates)
-
-        return value
-
-    def _validate_point_coordinates(self, coord: Any) -> None:
-        """Validate Point coordinates as {lat, lng} object."""
-        if not isinstance(coord, dict):
-            msg = "Point coordinates must be an object with 'lat' and 'lng'"
-            raise serializers.ValidationError(msg)
-
-        if "lat" not in coord or "lng" not in coord:
-            msg = "Point coordinates must have 'lat' and 'lng' fields"
-            raise serializers.ValidationError(msg)
-
-        lat = coord["lat"]
-        lng = coord["lng"]
-
-        if not isinstance(lat, int | float) or not isinstance(lng, int | float):
-            msg = "Coordinates must be numeric values"
-            raise serializers.ValidationError(msg)
-
-        # Validate ranges
-        if not -90 <= lat <= 90:
-            msg = f"Latitude must be between -90 and 90, got {lat}"
-            raise serializers.ValidationError(msg)
-
-        if not -180 <= lng <= 180:
-            msg = f"Longitude must be between -180 and 180, got {lng}"
-            raise serializers.ValidationError(msg)
-
-    def _validate_polygon_coordinates(self, coords: Any) -> None:
-        """Validate Polygon coordinates as array of {lat, lng} objects."""
-        if not isinstance(coords, list):
-            msg = "Polygon coordinates must be an array"
-            raise serializers.ValidationError(msg)
-
-        if len(coords) < 3:
-            msg = "Polygon must have at least 3 coordinates"
-            raise serializers.ValidationError(msg)
-
-        for i, coord in enumerate(coords):
-            try:
-                self._validate_point_coordinates(coord)
-            except serializers.ValidationError as e:
-                msg = f"Invalid coordinate at index {i}: {e.detail}"
-                raise serializers.ValidationError(msg) from e
 
     def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:
         return PlaceMetaData(**validated_data)

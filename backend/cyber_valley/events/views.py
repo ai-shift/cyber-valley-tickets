@@ -139,6 +139,7 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     meta = UploadPlaceMetaToIpfsSerializer(data=request.data)
     meta.is_valid(raise_exception=True)
     meta = meta.save()
+    meta.geometry["name"] = "Event palce marker"
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         event_meta = {"title": meta.title, "geometry": meta.geometry}
         meta_hash = client.add_json(event_meta)
