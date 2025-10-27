@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 
 from .models import GeodataLayer
+from .serializers import GeoFeatureSerializer
 
 
 class ErrorResponseSerializer(serializers.Serializer[Any]):
@@ -30,13 +31,13 @@ class GeodataViewSet(viewsets.ViewSet):
 
     @extend_schema(
         summary="Get geodata layer by name",
-        description="Returns the GeoJSON data for a specific geodata layer",
+        description=(
+            "Returns the geodata features for a specific layer. "
+            "Each feature represents a geographical area with coordinates, "
+            "name, type, and optional styling information."
+        ),
         responses={
-            200: {
-                "type": "array",
-                "items": {"type": "object"},
-                "description": "GeoJSON feature collection for the requested layer",
-            },
+            200: GeoFeatureSerializer(many=True),
             404: ErrorResponseSerializer,
         },
     )
