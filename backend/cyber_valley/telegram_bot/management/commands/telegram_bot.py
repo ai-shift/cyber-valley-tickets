@@ -166,15 +166,18 @@ class Command(BaseCommand):
 
 
 def link_user_telegram(
-    address: str, telegram_username: str
+    address: str, chat_id: int, telegram_username: str | None = None
 ) -> tuple[CyberValleyUser, bool]:
     user, created = CyberValleyUser.objects.get_or_create(
         address=address, defaults={"role": CyberValleyUser.CUSTOMER}
     )
+    defaults: dict[str, Any] = {"value": str(chat_id)}
+    if telegram_username:
+        defaults["metadata"] = {"username": telegram_username}
     UserSocials.objects.update_or_create(
         user=user,
         network=UserSocials.Network.TELEGRAM,
-        defaults={"value": telegram_username},
+        defaults=defaults,
     )
     return user, created
 
@@ -208,10 +211,16 @@ class AddressLinkingStrategy:
             handle_no_username(bot, message, address)
             return
 
+        chat_id = message.from_user.id
         telegram_username = message.from_user.username
-        _user, created = link_user_telegram(address, telegram_username)
+        _user, created = link_user_telegram(address, chat_id, telegram_username)
         action = "created and linked" if created else "linked"
-        log.info("User %s with telegram @%s", action, telegram_username)
+        log.info(
+            "User %s with telegram @%s (chat_id: %s)",
+            action,
+            telegram_username,
+            chat_id,
+        )
 
         bot.reply_to(
             message,
@@ -241,13 +250,15 @@ class ShamanVerificationStrategy:
             handle_no_username(bot, message, address, "verifyshaman")
             return
 
+        chat_id = message.from_user.id
         telegram_username = message.from_user.username
-        _user, created = link_user_telegram(address, telegram_username)
+        _user, created = link_user_telegram(address, chat_id, telegram_username)
         action = "created and linked" if created else "linked"
         log.info(
-            "User %s with telegram @%s for shaman verification",
+            "User %s with telegram @%s (chat_id: %s) for shaman verification",
             action,
             telegram_username,
+            chat_id,
         )
 
         public_api_host = os.environ.get("PUBLIC_API_HOST", "http://localhost:8000")

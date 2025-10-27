@@ -82,6 +82,7 @@ class UserSocials(models.Model):
     )
     network = models.CharField(choices=Network)
     value = models.CharField()
+    metadata = models.JSONField(null=True, blank=True, default=dict)
 
     class Meta:
         unique_together = ("user", "network", "value")

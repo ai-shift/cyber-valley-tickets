@@ -48,7 +48,12 @@ def send_verification_to_local_providers(
             f"IPFS Metadata: {ipfs_url}"
         )
 
-        chat = telegram_social.value
+        chat_id = telegram_social.value
+        username = (
+            telegram_social.metadata.get("username")
+            if telegram_social.metadata
+            else None
+        )
 
         markup = telebot.types.InlineKeyboardMarkup()
         markup.add(
@@ -68,13 +73,18 @@ def send_verification_to_local_providers(
             )
             media_group.append(media)
 
-        bot.send_media_group(chat, media_group)  # type: ignore[arg-type]
+        bot.send_media_group(chat_id, media_group)  # type: ignore[arg-type]
 
         bot.send_message(
-            chat, "Please review the verification request:", reply_markup=markup
+            chat_id, "Please review the verification request:", reply_markup=markup
         )
 
-        log.info("Sent verification to local provider %s (@%s)", provider.address, chat)
+        username_display = f"@{username}" if username else chat_id
+        log.info(
+            "Sent verification to local provider %s (%s)",
+            provider.address,
+            username_display,
+        )
 
 
 @api_view(["POST"])
