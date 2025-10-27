@@ -1,8 +1,8 @@
+import { Loader } from "@/shared/ui/Loader";
 import { useMap } from "@vis.gl/react-google-maps";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { getThumbUrl } from "../lib/getThumbUrl.ts";
 import type { Placemark } from "../model/types.ts";
-import { Loader } from "@/shared/ui/Loader"
 
 type LayerControlProps = {
   value: string;

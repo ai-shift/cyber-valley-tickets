@@ -39,13 +39,14 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   onSubmit: submitHandler,
   disableFields,
 }) => {
+  console.log(existingPlace);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingPlace
       ? { ...existingPlace }
       : {
           title: "",
-          location: null,
+          geometry: null,
           minTickets: 1,
           maxTickets: 100,
           daysBeforeCancel: 1,
