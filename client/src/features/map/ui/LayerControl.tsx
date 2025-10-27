@@ -2,9 +2,12 @@ import { useMap } from "@vis.gl/react-google-maps";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { getThumbUrl } from "../lib/getThumbUrl.ts";
 import type { Placemark } from "../model/types.ts";
+import { Loader } from "@/shared/ui/Loader"
 
-type PlacemarkGroupProps = {
+type LayerControlProps = {
   value: string;
+  isLoading: boolean;
+  isError: boolean;
   isDisplayed: boolean;
   setIsDisplayed: (groupName: string) => void;
   placemarks: Placemark[];
@@ -12,8 +15,10 @@ type PlacemarkGroupProps = {
   closeGroups: () => void;
 };
 
-export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({
+export const LayerControl: React.FC<LayerControlProps> = ({
   value,
+  isLoading,
+  isError,
   isDisplayed,
   setIsDisplayed,
   placemarks,
@@ -46,7 +51,9 @@ export const PlacemarkGroup: React.FC<PlacemarkGroupProps> = ({
         />
         {value.replace(/_/, " ")}
       </label>
-      {isDisplayed && (
+      {isLoading && <Loader containerClassName="h-10" className="h-4" />}
+      {isError && <p>Couldn't load the layer</p>}
+      {isDisplayed && !isError && (
         <div className="flex flex-col items-start">
           {placemarks?.map((placemark, idx) => (
             <button

@@ -10,7 +10,7 @@ interface Geodata {
 export const useGeodata = (activeLayers: string[]) => {
   const [geodata, setGeodata] = useState<Geodata>({});
 
-  const { data: layersTitles, isLoading: loadingLayers } = useQuery(
+  const { data: layersTitles, isLoading: loadingTitles} = useQuery(
     geodataQueries.geodata(),
   );
 
@@ -24,22 +24,23 @@ export const useGeodata = (activeLayers: string[]) => {
       ...geodataQueries.layer(layer),
     })),
   });
-
-  const loadingGeodata = results.some((res) => res.isLoading);
+  const modifiedResults = results.map((res, idx) => {
+    return {
+      layer: layersToLoad[idx],
+      res: res
+    }
+  })
+  
+  const loadingLayers = modifiedResults.filter(({res}) => res.isLoading).map(({layer}) => layer);
+  const errorLayers = modifiedResults.filter(({res}) => res.isError).map(({layer}) => layer);
 
   useEffect(() => {
     const newGeodata: Geodata = {};
     let shouldUpdate = false;
 
-    for (let i = 0; i < results.length; i++) {
-      const currRes = results[i];
-      const key = layersToLoad[i];
-      if (!key) {
-        continue;
-      }
-
-      if (currRes?.data && !geodata[key]) {
-        newGeodata[key] = currRes.data as Placemark[];
+    for (const {res, layer} of modifiedResults)  {
+      if (res.data && !geodata[layer]) {
+        newGeodata[layer] = res.data as Placemark[];
         shouldUpdate = true;
       }
     }
@@ -48,9 +49,11 @@ export const useGeodata = (activeLayers: string[]) => {
       setGeodata((prev) => ({ ...prev, ...newGeodata }));
     }
   }, [results, geodata, layersToLoad]);
+
   return {
     layersTitles: layersTitles ?? [],
-    loadingGeodata,
+    loadingTitles,
+    errorLayers,
     loadingLayers,
     geodata: geodata,
   };

@@ -16,7 +16,7 @@ import { useGeodata } from "../hooks/useGeodata.tsx";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
-import { PlacemarkGroup } from "./PlacemarkGroup.tsx";
+import { LayerControl } from "./LayerControl.tsx";
 
 type GeodataKey = string;
 
@@ -34,7 +34,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
   const [showGroups, setShowGroups] = useState(false);
 
-  const { layersTitles, geodata } = useGeodata(displayedGroups);
+  const { layersTitles, loadingLayers, errorLayers, geodata } = useGeodata(displayedGroups);
 
   const [selectedId, setSelectedId] = useState("");
   const [selectedPlacemark, setSelectedPlacemark] =
@@ -90,9 +90,11 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
             {layersTitles.map((title) => {
               const placemarks = geodata[title] as PlacemarkType[];
               return (
-                <PlacemarkGroup
+                <LayerControl
                   key={title}
                   value={title}
+                  isLoading={loadingLayers.includes(title)}
+                  isError={errorLayers.includes(title)}
                   isDisplayed={displayedGroups.includes(title)}
                   setIsDisplayed={() => displayGroupHandler(title)}
                   placemarks={placemarks}
