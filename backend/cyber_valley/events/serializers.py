@@ -76,6 +76,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "title",
             "description",
             "place",
+            "place_id",
             "ticket_price",
             "days_amount",
             "image_url",

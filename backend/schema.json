@@ -8161,6 +8161,13 @@
                     "place": {
                         "$ref": "#/components/schemas/EventPlace"
                     },
+                    "placeId": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64",
+                        "readOnly": true
+                    },
                     "ticketPrice": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -8216,6 +8223,7 @@
                     "description",
                     "id",
                     "place",
+                    "placeId",
                     "startDateTimestamp",
                     "ticketPrice",
                     "ticketsBought",
@@ -8963,6 +8971,13 @@
                     "place": {
                         "$ref": "#/components/schemas/EventPlace"
                     },
+                    "placeId": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64",
+                        "readOnly": true
+                    },
                     "ticketPrice": {
                         "type": "integer",
                         "maximum": 9223372036854775807,
@@ -9018,6 +9033,7 @@
                     "description",
                     "id",
                     "place",
+                    "placeId",
                     "startDateTimestamp",
                     "ticketPrice",
                     "ticketsBought",
