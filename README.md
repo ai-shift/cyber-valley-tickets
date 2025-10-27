@@ -1877,3 +1877,8 @@ make -C backend/ run-indexer # New terminal
 make -C backend/ run # New terminal
 make -C client/ dev # New terminal
 ```
+
+## How to test shaman verification flow
+
+Open link `https://t.me/cyberia_tickets_bot?start=0x9772d9a6A104c162b97767e6a654Be54370A042F` to setup `LocalProvider`s telegram
+Open link `https://t.me/cyberia_tickets_bot?start=0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e_verifyshaman` to start verification (you should login as `0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e` to the app before or during the process)
