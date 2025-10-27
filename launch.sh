@@ -150,6 +150,16 @@ log_info "Cleaning database" "starting"
 rm -f backend/db.sqlite3
 log_success "Database cleaned" "done"
 
+log_info "Stopping containers" "starting"
+for name in "ganache" "ipfs" "valkey"; do
+    podman ps -a \
+	| grep "cvland-$name" \
+	| awk '{print $1}' \
+	| xargs -r -I{} sh -c 'podman stop {} || true; podman rm {} || true' 2>/dev/null &
+done
+wait
+log_success "Containers stopped" "done"
+
 log_info "Creating tmux session: $SESSION_NAME" "starting"
 if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
     log_info "Killing previous tmux session" "cleaning"
