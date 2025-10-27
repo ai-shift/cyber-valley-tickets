@@ -138,6 +138,8 @@ class Command(BaseCommand):
                 metadata_cid=verification_request.metadata_cid,
                 verification_type=verification_request.verification_type,
                 status=status_literal,
+                requester_chat_id=verification_request.requester_telegram_chat_id,
+                requester_username=verification_request.requester_telegram_username,
             )
 
             bot.edit_message_caption(
@@ -145,6 +147,7 @@ class Command(BaseCommand):
                 message_id=original_message_id,
                 caption=new_caption,
                 reply_markup=markup,
+                parse_mode="HTML",
             )
 
             log.info(

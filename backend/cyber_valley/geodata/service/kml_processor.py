@@ -106,9 +106,7 @@ def get_coordinates(geometry_tag: ET.Element) -> str:
     )
 
 
-def parse_coordinates(
-    coord_string: str, geom_type: str
-) -> list[dict[str, float]]:
+def parse_coordinates(coord_string: str) -> list[dict[str, float]]:
     """
     Parses a KML coordinate string (LON,LAT,ALT) into a structured list of
     {"lat": float, "lng": float} objects.
@@ -225,7 +223,7 @@ def placemark_to_json(
         return {
             "name": placemark_name,
             "type": "polygon",
-            "coordinates": parse_coordinates(coordinates, "polygon"),
+            "coordinates": parse_coordinates(coordinates),
             "polygon_color": poly_color,
             "line_color": line_color,
         }
@@ -249,7 +247,7 @@ def placemark_to_json(
         return {
             "name": placemark_name,
             "type": "line",
-            "coordinates": parse_coordinates(coordinates, "line"),
+            "coordinates": parse_coordinates(coordinates),
             "line_color": line_color,
         }
 
@@ -278,7 +276,7 @@ def placemark_to_json(
         return {
             "name": placemark_name,
             "type": "point",
-            "coordinates": parse_coordinates(coordinates, "point"),
+            "coordinates": parse_coordinates(coordinates),
             "iconUrl": icon_url,
         }
 
