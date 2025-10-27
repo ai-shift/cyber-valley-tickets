@@ -23,8 +23,8 @@ import type { UseMutateFunction } from "@tanstack/react-query";
 import { cleanPlaceLocal, usePlacePersist } from "../hooks/usePlacePersist";
 import { formSchema } from "../model/formSchema";
 
+import type { LatLng } from "@/entities/geodata";
 import { EbaliMap } from "@/features/map";
-import type { LatLng } from "@/features/map/model/types";
 import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 import { twMerge } from "tailwind-merge";
 
@@ -43,7 +43,10 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingPlace
-      ? { ...existingPlace }
+      ? {
+          ...existingPlace,
+          geometry: existingPlace.geometry.coordinates as LatLng,
+        }
       : {
           title: "",
           geometry: null,
@@ -69,9 +72,10 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
 
   const [selectedLocation, setSelectedLocation] = useState<LatLng | null>(null);
 
-  const formLocation = form.watch("location");
+  // TODO: Pan to marker when editing the place
+  const formLocation = form.watch("geometry");
   const setFormLocation = (coords: LatLng | null) =>
-    form.setValue("location", coords);
+    form.setValue("geometry", coords);
 
   return (
     <Form {...form}>

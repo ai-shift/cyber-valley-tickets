@@ -1,7 +1,7 @@
 import { geodataQueries } from "@/entities/geodata";
+import type { Placemark } from "@/entities/geodata";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import type { Placemark } from "../model/types";
 
 interface Geodata {
   [key: string]: Placemark[];
@@ -43,6 +43,9 @@ export const useGeodata = (activeLayers: string[]) => {
     let shouldUpdate = false;
 
     for (const { res, layer } of modifiedResults) {
+      if (layer == null) {
+        continue;
+      }
       if (res.data && !geodata[layer]) {
         newGeodata[layer] = res.data as Placemark[];
         shouldUpdate = true;
