@@ -118,10 +118,10 @@ export const Router = () => {
                 <Route path="/purchase" element={<PurchasePage />} />
                 <Route path="/socials" element={<SocialsPage />} />
               </Route>
+	      <Route path="verify" element={<ShamanVerificationPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<Page404 />} />
-            <Route path="verify" element={<ShamanVerificationPage />} />
           </Routes>
         </GoogleMapsProvider>
       </QueryProvider>
