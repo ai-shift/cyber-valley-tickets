@@ -14,6 +14,7 @@ from rest_framework import serializers
 from cyber_valley.users.models import CyberValleyUser as UserType
 from cyber_valley.users.models import UserSocials
 from cyber_valley.users.serializers import UploadSocialsSerializer
+from cyber_valley.geodata.serializers import CoordinateSerializer
 
 from .models import Event, EventPlace
 
@@ -22,7 +23,7 @@ User = get_user_model()
 
 class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
     is_used = serializers.SerializerMethodField()
-    geometry = serializers.JSONField(read_only=True)
+    geometry = CoordinateSerializer(many=True)
 
     class Meta:
         model = EventPlace

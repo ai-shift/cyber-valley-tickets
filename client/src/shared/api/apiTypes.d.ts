@@ -1380,7 +1380,7 @@ export interface components {
             minPrice: number;
             /** Format: int64 */
             minDays: number;
-            readonly geometry: unknown;
+            geometry: components["schemas"]["Coordinate"][];
             /** Format: int64 */
             daysBeforeCancel: number;
             available?: boolean;
