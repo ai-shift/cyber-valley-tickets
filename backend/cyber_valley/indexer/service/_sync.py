@@ -13,7 +13,7 @@ from pydantic import BaseModel
 from returns.result import safe
 
 from cyber_valley.events.models import Event, EventPlace, Ticket
-from cyber_valley.notifications.models import Notification
+from cyber_valley.notifications.helpers import send_notification
 from cyber_valley.telegram_bot.verification_helpers import (
     send_all_pending_verifications_to_provider,
 )
@@ -111,13 +111,13 @@ def _sync_new_event_request(
         updated_at=timezone.now(),
     )
 
-    Notification.objects.create(
+    send_notification(
         user=creator,
         title="Event request sent",
         body=f"Title: {event.title}",
     )
     if place.provider:
-        Notification.objects.create(
+        send_notification(
             user=place.provider,
             title="New event request",
             body=f"Title: {event.title}. From {socials['network']}: {socials['value']}",
@@ -154,7 +154,7 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
         notify_users.append(place.provider)
 
     for user in notify_users:
-        Notification.objects.create(
+        send_notification(
             user=user,
             title="Event updated",
             body=f"Title: {event.title}",
@@ -193,7 +193,7 @@ def _sync_new_event_place_request(
             event_data.id,
             event_data.requester,
         )
-        Notification.objects.create(
+        send_notification(
             user=requester,
             title="Event place request submitted",
             body=f"Title: {place.title}",
@@ -245,7 +245,7 @@ def _sync_event_place_updated(
 
     if place.provider is not None:
         action = "created" if created else "updated"
-        Notification.objects.create(
+        send_notification(
             user=place.provider,
             title=f"Event place {action}",
             body=f"Title: {place.title}",
@@ -282,7 +282,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
         event.tickets_bought += 1
         event.save()
 
-        Notification.objects.create(
+        send_notification(
             user=owner,
             title="Your ticket minted",
             body=(
@@ -318,7 +318,7 @@ def _sync_event_status_changed(
     event.save()
 
     # Notify creator
-    Notification.objects.create(
+    send_notification(
         user=event.creator,
         title="Event status updated",
         body=f"Event {event.title}. New status: {new_status}",
@@ -330,7 +330,7 @@ def _sync_event_status_changed(
         if event.status in ("cancelled", "closed"):
             networth = event.tickets_bought * event.ticket_price + 100
             body += f"\nEarned {networth} USDT"
-        Notification.objects.create(
+        send_notification(
             user=event.place.provider,
             title="Event status updated",
             body=body,
@@ -344,7 +344,7 @@ def _sync_ticket_redeemed(event_data: CyberValleyEventTicket.TicketRedeemed) -> 
     ticket.is_redeemed = True
     ticket.save()
 
-    Notification.objects.create(
+    send_notification(
         user=ticket.owner,
         title="Ticket redeemed",
         body=f"Event {ticket.event.title}",
@@ -391,7 +391,7 @@ def _sync_role_granted(
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = user_role
     user.save()
-    Notification.objects.create(
+    send_notification(
         user=user,
         title="Role granted",
         body=f"{user.role} granted to you",
@@ -403,7 +403,7 @@ def _sync_role_granted(
     for admin in admins:
         if user.address == admin.address:
             continue
-        Notification.objects.create(
+        send_notification(
             user=admin,
             title="Role granted",
             body=f"{user.role} granted to {user.address}",
@@ -427,7 +427,7 @@ def _sync_role_revoked(
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = CyberValleyUser.CUSTOMER
     user.save()
-    Notification.objects.create(
+    send_notification(
         user=user,
         title="Role revoked",
         body=f"{revoked_role} role was revoked",
@@ -438,7 +438,7 @@ def _sync_role_revoked(
     for admin in admins:
         if user.address == admin.address:
             continue
-        Notification.objects.create(
+        send_notification(
             user=admin,
             title="Role revoked",
             body=f"Staff role was revoked from {user.address}",
