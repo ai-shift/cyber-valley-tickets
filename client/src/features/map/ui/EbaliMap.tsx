@@ -119,7 +119,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       })}
       {infoWindowShown && selectedPlacemark && (
         <InfoWindow
-          pixelOffset={[0, -25]}
+          pixelOffset={selectedPlacemark.type === "point" ? [0, -25] : [0,0]}
           headerDisabled
           position={getPlacemarkPosition(selectedPlacemark)}
           onCloseClick={() => setInfoWindowShown(false)}
