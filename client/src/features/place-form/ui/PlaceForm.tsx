@@ -19,8 +19,7 @@ import { Input } from "@/shared/ui/input";
 import type { EventPlace } from "@/entities/place";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { Switch } from "@/shared/ui/switch";
-import type { UseMutateFunction } from "@tanstack/react-query";
-import { cleanPlaceLocal, usePlacePersist } from "../hooks/usePlacePersist";
+import { usePlacePersist } from "../hooks/usePlacePersist";
 import { formSchema } from "../model/formSchema";
 
 import type { LatLng } from "@/entities/geodata";
@@ -30,7 +29,7 @@ import { twMerge } from "tailwind-merge";
 
 type PlaceFormProps = {
   existingPlace?: EventPlace;
-  onSubmit: UseMutateFunction<unknown, Error, EventPlaceForm, unknown>;
+  onSubmit: (values: EventPlaceForm) => void;
   disableFields: boolean;
 };
 
@@ -61,12 +60,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   !existingPlace && usePlacePersist(form);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    submitHandler(values, {
-      onSuccess: () => {
-        cleanPlaceLocal();
-        form.reset();
-      },
-    });
+    submitHandler(values);
   }
 
   const [selectedLocation, setSelectedLocation] = useState<LatLng | null>(null);

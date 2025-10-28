@@ -24,7 +24,7 @@ export const upsertPlaceW3 = async (
   } = place;
 
   if (!geometry) {
-    throw new Error("Missing coordinates for the event place");
+    throw Error("Missing coordinates for the event place");
   }
 
   const formatedGeodata: Point = {
