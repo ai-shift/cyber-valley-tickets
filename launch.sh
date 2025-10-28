@@ -273,7 +273,7 @@ tmux send-keys -t "$SESSION_NAME:indexer" "make -C backend/ run-indexer" Enter
 log_success "Blockchain indexer started" "started"
 
 log_info "Starting telegram bot" "starting"
-create_tmux_window "indexer" "/tmp/telegram-bot.log"
+create_tmux_window "telegram-bot" "/tmp/telegram-bot.log"
 tmux send-keys -t "$SESSION_NAME:telegram-bot" "make -C backend/ run-telegram-bot" Enter
 log_success "Telegram bot started" "started"
 
