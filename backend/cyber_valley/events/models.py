@@ -7,10 +7,10 @@ User = get_user_model()
 
 
 class EventPlace(models.Model):
-    STATUS_CHOICES: ClassVar[dict[int, str]] = {
-        0: "submitted",
-        1: "approved",
-        2: "declined",
+    STATUS_CHOICES: ClassVar[dict[str, str]] = {
+        "submitted": "submitted",
+        "approved": "approved",
+        "declined": "declined",
     }
 
     id = models.IntegerField(primary_key=True)

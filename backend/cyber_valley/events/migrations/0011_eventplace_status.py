@@ -13,7 +13,11 @@ class Migration(migrations.Migration):
             model_name="eventplace",
             name="status",
             field=models.CharField(
-                choices=[(0, "submitted"), (1, "approved"), (2, "declined")],
+                choices=[
+                    ("submitted", "submitted"),
+                    ("approved", "approved"),
+                    ("declined", "declined"),
+                ],
                 default="submitted",
                 max_length=10,
             ),
