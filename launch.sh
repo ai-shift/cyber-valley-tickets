@@ -160,6 +160,10 @@ done
 wait
 log_success "Containers stopped" "done"
 
+log_info "Installing dependencies" "starting"
+make install
+log_success "Dependencies installed" "done"
+
 log_info "Creating tmux session: $SESSION_NAME" "starting"
 if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
     log_info "Killing previous tmux session" "cleaning"
@@ -243,6 +247,11 @@ log_info "Starting blockchain indexer" "starting"
 create_tmux_window "indexer" "/tmp/indexer.log"
 tmux send-keys -t "$SESSION_NAME:indexer" "make -C backend/ run-indexer" Enter
 log_success "Blockchain indexer started" "started"
+
+log_info "Starting telegram bot" "starting"
+create_tmux_window "indexer" "/tmp/telegram-bot.log"
+tmux send-keys -t "$SESSION_NAME:telegram-bot" "make -C backend/ run-telegram-bot" Enter
+log_success "Telegram bot started" "started"
 
 restart_service "Backend" "backend" "/tmp/backend.log" "make -C backend/ run"
 restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
