@@ -202,13 +202,7 @@ log_info "Starting Django backend server" "starting"
 create_tmux_window "backend" "/tmp/backend.log"
 tmux send-keys -t "$SESSION_NAME:backend" "make -C backend/ run" Enter
 
-if [[ "$PRODUCTION_FRONTEND" == true ]]; then
-    log_info "Building frontend for production" "starting"
-    create_tmux_window "frontend-build" "/tmp/frontend-build.log"
-    tmux send-keys -t "$SESSION_NAME:frontend-build" "make -C client/ build; tmux wait -S frontend_build_done" Enter
-    tmux wait "frontend_build_done"
-    log_success "Frontend build completed" "done"
-else
+if [[ "$PRODUCTION_FRONTEND" == false ]]; then
     log_info "Starting Vite frontend server" "starting"
     create_tmux_window "frontend" "/tmp/frontend.log"
     tmux send-keys -t "$SESSION_NAME:frontend" "make -C client/ dev" Enter
@@ -281,7 +275,11 @@ log_success "Telegram bot started" "started"
 
 restart_service "Backend" "backend" "/tmp/backend.log" "make -C backend/ run"
 
-if [[ "$PRODUCTION_FRONTEND" == false ]]; then
+if [[ "$PRODUCTION_FRONTEND" == true ]]; then
+    log_info "Starting frontend build" "starting"
+    run_buf_command "make -C client/ build"
+    log_success "Frontend build" "done"
+else
     restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
 fi
 
