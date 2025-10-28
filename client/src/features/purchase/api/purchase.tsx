@@ -132,7 +132,7 @@ const createEvent = async (
 };
 
 const getSocialsCid = async (socials: Socials) => {
-  console.log(socials)
+  console.log(socials);
   if (!socials) throw new Error("There is no socials in the order");
   return await apiClient.PUT("/api/ipfs/users/socials", {
     body: {
@@ -164,7 +164,7 @@ const getTicketCid = async (socials: Socials, ticket: OrderTicket) => {
 const getEventCid = async (event: EventDto, cid: string) => {
   const { title, description, image, website } = event;
 
-  console.log(image)
+  console.log(image);
 
   const formData = new FormData();
   formData.set("title", title);
