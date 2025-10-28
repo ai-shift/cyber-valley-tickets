@@ -6,6 +6,7 @@ import {
   closeEvent,
   declineEvent,
 } from "@/shared/lib/web3";
+import { AcceptDialog } from "@/shared/ui/AcceptDialog";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
@@ -14,7 +15,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { useManageEventState } from "../model/slice";
-import { AcceptDialog } from "./AcceptDialog";
 
 type MaybeManageEventProps = {
   role: Role;
@@ -125,12 +125,20 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
         )}
         {canControl && (
           <div className="flex justify-between gap-3">
-            <AcceptDialog option="accept" confirmFn={() => mutate("accept")}>
+            <AcceptDialog
+              title="Are you sure you want to accept the event?"
+              option="accept"
+              confirmFn={() => mutate("accept")}
+            >
               <Button className="w-full" variant="secondary">
                 Accept
               </Button>
             </AcceptDialog>
-            <AcceptDialog option="decline" confirmFn={() => mutate("decline")}>
+            <AcceptDialog
+              title="Are you sure you want to decline the event?"
+              option="decline"
+              confirmFn={() => mutate("decline")}
+            >
               <Button className="w-full" variant="destructive">
                 Decline
               </Button>
@@ -139,12 +147,20 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
         )}
         {canFinalize && (
           <div className="flex justify-between gap-3">
-            <AcceptDialog option="accept" confirmFn={() => mutate("close")}>
+            <AcceptDialog
+              title="Are you sure you want to finalize the event?"
+              option="accept"
+              confirmFn={() => mutate("close")}
+            >
               <Button className="w-full" variant="secondary">
                 Finalize
               </Button>
             </AcceptDialog>
-            <AcceptDialog option="accept" confirmFn={() => mutate("cancel")}>
+            <AcceptDialog
+              title="Are you sure you want to fuck up the event?"
+              option="accept"
+              confirmFn={() => mutate("cancel")}
+            >
               <Button className="w-full" variant="destructive">
                 Fuck up
               </Button>
