@@ -1,4 +1,5 @@
-include ../.env
+-include ../example.env
+-include ../.env
 
 dev:
 	pnpm exec vite --host
