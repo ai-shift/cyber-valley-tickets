@@ -40,10 +40,8 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   disableFields,
 }) => {
   console.log(existingPlace);
-  // @ts-ignore i really need to build this shit
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // @ts-ignore i really need to build this shit
     defaultValues: existingPlace
       ? {
           ...existingPlace,
@@ -51,7 +49,6 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
         }
       : {
           title: "",
-          // @ts-ignore i really need to build this shit
           geometry: null,
           minTickets: 1,
           maxTickets: 100,
@@ -62,11 +59,9 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
         },
   });
 
-  // @ts-ignore i really need to build this shit
   !existingPlace && usePlacePersist(form);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // @ts-ignore i really need to build this shit
     submitHandler(values, {
       onSuccess: () => {
         cleanPlaceLocal();
@@ -79,19 +74,15 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
 
   const formLocation = form.watch("geometry");
   const setFormLocation = (coords: LatLng | null) =>
-    // @ts-ignore i really need to build this shit
     form.setValue("geometry", coords);
 
   return (
-    // @ts-ignore i really need to build this shit
     <Form {...form}>
       <form
-        // @ts-ignore i really need to build this shit
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-7 mb-10"
       >
         <FormField
-          // @ts-ignore i really need to build this shit
           control={form.control}
           disabled={disableFields}
           name="title"
@@ -182,42 +173,36 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
         </div>
 
         <CustomFormComponent
-          // @ts-ignore i really need to build this shit
           control={form.control}
           fieldDisabled={disableFields}
           fieldName="minTickets"
           title="Minimum tickets amount"
         />
         <CustomFormComponent
-          // @ts-ignore i really need to build this shit
           control={form.control}
           fieldDisabled={disableFields}
           fieldName="maxTickets"
           title="Maximum tickets amount"
         />
         <CustomFormComponent
-          // @ts-ignore i really need to build this shit
           control={form.control}
           fieldDisabled={disableFields}
           fieldName="minDays"
           title="Minimum days"
         />
         <CustomFormComponent
-          // @ts-ignore i really need to build this shit
           control={form.control}
           fieldDisabled={disableFields}
           fieldName="minPrice"
           title="Minimum price"
         />
         <CustomFormComponent
-          // @ts-ignore i really need to build this shit
           control={form.control}
           fieldDisabled={disableFields}
           fieldName="daysBeforeCancel"
           title="Days before cancel"
         />
         <FormField
-          // @ts-ignore i really need to build this shit
           control={form.control}
           name={"available"}
           disabled={disableFields}

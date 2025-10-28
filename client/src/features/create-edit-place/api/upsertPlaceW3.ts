@@ -1,3 +1,4 @@
+import type { Point } from "@/entities/geodata";
 import type { EventPlaceForm } from "@/features/place-form";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
@@ -22,11 +23,21 @@ export const upsertPlaceW3 = async (
     available,
   } = place;
 
+  if (!geometry) {
+    throw new Error("Missing coordinates for the event place");
+  }
+
+  const formatedGeodata: Point = {
+    type: "point",
+    name: title,
+    coordinates: [geometry],
+    iconUrl: "",
+  };
+
   const placeForm = new FormData();
   placeForm.append("title", title);
   placeForm.append("description", "foo");
-  // @ts-ignore i really need to build this shit
-  placeForm.append("geometry", geometry);
+  placeForm.append("geometry", JSON.stringify(formatedGeodata));
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
     // @ts-ignore
