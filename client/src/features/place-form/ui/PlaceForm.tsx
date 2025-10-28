@@ -116,9 +116,9 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
                       formLocation
                         ? () => {}
                         : (latLng) => {
-                          form.clearErrors("geometry")
-                          setSelectedLocation(latLng)
-                        }
+                            form.clearErrors("geometry");
+                            setSelectedLocation(latLng);
+                          }
                     }
                   >
                     {selectedLocation && (
@@ -150,7 +150,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
                           className="w-1/4"
                           onClick={() => {
                             setFormLocation(selectedLocation);
-                            form.clearErrors("geometry")
+                            form.clearErrors("geometry");
                             setSelectedLocation(null);
                           }}
                         >
