@@ -1,9 +1,10 @@
 import { placesQueries } from "@/entities/place";
-import { NavigateUpdatePlace } from "@/features/create-edit-place/ui/NavigateUpdatePlace";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
+import { NavigateUpdatePlace } from "../ui/NavigateUpdatePlace.tsx";
+import { ManageRequestedPlace } from "./ManageRequestedPlace.tsx";
 
 export const PlacesList: React.FC = () => {
   const { data: places, isLoading, error } = useQuery(placesQueries.list());
@@ -21,7 +22,12 @@ export const PlacesList: React.FC = () => {
         <ManageItem
           key={place.id}
           title={place.title}
-          render={() => [<NavigateUpdatePlace key={place.id} place={place} />]}
+          //FIXME: type of place status is fucked up
+          isRequested={!!place.status}
+          render={() => [
+            <ManageRequestedPlace place={place} />,
+            <NavigateUpdatePlace key={place.id} place={place} />,
+          ]}
         />
       ))}
     </ul>
