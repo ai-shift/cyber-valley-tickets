@@ -1,5 +1,4 @@
-import { geodataQueries } from "@/entities/geodata";
-import type { Placemark } from "@/entities/geodata";
+import { type Placemark, geodataQueries } from "@/entities/geodata";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 

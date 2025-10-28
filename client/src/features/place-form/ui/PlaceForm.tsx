@@ -45,7 +45,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
     defaultValues: existingPlace
       ? {
           ...existingPlace,
-          geometry: existingPlace.geometry.coordinates as LatLng,
+          geometry: existingPlace.geometry.coordinates[0] as LatLng,
         }
       : {
           title: "",
@@ -72,7 +72,6 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
 
   const [selectedLocation, setSelectedLocation] = useState<LatLng | null>(null);
 
-  // TODO: Pan to marker when editing the place
   const formLocation = form.watch("geometry");
   const setFormLocation = (coords: LatLng | null) =>
     form.setValue("geometry", coords);
@@ -107,6 +106,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
             Long press to place marker
           </p>
           <EbaliMap
+            initialCenter={formLocation ?? undefined}
             className={twMerge(
               "h-[55dvh] transition-all duration-300",
               selectedLocation && "h-[40dvh]",
