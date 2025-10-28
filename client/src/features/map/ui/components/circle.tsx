@@ -20,9 +20,7 @@ type CircleEventProps = {
   onMouseOut?: (e: google.maps.MapMouseEvent) => void;
 };
 
-
-export type CircleProps = google.maps.CircleOptions &
-  CircleEventProps
+export type CircleProps = google.maps.CircleOptions & CircleEventProps;
 
 export type CircleRef = Ref<google.maps.Circle | null>;
 

@@ -51,7 +51,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     }
   };
 
-  const showPlacemarkInfo = (placemark: PlacemarkType ) => {
+  const showPlacemarkInfo = (placemark: PlacemarkType) => {
     const id = extractPlacemarkId(placemark);
     setSelectedId(id);
     if (placemark) {
@@ -119,7 +119,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       })}
       {infoWindowShown && selectedPlacemark && (
         <InfoWindow
-          pixelOffset={selectedPlacemark.type === "point" ? [0, -25] : [0,0]}
+          pixelOffset={selectedPlacemark.type === "point" ? [0, -25] : [0, 0]}
           headerDisabled
           position={getPlacemarkPosition(selectedPlacemark)}
           onCloseClick={() => setInfoWindowShown(false)}
