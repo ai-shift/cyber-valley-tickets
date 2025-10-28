@@ -57,7 +57,10 @@ export const ResultDialog: React.FC<ResultDialogProps> = ({
           <Button
             variant={failure ? "destructive" : "default"}
             className="mx-auto block"
-            onClick={onConfirm}
+            onClick={() => {
+              setOpen(false)
+              onConfirm()
+            }}
           >
             Understand
           </Button>
