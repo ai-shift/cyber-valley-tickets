@@ -11,6 +11,17 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthSlice();
 
+  function handleApplyEventPlace() {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    window.open(
+      `https://t.me/cyberia_tickets_bot?start=${user.address}_verifyshaman`,
+      "_blank",
+    );
+  }
+
   return (
     <div className="px-6">
       <h1 className="text-shadow-md text-shadow-primary text-primary text-5xl py-4">
@@ -32,21 +43,18 @@ export const HomePage: React.FC = () => {
       <section className="mt-8">
         <EventsList filterFn={uniteFilter} />
       </section>
-      <div className="w-full sticky bottom-1 pt-3">
-        <Button
-          asChild
-          variant="ghost"
-          className="w-full bg-black border-secondary text-secondary clip-corners hover:bg-secondary hover:text-black"
-        >
-          <a
-            href="https://t.me/+ELgY3iRp1-RkYWMy"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Apply new event space
-          </a>
-        </Button>
-      </div>
+      {user &&
+        !["localprovider", "verifiedshaman", "master"].includes(user.role) && (
+          <div className="w-full sticky bottom-1 pt-3">
+            <Button
+              onClick={handleApplyEventPlace}
+              filling="outline"
+              className="w-full"
+            >
+              Apply new event space
+            </Button>
+          </div>
+        )}
     </div>
   );
 };
