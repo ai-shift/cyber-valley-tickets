@@ -1,4 +1,8 @@
-import { cleanPlaceLocal, EventPlaceForm, PlaceForm } from "@/features/place-form";
+import {
+  type EventPlaceForm,
+  PlaceForm,
+  cleanPlaceLocal,
+} from "@/features/place-form";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
@@ -12,20 +16,22 @@ export const RequestEventPlace = () => {
 
   function handleSubmit(placeValues: EventPlaceForm) {
     if (!account) {
-      return
+      return;
     }
     setIsLoading(true);
     requestPlace(account, placeValues)
       .then(() => {
-        setStatus("success")
-        setShowResult(true)
-        cleanPlaceLocal()
+        setStatus("success");
+        setShowResult(true);
+        cleanPlaceLocal();
       })
       .catch(() => {
-        setStatus("error")
-        setShowResult(true)
+        setStatus("error");
+        setShowResult(true);
       })
-      .finally(() => {setIsLoading(false)})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (

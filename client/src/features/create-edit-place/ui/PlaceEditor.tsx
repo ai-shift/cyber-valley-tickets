@@ -1,5 +1,9 @@
 import type { EventPlace } from "@/entities/place";
-import { cleanPlaceLocal, type EventPlaceForm, PlaceForm } from "@/features/place-form";
+import {
+  type EventPlaceForm,
+  PlaceForm,
+  cleanPlaceLocal,
+} from "@/features/place-form";
 import { useSendTx } from "@/shared/hooks";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
