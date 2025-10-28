@@ -97,8 +97,8 @@ When a `Shaman` becomes a `VerifiedShaman`, they can request a new `EventPlace` 
 2. **Implement Telegram bot verification flow** (~12 hours)
     - [ ] @redmoor Document upload web form (2h)
     - [x] @naqerl Implement web form upload endpoint (1h)
-    - [ ] @naqerl Verification request workflow with approval/decline (4h)
-    - [ ] @naqerl LocalProvider notification and decision system (3h)
+    - [x] @naqerl Verification request workflow with approval/decline (4h)
+    - [x] @naqerl LocalProvider notification and decision system (3h)
 
 ## Map Integration
 
@@ -144,13 +144,13 @@ To prevent potentially cumbersome situations in the future, a setter for the `Ma
 1. **Include share setting in event approval flow** (~4 hours)
     - [ ] @redmoor Add 'shares' field to the `LocalProvider` approve form (input) (2h)
     - [ ] @naqerl Backend integration for per-event share storage (1h)
-    - [ ] @naqerl Smart contract integration for share distribution (1h)
+    - [x] @naqerl Smart contract integration for share distribution (1h)
 2. **Add Master role management to smart contract** (~3 hours)
     - [x] @naqerl Implement Master share and address setters (2h)
     - [x] @naqerl Update contract deployment and migration scripts (1h)
 3. **Update payment distribution system** (~4 hours)
     - [x] @naqerl Modify closeEvent function for multi-LocalProvider shares (2h)
-    - [ ] @naqerl Update indexer to sync share changes (1h)
+    - [x] @naqerl Update indexer to sync share changes (1h)
     - [x] @naqerl Add share calculation validation (1h)
 
 ## Event Request Updates
