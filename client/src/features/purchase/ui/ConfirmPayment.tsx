@@ -22,8 +22,20 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
   const { sendTx, data: txHash, error } = useSendTx();
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (order: Order) => {
+      if (!account || !user) {
+        return Promise.reject("Account or user are missing");
+      }
+      return purchase(sendTx, account, order, user.socials[0] as Socials);
+    },
+    onSuccess: () => {
+      setIsSuccess(true);
+    },
+    onError: console.error,
+  });
+
   if (!user) return null;
-  if (!account) return <p>Failed to connect wallet</p>;
   if (user.socials.length === 0)
     return (
       <div className="flex flex-col items-center gap-2 py-5">
@@ -31,14 +43,6 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
         <Button onClick={() => navigate("/socials")}>Set socials</Button>
       </div>
     );
-  const { mutate, isPending } = useMutation({
-    mutationFn: (order: Order) =>
-      purchase(sendTx, account, order, user.socials[0] as Socials),
-    onSuccess: () => {
-      setIsSuccess(true);
-    },
-    onError: console.error,
-  });
 
   const successMessage =
     order.type === "buy_ticket"
