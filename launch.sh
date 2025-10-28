@@ -204,7 +204,9 @@ tmux send-keys -t "$SESSION_NAME:backend" "make -C backend/ run" Enter
 
 if [[ "$PRODUCTION_FRONTEND" == true ]]; then
     log_info "Building frontend for production" "starting"
-    run_buf_command "make -C client/ build"
+    create_tmux_window "frontend-build" "/tmp/frontend-build.log"
+    tmux send-keys -t "$SESSION_NAME:frontend-build" "make -C client/ build; tmux wait -S frontend_build_done" Enter
+    tmux wait "frontend_build_done"
     log_success "Frontend build completed" "done"
 else
     log_info "Starting Vite frontend server" "starting"
