@@ -1,4 +1,4 @@
--include ../example.env
+-include ../.env.example
 -include ../.env
 ipfs_container_name := "cvland-ipfs"
 valkey_container_name := "cvland-valkey"

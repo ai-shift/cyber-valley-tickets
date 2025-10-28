@@ -1,4 +1,4 @@
--include ../example.env
+-include ../.env.example
 -include ../.env
 
 dev:
