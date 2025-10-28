@@ -16,6 +16,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     bytes32 public constant MASTER_ROLE = keccak256("MASTER_ROLE");
     bytes32 public constant LOCAL_PROVIDER_ROLE = keccak256("LOCAL_PROVIDER_ROLE");
     bytes32 public constant VERIFIED_SHAMAN_ROLE = keccak256("VERIFIED_SHAMAN_ROLE");
+    bytes32 public constant BACKEND_ROLE = keccak256("BACKEND_ROLE");
 
     enum EventPlaceStatus {
         Submitted,
@@ -137,6 +138,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
+        _setRoleAdmin(VERIFIED_SHAMAN_ROLE, BACKEND_ROLE);
     }
 
     function grantLocalProvider(address eoa, uint8 share) external onlyRole(MASTER_ROLE) {

@@ -109,6 +109,10 @@ export async function deployContract(): Promise<ContractsFixture> {
   await eventManager
     .connect(master)
     .grantLocalProvider(await localProvider.getAddress(), 100);
+  const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
+  await eventManager
+    .connect(master)
+    .grantRole(BACKEND_ROLE, await master.getAddress());
   const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
   await eventManager
     .connect(master)

@@ -211,17 +211,24 @@ def notify_shaman_of_decision(
         f"has been {status_display.lower()}."
     )
 
-    Notification.objects.create(
+    notification, created = Notification.objects.get_or_create(
         user=verification_request.requester,
         title=web_title,
-        body=web_body,
+        defaults={"body": web_body},
     )
-    log.info(
-        "Created web notification for shaman %s about verification %s status: %s",
-        verification_request.requester_id,
-        verification_request.id,
-        status_display,
-    )
+    if created:
+        log.info(
+            "Created web notification for shaman %s about verification %s status: %s",
+            verification_request.requester_id,
+            verification_request.id,
+            status_display,
+        )
+    else:
+        log.info(
+            "Web notification already exists for shaman %s about verification %s",
+            verification_request.requester_id,
+            verification_request.id,
+        )
 
     telegram_social = verification_request.requester.socials.filter(
         network=UserSocials.Network.TELEGRAM
@@ -241,8 +248,8 @@ def notify_shaman_of_decision(
 
         message = (
             f"{status_emoji} <b>Verification {status_display}{update_text}</b>\n\n"
-            f"Your <b>{verification_request.verification_type}</b> verification request "
-            f"has been <b>{status_display.lower()}</b>."
+            f"Your <b>{verification_request.verification_type}</b> "
+            f"verification request has been <b>{status_display.lower()}</b>."
         )
 
         try:

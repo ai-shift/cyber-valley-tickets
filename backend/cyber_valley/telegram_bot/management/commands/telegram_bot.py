@@ -5,7 +5,9 @@ from typing import Any, Literal, Protocol
 
 import telebot
 from django.core.management.base import BaseCommand
+from web3 import Web3
 
+from cyber_valley.shaman_verification.contract_service import ContractService
 from cyber_valley.shaman_verification.models import VerificationRequest
 from cyber_valley.telegram_bot.verification_helpers import (
     create_verification_caption,
@@ -116,6 +118,38 @@ class Command(BaseCommand):
             verification_request.status = new_status
             verification_request.save()
 
+            action_text = "approved" if action == "approve" else "declined"
+
+            # Grant or revoke on-chain role
+            shaman_address = Web3.to_checksum_address(
+                verification_request.requester.address
+            )
+            contract_service = ContractService()
+
+            if action == "approve":
+                success, error = contract_service.grant_verified_shaman_role(
+                    shaman_address
+                )
+            else:
+                success, error = contract_service.revoke_verified_shaman_role(
+                    shaman_address
+                )
+
+            if not success:
+                # Notify the Local Provider who made the decision about the failure
+                error_message = (
+                    f"⚠️ <b>Blockchain Transaction Failed</b>\n\n"
+                    f"The verification was {action_text} in the database, "
+                    f"but the smart contract transaction failed:\n\n"
+                    f"<code>{error}</code>\n\n"
+                    f"Please contact the system administrator."
+                )
+                bot.send_message(
+                    chat_id=call.message.chat.id,
+                    text=error_message,
+                    parse_mode="HTML",
+                )
+
             notify_shaman_of_decision(verification_request, is_update=is_update)
 
             # Delete the confirmation message
@@ -123,8 +157,6 @@ class Command(BaseCommand):
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
             )
-
-            action_text = "approved" if action == "approve" else "declined"
 
             markup = telebot.types.InlineKeyboardMarkup()
             opposite_action = "decline" if action == "approve" else "approve"
