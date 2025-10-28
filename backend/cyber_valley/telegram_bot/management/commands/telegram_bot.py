@@ -158,18 +158,6 @@ class Command(BaseCommand):
                 message_id=call.message.message_id,
             )
 
-            markup = telebot.types.InlineKeyboardMarkup()
-            opposite_action = "decline" if action == "approve" else "approve"
-            opposite_emoji = "❌" if action == "approve" else "✅"
-            opposite_text = "Decline" if action == "approve" else "Approve"
-
-            markup.add(
-                telebot.types.InlineKeyboardButton(
-                    f"{opposite_emoji} {opposite_text}",
-                    callback_data=f"{opposite_action}:{verification_id}",
-                )
-            )
-
             # Update the original message with the result
             # Recreate caption with the new status
             status_literal: Literal["pending", "approved", "declined"] = (
@@ -200,7 +188,7 @@ class Command(BaseCommand):
                 chat_id=call.message.chat.id,
                 message_id=original_message_id,
                 text=new_caption,
-                reply_markup=markup,
+                reply_markup=None,
                 parse_mode="HTML",
             )
 
