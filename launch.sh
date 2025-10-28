@@ -180,7 +180,7 @@ wait
 log_success "Containers stopped" "done"
 
 log_info "Installing dependencies" "starting"
-make install
+make install 2>&1 >/dev/null
 log_success "Dependencies installed" "done"
 
 log_info "Creating tmux session: $SESSION_NAME" "starting"
