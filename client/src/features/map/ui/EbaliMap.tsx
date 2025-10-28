@@ -1,4 +1,5 @@
 import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
+import { Layers } from "lucide-react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -84,7 +85,9 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     >
       <Sheet open={showGroups} onOpenChange={setShowGroups}>
         <SheetTrigger>
-          <div className="absolute top-3 right-3 aspect-square h-10 rounded-full bg-primary" />
+          <div className="absolute top-3 right-3 aspect-square h-10 rounded-full bg-black flex items-center justify-center">
+            <Layers className="w-6 h-6 text-primary" />
+          </div>
         </SheetTrigger>
         <SheetContent side="left" aria-describedby={undefined}>
           <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
