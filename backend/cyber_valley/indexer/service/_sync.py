@@ -200,6 +200,15 @@ def _sync_new_event_place_request(
         )
 
 
+def _map_eventplace_status(status_int: int) -> str:
+    status_mapping = {
+        0: "submitted",
+        1: "approved",
+        2: "declined",
+    }
+    return status_mapping.get(status_int, "submitted")
+
+
 @transaction.atomic
 def _sync_event_place_updated(
     event_data: CyberValleyEventManager.EventPlaceUpdated,
@@ -218,7 +227,7 @@ def _sync_event_place_updated(
             "min_days": event_data.min_days,
             "days_before_cancel": event_data.days_before_cancel,
             "available": event_data.available,
-            "status": EventPlace.STATUS_CHOICES.get(event_data.status, "submitted"),
+            "status": _map_eventplace_status(event_data.status),
         },
     )
 
@@ -235,7 +244,7 @@ def _sync_event_place_updated(
     place.min_days = event_data.min_days
     place.days_before_cancel = event_data.days_before_cancel
     place.available = event_data.available
-    place.status = EventPlace.STATUS_CHOICES.get(event_data.status, "submitted")
+    place.status = _map_eventplace_status(event_data.status)
     place.save()
 
     if created:
