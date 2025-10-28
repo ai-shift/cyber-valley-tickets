@@ -34,17 +34,23 @@ async function main() {
   await eventTicket.setEventManagerAddress(await eventManager.getAddress());
 
   // Seed state
-  const [master, creatorSlave, completeSlave, verifiedShaman, localProvider] =
+  const [master, creatorSlave, completeSlave, verifiedShaman, localProvider, backend] =
     await hre.ethers.getSigners();
   await eventManager.connect(master).setMasterShare(50);
   await eventManager
     .connect(master)
     .grantLocalProvider(localProvider.address, 100);
 
-  // Grant VERIFIED_SHAMAN_ROLE to verifiedShaman
-  const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
+  // Grant BACKEND_ROLE to backend test signer and actual backend EOA
+  const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
   await eventManager
     .connect(master)
+    .grantRole(BACKEND_ROLE, backend.address);
+
+  // Grant VERIFIED_SHAMAN_ROLE to verifiedShaman (via backend role)
+  const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
+  await eventManager
+    .connect(backend)
     .grantRole(VERIFIED_SHAMAN_ROLE, verifiedShaman.address);
 
   console.log(
