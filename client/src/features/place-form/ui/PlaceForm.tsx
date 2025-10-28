@@ -39,7 +39,6 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   onSubmit: submitHandler,
   disableFields,
 }) => {
-  console.log(existingPlace);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingPlace
@@ -96,82 +95,99 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
             </FormItem>
           )}
         />
-        <div className="relative">
-          <p
-            className={twMerge(
-              "absolute pointer-events-none top-0 left-1 z-1 transition-all duration-500",
-              (selectedLocation || formLocation) && "opacity-0",
-            )}
-          >
-            Long press to place marker
-          </p>
-          <EbaliMap
-            initialCenter={formLocation ?? undefined}
-            className={twMerge(
-              "h-[55dvh] transition-all duration-300",
-              selectedLocation && "h-[40dvh]",
-              formLocation && "h-[30dvh]",
-            )}
-            longPressHandler={
-              formLocation ? () => {} : (latLng) => setSelectedLocation(latLng)
-            }
-          >
-            {selectedLocation && (
-              <AdvancedMarker position={selectedLocation}>
-                <Pin
-                  background={"#ffc107"}
-                  borderColor={"#ff9800"}
-                  glyphColor={"#ffe082"}
-                />
-              </AdvancedMarker>
-            )}
-            {formLocation && (
-              <AdvancedMarker position={formLocation}>
-                <Pin
-                  background={"#76ff05"}
-                  borderColor={"#006400"}
-                  glyphColor={"#b2ff59"}
-                />
-              </AdvancedMarker>
-            )}
-          </EbaliMap>
-          {selectedLocation && (
-            <div className="py-1">
-              <p className="text-lg py-2">Place set correctly?</p>
-              <div className="flex flex-row justify-between items-center">
-                <Button
-                  variant="secondary"
-                  className="w-1/4"
-                  onClick={() => {
-                    setFormLocation(selectedLocation);
-                    setSelectedLocation(null);
-                  }}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant="destructive"
-                  className="w-1/4"
-                  onClick={() => setSelectedLocation(null)}
-                >
-                  No
-                </Button>
-              </div>
-            </div>
-          )}
-          {formLocation && (
-            <Button
-              className="w-full mt-4"
-              onClick={() => {
-                setSelectedLocation(formLocation);
-                setFormLocation(null);
-              }}
-            >
-              Change
-            </Button>
-          )}
-        </div>
-
+        <FormField
+          control={form.control}
+          name="geometry"
+          render={() => {
+            return (
+              <FormItem>
+                <FormLabel>Place location</FormLabel>
+                <div className="relative">
+                  <p
+                    className={twMerge(
+                      "absolute pointer-events-none top-0 left-1 z-1 transition-all duration-500",
+                      (selectedLocation || formLocation) && "opacity-0",
+                    )}
+                  >
+                    Long press to place marker
+                  </p>
+                  <EbaliMap
+                    initialCenter={formLocation ?? undefined}
+                    className={twMerge(
+                      "h-[55dvh] transition-all duration-300",
+                      selectedLocation && "h-[40dvh]",
+                      formLocation && "h-[30dvh]",
+                    )}
+                    longPressHandler={
+                      formLocation
+                        ? () => {}
+                        : (latLng) => {
+                          form.clearErrors("geometry")
+                          setSelectedLocation(latLng)
+                        }
+                    }
+                  >
+                    {selectedLocation && (
+                      <AdvancedMarker position={selectedLocation}>
+                        <Pin
+                          background={"#ffc107"}
+                          borderColor={"#ff9800"}
+                          glyphColor={"#ffe082"}
+                        />
+                      </AdvancedMarker>
+                    )}
+                    {formLocation && (
+                      <AdvancedMarker position={formLocation}>
+                        <Pin
+                          background={"#76ff05"}
+                          borderColor={"#006400"}
+                          glyphColor={"#b2ff59"}
+                        />
+                      </AdvancedMarker>
+                    )}
+                  </EbaliMap>
+                  <FormMessage />
+                  {selectedLocation && (
+                    <div className="py-1">
+                      <p className="text-lg py-2">Place set correctly?</p>
+                      <div className="flex flex-row justify-between items-center">
+                        <Button
+                          variant="secondary"
+                          className="w-1/4"
+                          onClick={() => {
+                            setFormLocation(selectedLocation);
+                            form.clearErrors("geometry")
+                            setSelectedLocation(null);
+                          }}
+                        >
+                          Yes
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          className="w-1/4"
+                          onClick={() => setSelectedLocation(null)}
+                        >
+                          No
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  {formLocation && (
+                    <Button
+                      className="w-full mt-4"
+                      onClick={() => {
+                        setSelectedLocation(formLocation);
+                        setFormLocation(null);
+                      }}
+                    >
+                      Change
+                    </Button>
+                  )}
+                </div>
+              </FormItem>
+            );
+          }}
+        />
         <CustomFormComponent
           control={form.control}
           fieldDisabled={disableFields}
