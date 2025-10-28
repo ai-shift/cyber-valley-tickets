@@ -1,7 +1,13 @@
 import bs58 from "bs58";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const DEV_TEAM_EOA = MASTER_EOA;
@@ -138,7 +144,7 @@ async function main() {
       price: 100,
       startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       daysAmount: 3,
-      cover: "https://www.toei-animation.com/wp-content/uploads/2023/12/Egghead-KV_with-copyright-for-website-scaled.jpg",
+      cover: path.join(__dirname, "seed-data/event-covers/event-1-onepiece.jpg"),
       creator: creatorSlave,
       socials: {
         network: "telegram",
@@ -152,7 +158,7 @@ async function main() {
       price: 50,
       startDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
-      cover: "https://images.gog-statics.com/8e401209b82f9a43ff803287e3970e703b1eaeb505ae25c96108499dd7a210e5_product_card_v2_mobile_slider_639.jpg",
+      cover: path.join(__dirname, "seed-data/event-covers/event-2-game.jpg"),
       creator: creatorSlave,
       socials: {
         network: "telegram",
@@ -166,7 +172,7 @@ async function main() {
       price: 69,
       startDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
       daysAmount: 5,
-      cover: "https://i.imgur.com/TOHh4OL.png",
+      cover: path.join(__dirname, "seed-data/event-covers/event-3-sample.png"),
       creator: creatorSlave,
       socials: {
         network: "telegram",
@@ -175,9 +181,9 @@ async function main() {
     },
   ];
   for (const cfg of events) {
-    // Fetch cover with retry logic
-    const imgResponse = await fetchWithRetry(cfg.cover);
-    const imgBlob = await imgResponse.blob();
+    // Read cover image from local file
+    const imgBuffer = fs.readFileSync(cfg.cover);
+    const imgBlob = new Blob([imgBuffer]);
 
     // Upload socials
     const socialsResponse = await fetch(`${API_HOST}/api/ipfs/users/socials`, {
@@ -314,29 +320,6 @@ async function main() {
   console.log(
     `export PUBLIC_EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`,
   );
-}
-
-async function fetchWithRetry(url, maxRetries = 3, delayMs = 5000) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        return response;
-      }
-      if (attempt === maxRetries) {
-        const body = await response.text();
-        throw new Error(`failed to fetch ${url} after ${maxRetries} attempts: ${body}`);
-      }
-      console.log(`Attempt ${attempt} failed for ${url}, retrying in ${delayMs}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delayMs));
-    } catch (error) {
-      if (attempt === maxRetries) {
-        throw new Error(`failed to fetch ${url} after ${maxRetries} attempts: ${error.message}`);
-      }
-      console.log(`Attempt ${attempt} failed for ${url} with error: ${error.message}, retrying in ${delayMs}ms...`);
-      await new Promise(resolve => setTimeout(resolve, attempt * delayMs));
-    }
-  }
 }
 
 function getBytes32FromMultiash(multihash) {
