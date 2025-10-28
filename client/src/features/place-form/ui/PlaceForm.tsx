@@ -16,7 +16,7 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 
-import type { EventPlace } from "@/entities/place";
+import { placesQueries, type EventPlace } from "@/entities/place";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { Switch } from "@/shared/ui/switch";
 import { usePlacePersist } from "../hooks/usePlacePersist";
@@ -24,9 +24,10 @@ import { formSchema } from "../model/formSchema";
 
 import type { LatLng } from "@/entities/geodata";
 import { EbaliMap } from "@/features/map";
-import { DisplayPlaces } from "@/features/map/ui/DisplayPlaces";
 import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 import { twMerge } from "tailwind-merge";
+import { useQuery } from "@tanstack/react-query";
+import { Circle } from "@/features/map";
 
 type PlaceFormProps = {
   existingPlace?: EventPlace;
@@ -39,6 +40,8 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   onSubmit: submitHandler,
   disableFields,
 }) => {
+  const {data: places} = useQuery(placesQueries.list());
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingPlace
@@ -122,7 +125,12 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
                           }
                     }
                   >
-                    <DisplayPlaces removedPlaces={existingPlace && [existingPlace]} />
+                    {
+                      places?.map(place => {
+                        const isExisting = place.id === existingPlace?.id
+                      return <Circle key={place.id} center={place.geometry.coordinates[0]} radius={60} strokeWeight={2} strokeColor={isExisting ? "#3e8801" : "#02d6f2" } fillColor={isExisting ? "#3e8801" : "#02d6f2" } />
+                      })
+                    }
                     {selectedLocation && (
                       <AdvancedMarker position={selectedLocation}>
                         <Pin
