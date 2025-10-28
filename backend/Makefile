@@ -1,9 +1,8 @@
+-include ../example.env
 -include ../.env
 ipfs_container_name := "cvland-ipfs"
 valkey_container_name := "cvland-valkey"
 python := .venv/bin/python
-VIRTUALIZER ?= podman
-BACKEND_PORT ?= 8000
 
 format:
 	uv run ruff format
@@ -44,7 +43,7 @@ run-telegram-bot: migrate
 	$(python) manage.py telegram_bot
 
 run-server: migrate
-	$(python) manage.py runserver $(BACKEND_PORT)
+	$(python) manage.py runserver $$BACKEND_PORT
 
 run-ipfs-node:
 	test -n "$(IPFS_STAGING)" || exit 1
@@ -58,10 +57,10 @@ run-ipfs-node:
 		--userns=keep-id \
 		-v $$IPFS_STAGING:/export \
 		-v $$IPFS_DATA:/data/ipfs \
-		-p 4001:4001 \
-		-p 4001:4001/udp \
-		-p 127.0.0.1:8080:8080 \
-		-p 127.0.0.1:5001:5001 \
+		-p $$IPFS_SWARM_PORT:4001 \
+		-p $$IPFS_SWARM_PORT:4001/udp \
+		-p 127.0.0.1:$$IPFS_GATEWAY_PORT:8080 \
+		-p 127.0.0.1:$$IPFS_API_PORT:5001 \
 		docker.io/ipfs/go-ipfs:v0.7.0
 
 run-valkey:
@@ -69,7 +68,7 @@ run-valkey:
 	$(VIRTUALIZER) rm $(valkey_container_name) || true
 	$(VIRTUALIZER) run --rm -d \
 		--name $(valkey_container_name) \
-		-p 6379:6379 \
+		-p $$VALKEY_PORT:6379 \
 		docker.io/valkey/valkey:8.1.1
 
 podman-build:

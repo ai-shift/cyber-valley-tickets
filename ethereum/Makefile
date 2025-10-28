@@ -1,5 +1,5 @@
+-include ../example.env
 -include ../.env
-GANACHE_CONTAINER_NAME := "cyber-valley-tickets-ganache-node"
 
 compile:
 	pnpm exec hardhat compile
@@ -40,7 +40,7 @@ ganache:
 	podman run -d \
 	  --name cvland-ganache \
 	  --rm \
-	  -p 8545:8545 \
+	  -p $$GANACHE_PORT:8545 \
 	  docker.io/trufflesuite/ganache:v7.9.2 \
 	  --logging.verbose=true \
 	  --chain.chainId=1337 \
