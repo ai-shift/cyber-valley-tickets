@@ -4,7 +4,6 @@ import type { EventPlaceForm } from "../model/types";
 
 export const PLACE_LOCAL_KEY = "placeForm";
 
-// TODO: implement storage cleaning
 export const usePlacePersist = (
   form: UseFormReturn<EventPlaceForm, unknown, EventPlaceForm>,
 ) => {
