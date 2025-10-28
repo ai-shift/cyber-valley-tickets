@@ -21,6 +21,10 @@ const manageMapper = {
 export const ManageRequestedPlace: React.FC<ManageRequestedPlaceProps> = ({
   place,
 }) => {
+  if (place.status !== "submitted") {
+    return null;
+  }
+
   const [showResult, setShowResult] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const account = useActiveAccount();

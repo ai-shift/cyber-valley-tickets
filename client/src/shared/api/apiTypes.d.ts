@@ -1568,12 +1568,12 @@ export interface components {
       readonly isUsed: boolean;
     };
     /**
-     * @description * `0` - submitted
-     *     * `1` - approved
-     *     * `2` - declined
-     * @enum {integer}
+     * @description * `submitted` - submitted
+     *     * `approved` - approved
+     *     * `declined` - declined
+     * @enum {string}
      */
-    EventPlaceStatusEnum: 0 | 1 | 2;
+    EventPlaceStatusEnum: "submitted" | "approved" | "declined";
     GeoFeature: {
       /** @description Name of the geographical feature */
       name: string;

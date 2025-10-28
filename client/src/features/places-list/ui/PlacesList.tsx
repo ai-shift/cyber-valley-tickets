@@ -22,8 +22,7 @@ export const PlacesList: React.FC = () => {
         <ManageItem
           key={place.id}
           title={place.title}
-          //FIXME: type of place status is fucked up
-          isRequested={!!place.status}
+          isRequested={place.status === "submitted"}
           render={() => [
             <ManageRequestedPlace key="manrepla" place={place} />,
             <NavigateUpdatePlace key={place.id} place={place} />,
