@@ -143,7 +143,7 @@ To prevent potentially cumbersome situations in the future, a setter for the `Ma
 **Tasks**:
 1. **Include share setting in event approval flow** (~4 hours)
     - [ ] @redmoor Add 'shares' field to the `LocalProvider` approve form (input) (2h)
-    - [ ] @naqerl Backend integration for per-event share storage (1h)
+    - [x] @naqerl Backend integration for per-event share storage (1h)
     - [x] @naqerl Smart contract integration for share distribution (1h)
 2. **Add Master role management to smart contract** (~3 hours)
     - [x] @naqerl Implement Master share and address setters (2h)
@@ -169,8 +169,8 @@ Due to the previous features, the event request flow should/could be improved in
     - [ ] @redmoor Implement zone marker placement and validation (2h)
     - [x] @naqerl Store zone coordinates in event model (2h)
 2. **Add Telegram bot notifications for event requests** (~2 hours)
-    - [ ] @naqerl Extend notification system to support Telegram (1h)
-    - [ ] @naqerl Integrate with LocalProvider notification flow (1h)
+    - [x] @naqerl Extend notification system to support Telegram (1h)
+    - [x] @naqerl Integrate with LocalProvider notification flow (1h)
 
 ## Telegram integration
 
@@ -182,13 +182,13 @@ Because of tight Telegram integration, it's possible to move social selection to
 
 **Tasks**:
 1. **Move social selection to account page** (~4 hours)
-    - [ ] @redmoor Create account settings page with social management (2h)
-    - [ ] @redmoor Remove social selection from event creation flow (1h)
-    - [ ] @redmoor Update event creation to use stored socials (1h)
+    - [x] @redmoor Create account settings page with social management (2h)
+    - [x] @redmoor Remove social selection from event creation flow (1h)
+    - [x] @redmoor Update event creation to use stored socials (1h)
 2. **Implement smart Telegram detection** (~3 hours)
-    - [ ] @naqerl Detect Telegram registration source (1h)
-    - [ ] @naqerl Auto-populate Telegram info for verified users (1h)
-    - [ ] @naqerl TBD Fallback flow for missing Telegram info (1h)
+    - [-] @naqerl Detect Telegram registration source (1h)
+    - [x] @naqerl Auto-populate Telegram info for verified users (1h)
+    - [x] @naqerl Fallback flow for missing Telegram info (1h)
 
 ## Total Estimated Time
 
