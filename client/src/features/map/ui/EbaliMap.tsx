@@ -20,12 +20,14 @@ import { Placemark } from "./Placemark.tsx";
 type GeodataKey = string;
 
 type EbaliMapProps = {
+  initialCenter?: LatLng;
   className?: string;
   longPressHandler?: (latLng: LatLng) => void;
   children?: React.ReactNode;
 };
 
 export const EbaliMap: React.FC<EbaliMapProps> = ({
+  initialCenter,
   className,
   longPressHandler,
   children,
@@ -73,7 +75,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     <GMap
       className={twMerge("w-full h-[50dvh] relative", className)}
       mapId="fb99876bf33e90419a932304"
-      defaultCenter={{ lat: -8.2980705, lng: 115.088186 }}
+      defaultCenter={initialCenter ?? { lat: -8.2980705, lng: 115.088186 }}
       defaultZoom={16}
       onClick={onMapClick}
       gestureHandling="cooperative"
