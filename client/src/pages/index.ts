@@ -1,4 +1,5 @@
 export { HomePage } from "./home";
+export { MapPage } from "./map";
 export { EventsListPage } from "./events/";
 export { CreateEventPage } from "./events/create";
 export { EventAttendeesPage } from "./events/attendees";

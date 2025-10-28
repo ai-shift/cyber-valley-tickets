@@ -1,5 +1,5 @@
-import { Button } from "@/shared/ui/button";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
+import { Button } from "@/shared/ui/button";
 import { useState } from "react";
 import { submitIndividualVerification } from "../api/shamanApi";
 import { FileField } from "./FileField";

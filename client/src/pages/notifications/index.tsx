@@ -3,7 +3,7 @@ import { PageContainer } from "@/shared/ui/PageContainer";
 
 export const NotificationsPage: React.FC = () => {
   return (
-    <PageContainer name="Notifications">
+    <PageContainer name="Notifications" hasBackIcon={false}>
       <NotificationsList />
     </PageContainer>
   );

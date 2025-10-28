@@ -14,6 +14,7 @@ import {
   ManagePage,
   ManagePlacesPage,
   ManageStaffPage,
+  MapPage,
   NotificationsPage,
   Page404,
   PurchasePage,
@@ -36,6 +37,7 @@ export const Router = () => {
             <Route element={<AuthProvider />}>
               <Route element={<NavContainer />}>
                 <Route path="/" index element={<HomePage />} />
+                <Route path="/map" element={<MapPage />} />
 
                 <Route path="/events">
                   <Route index element={<EventsListPage />} />
