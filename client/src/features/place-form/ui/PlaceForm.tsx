@@ -26,6 +26,7 @@ import type { LatLng } from "@/entities/geodata";
 import { EbaliMap } from "@/features/map";
 import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 import { twMerge } from "tailwind-merge";
+import { DisplayPlaces } from "@/features/map/ui/DisplayPlaces";
 
 type PlaceFormProps = {
   existingPlace?: EventPlace;
@@ -121,6 +122,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
                           }
                     }
                   >
+                    <DisplayPlaces />
                     {selectedLocation && (
                       <AdvancedMarker position={selectedLocation}>
                         <Pin
