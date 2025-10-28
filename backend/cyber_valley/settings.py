@@ -40,7 +40,11 @@ if DEBUG:
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "cvland-tickets.aishift.co"] if DEBUG else ["cvland-tickets.aishift.co"]
+ALLOWED_HOSTS = (
+    ["localhost", "127.0.0.1", "cvland-tickets.aishift.co"]
+    if DEBUG
+    else ["cvland-tickets.aishift.co"]
+)
 
 
 CORS_ALLOWED_ORIGINS = (
