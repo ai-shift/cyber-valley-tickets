@@ -1,13 +1,9 @@
 import bs58 from "bs58";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const DEV_TEAM_EOA = MASTER_EOA;
