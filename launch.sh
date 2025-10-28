@@ -17,6 +17,22 @@ NC='\033[0m' # No Color
 # Configuration
 SESSION_NAME="cyber-valley-dev"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PRODUCTION_FRONTEND=false
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --production-frontend)
+            PRODUCTION_FRONTEND=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: $0 [--production-frontend]"
+            exit 1
+            ;;
+    esac
+done
 
 # Logging functions with aligned columns
 log_info() {
@@ -186,15 +202,23 @@ log_info "Starting Django backend server" "starting"
 create_tmux_window "backend" "/tmp/backend.log"
 tmux send-keys -t "$SESSION_NAME:backend" "make -C backend/ run" Enter
 
-log_info "Starting Vite frontend server" "starting"
-create_tmux_window "frontend" "/tmp/frontend.log"
-tmux send-keys -t "$SESSION_NAME:frontend" "make -C client/ dev" Enter
+if [[ "$PRODUCTION_FRONTEND" == true ]]; then
+    log_info "Building frontend for production" "starting"
+    run_buf_command "make -C client/ build"
+    log_success "Frontend build completed" "done"
+else
+    log_info "Starting Vite frontend server" "starting"
+    create_tmux_window "frontend" "/tmp/frontend.log"
+    tmux send-keys -t "$SESSION_NAME:frontend" "make -C client/ dev" Enter
+fi
 
 log_info "Waiting for services to initialize" "waiting"
 wait_for_service "/tmp/backend.log" "Starting development server at" "Backend"
 log_success "Django backend server ready" "started"
-wait_for_service "/tmp/frontend.log" "VITE" "Frontend"
-log_success "Vite frontend server ready" "started"
+if [[ "$PRODUCTION_FRONTEND" == false ]]; then
+    wait_for_service "/tmp/frontend.log" "VITE" "Frontend"
+    log_success "Vite frontend server ready" "started"
+fi
 
 # ============================================================================
 log_section "Database Configuration"
@@ -254,13 +278,18 @@ tmux send-keys -t "$SESSION_NAME:telegram-bot" "make -C backend/ run-telegram-bo
 log_success "Telegram bot started" "started"
 
 restart_service "Backend" "backend" "/tmp/backend.log" "make -C backend/ run"
-restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
+
+if [[ "$PRODUCTION_FRONTEND" == false ]]; then
+    restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
+fi
 
 log_info "Waiting for services to restart" "waiting"
 wait_for_service "/tmp/backend.log" "Starting development server at" "Backend"
 log_success "Django backend server ready" "restarted"
-wait_for_service "/tmp/frontend.log" "VITE" "Frontend"
-log_success "Vite frontend server ready" "restarted"
+if [[ "$PRODUCTION_FRONTEND" == false ]]; then
+    wait_for_service "/tmp/frontend.log" "VITE" "Frontend"
+    log_success "Vite frontend server ready" "restarted"
+fi
 
 # ============================================================================
 log_section "Startup Complete"
