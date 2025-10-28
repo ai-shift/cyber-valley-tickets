@@ -1,24 +1,21 @@
-import type { LatLng, Placemark as PlacemarkType } from "../model/types.ts";
-
-import { geodataQueries } from "@/entities/geodata";
-import { useQueries } from "@tanstack/react-query";
 import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
 
+import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetTrigger,
 } from "@/shared/ui/sheet.tsx";
-import { LAYER_NAMES } from "../data/data.ts";
+import { useGeodata } from "../hooks/useGeodata.tsx";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
+import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
-import { PlacemarkGroup } from "./PlacemarkGroup.tsx";
 
 type GeodataKey = string;
 
@@ -33,25 +30,11 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   longPressHandler,
   children,
 }) => {
-  const layerQueries = useQueries({
-    queries: Object.entries(LAYER_NAMES).map(([displayName, apiName]) =>
-      geodataQueries.layer(apiName),
-    ),
-  });
-
-  const geodata = useMemo(() => {
-    const result: Record<string, PlacemarkType[]> = {};
-    Object.keys(LAYER_NAMES).forEach((displayName, index) => {
-      const queryResult = layerQueries[index];
-      result[displayName] = (queryResult.data as PlacemarkType[]) || [];
-    });
-    return result;
-  }, [layerQueries]);
-
-  const isLoading = layerQueries.some((query) => query.isLoading);
-
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
   const [showGroups, setShowGroups] = useState(false);
+
+  const { layersTitles, loadingLayers, errorLayers, geodata } =
+    useGeodata(displayedGroups);
 
   const [selectedId, setSelectedId] = useState("");
   const [selectedPlacemark, setSelectedPlacemark] =
@@ -104,38 +87,34 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         <SheetContent side="left" aria-describedby={undefined}>
           <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
           <div className="h-full overflow-y-auto px-4">
-            {isLoading ? (
-              <div className="p-4 text-center">Loading layers...</div>
-            ) : (
-              Object.keys(geodata).map((group) => {
-                const placemarks = geodata[group] as PlacemarkType[];
-                if (placemarks.length > 0) {
-                  return (
-                    <PlacemarkGroup
-                      key={group}
-                      value={group}
-                      isDisplayed={displayedGroups.includes(group)}
-                      setDisplayed={() => displayGroupHandler(group)}
-                      placemarks={placemarks}
-                      showInfo={showPlacemarkInfo}
-                      closeGroups={() => setShowGroups(false)}
-                    />
-                  );
-                }
-              })
-            )}
+            {layersTitles.map((title) => {
+              const placemarks = geodata[title] as PlacemarkType[];
+              return (
+                <LayerControl
+                  key={title}
+                  value={title}
+                  isLoading={loadingLayers.includes(title)}
+                  isError={errorLayers.includes(title)}
+                  isDisplayed={displayedGroups.includes(title)}
+                  setIsDisplayed={() => displayGroupHandler(title)}
+                  placemarks={placemarks}
+                  showInfo={showPlacemarkInfo}
+                  closeGroups={() => setShowGroups(false)}
+                />
+              );
+            })}
           </div>
         </SheetContent>
       </Sheet>
-      {displayedGroups.map((layer) =>
-        geodata[layer].map((placemark, idx) => (
+      {displayedGroups.map((layer) => {
+        return geodata[layer]?.map((placemark, idx) => (
           <Placemark
             onClick={(placemark) => showPlacemarkInfo(placemark)}
             key={`${placemark.name}-${idx}`}
             placemark={placemark as PlacemarkType}
           />
-        )),
-      )}
+        ));
+      })}
       {infoWindowShown && selectedPlacemark && (
         <InfoWindow
           pixelOffset={[0, -2]}

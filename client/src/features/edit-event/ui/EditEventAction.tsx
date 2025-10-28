@@ -21,7 +21,7 @@ export const EditEventAction: React.FC<EditEventActionProps> = ({
 
   function onSubmit(values: EventDto) {
     setEventOrder({ ...values, id: numbericId });
-    navigate("/socials");
+    navigate("/purchase");
   }
 
   return (

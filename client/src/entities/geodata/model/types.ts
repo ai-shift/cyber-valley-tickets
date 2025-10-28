@@ -1,29 +1,22 @@
-export interface LatLng {
-  lat: number;
-  lng: number;
-}
+import type { components } from "@/shared/api";
 
-interface BasePlacemark {
-  name: string;
-  type: "point" | "polygon" | "line";
-}
+type BasePlacemark = components["schemas"]["GeoFeature"];
+
+export type LatLng = BasePlacemark["coordinates"][0];
 
 export interface Point extends BasePlacemark {
   type: "point";
-  coordinates: LatLng;
   iconUrl: string;
 }
 
 export interface Polygon extends BasePlacemark {
   type: "polygon";
-  coordinates: LatLng[];
   polygon_color: string;
   line_color: string;
 }
 
 export interface Line extends BasePlacemark {
   type: "line";
-  coordinates: LatLng[];
   line_color: string;
 }
 

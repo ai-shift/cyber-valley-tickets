@@ -1,1 +1,1 @@
-export { ShamanVerification } from "./UI/ShamanVerification";
+export { ShamanVerification } from "./ui/ShamanVerification";

@@ -1,6 +1,6 @@
+import type { Placemark as PlacemarkType } from "@/entities/geodata/";
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { truncateColorString } from "../lib/colorTruncator.ts";
-import type { Placemark as PlacemarkType } from "../model/types.ts";
 import { Polygon } from "./components/polygon.tsx";
 import { Polyline } from "./components/polyline.tsx";
 
@@ -14,7 +14,10 @@ export const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
   switch (placemark.type) {
     case "point":
       return (
-        <AdvancedMarker onClick={clickHandler} position={placemark.coordinates}>
+        <AdvancedMarker
+          onClick={clickHandler}
+          position={placemark.coordinates[0]}
+        >
           <img
             src={placemark.iconUrl}
             alt={`${placemark.name} marker`}

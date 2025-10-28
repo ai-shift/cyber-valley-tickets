@@ -1,10 +1,12 @@
 import { apiClient } from "@/shared/api";
 
 export const getGeodataLayer = async (layerName: string) =>
-  await apiClient.GET("/api/geodata/{name}/", {
+  await apiClient.GET("/api/geodata/{id}/", {
     params: {
       path: {
-        name: layerName,
+        id: layerName,
       },
     },
   });
+
+export const getGeodata = async () => await apiClient.GET("/api/geodata/");

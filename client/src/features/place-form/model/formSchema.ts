@@ -14,7 +14,7 @@ const numberField = (min: number, max: number, fieldName: string) =>
 export const formSchema: ZodType<EventPlaceForm> = z
   .object({
     title: z.string().min(1, "Title is required"),
-    location: z
+    geometry: z
       .object({
         lat: z.number().min(-90).max(90),
         lng: z.number().min(-90).max(90),
