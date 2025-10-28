@@ -16,10 +16,17 @@ export const formSchema: ZodType<EventPlaceForm> = z
     title: z.string().min(1, "Title is required"),
     geometry: z
       .object({
-        lat: z.number().min(-90).max(90),
-        lng: z.number().min(-90).max(90),
+        lat: z
+          .number()
+          .min(-90, "Latitiude can't be less then -90")
+          .max(90, "Latitude can't be greater then 90"),
+        lng: z
+          .number()
+          .min(-180, "Longitude can't be less then -90")
+          .max(180, "Longitude can't be greater then 90"),
       })
-      .nullable(),
+      .nullable()
+      .refine((val) => val != null, "Event place should have a location"),
     maxTickets: numberField(1, 65536, "Maximum ticket amount"),
     minTickets: numberField(1, 65536, "Minimum ticket amount"),
     minPrice: numberField(1, 65536, "Minimum price"),
