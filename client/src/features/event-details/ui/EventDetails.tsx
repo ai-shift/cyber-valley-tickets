@@ -3,6 +3,7 @@ import { cn } from "@/shared/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuthSlice } from "@/app/providers";
+import type { LatLng } from "@/entities/geodata";
 import { StatusBage } from "@/features/events-list/ui/StatusBage";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
@@ -45,6 +46,12 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     website,
   } = event;
 
+  function placeClickHandler() {
+    const location = place.geometry.coordinates[0] as LatLng;
+    const url = `/?lat=${location.lat}&lng=${location.lng}`;
+    navigate(url);
+  }
+
   const isCreator = user?.address === event.creator.address;
   const isLocalprovider = user?.role === "localprovider";
 
@@ -84,16 +91,13 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           icon="/icons/event place_2.svg"
           title="Location"
           information={
-            <a
-              // TODO: Update to navigate to / with search parameters to pan into the marker
-              // @ts-ignore i really need to build this shit
-              href={place.locationUrl}
-              target="_blank"
+            <button
+              type="button"
               className="underline underline-offset-2 text-secondary"
-              rel="noreferrer"
+              onClick={placeClickHandler}
             >
               {place.title}
-            </a>
+            </button>
           }
         />
       </div>
