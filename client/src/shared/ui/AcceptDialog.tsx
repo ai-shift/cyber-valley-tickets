@@ -10,11 +10,14 @@ import { useEffect, useState } from "react";
 
 type AcceptDialogProps = {
   confirmFn: () => void;
+  title: string;
   children: React.ReactNode;
   option: "accept" | "decline";
 };
+
 export const AcceptDialog: React.FC<AcceptDialogProps> = ({
   confirmFn,
+  title,
   children,
   option,
 }) => {
@@ -43,9 +46,7 @@ export const AcceptDialog: React.FC<AcceptDialogProps> = ({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent aria-describedby={undefined} className="py-7">
         <DialogTitle>
-          <p className="text-muted py-7 text-2xl">
-            Are you sure you want to {option} the event?
-          </p>
+          <p className="text-muted py-7 text-2xl">{title}</p>
         </DialogTitle>
         <DialogClose className="flex justify-center items-center" asChild>
           <span>
