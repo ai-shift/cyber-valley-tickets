@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Cyber Valley Tickets - Development Environment Launcher
 # This script sets up the complete development environment using tmux
@@ -119,9 +119,12 @@ create_tmux_window() {
 
 # Helper: Run command in buf window and wait
 run_buf_command() {
-    local command="$1"
-    tmux send-keys -t "$SESSION_NAME:buf" "$command; tmux wait -S buf_done" Enter
-    tmux wait "buf_done"
+  local cmd=$1
+  local done=/tmp/done.$$
+  tmux send-keys -t "$SESSION_NAME:buf" \
+       "$cmd; touch '$done'" C-m
+  until [[ -f $done ]]; do sleep 0.1; done
+  rm -f "$done"
 }
 
 # Helper: Wait for service to start by monitoring log
