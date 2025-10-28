@@ -1,7 +1,6 @@
 import { placesQueries } from "@/entities/place"
 import { useQuery } from "@tanstack/react-query"
-import { AdvancedMarker } from "@vis.gl/react-google-maps"
-import { Pin } from "lucide-react"
+import { Circle } from "./components/circle"
 
 export const DisplayPlaces = () => {
   const {data: places} = useQuery(placesQueries.list())
@@ -13,10 +12,8 @@ export const DisplayPlaces = () => {
     <>
       {
         places.map((place) =>
-        <AdvancedMarker key={place.id} position={place.geometry.coordinates[0]} >
-            <Pin>
-            </Pin>
-        </AdvancedMarker>)
+          <Circle key={place.id} center={place.geometry.coordinates[0]} radius={50} strokeColor="#76ff05" fillColor="#76ff05"/>
+        )
       }
     </>
   )
