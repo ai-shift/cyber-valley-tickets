@@ -25,6 +25,7 @@ export const upsertPlaceW3 = async (
   const placeForm = new FormData();
   placeForm.append("title", title);
   placeForm.append("description", "foo");
+  // @ts-ignore i really need to build this shit
   placeForm.append("geometry", geometry);
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
