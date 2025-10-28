@@ -8622,12 +8622,12 @@
             },
             "EventPlaceStatusEnum": {
                 "enum": [
-                    0,
-                    1,
-                    2
+                    "submitted",
+                    "approved",
+                    "declined"
                 ],
-                "type": "integer",
-                "description": "* `0` - submitted\n* `1` - approved\n* `2` - declined"
+                "type": "string",
+                "description": "* `submitted` - submitted\n* `approved` - approved\n* `declined` - declined"
             },
             "GeoFeature": {
                 "type": "object",
