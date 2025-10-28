@@ -1,4 +1,5 @@
 import { Button } from "@/shared/ui/button";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useState } from "react";
 import { submitCompanyVerification } from "../api/shamanApi";
 import { FileField } from "./FileField";
@@ -7,7 +8,9 @@ export const CompanyForm: React.FC = () => {
   const [ktpFile, setKtpFile] = useState<File | null>(null);
   const [aktaFile, setAktaFile] = useState<File | null>(null);
   const [skFile, setSkFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [isLoading, setIsLoading] = useState(false);
 
   const allFilesPresent = ktpFile && aktaFile && skFile;
 
@@ -19,15 +22,15 @@ export const CompanyForm: React.FC = () => {
     }
 
     try {
-      setIsSubmitting(true);
-      const result = await submitCompanyVerification(ktpFile, aktaFile, skFile);
-      console.log("Verification submitted successfully:", result);
-      // TODO: Show success message to user
+      setIsLoading(true);
+      await submitCompanyVerification(ktpFile, aktaFile, skFile);
+      setStatus("success");
+      setShowResult(true);
     } catch (error) {
-      console.error("Failed to submit verification:", error);
-      // TODO: Show error message to user
+      setStatus("error");
+      setShowResult(true);
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -54,10 +57,26 @@ export const CompanyForm: React.FC = () => {
       <Button
         type="submit"
         className="mt-4"
-        disabled={!allFilesPresent || isSubmitting}
+        disabled={!allFilesPresent || isLoading}
       >
-        {isSubmitting ? "Submitting..." : "Submit"}
+        {isLoading ? "Submitting..." : "Submit"}
       </Button>
+      <ResultDialog
+        open={showResult}
+        setOpen={setShowResult}
+        failure={status === "error"}
+        onConfirm={() => setStatus("idle")}
+        title={
+          status === "success" ? "Success" : status === "error" ? "Error" : ""
+        }
+        body={
+          status === "success"
+            ? "Verification submitted successfully"
+            : status === "error"
+              ? "Failed to submit verification. Please try again."
+              : ""
+        }
+      />
     </form>
   );
 };

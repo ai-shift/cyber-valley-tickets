@@ -1,11 +1,14 @@
 import { Button } from "@/shared/ui/button";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { useState } from "react";
 import { submitIndividualVerification } from "../api/shamanApi";
 import { FileField } from "./FileField";
 
 export const IndividualForm: React.FC = () => {
   const [ktpFile, setKtpFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,15 +18,15 @@ export const IndividualForm: React.FC = () => {
     }
 
     try {
-      setIsSubmitting(true);
-      const result = await submitIndividualVerification(ktpFile);
-      console.log("Verification submitted successfully:", result);
-      // TODO: Show success message to user
+      setIsLoading(true);
+      await submitIndividualVerification(ktpFile);
+      setStatus("success");
+      setShowResult(true);
     } catch (error) {
-      console.error("Failed to submit verification:", error);
-      // TODO: Show error message to user
+      setStatus("error");
+      setShowResult(true);
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -35,13 +38,25 @@ export const IndividualForm: React.FC = () => {
         setFile={setKtpFile}
         id="ktp"
       />
-      <Button
-        type="submit"
-        className="mt-4"
-        disabled={!ktpFile || isSubmitting}
-      >
-        {isSubmitting ? "Submitting..." : "Submit"}
+      <Button type="submit" className="mt-4" disabled={!ktpFile || isLoading}>
+        {isLoading ? "Submitting..." : "Submit"}
       </Button>
+      <ResultDialog
+        open={showResult}
+        setOpen={setShowResult}
+        failure={status === "error"}
+        onConfirm={() => setStatus("idle")}
+        title={
+          status === "success" ? "Success" : status === "error" ? "Error" : ""
+        }
+        body={
+          status === "success"
+            ? "Verification submitted successfully"
+            : status === "error"
+              ? "Failed to submit verification. Please try again."
+              : ""
+        }
+      />
     </form>
   );
 };
