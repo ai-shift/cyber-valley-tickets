@@ -1,5 +1,5 @@
 import type { EventPlace } from "@/entities/place";
-import { type EventPlaceForm, PlaceForm } from "@/features/place-form";
+import { cleanPlaceLocal, type EventPlaceForm, PlaceForm } from "@/features/place-form";
 import { useSendTx } from "@/shared/hooks";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
@@ -28,6 +28,7 @@ export const PlaceEditor: React.FC<PlaceEditorProps> = ({ placeForEdit }) => {
       upsertPlaceW3(sendTx, values, account, placeForEdit?.id),
     onSuccess: () => {
       setIsOpen(true);
+      cleanPlaceLocal();
     },
     onError: () => {
       setIsOpen(true);

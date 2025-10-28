@@ -58,8 +58,8 @@ export const ResultDialog: React.FC<ResultDialogProps> = ({
             variant={failure ? "destructive" : "default"}
             className="mx-auto block"
             onClick={() => {
-              setOpen(false)
-              onConfirm()
+              setOpen(false);
+              onConfirm();
             }}
           >
             Understand
