@@ -1,0 +1,117 @@
+import { eventQueries } from "@/entities/event";
+import type { Event } from "@/entities/event";
+import type { EventPlace } from "@/entities/place";
+import { Circle, EbaliMap } from "@/features/map";
+import { useQuery } from "@tanstack/react-query";
+import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
+
+interface PlaceWithEvents extends EventPlace {
+  events: Omit<Event, "place">[];
+}
+
+export const HomeMap = () => {
+  const { data: events } = useQuery(eventQueries.list());
+  const [selectedPlace, setSelectedPlace] = useState<PlaceWithEvents | null>(
+    null,
+  );
+  const [searchParams] = useSearchParams();
+  const map = useMap();
+
+  const placesWithEvents = (events ?? ([] as Event[]))
+    .filter((event) => event.status === "approved")
+    .reduce<Record<number, PlaceWithEvents>>((acc, event) => {
+      const { place } = event;
+      const placeId = place.id;
+      const { place: _, ...eventWithoutPlace } = event;
+
+      if (!acc[placeId]) {
+        acc[placeId] = {
+          ...place,
+          events: [],
+        };
+      }
+
+      acc[placeId].events.push(eventWithoutPlace as Omit<Event, "place">);
+      return acc;
+    }, {});
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+
+    if (lat && lng && Number(lat) && Number(lng)) {
+      map.panTo({ lat: Number(lat), lng: Number(lng) });
+      map.setZoom(16);
+      const foundPlace = Object.values(placesWithEvents).find((place) => {
+        const coords = place.geometry.coordinates[0];
+        return coords?.lat === +lat && coords?.lng === +lng;
+      });
+      if (foundPlace) {
+        setSelectedPlace(foundPlace);
+      }
+    }
+
+    const clickListener = map.addListener("click", () =>
+      setSelectedPlace(null),
+    );
+    return () => {
+      google.maps.event.removeListener(clickListener);
+    };
+  }, [map, searchParams]);
+
+  return (
+    <EbaliMap>
+      {Object.values(placesWithEvents).map((place) => (
+        <Circle
+          onClick={() => setSelectedPlace(place)}
+          key={place.id}
+          center={place.geometry.coordinates[0]}
+          radius={20}
+          fillColor="#76ff05"
+          strokeColor="#76ff05"
+          strokeWeight={1}
+        />
+      ))}
+      {selectedPlace && (
+        <InfoWindow
+          className="text-black"
+          headerDisabled
+          position={selectedPlace.geometry.coordinates[0]}
+        >
+          <h2 className="text-secondary text-lg">{selectedPlace.title}</h2>
+          <ListEvents events={selectedPlace.events} />
+        </InfoWindow>
+      )}
+    </EbaliMap>
+  );
+};
+
+type ListEventsProps = {
+  events: Omit<Event, "place">[];
+};
+
+const ListEvents: React.FC<ListEventsProps> = ({ events }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="divide-y-[1px] divide-primary">
+      {events.map((event) => (
+        <button
+          key={event.id}
+          className="my-1 block text-start"
+          onClick={() => navigate(`/events/${event.id}`)}
+          type="button"
+        >
+          <h3 className="text-xl">{event.title}</h3>
+          <p className="text-md">{event.description.slice(0, 80)}</p>
+          <p>Some more info here</p>
+        </button>
+      ))}
+    </div>
+  );
+};
