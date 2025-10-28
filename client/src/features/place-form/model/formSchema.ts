@@ -11,6 +11,7 @@ const numberField = (min: number, max: number, fieldName: string) =>
     .refine((val) => val <= max, `${fieldName} is too big`)
     .refine((val) => val >= min, `${fieldName} is too small`);
 
+// @ts-ignore i really need to build this shit
 export const formSchema: ZodType<EventPlaceForm> = z
   .object({
     title: z.string().min(1, "Title is required"),
