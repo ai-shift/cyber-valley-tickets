@@ -88,14 +88,22 @@ export const AccountPage: React.FC = () => {
         </div>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <div className="flex flex-col gap-4">
-            {user?.socials[user.socials.length - 1] && (
-              <div class="flex items-center justify-between">
-                <h3 className="capitalize font-semibold text-lg">
-                  {user.socials[user.socials.length - 1].network}:
-                </h3>
-                <p className="italic">{user.socials[user.socials.length - 1].value}</p>
-              </div>
-            )}
+            {(() => {
+              const lastSocial =
+                user?.socials && user.socials.length > 0
+                  ? user.socials[user.socials.length - 1]
+                  : null;
+              return (
+                lastSocial && (
+                  <div className="flex items-center justify-between">
+                    <h3 className="capitalize font-semibold text-lg">
+                      {lastSocial.network}:
+                    </h3>
+                    <p className="italic">{lastSocial.value}</p>
+                  </div>
+                )
+              );
+            })()}
             <Button
               filling="outline"
               type="button"
