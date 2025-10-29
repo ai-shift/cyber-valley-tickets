@@ -108,7 +108,9 @@ class CyberValleyEvents(BaseModel):
     )
     approval: Approval | None = Field(None, alias="Approval")
     approval_for_all: ApprovalForAll | None = Field(None, alias="ApprovalForAll")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
+    role_admin_changed: RoleAdminChanged | None = Field(
+        None, alias="RoleAdminChanged"
+    )
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
     ticket_minted: TicketMinted | None = Field(None, alias="TicketMinted")

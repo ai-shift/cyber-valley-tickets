@@ -79,3 +79,4 @@ podman-build:
 
 gen-types:
 	uv run manage.py generate_types
+	$(MAKE) lint
