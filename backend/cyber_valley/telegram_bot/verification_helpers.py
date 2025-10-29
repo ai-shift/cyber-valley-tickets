@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 from typing import Literal, assert_never, cast
 
-import ipfshttpclient
 import telebot
 from django.conf import settings
 
@@ -100,33 +99,29 @@ def send_verification_request_to_provider(
         ),
     )
 
-    # Get files from IPFS
-    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
-        metadata = client.get_json(verification_request.metadata_cid)
-
+    # Get files from filesystem using UUID
+    verification_path = (
+        settings.IPFS_DATA_PATH / "verifications" / str(verification_request.uuid)
+    )
     files: list[tuple[str, Path]] = []
-    ipfs_data_path = settings.IPFS_DATA_PATH / "verifications"
 
     if (
         verification_request.verification_type
         == VerificationRequest.VerificationType.INDIVIDUAL
     ):
-        ktp_cid = metadata.get("ktp")
-        if ktp_cid:
-            # Find file by searching for pattern
-            for ktp_path in ipfs_data_path.glob("*/ktp_*"):
-                files.append(("ktp", ktp_path))
-                break
+        # Find ktp file in the UUID directory
+        for ktp_path in verification_path.glob("ktp_*"):
+            files.append(("ktp", ktp_path))
+            break
     elif (
         verification_request.verification_type
         == VerificationRequest.VerificationType.COMPANY
     ):
+        # Find all required files in the UUID directory
         for field in ("ktp", "akta", "sk"):
-            field_cid = metadata.get(field)
-            if field_cid:
-                for field_path in ipfs_data_path.glob(f"*/{field}_*"):
-                    files.append((field, field_path))
-                    break
+            for field_path in verification_path.glob(f"{field}_*"):
+                files.append((field, field_path))
+                break
 
     if not files:
         log.warning(
