@@ -286,6 +286,11 @@ html {
 }
 
 .gm-style-iw-t::after {
-  background: linear-gradient(45deg, black 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0) 100%) !important;
+  background: linear-gradient(
+    45deg,
+    black 50%,
+    rgba(0, 0, 0, 0) 51%,
+    rgba(0, 0, 0, 0) 100%
+  ) !important;
   box-shadow: none !important;
 }

@@ -42,10 +42,7 @@ export const VerifiedShamansList: React.FC = () => {
           key={address}
           title={formatAddress(address as `0x${string}`)}
           render={() => [
-            <RemoveVerifiedShamanBtn
-              key={address}
-              shamanAddress={address}
-            />,
+            <RemoveVerifiedShamanBtn key={address} shamanAddress={address} />,
           ]}
         />
       ))}

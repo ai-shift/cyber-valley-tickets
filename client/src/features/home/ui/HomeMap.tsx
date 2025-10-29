@@ -1,7 +1,7 @@
 import { eventQueries } from "@/entities/event";
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
-import { EventCircle, EbaliMap } from "@/features/map";
+import { EbaliMap, EventCircle } from "@/features/map";
 import { useQuery } from "@tanstack/react-query";
 import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -140,7 +140,9 @@ const ListEvents: React.FC<ListEventsProps> = ({ events }) => {
           type="button"
         >
           <h3 className="text-xl text-secondary">{event.title}</h3>
-          <p className="text-md text-secondary">{event.description.slice(0, 80)}</p>
+          <p className="text-md text-secondary">
+            {event.description.slice(0, 80)}
+          </p>
           <p className="text-secondary">Some more info here</p>
         </button>
       ))}
