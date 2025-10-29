@@ -38,13 +38,13 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
   const selectedNetwork = form.watch("network");
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    submitHandler(values);
+    submitHandler({ network: values.network, value: values.value || "" });
   }
 
   function handleTelegramConnect() {
     window.open(
       `https://t.me/cyberia_tickets_bot?start=${userAddress}`,
-      "_blank"
+      "_blank",
     );
   }
 

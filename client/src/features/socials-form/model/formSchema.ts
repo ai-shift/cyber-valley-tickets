@@ -1,5 +1,4 @@
-import type { Socials } from "@/entities/user";
-import { type ZodType, z } from "zod";
+import { z } from "zod";
 
 export const formSchema = z
   .object({
@@ -16,5 +15,5 @@ export const formSchema = z
     {
       message: "Enter contact information",
       path: ["value"],
-    }
+    },
   );
