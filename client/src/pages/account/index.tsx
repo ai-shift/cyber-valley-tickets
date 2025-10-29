@@ -4,7 +4,6 @@ import { apiClient } from "@/shared/api";
 import { useTokenBalance } from "@/shared/hooks";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
-import { Loader } from "@/shared/ui/Loader";
 import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
@@ -33,7 +32,18 @@ export const AccountPage: React.FC = () => {
     signOut();
   };
 
-  if (!account) return <Loader />;
+  if (!account) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <h2 className="text-2xl font-semibold text-primary">Account</h2>
+        <p className="text-lg text-gray-400">
+          Please login to view your account
+        </p>
+        <Button onClick={() => navigate("/login")}>Login</Button>
+      </div>
+    );
+  }
+
   const address = account.address;
 
   return (

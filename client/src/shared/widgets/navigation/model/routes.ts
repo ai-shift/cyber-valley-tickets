@@ -33,7 +33,6 @@ export const routes: Route[] = [
     path: "/account",
     title: "Account",
     icon: "account",
-    restrictedTo: ["customer", "verifiedshaman", "localprovider", "master"],
   },
   {
     path: "/manage",
