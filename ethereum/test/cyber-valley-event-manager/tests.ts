@@ -43,6 +43,42 @@ import {
 } from "./corner-cases";
 
 describe("CyberValleyEventManager", () => {
+  let testStartBlock: number;
+  let provider: typeof ethers.provider;
+
+  beforeEach(async () => {
+    provider = ethers.provider;
+    testStartBlock = await provider.getBlockNumber();
+  });
+
+  afterEach(async function() {
+    const currentBlock = await provider.getBlockNumber();
+    const txHashes: string[] = [];
+
+    console.log(`\n${"=".repeat(80)}`);
+    console.log(`TEST: ${this.currentTest?.title || "unknown"}`);
+    console.log(`Blocks: ${testStartBlock + 1} to ${currentBlock}`);
+    console.log(`${"=".repeat(80)}`);
+
+    for (let i = testStartBlock + 1; i <= currentBlock; i++) {
+      const block = await provider.getBlock(i, true);
+      if (block && block.transactions.length > 0) {
+        console.log(`\nBlock ${i} (${block.transactions.length} transactions):`);
+        for (const txHash of block.transactions) {
+          const tx = await provider.getTransaction(txHash as string);
+          if (tx) {
+            const receipt = await provider.getTransactionReceipt(tx.hash);
+            const eventCount = receipt?.logs.length || 0;
+            console.log(`  • TX: ${tx.hash} (${eventCount} events)`);
+            txHashes.push(tx.hash);
+          }
+        }
+      }
+    }
+
+    console.log(`\nTotal transactions in test: ${txHashes.length}`);
+    console.log(`${"=".repeat(80)}\n`);
+  });
   describe("setMasterShare", () => {
     itExpectsOnlyMaster("setMasterShare", [50]);
 

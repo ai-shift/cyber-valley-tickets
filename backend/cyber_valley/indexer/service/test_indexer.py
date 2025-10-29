@@ -73,21 +73,81 @@ def events_factory(w3: Web3, run_hardhat_test: HardhatTestRunner) -> EventsFacto
     def inner(test_to_run: str) -> list[BaseModel]:
         with run_hardhat_test(test_to_run):
             logs = _get_logs(w3)
-            print(f"\n=== Total logs retrieved: {len(logs)} ===")
+            contracts = _get_all_contracts(w3)
+
+            print(f"\n{'=' * 80}")
+            print("EVENTS PROCESSING REPORT")
+            print(f"{'=' * 80}")
+            print(f"Total logs retrieved: {len(logs)}\n")
+
+            # Group logs by transaction
+            logs_by_tx: dict[str, list[LogReceipt]] = {}
+            for log in logs:
+                tx_hash = log.get("transactionHash", "unknown")
+                tx_hash_str = tx_hash.hex() if hasattr(tx_hash, "hex") else str(tx_hash)
+                if tx_hash_str not in logs_by_tx:
+                    logs_by_tx[tx_hash_str] = []
+                logs_by_tx[tx_hash_str].append(log)
+
             events = []
-            for idx, log in enumerate(logs):
-                print(f"\n--- Processing log {idx + 1}/{len(logs)} ---")
-                print(f"Address: {log.get('address')}")
-                topics = [
-                    t.hex() if hasattr(t, "hex") else t for t in log.get("topics", [])
-                ]
-                print(f"Topics: {topics}")
-                try:
-                    event = indexer.parse_log(log, _get_all_contracts(w3)).unwrap()
-                    events.append(event)
-                except Exception as e:
-                    print(f"✗ Failed to parse: {type(e).__name__}: {e}")
-                    raise
+            processed_count = 0
+            failed_count = 0
+
+            for tx_idx, (tx_hash, tx_logs) in enumerate(logs_by_tx.items(), 1):
+                print(f"\n{'-' * 80}")
+                print(f"Transaction {tx_idx}: {tx_hash[:20]}...{tx_hash[-10:]}")
+                print(f"Events in this transaction: {len(tx_logs)}")
+                print(f"{'-' * 80}")
+
+                for log_idx, log in enumerate(tx_logs, 1):
+                    block_num = log.get("blockNumber", "?")
+                    log_index = log.get("logIndex", "?")
+                    address = log.get("address", "?")
+                    topics_raw = log.get("topics", [])
+                    topics: list[str] = [
+                        t.hex() if hasattr(t, "hex") else str(t) for t in topics_raw
+                    ]
+
+                    print(
+                        f"\n  Event {log_idx}/{len(tx_logs)} (Block: {block_num},"
+                        f"LogIndex: {log_index})"
+                    )
+                    print(f"  Contract: {address!r}")
+                    print(
+                        f"  Topic[0] (event signature):"
+                        f" {topics[0] if topics else 'N/A'}"
+                    )
+
+                    # Try to decode the event name from contracts
+                    event_name = _get_event_name_from_topic(
+                        topics[0] if topics else None, contracts
+                    )
+                    if event_name:
+                        print(f"  Event name: {event_name}")
+
+                    try:
+                        event = indexer.parse_log(log, contracts).unwrap()
+                        event_type = (
+                            f"{event.__class__.__module__.split('.')[-1]}"
+                            f".{event.__class__.__name__}"
+                        )
+                        print(f"  ✓ Successfully parsed as: {event_type}")
+                        events.append(event)
+                        processed_count += 1
+                    except Exception as e:
+                        print(f"  ✗ FAILED to parse: {type(e).__name__}: {e}")
+                        failed_count += 1
+                        raise
+
+            print(f"\n{'=' * 80}")
+            print("SUMMARY")
+            print(f"{'=' * 80}")
+            print(f"Total transactions: {len(logs_by_tx)}")
+            print(f"Total events: {len(logs)}")
+            print(f"Successfully processed: {processed_count}")
+            print(f"Failed: {failed_count}")
+            print(f"{'=' * 80}\n")
+
             return events
 
     return inner
@@ -100,6 +160,14 @@ def _execute(
     timeout: int = 5,
     env: None | dict[str, str] = None,
 ) -> ProcessStarter:
+    output_lines: list[str] = []
+
+    def _capture_output(proc: subprocess.Popen[str]) -> None:
+        assert proc.stdout
+        for line in proc.stdout:
+            output_lines.append(line)
+            print(line, end="", flush=True)
+
     proc = subprocess.Popen(  # noqa: S602
         command,
         cwd=ETHEREUM_DIR,
@@ -110,6 +178,9 @@ def _execute(
         env=os.environ.copy() | (env or {}),
     )
 
+    output_thread = threading.Thread(target=partial(_capture_output, proc))
+    output_thread.start()
+
     if yield_after_line:
         t = threading.Thread(target=partial(_wait_for_line, proc, yield_after_line))
         t.start()
@@ -119,19 +190,37 @@ def _execute(
 
     yield
     proc.kill()
+    output_thread.join(timeout=1)
 
-    outs, errs = proc.communicate(timeout=1)
-
-    print("Output of", command)
-    print(outs)
-    print(errs)
-    print("End of", command)
+    print(f"\n=== End of command: {command} ===")
 
 
 def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
     assert proc.stdout
     while return_after_line not in proc.stdout.readline():
         pass
+
+
+def _get_event_name_from_topic(
+    topic: str | None, contracts: list[type[Contract]]
+) -> str | None:
+    if not topic:
+        return None
+
+    for contract in contracts:
+        events_obj = contract.events
+        if not hasattr(events_obj, "_events"):
+            continue
+        events_dict = events_obj._events  # noqa: SLF001
+        if not hasattr(events_dict, "items"):
+            continue
+        for event_name, event_abi in events_dict.items():
+            if hasattr(event_abi, "event_signature_hash"):
+                sig_hash = event_abi.event_signature_hash
+                if hasattr(sig_hash, "hex") and sig_hash.hex() == topic:
+                    return str(event_name)
+
+    return None
 
 
 def _load_snapshot(test_name: str) -> dict[str, Any] | None:
