@@ -68,12 +68,14 @@ export const EventCircle: React.FC<EventCircleProps> = ({
         if (!map) return;
 
         const centerPos = overlayProjection.fromLatLngToDivPixel(
-          new google.maps.LatLng(this.position.lat, this.position.lng)
+          new google.maps.LatLng(this.position.lat, this.position.lng),
         );
 
         // Calculate circle radius in pixels at current zoom
         const scale = Math.pow(2, map.getZoom() || 0);
-        const metersPerPixel = 156543.03392 * Math.cos(this.position.lat * Math.PI / 180) / scale;
+        const metersPerPixel =
+          (156543.03392 * Math.cos((this.position.lat * Math.PI) / 180)) /
+          scale;
         const radiusInPixels = this.radius / metersPerPixel;
 
         // Scale font size based on circle size
@@ -82,7 +84,7 @@ export const EventCircle: React.FC<EventCircleProps> = ({
         if (centerPos) {
           this.div.style.left = `${centerPos.x}px`;
           this.div.style.top = `${centerPos.y}px`;
-          const span = this.div.querySelector('span') as HTMLSpanElement;
+          const span = this.div.querySelector("span") as HTMLSpanElement;
           if (span) {
             span.style.fontSize = `${fontSize}px`;
           }
