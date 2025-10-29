@@ -180,6 +180,43 @@
         "size": 32
       }
     ],
+    "CyberValleyEventManager.RoleAdminChanged": [
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      }
+    ],
     "CyberValleyEventManager.RoleGranted": [
       {
         "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
@@ -214,6 +251,11 @@
       {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -257,6 +299,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -294,6 +341,11 @@
       {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -337,6 +389,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -374,6 +431,11 @@
       {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -417,6 +479,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -457,12 +524,17 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       }
     ]
   },
-  "events_count": 69,
+  "events_count": 83,
   "test_name": "updateEventPlace"
 }
