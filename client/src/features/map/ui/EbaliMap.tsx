@@ -27,6 +27,7 @@ type EbaliMapProps = {
   longPressHandler?: (latLng: LatLng) => void;
   children?: React.ReactNode;
   requireTwoFingerScroll?: boolean;
+  layersOpacity?: number;
 };
 
 export const EbaliMap: React.FC<EbaliMapProps> = ({
@@ -35,6 +36,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   longPressHandler,
   children,
   requireTwoFingerScroll = true,
+  layersOpacity = 1,
 }) => {
   const { displayedGroups, toggleGroup } = useMapState();
   const [showGroups, setShowGroups] = useState(false);
@@ -116,6 +118,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
             onClick={(placemark) => showPlacemarkInfo(placemark)}
             key={`${placemark.name}-${idx}`}
             placemark={placemark as PlacemarkType}
+            opacity={layersOpacity}
           />
         ));
       })}

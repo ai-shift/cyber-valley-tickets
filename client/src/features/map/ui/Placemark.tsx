@@ -7,9 +7,14 @@ import { Polyline } from "./components/polyline.tsx";
 type PlacemarkProps = {
   placemark: PlacemarkType;
   onClick: (placemark: PlacemarkType) => void;
+  opacity?: number;
 };
 
-export const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
+export const Placemark: React.FC<PlacemarkProps> = ({
+  placemark,
+  onClick,
+  opacity = 1,
+}) => {
   const clickHandler = () => onClick(placemark);
   switch (placemark.type) {
     case "point":
@@ -23,6 +28,7 @@ export const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
             alt={`${placemark.name} marker`}
             width={32}
             height={32}
+            style={{ opacity }}
           />
         </AdvancedMarker>
       );
@@ -33,6 +39,8 @@ export const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
           paths={placemark.coordinates}
           fillColor={truncateColorString(placemark.polygon_color)}
           strokeColor={truncateColorString(placemark.line_color)}
+          fillOpacity={opacity}
+          strokeOpacity={opacity}
         />
       );
     case "line":
@@ -41,6 +49,7 @@ export const Placemark: React.FC<PlacemarkProps> = ({ placemark, onClick }) => {
           onClick={clickHandler}
           path={placemark.coordinates}
           strokeColor={truncateColorString(placemark.line_color)}
+          strokeOpacity={opacity}
         />
       );
   }
