@@ -4,7 +4,7 @@ import type { EventPlace } from "@/entities/place";
 import { EventCircle, EbaliMap } from "@/features/map";
 import { useQuery } from "@tanstack/react-query";
 import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 interface PlaceWithEvents extends EventPlace {
@@ -22,36 +22,47 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
   );
   const [searchParams] = useSearchParams();
   const map = useMap();
+  const hasInitialized = useRef(false);
 
-  const placesWithEvents = (events ?? ([] as Event[]))
-    .filter((event) => event.status === "approved")
-    .reduce<Record<number, PlaceWithEvents>>((acc, event) => {
-      const { place } = event;
-      const placeId = place.id;
-      const { place: _, ...eventWithoutPlace } = event;
+  const placesWithEvents = useMemo(
+    () =>
+      (events ?? ([] as Event[]))
+        .filter((event) => event.status === "approved")
+        .reduce<Record<number, PlaceWithEvents>>((acc, event) => {
+          const { place } = event;
+          const placeId = place.id;
+          const { place: _, ...eventWithoutPlace } = event;
 
-      if (!acc[placeId]) {
-        acc[placeId] = {
-          ...place,
-          events: [],
-        };
-      }
+          if (!acc[placeId]) {
+            acc[placeId] = {
+              ...place,
+              events: [],
+            };
+          }
 
-      acc[placeId].events.push(eventWithoutPlace as Omit<Event, "place">);
-      return acc;
-    }, {});
+          acc[placeId].events.push(eventWithoutPlace as Omit<Event, "place">);
+          return acc;
+        }, {}),
+    [events],
+  );
 
   useEffect(() => {
-    if (!map) {
+    if (!map || hasInitialized.current) {
       return;
     }
+
+    const places = Object.values(placesWithEvents);
+    if (places.length === 0) {
+      return;
+    }
+
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
 
     if (lat && lng && Number(lat) && Number(lng)) {
       map.panTo({ lat: Number(lat), lng: Number(lng) });
       map.setZoom(16);
-      const foundPlace = Object.values(placesWithEvents).find((place) => {
+      const foundPlace = places.find((place) => {
         const coords = place.geometry.coordinates[0];
         return coords?.lat === +lat && coords?.lng === +lng;
       });
@@ -59,14 +70,19 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
         setSelectedPlace(foundPlace);
       }
     } else {
-      const places = Object.values(placesWithEvents);
-      if (places.length > 0) {
-        const bounds = new google.maps.LatLngBounds();
-        places.forEach((place) => {
-          bounds.extend(place.geometry.coordinates[0]);
-        });
-        map.fitBounds(bounds, { top: 20, right: 20, bottom: 20, left: 20 });
-      }
+      const bounds = new google.maps.LatLngBounds();
+      places.forEach((place) => {
+        bounds.extend(place.geometry.coordinates[0]);
+      });
+      map.fitBounds(bounds, { top: 20, right: 20, bottom: 20, left: 20 });
+    }
+
+    hasInitialized.current = true;
+  }, [map, placesWithEvents, searchParams]);
+
+  useEffect(() => {
+    if (!map) {
+      return;
     }
 
     const clickListener = map.addListener("click", () =>
@@ -75,7 +91,7 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
     return () => {
       google.maps.event.removeListener(clickListener);
     };
-  }, [map, searchParams, placesWithEvents]);
+  }, [map]);
 
   return (
     <EbaliMap
