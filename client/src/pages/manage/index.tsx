@@ -53,6 +53,12 @@ const LocalProviderView = (): React.ReactNode => (
     >
       Manage staff
     </Link>
+    <Link
+      className="card border-primary/30 text-center text-xl py-5"
+      to="/manage/verifiedshamans"
+    >
+      Manage verified shamans
+    </Link>
   </>
 );
 

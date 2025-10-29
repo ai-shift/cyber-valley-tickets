@@ -14,6 +14,7 @@ import {
   ManagePage,
   ManagePlacesPage,
   ManageStaffPage,
+  ManageVerifiedShamansPage,
   MapPage,
   NotificationsPage,
   Page404,
@@ -106,6 +107,12 @@ export const Router = () => {
                       element={<RestrictedTo userRoles={["master"]} />}
                     >
                       <Route index element={<ManageLocalprovidersPage />} />
+                    </Route>
+                    <Route
+                      path="/manage/verifiedshamans"
+                      element={<RestrictedTo userRoles={["localprovider"]} />}
+                    >
+                      <Route index element={<ManageVerifiedShamansPage />} />
                     </Route>
                   </Route>
 

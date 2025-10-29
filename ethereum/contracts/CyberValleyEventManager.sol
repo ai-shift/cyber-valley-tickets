@@ -139,6 +139,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
         _setRoleAdmin(VERIFIED_SHAMAN_ROLE, BACKEND_ROLE);
+	_setRoleAdmin(VERIFIED_SHAMAN_ROLE, LOCAL_PROVIDER_ROLE);
     }
 
     function grantLocalProvider(address eoa, uint8 share) external onlyRole(MASTER_ROLE) {
@@ -266,7 +267,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             place.status == EventPlaceStatus.Approved,
             "EventPlace must be approved to be updated"
         );
-        
+
         place.maxTickets = _maxTickets;
         place.minTickets = _minTickets;
         place.minPrice = _minPrice;
@@ -278,7 +279,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             hashFunction: hashFunction,
             size: size
         });
-        
+
         _validateEventPlace(place);
         emit EventPlaceUpdated(
             msg.sender,
@@ -558,19 +559,19 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.status == EventStatus.Approved,
             "Only event in approved state can be cancelled"
         );
-        
+
         for (uint256 i = 0; i < evt.customers.length; i++) {
             require(
                 usdtTokenContract.transfer(evt.customers[i], evt.ticketPrice),
                 "Failed to refund customer"
             );
         }
-        
+
         require(
             usdtTokenContract.transfer(msg.sender, eventRequestPrice),
             "Failed to transfer provider payment"
         );
-        
+
         evt.status = EventStatus.Cancelled;
         emit EventStatusChanged(eventId, evt.status);
     }
@@ -587,21 +588,21 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     ) internal {
         address provider = eventPlaces[eventPlaceId].provider;
         uint8 providerSharePercentage = localProviderShare[provider];
-        
+
         uint256 masterAmount = (totalAmount * masterShare) / 100;
         uint256 remainder = totalAmount - masterAmount;
         uint256 providerAmount = (remainder * providerSharePercentage) / 100;
-        
+
         uint256 dust = totalAmount - masterAmount - providerAmount;
         masterAmount += dust;
-        
+
         if (masterAmount > 0) {
             require(
                 usdtTokenContract.transfer(master, masterAmount),
                 "Failed to transfer master share"
             );
         }
-        
+
         if (providerAmount > 0) {
             require(
                 usdtTokenContract.transfer(provider, providerAmount),
