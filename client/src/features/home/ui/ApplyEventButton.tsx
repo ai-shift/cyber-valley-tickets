@@ -17,7 +17,7 @@ export const ApplyEventButton = () => {
 
   return (
     !["localprovider", "verifiedshaman", "master"].includes(user.role) && (
-      <div className="w-full sticky bottom-1 pt-3">
+      <div className="w-full absolute bottom-1 p-4">
         <Button
           onClick={handleApplyEventPlace}
           filling="outline"
