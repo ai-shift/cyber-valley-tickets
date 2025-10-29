@@ -14,6 +14,7 @@ import {
 } from "@/shared/ui/sheet.tsx";
 import { useGeodata } from "../hooks/useGeodata.tsx";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
+import { useMapState } from "../model/slice.ts";
 import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
@@ -35,7 +36,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   children,
   requireTwoFingerScroll = true,
 }) => {
-  const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
+  const { displayedGroups, toggleGroup } = useMapState();
   const [showGroups, setShowGroups] = useState(false);
 
   const { layersTitles, loadingLayers, errorLayers, geodata } =
@@ -47,11 +48,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   const [infoWindowShown, setInfoWindowShown] = useState(false);
 
   const displayGroupHandler = (value: GeodataKey) => {
-    if (displayedGroups.includes(value)) {
-      setDisplayedGroups((prev) => prev.filter((el) => el !== value));
-    } else {
-      setDisplayedGroups((prev) => [...prev, value as GeodataKey]);
-    }
+    toggleGroup(value);
   };
 
   const showPlacemarkInfo = (placemark: PlacemarkType) => {
