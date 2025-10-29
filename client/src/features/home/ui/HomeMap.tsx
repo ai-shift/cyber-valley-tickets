@@ -1,7 +1,7 @@
 import { eventQueries } from "@/entities/event";
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
-import { Circle, EbaliMap } from "@/features/map";
+import { EventCircle, EbaliMap } from "@/features/map";
 import { useQuery } from "@tanstack/react-query";
 import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
@@ -84,7 +84,7 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
       layersOpacity={0.3}
     >
       {Object.values(placesWithEvents).map((place) => (
-        <Circle
+        <EventCircle
           onClick={() => setSelectedPlace(place)}
           key={place.id}
           center={place.geometry.coordinates[0]}
