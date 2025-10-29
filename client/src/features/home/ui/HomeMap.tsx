@@ -58,6 +58,15 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
       if (foundPlace) {
         setSelectedPlace(foundPlace);
       }
+    } else {
+      const places = Object.values(placesWithEvents);
+      if (places.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        places.forEach((place) => {
+          bounds.extend(place.geometry.coordinates[0]);
+        });
+        map.fitBounds(bounds);
+      }
     }
 
     const clickListener = map.addListener("click", () =>
@@ -66,7 +75,7 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
     return () => {
       google.maps.event.removeListener(clickListener);
     };
-  }, [map, searchParams]);
+  }, [map, searchParams, placesWithEvents]);
 
   return (
     <EbaliMap className={className} requireTwoFingerScroll={false}>
@@ -75,7 +84,7 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
           onClick={() => setSelectedPlace(place)}
           key={place.id}
           center={place.geometry.coordinates[0]}
-          radius={20}
+          radius={35}
           fillColor="#76ff05"
           strokeColor="#76ff05"
           strokeWeight={1}
