@@ -1,10 +1,12 @@
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { submitCompanyVerification } from "../api/shamanApi";
 import { FileField } from "./FileField";
 
 export const CompanyForm: React.FC = () => {
+  const navigate = useNavigate();
   const [ktpFile, setKtpFile] = useState<File | null>(null);
   const [aktaFile, setAktaFile] = useState<File | null>(null);
   const [skFile, setSkFile] = useState<File | null>(null);
@@ -65,7 +67,10 @@ export const CompanyForm: React.FC = () => {
         open={showResult}
         setOpen={setShowResult}
         failure={status === "error"}
-        onConfirm={() => setStatus("idle")}
+        onConfirm={() => {
+          setStatus("idle");
+          navigate("/");
+        }}
         title={
           status === "success" ? "Success" : status === "error" ? "Error" : ""
         }
