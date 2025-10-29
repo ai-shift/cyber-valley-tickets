@@ -1,4 +1,5 @@
 import { userQueries } from "@/entities/user";
+import { useVerifiedShamanState } from "@/entities/verifiedshaman/model/slice";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
@@ -13,6 +14,9 @@ export const VerifiedShamansList: React.FC = () => {
     error,
   } = useQuery(userQueries.verifiedShamans());
 
+  const { removedVerifiedShaman, addedVerifiedShaman } =
+    useVerifiedShamanState();
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
   if (!users)
@@ -22,16 +26,25 @@ export const VerifiedShamansList: React.FC = () => {
       />
     );
 
+  const addresses = users.map((user) => user.address);
+  const uniqueAddresses = [
+    ...new Set(
+      [...addresses, ...addedVerifiedShaman].filter(
+        (address) => !removedVerifiedShaman.includes(address),
+      ),
+    ),
+  ];
+
   return (
     <ul className="divide-y divide-secondary/60 py-2">
-      {users.map((user) => (
+      {uniqueAddresses.map((address) => (
         <ManageItem
-          key={user.address}
-          title={formatAddress(user.address as `0x${string}`)}
+          key={address}
+          title={formatAddress(address as `0x${string}`)}
           render={() => [
             <RemoveVerifiedShamanBtn
-              key={user.address}
-              shamanAddress={user.address}
+              key={address}
+              shamanAddress={address}
             />,
           ]}
         />

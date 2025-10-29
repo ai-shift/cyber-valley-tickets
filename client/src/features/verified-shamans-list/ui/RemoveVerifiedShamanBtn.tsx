@@ -1,3 +1,4 @@
+import { useVerifiedShamanState } from "@/entities/verifiedshaman/model/slice";
 import { useSendTx } from "@/shared/hooks";
 import { revokeVerifiedShaman } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
@@ -15,10 +16,15 @@ export const RemoveVerifiedShamanBtn: React.FC<
   const account = useActiveAccount();
   const [isOpen, setIsOpen] = useState(false);
   const { sendTx, error, isLoading, data: txHash } = useSendTx();
+  const { optimisticRemoveVerifiedShaman } = useVerifiedShamanState();
 
   async function deleteHandler() {
     if (!account) throw new Error("Account should be connected");
-    sendTx(revokeVerifiedShaman(account, shamanAddress));
+    sendTx(
+      revokeVerifiedShaman(account, shamanAddress).then(() =>
+        optimisticRemoveVerifiedShaman(shamanAddress),
+      ),
+    );
   }
 
   if (error != null) {
