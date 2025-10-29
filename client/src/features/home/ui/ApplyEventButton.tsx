@@ -9,6 +9,8 @@ export const ApplyEventButton = () => {
   function handleApplyEventPlace() {
     if (user == null) {
       navigate("/login");
+    } else if (user.role === "verifiedshaman") {
+      navigate("/verify");
     } else {
       window.open(
         `https://t.me/cyberia_tickets_bot?start=${user!.address}_verifyshaman`,
@@ -18,9 +20,7 @@ export const ApplyEventButton = () => {
   }
 
   return (
-    !["localprovider", "verifiedshaman", "master"].includes(
-      user?.role ?? "",
-    ) && (
+    !["localprovider", "master"].includes(user?.role ?? "") && (
       <div className="w-full absolute bottom-1 p-4">
         <Button
           onClick={handleApplyEventPlace}
