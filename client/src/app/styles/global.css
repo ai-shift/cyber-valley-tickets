@@ -269,8 +269,23 @@ html {
 .gm-style-iw,
 .gm-style-iw-c {
   padding: 1rem 1rem !important;
+  background-color: black !important;
+  border: 1px solid black !important;
 }
 
 .gm-style-iw-d {
   overflow: hidden !important;
+}
+
+.gm-style .gm-style-iw-tc::after {
+  background: black !important;
+}
+
+.gm-style-iw button[aria-label="Close"] {
+  display: none !important;
+}
+
+.gm-style-iw-t::after {
+  background: linear-gradient(45deg, black 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0) 100%) !important;
+  box-shadow: none !important;
 }

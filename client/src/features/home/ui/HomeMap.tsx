@@ -96,11 +96,10 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
       ))}
       {selectedPlace && (
         <InfoWindow
-          className="text-black"
           headerDisabled
           position={selectedPlace.geometry.coordinates[0]}
         >
-          <h2 className="text-secondary text-lg">{selectedPlace.title}</h2>
+          <h2 className="text-primary text-lg">{selectedPlace.title}</h2>
           <ListEvents events={selectedPlace.events} />
         </InfoWindow>
       )}
@@ -124,9 +123,9 @@ const ListEvents: React.FC<ListEventsProps> = ({ events }) => {
           onClick={() => navigate(`/events/${event.id}`)}
           type="button"
         >
-          <h3 className="text-xl">{event.title}</h3>
-          <p className="text-md">{event.description.slice(0, 80)}</p>
-          <p>Some more info here</p>
+          <h3 className="text-xl text-secondary">{event.title}</h3>
+          <p className="text-md text-secondary">{event.description.slice(0, 80)}</p>
+          <p className="text-secondary">Some more info here</p>
         </button>
       ))}
     </div>
