@@ -139,7 +139,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
         _setRoleAdmin(VERIFIED_SHAMAN_ROLE, BACKEND_ROLE);
-	_setRoleAdmin(VERIFIED_SHAMAN_ROLE, LOCAL_PROVIDER_ROLE);
     }
 
     function grantLocalProvider(address eoa, uint8 share) external onlyRole(MASTER_ROLE) {
@@ -152,6 +151,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     function revokeLocalProvider(address eoa) external onlyRole(MASTER_ROLE) {
         delete localProviderShare[eoa];
         _revokeRole(LOCAL_PROVIDER_ROLE, eoa);
+    }
+
+    function revokeVerifiedShaman(address eoa) external onlyRole(LOCAL_PROVIDER_ROLE) {
+        _revokeRole(VERIFIED_SHAMAN_ROLE, eoa);
     }
 
     function setMasterShare(uint8 share) external onlyRole(MASTER_ROLE) {

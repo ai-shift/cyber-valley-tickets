@@ -141,6 +141,12 @@ export const eventManager = getContract({
         },
         {
           indexed: false,
+          internalType: "enum CyberValleyEventManager.EventPlaceStatus",
+          name: "status",
+          type: "uint8",
+        },
+        {
+          indexed: false,
           internalType: "bytes32",
           name: "digest",
           type: "bytes32",
@@ -246,6 +252,79 @@ export const eventManager = getContract({
         },
       ],
       name: "EventUpdated",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "id",
+          type: "uint256",
+        },
+        {
+          indexed: false,
+          internalType: "address",
+          name: "requester",
+          type: "address",
+        },
+        {
+          indexed: false,
+          internalType: "uint16",
+          name: "maxTickets",
+          type: "uint16",
+        },
+        {
+          indexed: false,
+          internalType: "uint16",
+          name: "minTickets",
+          type: "uint16",
+        },
+        {
+          indexed: false,
+          internalType: "uint16",
+          name: "minPrice",
+          type: "uint16",
+        },
+        {
+          indexed: false,
+          internalType: "uint8",
+          name: "daysBeforeCancel",
+          type: "uint8",
+        },
+        {
+          indexed: false,
+          internalType: "uint8",
+          name: "minDays",
+          type: "uint8",
+        },
+        {
+          indexed: false,
+          internalType: "bool",
+          name: "available",
+          type: "bool",
+        },
+        {
+          indexed: false,
+          internalType: "bytes32",
+          name: "digest",
+          type: "bytes32",
+        },
+        {
+          indexed: false,
+          internalType: "uint8",
+          name: "hashFunction",
+          type: "uint8",
+        },
+        {
+          indexed: false,
+          internalType: "uint8",
+          name: "size",
+          type: "uint8",
+        },
+      ],
+      name: "NewEventPlaceRequest",
       type: "event",
     },
     {
@@ -386,6 +465,19 @@ export const eventManager = getContract({
     },
     {
       inputs: [],
+      name: "BACKEND_ROLE",
+      outputs: [
+        {
+          internalType: "bytes32",
+          name: "",
+          type: "bytes32",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
       name: "BUCKET_SIZE",
       outputs: [
         {
@@ -450,6 +542,19 @@ export const eventManager = getContract({
       type: "function",
     },
     {
+      inputs: [],
+      name: "VERIFIED_SHAMAN_ROLE",
+      outputs: [
+        {
+          internalType: "bytes32",
+          name: "",
+          type: "bytes32",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
       inputs: [
         {
           internalType: "uint256",
@@ -458,6 +563,19 @@ export const eventManager = getContract({
         },
       ],
       name: "approveEvent",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "eventPlaceId",
+          type: "uint256",
+        },
+      ],
+      name: "approveEventPlace",
       outputs: [],
       stateMutability: "nonpayable",
       type: "function",
@@ -491,65 +609,12 @@ export const eventManager = getContract({
     {
       inputs: [
         {
-          internalType: "uint16",
-          name: "_maxTickets",
-          type: "uint16",
-        },
-        {
-          internalType: "uint16",
-          name: "_minTickets",
-          type: "uint16",
-        },
-        {
-          internalType: "uint16",
-          name: "_minPrice",
-          type: "uint16",
-        },
-        {
-          internalType: "uint8",
-          name: "_daysBeforeCancel",
-          type: "uint8",
-        },
-        {
-          internalType: "uint8",
-          name: "_minDays",
-          type: "uint8",
-        },
-        {
-          internalType: "bool",
-          name: "_available",
-          type: "bool",
-        },
-        {
-          internalType: "bytes32",
-          name: "digest",
-          type: "bytes32",
-        },
-        {
-          internalType: "uint8",
-          name: "hashFunction",
-          type: "uint8",
-        },
-        {
-          internalType: "uint8",
-          name: "size",
-          type: "uint8",
-        },
-      ],
-      name: "submitEventPlaceRequest",
-      outputs: [],
-      stateMutability: "nonpayable",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
           internalType: "uint256",
-          name: "eventPlaceId",
+          name: "eventId",
           type: "uint256",
         },
       ],
-      name: "approveEventPlace",
+      name: "declineEvent",
       outputs: [],
       stateMutability: "nonpayable",
       type: "function",
@@ -571,25 +636,17 @@ export const eventManager = getContract({
       inputs: [
         {
           internalType: "uint256",
-          name: "eventId",
-          type: "uint256",
-        },
-      ],
-      name: "declineEvent",
-      outputs: [],
-      stateMutability: "nonpayable",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
           name: "",
           type: "uint256",
         },
       ],
       name: "eventPlaces",
       outputs: [
+        {
+          internalType: "address",
+          name: "requester",
+          type: "address",
+        },
         {
           internalType: "address",
           name: "provider",
@@ -624,6 +681,11 @@ export const eventManager = getContract({
           internalType: "bool",
           name: "available",
           type: "bool",
+        },
+        {
+          internalType: "enum CyberValleyEventManager.EventPlaceStatus",
+          name: "status",
+          type: "uint8",
         },
         {
           components: [
@@ -947,12 +1009,78 @@ export const eventManager = getContract({
     {
       inputs: [
         {
+          internalType: "address",
+          name: "eoa",
+          type: "address",
+        },
+      ],
+      name: "revokeVerifiedShaman",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
           internalType: "uint8",
           name: "share",
           type: "uint8",
         },
       ],
       name: "setMasterShare",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint16",
+          name: "_maxTickets",
+          type: "uint16",
+        },
+        {
+          internalType: "uint16",
+          name: "_minTickets",
+          type: "uint16",
+        },
+        {
+          internalType: "uint16",
+          name: "_minPrice",
+          type: "uint16",
+        },
+        {
+          internalType: "uint8",
+          name: "_daysBeforeCancel",
+          type: "uint8",
+        },
+        {
+          internalType: "uint8",
+          name: "_minDays",
+          type: "uint8",
+        },
+        {
+          internalType: "bool",
+          name: "_available",
+          type: "bool",
+        },
+        {
+          internalType: "bytes32",
+          name: "digest",
+          type: "bytes32",
+        },
+        {
+          internalType: "uint8",
+          name: "hashFunction",
+          type: "uint8",
+        },
+        {
+          internalType: "uint8",
+          name: "size",
+          type: "uint8",
+        },
+      ],
+      name: "submitEventPlaceRequest",
       outputs: [],
       stateMutability: "nonpayable",
       type: "function",
