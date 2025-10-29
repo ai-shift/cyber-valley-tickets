@@ -173,39 +173,60 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
-    ) external onlyRole(VERIFIED_SHAMAN_ROLE) {
-        CyberValley.Multihash memory meta = CyberValley.Multihash({
-            digest: digest,
-            hashFunction: hashFunction,
-            size: size
-        });
-        EventPlace memory place = EventPlace({
+    ) external {
+        bool isLocalProvider = hasRole(LOCAL_PROVIDER_ROLE, msg.sender);
+	require(isLocalProvider || hasRole(VERIFIED_SHAMAN_ROLE, msg.sender), "access denied");
+
+        eventPlaces.push(EventPlace({
             requester: msg.sender,
-            provider: address(0),
+            provider: isLocalProvider ? msg.sender : address(0),
             maxTickets: _maxTickets,
             minTickets: _minTickets,
             minPrice: _minPrice,
             daysBeforeCancel: _daysBeforeCancel,
             minDays: _minDays,
             available: _available,
-            status: EventPlaceStatus.Submitted,
-            meta: meta
-        });
-        _validateEventPlace(place);
-        eventPlaces.push(place);
-        emit NewEventPlaceRequest(
-            eventPlaces.length - 1,
-            msg.sender,
-            _maxTickets,
-            _minTickets,
-            _minPrice,
-            _daysBeforeCancel,
-            _minDays,
-            _available,
-            digest,
-            hashFunction,
-            size
-        );
+            status: isLocalProvider ? EventPlaceStatus.Approved : EventPlaceStatus.Submitted,
+            meta: CyberValley.Multihash({
+                digest: digest,
+                hashFunction: hashFunction,
+                size: size
+            })
+        }));
+
+        uint256 eventPlaceId = eventPlaces.length - 1;
+        _validateEventPlace(eventPlaces[eventPlaceId]);
+
+        if (isLocalProvider) {
+            emit EventPlaceUpdated(
+                msg.sender,
+                eventPlaceId,
+                _maxTickets,
+                _minTickets,
+                _minPrice,
+                _daysBeforeCancel,
+                _minDays,
+                _available,
+                EventPlaceStatus.Approved,
+                digest,
+                hashFunction,
+                size
+            );
+        } else {
+            emit NewEventPlaceRequest(
+                eventPlaceId,
+                msg.sender,
+                _maxTickets,
+                _minTickets,
+                _minPrice,
+                _daysBeforeCancel,
+                _minDays,
+                _available,
+                digest,
+                hashFunction,
+                size
+            );
+        }
     }
 
     function approveEventPlace(

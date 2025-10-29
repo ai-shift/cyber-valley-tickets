@@ -125,6 +125,42 @@ describe("CyberValleyEventManager", () => {
         );
     });
 
+    it("auto-approves when requester is a local provider", async () => {
+      const { eventManager, master, localProvider } =
+        await loadFixture(deployContract);
+
+      const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
+      await eventManager
+        .connect(master)
+        .grantRole(VERIFIED_SHAMAN_ROLE, await localProvider.getAddress());
+
+      const tx = await eventManager.connect(localProvider).submitEventPlaceRequest(
+        ...submitEventPlaceRequestArgsToArray(defaultCreateEventPlaceRequest),
+      );
+
+      const args = submitEventPlaceRequestArgsToArray(defaultCreateEventPlaceRequest);
+      await expect(tx)
+        .to.emit(eventManager, "EventPlaceUpdated")
+        .withArgs(
+          await localProvider.getAddress(),
+          0,
+          args[0],
+          args[1],
+          args[2],
+          args[3],
+          args[4],
+          args[5],
+          1,
+          args[6],
+          args[7],
+          args[8],
+        );
+
+      const eventPlace = await eventManager.eventPlaces(0);
+      expect(eventPlace.status).to.equal(1);
+      expect(eventPlace.provider).to.equal(await localProvider.getAddress());
+    });
+
     createEventPlaceCornerCases.forEach(({ patch, revertedWith }, idx) =>
       it(`should validate invariants. Case ${idx + 1}: ${JSON.stringify(patch)}`, async () => {
         const { eventManager, verifiedShaman } =
