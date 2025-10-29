@@ -1,22 +1,24 @@
 import { useAuthSlice } from "@/app/providers";
 import { Button } from "@/shared/ui/button";
+import { useNavigate } from "react-router";
 
 export const ApplyEventButton = () => {
   const { user } = useAuthSlice();
-
-  if (user == null) {
-    return null;
-  }
+  const navigate = useNavigate();
 
   function handleApplyEventPlace() {
-    window.open(
-      `https://t.me/cyberia_tickets_bot?start=${user!.address}_verifyshaman`,
-      "_blank",
-    );
+    if (user == null) {
+      navigate("/login");
+    } else {
+      window.open(
+        `https://t.me/cyberia_tickets_bot?start=${user!.address}_verifyshaman`,
+        "_blank",
+      );
+    }
   }
 
   return (
-    !["localprovider", "verifiedshaman", "master"].includes(user.role) && (
+    !["localprovider", "verifiedshaman", "master"].includes(user?.role) && (
       <div className="w-full absolute bottom-1 p-4">
         <Button
           onClick={handleApplyEventPlace}
