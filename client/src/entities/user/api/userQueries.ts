@@ -3,6 +3,7 @@ import {
   getCurrentUser,
   getUsersLocalproviders,
   getUsersStaff,
+  getUsersVerifiedShamans,
 } from "./userApi";
 
 export const userQueries = {
@@ -23,6 +24,13 @@ export const userQueries = {
     queryOptions({
       queryKey: ["user", "list", "localproviders"],
       queryFn: getUsersLocalproviders,
+      select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
+    }),
+  verifiedShamans: () =>
+    queryOptions({
+      queryKey: ["user", "list", "verifiedshamans"],
+      queryFn: getUsersVerifiedShamans,
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),

@@ -60,6 +60,16 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
         serializer = CurrentUserSerializer(local_providers, many=True)
         return Response(serializer.data)
 
+    @extend_schema(responses=CurrentUserSerializer(many=True))
+    @action(detail=False, methods=["get"], name="Verified Shamans")
+    def verified_shamans(self, request: Request) -> Response:
+        assert request.user.is_authenticated
+        if request.user.role != CyberValleyUser.LOCAL_PROVIDER:
+            return Response("Available only to local provider", status=401)
+        verified_shamans = User.objects.filter(role=CyberValleyUser.VERIFIED_SHAMAN)
+        serializer = CurrentUserSerializer(verified_shamans, many=True)
+        return Response(serializer.data)
+
 
 @extend_schema(
     request=UploadSocialsSerializer,
