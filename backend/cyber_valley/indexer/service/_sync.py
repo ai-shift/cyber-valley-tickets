@@ -450,7 +450,7 @@ def _sync_role_revoked(
         send_notification(
             user=admin,
             title="Role revoked",
-            body=f"Staff role was revoked from {user.address}",
+            body=f"{revoked_role} role was revoked from {user.address}",
         )
 
 
