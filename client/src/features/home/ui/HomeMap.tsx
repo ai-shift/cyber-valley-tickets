@@ -71,9 +71,12 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
       }
     } else {
       const bounds = new google.maps.LatLngBounds();
-      places.forEach((place) => {
-        bounds.extend(place.geometry.coordinates[0]);
-      });
+      for (const place of places) {
+        const coord = place.geometry.coordinates[0];
+        if (coord) {
+          bounds.extend(coord);
+        }
+      }
       map.fitBounds(bounds, { top: 20, right: 20, bottom: 20, left: 20 });
     }
 
@@ -99,18 +102,22 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
       requireTwoFingerScroll={false}
       layersOpacity={0.3}
     >
-      {Object.values(placesWithEvents).map((place) => (
-        <EventCircle
-          onClick={() => setSelectedPlace(place)}
-          key={place.id}
-          center={place.geometry.coordinates[0]}
-          radius={35}
-          fillColor="#76ff05"
-          strokeColor="#76ff05"
-          strokeWeight={1}
-        />
-      ))}
-      {selectedPlace && (
+      {Object.values(placesWithEvents).map((place) => {
+        const coord = place.geometry.coordinates[0];
+        if (!coord) return null;
+        return (
+          <EventCircle
+            onClick={() => setSelectedPlace(place)}
+            key={place.id}
+            center={coord}
+            radius={35}
+            fillColor="#76ff05"
+            strokeColor="#76ff05"
+            strokeWeight={1}
+          />
+        );
+      })}
+      {selectedPlace?.geometry.coordinates[0] && (
         <InfoWindow
           headerDisabled
           position={selectedPlace.geometry.coordinates[0]}
