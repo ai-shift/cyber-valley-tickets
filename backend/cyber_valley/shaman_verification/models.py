@@ -13,7 +13,7 @@ class VerificationRequest(models.Model):
         INDIVIDUAL = "Individual", "Individual"
         COMPANY = "Company", "Company"
 
-    metadata_cid = models.CharField(max_length=255, unique=True)
+    metadata_cid = models.CharField(max_length=255)
     verification_type = models.CharField(
         max_length=20, choices=VerificationType.choices
     )
