@@ -132,9 +132,7 @@ class Command(BaseCommand):
                     shaman_address
                 )
             else:
-                success, error = contract_service.revoke_verified_shaman_role(
-                    shaman_address
-                )
+                success, error = True, None
 
             if not success:
                 # Notify the Local Provider who made the decision about the failure

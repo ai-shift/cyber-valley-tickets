@@ -77,26 +77,3 @@ class ContractService:
             return False, str(e)
         else:
             return True, None
-
-    def revoke_verified_shaman_role(self, address: str) -> tuple[bool, str | None]:
-        """
-        Revoke VERIFIED_SHAMAN_ROLE from an address.
-
-        Returns:
-            tuple[bool, str | None]: (success, error_message)
-        """
-        try:
-            verified_shaman_role = self.contract.functions.VERIFIED_SHAMAN_ROLE().call()
-            tx = self.contract.functions.revokeRole(verified_shaman_role, address)
-            receipt = tx.transact()
-            tx_hash = receipt.hex() if hasattr(receipt, "hex") else str(receipt)
-            logger.info(
-                "Successfully revoked VERIFIED_SHAMAN_ROLE from %s. TX: %s",
-                address,
-                tx_hash,
-            )
-        except Exception as e:
-            logger.exception("Failed to revoke VERIFIED_SHAMAN_ROLE from %s", address)
-            return False, str(e)
-        else:
-            return True, None
