@@ -34,7 +34,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ route, role, badgeText }) => {
         />
         <p className="text-xs">{title}</p>
         {showBadge && (
-          <span className="absolute flex items-center justify-center h-3 w-3 bg-red-500 text-white text-[8px] rounded-full top-0 right-0">
+          <span className="absolute flex items-center justify-center h-3 w-3 bg-red-500 text-white text-[8px] rounded-full top-1 right-1">
             {badgeText}
           </span>
         )}
