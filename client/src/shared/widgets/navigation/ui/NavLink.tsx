@@ -5,7 +5,7 @@ import type { Route } from "../model/routes";
 
 type NavLinkProps = {
   route: Route;
-  role: Role;
+  role?: Role;
   badgeText?: string;
 };
 
@@ -16,7 +16,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ route, role, badgeText }) => {
   const isCurrent = path === "/" ? pathname === "/" : pathname.startsWith(path);
   const iconName = icon || title.toLowerCase();
 
-  const canDisplay = !restrictedTo || restrictedTo.includes(role);
+  const canDisplay = !restrictedTo || (role && restrictedTo.includes(role));
   const showBadge = badgeText && badgeText !== "0";
 
   return (

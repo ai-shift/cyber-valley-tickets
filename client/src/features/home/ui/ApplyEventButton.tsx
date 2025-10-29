@@ -1,12 +1,11 @@
 import { useAuthSlice } from "@/app/providers";
 import { Button } from "@/shared/ui/button";
-import { Navigate } from "react-router";
 
 export const ApplyEventButton = () => {
   const { user } = useAuthSlice();
 
   if (user == null) {
-    return <Navigate to="/login" />;
+    return null;
   }
 
   function handleApplyEventPlace() {
