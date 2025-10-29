@@ -88,12 +88,12 @@ export const AccountPage: React.FC = () => {
         </div>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <div className="flex flex-col gap-4">
-            {user?.socials[0] && (
-              <div>
+            {user?.socials[user.socials.length - 1] && (
+              <div class="flex items-center justify-between">
                 <h3 className="capitalize font-semibold text-lg">
-                  {user.socials[0].network}:
+                  {user.socials[user.socials.length - 1].network}:
                 </h3>
-                <p className="italic">{user.socials[0].value}</p>
+                <p className="italic">{user.socials[user.socials.length - 1].value}</p>
               </div>
             )}
             <Button
