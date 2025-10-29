@@ -72,7 +72,7 @@ export const EventCircle: React.FC<EventCircleProps> = ({
         );
 
         // Calculate circle radius in pixels at current zoom
-        const scale = Math.pow(2, map.getZoom() || 0);
+        const scale = 2 ** (map.getZoom() || 0);
         const metersPerPixel =
           (156543.03392 * Math.cos((this.position.lat * Math.PI) / 180)) /
           scale;
