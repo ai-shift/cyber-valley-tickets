@@ -1,6 +1,4 @@
 import logging
-import time
-from pathlib import Path
 
 import ipfshttpclient
 from django.conf import settings
@@ -21,18 +19,8 @@ log = logging.getLogger(__name__)
 
 
 def send_verification_to_local_providers(
-    verification_type: str,
-    metadata_cid: str,
-    _files: list[tuple[str, Path]],
-    requester: CyberValleyUser,
+    verification_request: VerificationRequest,
 ) -> None:
-    # Create verification request in database
-    verification_request = VerificationRequest.objects.create(
-        metadata_cid=metadata_cid,
-        verification_type=verification_type,
-        requester=requester,
-    )
-
     local_providers = CyberValleyUser.objects.filter(
         role=CyberValleyUser.LOCAL_PROVIDER
     )
@@ -72,7 +60,17 @@ def verify_individual(request: Request) -> Response:
     assert request.user.is_authenticated
     assert isinstance(request.user, CyberValleyUser)
 
-    target_path = settings.IPFS_DATA_PATH / "verifications" / str(int(time.time()))
+    # Create verification request in database first to get UUID
+    verification_request = VerificationRequest.objects.create(
+        verification_type="Individual",
+        requester=request.user,
+        metadata_cid="",  # Will be updated after IPFS upload
+    )
+
+    # Use UUID for directory path
+    target_path = (
+        settings.IPFS_DATA_PATH / "verifications" / str(verification_request.uuid)
+    )
     target_path.mkdir(exist_ok=True, parents=True)
 
     ktp_file = serializer.validated_data["ktp"]
@@ -86,12 +84,11 @@ def verify_individual(request: Request) -> Response:
         metadata = {"type": "individual", "ktp": ktp_cid}
         metadata_cid = client.add_json(metadata)
 
-    send_verification_to_local_providers(
-        verification_type="Individual",
-        metadata_cid=metadata_cid,
-        _files=[("ktp", ktp_path)],
-        requester=request.user,
-    )
+    # Update metadata_cid
+    verification_request.metadata_cid = metadata_cid
+    verification_request.save()
+
+    send_verification_to_local_providers(verification_request)
 
     return Response({"cid": metadata_cid, "ktp": ktp_cid})
 
@@ -106,7 +103,17 @@ def verify_company(request: Request) -> Response:
     assert request.user.is_authenticated
     assert isinstance(request.user, CyberValleyUser)
 
-    target_path = settings.IPFS_DATA_PATH / "verifications" / str(int(time.time()))
+    # Create verification request in database first to get UUID
+    verification_request = VerificationRequest.objects.create(
+        verification_type="Company",
+        requester=request.user,
+        metadata_cid="",  # Will be updated after IPFS upload
+    )
+
+    # Use UUID for directory path
+    target_path = (
+        settings.IPFS_DATA_PATH / "verifications" / str(verification_request.uuid)
+    )
     target_path.mkdir(exist_ok=True, parents=True)
 
     ktp_file = serializer.validated_data["ktp"]
@@ -132,12 +139,11 @@ def verify_company(request: Request) -> Response:
         metadata = {"type": "company", "ktp": ktp_cid, "akta": akta_cid, "sk": sk_cid}
         metadata_cid = client.add_json(metadata)
 
-    send_verification_to_local_providers(
-        verification_type="Company",
-        metadata_cid=metadata_cid,
-        _files=[("ktp", ktp_path), ("akta", akta_path), ("sk", sk_path)],
-        requester=request.user,
-    )
+    # Update metadata_cid
+    verification_request.metadata_cid = metadata_cid
+    verification_request.save()
+
+    send_verification_to_local_providers(verification_request)
 
     return Response(
         {"cid": metadata_cid, "ktp": ktp_cid, "akta": akta_cid, "sk": sk_cid}

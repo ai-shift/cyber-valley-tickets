@@ -1,3 +1,4 @@
+import uuid
 from typing import ClassVar
 
 from django.db import models
@@ -13,6 +14,7 @@ class VerificationRequest(models.Model):
         INDIVIDUAL = "Individual", "Individual"
         COMPANY = "Company", "Company"
 
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     metadata_cid = models.CharField(max_length=255)
     verification_type = models.CharField(
         max_length=20, choices=VerificationType.choices
