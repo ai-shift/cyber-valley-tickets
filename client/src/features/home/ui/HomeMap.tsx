@@ -69,7 +69,7 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
   }, [map, searchParams]);
 
   return (
-    <EbaliMap className={className}>
+    <EbaliMap className={className} requireTwoFingerScroll={false}>
       {Object.values(placesWithEvents).map((place) => (
         <Circle
           onClick={() => setSelectedPlace(place)}
