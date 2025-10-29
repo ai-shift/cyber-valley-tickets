@@ -19,6 +19,7 @@ from cyber_valley.users.models import CyberValleyUser, UserSocials
 log = logging.getLogger(__name__)
 
 ETH_ADDRESS_PATTERN = re.compile(r"0x[a-fA-F0-9]{40}")
+PUBLIC_API_HOST = os.environ["PUBLIC_API_HOST"]
 
 
 class StartCommandStrategy(Protocol):
@@ -344,8 +345,7 @@ class ShamanVerificationStrategy:
             chat_id,
         )
 
-        public_api_host = os.environ.get("PUBLIC_API_HOST", "http://localhost:8000")
-        verify_url = f"{public_api_host}/verify"
+        verify_url = f"{PUBLIC_API_HOST}/verify"
         markup = telebot.types.InlineKeyboardMarkup()
         markup.add(
             telebot.types.InlineKeyboardButton("Verify as Shaman", url=verify_url)
