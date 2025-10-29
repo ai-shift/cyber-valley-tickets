@@ -34,10 +34,4 @@ export const routes: Route[] = [
     title: "Account",
     icon: "account",
   },
-  {
-    path: "/manage",
-    title: "Manage",
-    icon: "manage",
-    restrictedTo: ["master", "localprovider", "verifiedshaman"],
-  },
 ];

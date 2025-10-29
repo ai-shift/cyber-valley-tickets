@@ -1,4 +1,5 @@
 import { useAuthSlice } from "@/app/providers";
+import type { User } from "@/entities/user";
 import { EventsList, myEventsFilter } from "@/features/events-list";
 import { apiClient } from "@/shared/api";
 import { useTokenBalance } from "@/shared/hooks";
@@ -12,7 +13,7 @@ import { ExpandableTrigger } from "@/shared/ui/expandable/ui/ExpandableTrigger";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
 import { useActiveAccount } from "thirdweb/react";
 
@@ -154,6 +155,7 @@ export const AccountPage: React.FC = () => {
             <BridgeWidget />
           </div>
         </div>
+        {user && manageView(user)}
         <div className="p-5">
           <Expandable defaultOpened>
             <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
@@ -230,3 +232,66 @@ export const AccountPage: React.FC = () => {
     </div>
   );
 };
+
+const manageView = (user: User): React.ReactNode => {
+  switch (user.role) {
+    case "master":
+      return <MasterView />;
+    case "localprovider":
+      return <LocalProviderView />;
+    case "verifiedshaman":
+      return <VerifiedShamanView />;
+    default:
+      return null;
+  }
+};
+
+const VerifiedShamanView = (): React.ReactNode => (
+  <div className="p-5">
+    <h3 className="text-xl font-semibold text-primary mb-4">Management</h3>
+    <Link
+      className="card border-primary/30 text-center text-xl py-5"
+      to="/request-place"
+    >
+      Request event place
+    </Link>
+  </div>
+);
+
+const LocalProviderView = (): React.ReactNode => (
+  <div className="p-5">
+    <h3 className="text-xl font-semibold text-primary mb-4">Management</h3>
+    <div className="flex flex-col gap-7">
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/place"
+      >
+        Manage places
+      </Link>
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/staff"
+      >
+        Manage staff
+      </Link>
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/verifiedshamans"
+      >
+        Manage verified shamans
+      </Link>
+    </div>
+  </div>
+);
+
+const MasterView = (): React.ReactNode => (
+  <div className="p-5">
+    <h3 className="text-xl font-semibold text-primary mb-4">Management</h3>
+    <Link
+      className="card border-primary/30 text-center text-xl py-5"
+      to="/manage/localproviders"
+    >
+      Manage local providers
+    </Link>
+  </div>
+);
