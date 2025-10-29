@@ -1,5 +1,21 @@
 {
   "events_by_type": {
+    "CyberValleyEventManager.EventPlaceUpdated": [
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      }
+    ],
     "CyberValleyEventManager.NewEventPlaceRequest": [
       {
         "available": true,
@@ -16,6 +32,11 @@
       }
     ],
     "CyberValleyEventManager.RoleAdminChanged": [
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
       {
         "newAdminRole": "BACKEND_ROLE",
         "previousAdminRole": "DEFAULT_ADMIN_ROLE",
@@ -185,6 +206,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -367,9 +393,54 @@
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       }
     ]
   },
-  "events_count": 71,
+  "events_count": 83,
   "test_name": "submitEventPlaceRequest"
 }
