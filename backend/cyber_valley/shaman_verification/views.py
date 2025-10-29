@@ -26,13 +26,11 @@ def send_verification_to_local_providers(
     _files: list[tuple[str, Path]],
     requester: CyberValleyUser,
 ) -> None:
-    # Create or get verification request in database
-    verification_request, _created = VerificationRequest.objects.get_or_create(
+    # Create verification request in database
+    verification_request = VerificationRequest.objects.create(
         metadata_cid=metadata_cid,
-        defaults={
-            "verification_type": verification_type,
-            "requester": requester,
-        },
+        verification_type=verification_type,
+        requester=requester,
     )
 
     local_providers = CyberValleyUser.objects.filter(
