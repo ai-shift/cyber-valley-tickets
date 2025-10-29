@@ -25,7 +25,11 @@ export const SocialsPage: React.FC = () => {
 
   return (
     <PageContainer name="Socials">
-      <SocialsForm onSubmit={handleSubmit} existingSocials={user.socials[0]} />
+      <SocialsForm
+        onSubmit={handleSubmit}
+        existingSocials={user.socials[0]}
+        userAddress={user.address}
+      />
       {error && (
         <p className="text-center py-6 text-lg text-red-500">
           Some problem occured while setting socials. <br /> Try again.
