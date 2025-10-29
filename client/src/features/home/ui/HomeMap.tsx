@@ -65,7 +65,7 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
         places.forEach((place) => {
           bounds.extend(place.geometry.coordinates[0]);
         });
-        map.fitBounds(bounds);
+        map.fitBounds(bounds, { top: 20, right: 20, bottom: 20, left: 20 });
       }
     }
 
@@ -78,7 +78,11 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
   }, [map, searchParams, placesWithEvents]);
 
   return (
-    <EbaliMap className={className} requireTwoFingerScroll={false}>
+    <EbaliMap
+      className={className}
+      requireTwoFingerScroll={false}
+      layersOpacity={0.3}
+    >
       {Object.values(placesWithEvents).map((place) => (
         <Circle
           onClick={() => setSelectedPlace(place)}
