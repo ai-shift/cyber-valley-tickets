@@ -25,6 +25,7 @@ type EbaliMapProps = {
   className?: string;
   longPressHandler?: (latLng: LatLng) => void;
   children?: React.ReactNode;
+  requireTwoFingerScroll?: boolean;
 };
 
 export const EbaliMap: React.FC<EbaliMapProps> = ({
@@ -32,6 +33,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   className,
   longPressHandler,
   children,
+  requireTwoFingerScroll = true,
 }) => {
   const [displayedGroups, setDisplayedGroups] = useState<GeodataKey[]>([]);
   const [showGroups, setShowGroups] = useState(false);
@@ -79,7 +81,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       defaultCenter={initialCenter ?? { lat: -8.2980705, lng: 115.088186 }}
       defaultZoom={16}
       onClick={onMapClick}
-      gestureHandling="cooperative"
+      gestureHandling={requireTwoFingerScroll ? "cooperative" : "greedy"}
       colorScheme="DARK"
       disableDefaultUI
     >
