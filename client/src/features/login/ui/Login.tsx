@@ -35,7 +35,7 @@ const theme = darkTheme({
     modalBg: "var(--background)",
     primaryButtonBg: "var(--primary)",
     primaryButtonText: "var(--foreground)",
-    secondaryButtonBg: "var(--secondary)",
+    secondaryButtonBg: "#010101",
     secondaryButtonText: "#e2e2e2",
     secondaryText: "#e2e2e2",
   },
