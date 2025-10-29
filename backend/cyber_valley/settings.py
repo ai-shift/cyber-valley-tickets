@@ -177,7 +177,7 @@ if DEBUG:
             "NAME": BASE_DIR / "db.sqlite3",
             "OPTIONS": {
                 "timeout": 20,
-                "journal_mode": "wal",
+                "init_command": "PRAGMA journal_mode = wal;"
             },
         }
     }
