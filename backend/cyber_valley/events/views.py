@@ -41,7 +41,9 @@ log = logging.getLogger(__name__)
 
 
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
-    queryset = EventPlace.objects.all().prefetch_related("event_set")
+    queryset = EventPlace.objects.filter(status="approved").prefetch_related(
+        "event_set"
+    )
     serializer_class = EventPlaceSerializer
 
 
