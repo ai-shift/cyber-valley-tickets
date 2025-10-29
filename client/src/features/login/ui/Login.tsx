@@ -28,7 +28,7 @@ const wallets = [
 
 const theme = darkTheme({
   colors: {
-    borderColor: "var(--background)",
+    borderColor: "var(--secondary)",
     accentButtonBg: "var(--primary)",
     accentButtonText: "var(--foreground)",
     accentText: "var(--primary)",
@@ -36,7 +36,8 @@ const theme = darkTheme({
     primaryButtonBg: "var(--primary)",
     primaryButtonText: "var(--foreground)",
     secondaryButtonBg: "var(--secondary)",
-    secondaryButtonText: "var(--foreground)",
+    secondaryButtonText: "#e2e2e2",
+    secondaryText: "#e2e2e2",
   },
   fontFamily: "var(--font-chakra-petch)",
 });
