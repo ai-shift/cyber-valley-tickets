@@ -12,17 +12,19 @@ type NavProps = {
 
 export const Nav: React.FC<NavProps> = ({ className }) => {
   const { user } = useAuthSlice();
-  const { data: notifications } = useQuery(notificationQueries.list());
+  const { data: notifications } = useQuery({
+    ...notificationQueries.list(),
+    enabled: !!user,
+  });
   const unreadCount = notifications?.filter((n) => !n.seenAt).length || 0;
 
-  if (!user) return;
   return (
     <nav className={cn("flex justify-around flex-wrap gap-1", className)}>
       {routes.map((route) => (
         <NavLink
           key={route.path}
           route={route}
-          role={user.role}
+          role={user?.role}
           badgeText={
             route.path === "/notifications" ? String(unreadCount) : undefined
           }
