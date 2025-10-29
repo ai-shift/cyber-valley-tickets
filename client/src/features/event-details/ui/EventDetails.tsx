@@ -48,7 +48,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
 
   function placeClickHandler() {
     const location = place.geometry.coordinates[0] as LatLng;
-    const url = `/?lat=${location.lat}&lng=${location.lng}`;
+    const url = `/map/?lat=${location.lat}&lng=${location.lng}`;
     navigate(url);
   }
 
