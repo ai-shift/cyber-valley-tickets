@@ -69,6 +69,12 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
       if (foundPlace) {
         setSelectedPlace(foundPlace);
       }
+    } else if (places.length === 1) {
+      const coord = places[0].geometry.coordinates[0];
+      if (coord) {
+        map.panTo(coord);
+        map.setZoom(15);
+      }
     } else {
       const bounds = new google.maps.LatLngBounds();
       for (const place of places) {
