@@ -17,13 +17,6 @@ export const ProtectedRoute: React.FC = () => {
         </h2>
         <div className="flex justify-between items-center mt-20">
           <Button
-            variant="secondary"
-            filling="outline"
-            onClick={() => navigate(-1)}
-          >
-            Go back
-          </Button>
-          <Button
             onClick={() =>
               navigate("/login", {
                 state: {
