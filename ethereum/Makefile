@@ -34,7 +34,7 @@ ganache:
 	@echo "Master    	 (0) 0x2789023F36933E208675889869c7d3914A422921 (100 ETH)"
 	@echo "Creator   	 (1) 0x96e37a0cD915c38dE8B5aAC0db61eB7eB839CeeB (100 ETH)"
 	@echo "Customer1 	 (2) 0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e (100 ETH)"
-	@echo "Customer3 	 (3) 0x7617b92b06c4ce513c53Df1c818ed25f95475f69 (100 ETH)"
+	@echo "VerifiedShaman 	 (3) 0x7617b92b06c4ce513c53Df1c818ed25f95475f69 (100 ETH)"
 	@echo "LocalProvider 	 (4) 0x9772d9a6A104c162b97767e6a654Be54370A042F (100 ETH)"
 	@echo "Backend	         (5) 0xEd7f6CA6e91AaA3Ff2C3918B5cAF02FF449Ab3A4 (100ETH)"
 	podman run -d \
