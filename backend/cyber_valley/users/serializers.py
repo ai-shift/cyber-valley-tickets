@@ -23,7 +23,15 @@ class CurrentUserSerializer(serializers.ModelSerializer[CyberValleyUser]):
 
     @extend_schema_field(SaveSocialsSerializer(many=True))
     def get_socials(self, obj: CyberValleyUser) -> list[dict[str, str]]:
-        return [{"network": s.network, "value": s.value} for s in obj.socials.all()]
+        socials = []
+        for s in obj.socials.all():
+            value: str = s.value
+            # For telegram, use username from metadata or "no username"
+            if s.network == UserSocials.Network.TELEGRAM:
+                username = s.metadata.get("username") if s.metadata else None
+                value = username or "no username"
+            socials.append({"network": s.network, "value": value})
+        return socials
 
 
 class StaffSerializer(serializers.ModelSerializer[CyberValleyUser]):
