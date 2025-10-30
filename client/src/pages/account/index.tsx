@@ -17,6 +17,23 @@ import { Link, useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
 import { useActiveAccount } from "thirdweb/react";
 
+const getRoleDisplayName = (user: User | null): string | null => {
+  if (!user) return null;
+
+  switch (user.role) {
+    case "master":
+      return "Master";
+    case "localprovider":
+      return "LocalProvider";
+    case "verifiedshaman":
+      return "VerifiedShaman";
+    case "creator":
+      return "Shaman";
+    default:
+      return null;
+  }
+};
+
 export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
   const { logout: signOut, user } = useAuthSlice();
@@ -69,6 +86,11 @@ export const AccountPage: React.FC = () => {
               <p className="text-lg">
                 {formatAddress(address as `0x${string}`)}
               </p>
+              {getRoleDisplayName(user) && (
+                <p className="text-sm font-semibold text-primary">
+                  {getRoleDisplayName(user)}
+                </p>
+              )}
               <div className="flex items-center gap-2">
                 <img
                   className="h-6 aspect-square"
