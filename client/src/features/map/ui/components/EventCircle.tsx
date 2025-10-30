@@ -79,7 +79,7 @@ export const EventCircle: React.FC<EventCircleProps> = ({
         const radiusInPixels = this.radius / metersPerPixel;
 
         // Scale font size based on circle size
-        const fontSize = Math.max(12, Math.min(32, radiusInPixels * 0.8));
+        const fontSize = Math.max(12, Math.min(64, radiusInPixels * 0.8));
 
         if (centerPos) {
           this.div.style.left = `${centerPos.x}px`;
@@ -108,16 +108,22 @@ export const EventCircle: React.FC<EventCircleProps> = ({
     overlay.setMap(map);
     overlayRef.current = overlay;
 
+    const zoomListener = map.addListener("zoom_changed", () => {
+      overlay.draw();
+    });
+
     if (onClick) {
-      const listener = circle.addListener("click", onClick);
+      const clickListener = circle.addListener("click", onClick);
       return () => {
-        google.maps.event.removeListener(listener);
+        google.maps.event.removeListener(clickListener);
+        google.maps.event.removeListener(zoomListener);
         circle.setMap(null);
         overlay.setMap(null);
       };
     }
 
     return () => {
+      google.maps.event.removeListener(zoomListener);
       circle.setMap(null);
       overlay.setMap(null);
     };
