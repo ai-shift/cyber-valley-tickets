@@ -259,6 +259,37 @@ export const eventManager = getContract({
       inputs: [
         {
           indexed: false,
+          internalType: "address",
+          name: "master",
+          type: "address",
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "masterAmount",
+          type: "uint256",
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "providerAmount",
+          type: "uint256",
+        },
+        {
+          indexed: false,
+          internalType: "address",
+          name: "provider",
+          type: "address",
+        },
+      ],
+      name: "FundsDistributed",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
           internalType: "uint256",
           name: "id",
           type: "uint256",

@@ -42,6 +42,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     useManageEventState();
   const { mutate } = useMutation({
     mutationFn: async (action: ManageAction) => {
+      console.log("got manage event action", action);
       if (account == null) throw new Error("Got null account");
       // TODO: Use the same type with EventStatus
       try {

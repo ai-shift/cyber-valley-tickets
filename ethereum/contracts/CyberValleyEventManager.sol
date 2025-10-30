@@ -107,6 +107,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 size
     );
     event EventTicketVerified(uint256 tokenId);
+    event FundsDistributed(address master, uint256 masterAmount, uint256 providerAmount, address provider);
 
     IERC20 public usdtTokenContract;
     CyberValleyEventTicket public eventTicketContract;
@@ -598,6 +599,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
         evt.status = EventStatus.Cancelled;
         emit EventStatusChanged(eventId, evt.status);
+	emit FundsDistributed(master, 0, eventRequestPrice, msg.sender);
     }
 
     function calcEventNetworth(
@@ -606,6 +608,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         return evt.ticketPrice * evt.customers.length + eventRequestPrice;
     }
 
+    // TODO: Puflish event with funds distribution
     function distributeEventFunds(
         uint256 eventPlaceId,
         uint256 totalAmount
@@ -614,11 +617,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 providerSharePercentage = localProviderShare[provider];
 
         uint256 masterAmount = (totalAmount * masterShare) / 100;
-        uint256 remainder = totalAmount - masterAmount;
-        uint256 providerAmount = (remainder * providerSharePercentage) / 100;
-
-        uint256 dust = totalAmount - masterAmount - providerAmount;
-        masterAmount += dust;
+	uint256 reminder = totalAmount - masterAmount;
+	masterAmount += (reminder * (100 - providerSharePercentage)) / 100;
+        uint256 providerAmount = totalAmount - masterAmount;
 
         if (masterAmount > 0) {
             require(
@@ -633,6 +634,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 "Failed to transfer provider share"
             );
         }
+
+	emit FundsDistributed(master, masterAmount, providerAmount, provider);
     }
 
     function floorTimestampToDate(
