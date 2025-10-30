@@ -1,8 +1,10 @@
+import { useAuthSlice } from "@/app/providers";
 import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { getCurrencySymbol, hasEnoughtTokens } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 
 import { EventForm } from "@/features/event-form";
@@ -30,6 +32,7 @@ export const CreateEvent: React.FC<CreateEventProps> = ({ onSubmit }) => {
   const [canCreate, setCanCreate] = useState(false);
   const [requriedTokens, setRequiredTokens] = useState(BigInt(0));
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuthSlice();
   useEffect(() => {
     if (account == null) return;
     hasEnoughtTokens(account).then(({ enoughTokens, balanceAfterPayment }) => {
@@ -41,6 +44,10 @@ export const CreateEvent: React.FC<CreateEventProps> = ({ onSubmit }) => {
   }, [account]);
   return isLoading ? (
     <Loader />
+  ) : user!.socials.length === 0 ? (
+    <p className="my-24 text-center">
+      Set socials first <Link className="text-secondary underline" to="/socials">here</Link>
+    </p>
   ) : canCreate ? (
     <EventDataProvider>
       {({ events, places }) => (
