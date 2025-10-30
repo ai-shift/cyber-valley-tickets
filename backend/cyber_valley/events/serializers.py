@@ -51,7 +51,16 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
     @extend_schema_field(UploadSocialsSerializer)
     def get_socials(self, obj: UserType) -> dict[str, Any]:
         last_social = obj.socials.order_by("id").last()
-        return UploadSocialsSerializer(last_social).data
+        if not last_social:
+            return {}
+
+        value: str = last_social.value
+        # For telegram, use username from metadata or "no username"
+        if last_social.network == UserSocials.Network.TELEGRAM:
+            username = last_social.metadata.get("username") if last_social.metadata else None
+            value = username or "no username"
+
+        return {"network": last_social.network, "value": value}
 
     class Meta:
         model = User
