@@ -72,6 +72,16 @@ class EventUpdated(BaseModel):
     size: int
 
 
+class FundsDistributed(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    master: str
+    master_amount: int = Field(..., alias="masterAmount")
+    provider_amount: int = Field(..., alias="providerAmount")
+    provider: str
+
+
 class NewEventPlaceRequest(BaseModel):
     model_config = ConfigDict(
         frozen=True,
@@ -149,6 +159,7 @@ class CyberValleyEvents(BaseModel):
         None, alias="EventTicketVerified"
     )
     event_updated: EventUpdated | None = Field(None, alias="EventUpdated")
+    funds_distributed: FundsDistributed | None = Field(None, alias="FundsDistributed")
     new_event_place_request: NewEventPlaceRequest | None = Field(
         None, alias="NewEventPlaceRequest"
     )

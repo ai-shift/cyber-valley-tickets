@@ -71,6 +71,9 @@ def synchronize_event(event_data: BaseModel) -> None:
         case CyberValleyEventManager.RoleRevoked():
             _sync_role_revoked(event_data)
             log.info("Ticket redeemed")
+        case CyberValleyEventManager.FundsDistributed():
+            _sync_funds_ditributed(event_data)
+            log.info("Funds distributed")
         case CyberValleyEventTicket.Transfer():
             pass
         case _:
@@ -336,9 +339,6 @@ def _sync_event_status_changed(
     # Notify provider
     if event.place.provider:
         body = f"Event {event.title}. New status: {new_status}"
-        if event.status in ("cancelled", "closed"):
-            networth = event.tickets_bought * event.ticket_price + 100
-            body += f"\nEarned {networth} USDT"
         send_notification(
             user=event.place.provider,
             title="Event status updated",
@@ -452,6 +452,24 @@ def _sync_role_revoked(
             title="Role revoked",
             body=f"{revoked_role} role was revoked from {user.address}",
         )
+
+
+def _sync_funds_ditributed(evt: CyberValleyEventManager.FundsDistributed) -> None:
+    master = CyberValleyUser.objects.get(address=evt.master)
+    send_notification(
+        user=master,
+        title="Funds distributed",
+        body=(
+            f"Earned {evt.master_amount}\n"
+            f"Sent to LocalProvider({evt.provider}) {evt.provider_amount}"
+        ),
+    )
+    provider = CyberValleyUser.objects.get(address=evt.provider)
+    send_notification(
+        user=provider,
+        title="Funds distributed",
+        body=(f"Earned {evt.provider_amount}"),
+    )
 
 
 class MultihashLike(Protocol):
