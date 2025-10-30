@@ -1,45 +1,5 @@
 # Cyber Valley Tickets
 
-## By aishift
-
-## Table of Contents
-
-- [Problem](#problem)
-- [Solution](#solution)
-  - [Domain](#domain)
-    - [Roles](#roles)
-    - [Event data](#event-data)
-  - [Use cases](#use-cases)
-    - [Create event place](#create-event-place)
-    - [Update event place](#update-event-place)
-    - [Save socials](#save-socials)
-    - [Approve event request](#approve-event-request)
-    - [Decline event request](#decline-event-request)
-    - [Edit event](#edit-event)
-    - [List events](#list-events)
-    - [Buy ticket](#buy-ticket)
-    - [Add / remove staff](#add--remove-staff)
-    - [Show ticket](#show-ticket)
-    - [Verify bought ticket](#verify-bought-ticket)
-    - [Close event](#close-event)
-  - [Tech stack](#tech-stack)
-  - [Excluded features from the first stage](#excluded-features-from-the-first-stage)
-  - [Proxy contract vs multiple versions](#proxy-contract-vs-multiple-versions)
-  - [Component design](#component-design)
-    - [General overview](#general-overview)
-    - [Smart contract](#smart-contract)
-    - [Frontend](#frontend)
-- [Questions](#questions)
-  - [Both desktop and mobile are required?](#both-desktop-and-mobile-are-required)
-  - [Is it required to verify tickets without internet connection?](#is-it-required-to-verify-tickets-without-internet-connection)
-  - [Will be there multiple masters or the only one in foreseeable future?](#will-be-there-multiple-masters-or-the-only-one-in-foreseeable-future)
-  - [Event request price fixed in ETH, depends on ETH/USD rate or could be changed by the master?](#event-request-price-fixed-in-eth-depends-on-ethusd-rate-or-could-be-changed-by-the-master)
-  - [Is a ticket transfer allowed e.g. customer A bought a ticket, but sent it to the customer B?](#is-a-ticket-transfer-allowed-eg-customer-a-bought-a-ticket-but-sent-it-to-the-customer-b)
-  - [Will tickets have some metainfo about the owner (name, number etc)](#will-tickets-have-some-metainfo-about-the-owner-name-number-etc)
-  - [Is it applicable to show available seats count for all (so the creator and master can see it as well without additional screen)?](#is-it-applicable-to-show-available-seats-count-for-all-so-the-creator-and-master-can-see-it-as-well-without-additional-screen)
-  - [UI design references](#ui-design-references)
-  - [Do socials really should be saved in IPFS or can be stored on the back-end?](#do-socials-really-should-be-saved-in-ipfs-or-can-be-stored-on-the-back-end)
-
 ## Problem
 
 Cyber Valley wants to host events and needs a convenient way to accept events offers from creators, sell tickets in crypto, verify bought tickets from customer's devices and distribution of acquired means across creator, master and dev team
