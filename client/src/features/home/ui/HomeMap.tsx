@@ -66,7 +66,7 @@ export const HomeMap: React.FC = () => {
         setSelectedPlace(foundPlace);
       }
     } else if (places.length === 1) {
-      const coord = places[0].geometry.coordinates[0];
+      const coord = places[0]?.geometry.coordinates[0];
       if (coord) {
         map.panTo(coord);
         map.setZoom(15);
