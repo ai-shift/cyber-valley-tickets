@@ -15,7 +15,7 @@ export const ProtectedRoute: React.FC = () => {
         <h2 className="text-xl">
           You have to be logged in to access this resource.
         </h2>
-        <div className="flex justify-between items-center mt-20">
+        <div className="flex justify-center items-center mt-20">
           <Button
             onClick={() =>
               navigate("/login", {
