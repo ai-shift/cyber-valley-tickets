@@ -46,7 +46,10 @@ export const CreateEvent: React.FC<CreateEventProps> = ({ onSubmit }) => {
     <Loader />
   ) : user!.socials.length === 0 ? (
     <p className="my-24 text-center">
-      Set socials first <Link className="text-secondary underline" to="/socials">here</Link>
+      Set socials first{" "}
+      <Link className="text-secondary underline" to="/socials">
+        here
+      </Link>
     </p>
   ) : canCreate ? (
     <EventDataProvider>

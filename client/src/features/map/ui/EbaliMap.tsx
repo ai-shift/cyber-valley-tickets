@@ -84,7 +84,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       colorScheme="DARK"
       disableDefaultUI
     >
-      <Sheet open={showGroups} onOpenChange={setShowGroups}>
+      <Sheet open={showGroups} onOpenChange={setShowGroups} modal={false}>
         <SheetTrigger>
           <div className="absolute top-3 right-3 aspect-square h-10 rounded-full bg-black flex items-center justify-center">
             <Layers className="w-6 h-6 text-primary" />

@@ -11,11 +11,7 @@ interface PlaceWithEvents extends EventPlace {
   events: Omit<Event, "place">[];
 }
 
-type HomeMapProps = {
-  className?: string;
-};
-
-export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
+export const HomeMap: React.FC = () => {
   const { data: events } = useQuery(eventQueries.list());
   const [selectedPlace, setSelectedPlace] = useState<PlaceWithEvents | null>(
     null,
@@ -104,7 +100,7 @@ export const HomeMap: React.FC<HomeMapProps> = ({ className }) => {
 
   return (
     <EbaliMap
-      className={className}
+      className="h-full"
       requireTwoFingerScroll={false}
       layersOpacity={0.3}
     >
