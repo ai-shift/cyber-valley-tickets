@@ -83,7 +83,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       gestureHandling={requireTwoFingerScroll ? "cooperative" : "greedy"}
       colorScheme="DARK"
       reuseMaps={true}
-      mapTypeId="terrain"
+      mapTypeId="satellite"
       disableDefaultUI
     >
       <Sheet open={showGroups} onOpenChange={setShowGroups} modal={false}>
