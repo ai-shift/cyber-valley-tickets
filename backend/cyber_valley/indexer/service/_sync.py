@@ -389,7 +389,7 @@ def _sync_role_granted(
     event_data: CyberValleyEventManager.RoleGranted
     | CyberValleyEventTicket.RoleGranted,
 ) -> None:
-    if event_data.role == "DEFAULT_ADMIN_ROLE":
+    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE"):
         return
 
     user_role = ROLE_MAPPING.get(event_data.role)
@@ -428,6 +428,9 @@ def _sync_role_revoked(
     event_data: CyberValleyEventManager.RoleRevoked
     | CyberValleyEventTicket.RoleRevoked,
 ) -> None:
+    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE"):
+        return
+
     revoked_role = ROLE_MAPPING.get(event_data.role)
     if revoked_role is None:
         msg = f"Unknown role {event_data.role} in RoleRevoked event"
