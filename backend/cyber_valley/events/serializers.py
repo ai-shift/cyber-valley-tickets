@@ -57,7 +57,9 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
         value: str = last_social.value
         # For telegram, use username from metadata or "no username"
         if last_social.network == UserSocials.Network.TELEGRAM:
-            username = last_social.metadata.get("username") if last_social.metadata else None
+            username = (
+                last_social.metadata.get("username") if last_social.metadata else None
+            )
             value = username or "no username"
 
         return {"network": last_social.network, "value": value}
