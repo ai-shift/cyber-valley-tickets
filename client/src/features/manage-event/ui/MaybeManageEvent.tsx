@@ -43,12 +43,15 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   const { mutate } = useMutation({
     mutationFn: async (action: ManageAction) => {
       console.log("got manage event action", action);
+      console.log("eventId:", eventId, "account:", account?.address);
       if (account == null) throw new Error("Got null account");
       // TODO: Use the same type with EventStatus
       try {
         switch (action) {
           case "accept":
-            await approveEvent(account, BigInt(eventId));
+            console.log("Calling approveEvent with eventId:", eventId);
+            const txHash = await approveEvent(account, BigInt(eventId));
+            console.log("approveEvent tx hash:", txHash);
             setModalInfo({
               title: "Event accepting was initiated",
               body: "Event will be accepted soon",
@@ -57,7 +60,9 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             optimisticSetEventStatus(eventId, "approved");
             break;
           case "decline":
-            await declineEvent(account, BigInt(eventId));
+            console.log("Calling declineEvent with eventId:", eventId);
+            const declineTxHash = await declineEvent(account, BigInt(eventId));
+            console.log("declineEvent tx hash:", declineTxHash);
             setModalInfo({
               title: "Event declining was inititated",
               body: "Event will be declined soon",
@@ -66,7 +71,9 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             optimisticSetEventStatus(eventId, "declined");
             break;
           case "close":
-            await closeEvent(account, BigInt(eventId));
+            console.log("Calling closeEvent with eventId:", eventId);
+            const closeTxHash = await closeEvent(account, BigInt(eventId));
+            console.log("closeEvent tx hash:", closeTxHash);
             setModalInfo({
               title: "Event finishing was initiated",
               body: "Event will be finished soon",
@@ -75,7 +82,9 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             optimisticSetEventStatus(eventId, "closed");
             break;
           case "cancel":
-            await cancelEvent(account, BigInt(eventId));
+            console.log("Calling cancelEvent with eventId:", eventId);
+            const cancelTxHash = await cancelEvent(account, BigInt(eventId));
+            console.log("cancelEvent tx hash:", cancelTxHash);
             setModalInfo({
               title: "Event cancelling was initiated",
               body: "Event will be cancelled soon",
@@ -84,6 +93,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             optimisticSetEventStatus(eventId, "cancelled");
             break;
           default:
+            console.error("Unknown action received:", action);
             setModalInfo({
               title: "Failure",
               body: `Unknown action: ${action}`,
@@ -91,6 +101,12 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             });
         }
       } catch (e) {
+        console.error("Transaction failed with error:", e);
+        console.error("Error details:", {
+          message: e instanceof Error ? e.message : "Unknown error",
+          stack: e instanceof Error ? e.stack : undefined,
+          raw: e,
+        });
         setModalInfo({
           title: "Failure",
           body: "Failed to send transaction",
@@ -99,8 +115,16 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
       }
       setIsOpen(true);
     },
-    onSuccess: console.log,
-    onError: console.error,
+    onSuccess: (data) => {
+      console.log("Mutation onSuccess callback - data:", data);
+    },
+    onError: (error) => {
+      console.error("Mutation onError callback - error:", error);
+      console.error("Error details:", {
+        message: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+    },
   });
   const navigate = useNavigate();
 
