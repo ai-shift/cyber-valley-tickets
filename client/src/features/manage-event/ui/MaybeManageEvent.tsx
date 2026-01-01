@@ -48,7 +48,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
       // TODO: Use the same type with EventStatus
       try {
         switch (action) {
-          case "accept":
+          case "accept": {
             console.log("Calling approveEvent with eventId:", eventId);
             const txHash = await approveEvent(account, BigInt(eventId));
             console.log("approveEvent tx hash:", txHash);
@@ -59,7 +59,8 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             });
             optimisticSetEventStatus(eventId, "approved");
             break;
-          case "decline":
+          }
+          case "decline": {
             console.log("Calling declineEvent with eventId:", eventId);
             const declineTxHash = await declineEvent(account, BigInt(eventId));
             console.log("declineEvent tx hash:", declineTxHash);
@@ -70,7 +71,8 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             });
             optimisticSetEventStatus(eventId, "declined");
             break;
-          case "close":
+          }
+          case "close": {
             console.log("Calling closeEvent with eventId:", eventId);
             const closeTxHash = await closeEvent(account, BigInt(eventId));
             console.log("closeEvent tx hash:", closeTxHash);
@@ -81,7 +83,8 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             });
             optimisticSetEventStatus(eventId, "closed");
             break;
-          case "cancel":
+          }
+          case "cancel": {
             console.log("Calling cancelEvent with eventId:", eventId);
             const cancelTxHash = await cancelEvent(account, BigInt(eventId));
             console.log("cancelEvent tx hash:", cancelTxHash);
@@ -92,6 +95,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
             });
             optimisticSetEventStatus(eventId, "cancelled");
             break;
+          }
           default:
             console.error("Unknown action received:", action);
             setModalInfo({
@@ -107,9 +111,25 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
           stack: e instanceof Error ? e.stack : undefined,
           raw: e,
         });
+
+        // Extract meaningful error message
+        let errorMessage = "Failed to send transaction";
+        if (e instanceof Error) {
+          if (e.message.includes("revert")) {
+            errorMessage =
+              "Transaction reverted by contract. You may not have permission to perform this action or the event is not in the correct state.";
+          } else if (e.message.includes("insufficient funds")) {
+            errorMessage = "Insufficient funds to complete transaction";
+          } else if (e.message.includes("user rejected")) {
+            errorMessage = "Transaction was rejected";
+          } else {
+            errorMessage = `Transaction failed: ${e.message.substring(0, 100)}`;
+          }
+        }
+
         setModalInfo({
           title: "Failure",
-          body: "Failed to send transaction",
+          body: errorMessage,
           error: true,
         });
       }

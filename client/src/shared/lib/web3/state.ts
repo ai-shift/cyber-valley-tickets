@@ -7,6 +7,9 @@ export const STAFF_ROLE = keccak256(toUtf8Bytes("STAFF_ROLE")) as `0x${string}`;
 export const VERIFIED_SHAMAN_ROLE = keccak256(
   toUtf8Bytes("VERIFIED_SHAMAN_ROLE"),
 ) as `0x${string}`;
+export const LOCAL_PROVIDER_ROLE = keccak256(
+  toUtf8Bytes("LOCAL_PROVIDER_ROLE"),
+) as `0x${string}`;
 
 export const wallets = [
   createWallet("inApp", {

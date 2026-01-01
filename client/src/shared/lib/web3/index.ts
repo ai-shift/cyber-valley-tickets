@@ -1,8 +1,14 @@
-import { prepareContractCall, sendTransaction } from "thirdweb";
+import { prepareContractCall, readContract, sendTransaction } from "thirdweb";
 import { balanceOf } from "thirdweb/extensions/erc20";
 import type { Account } from "thirdweb/wallets";
 import { getBytes32FromMultiash } from "./multihash";
-import { STAFF_ROLE, erc20, eventManager, eventTicket } from "./state";
+import {
+  LOCAL_PROVIDER_ROLE,
+  STAFF_ROLE,
+  erc20,
+  eventManager,
+  eventTicket,
+} from "./state";
 export { client, wallets, cvlandChain, erc20 } from "./state";
 
 export async function mintERC20(
@@ -179,32 +185,130 @@ export async function updateEvent(
   return transactionHash;
 }
 
+async function validateEventApproval(
+  account: Account,
+  eventId: bigint,
+): Promise<{ valid: boolean; reason?: string }> {
+  try {
+    // Check if user has LOCAL_PROVIDER_ROLE
+    const hasRole = await readContract({
+      contract: eventManager,
+      method: "hasRole",
+      params: [LOCAL_PROVIDER_ROLE, account.address],
+    });
+    console.log("User has LOCAL_PROVIDER_ROLE:", hasRole);
+
+    if (!hasRole) {
+      return {
+        valid: false,
+        reason: "You don't have LOCAL_PROVIDER_ROLE permission",
+      };
+    }
+
+    // Get event details
+    const event = await readContract({
+      contract: eventManager,
+      method: "events",
+      params: [eventId],
+    });
+    console.log("Event details:", event);
+
+    // Check event status (should be Submitted = 0)
+    if (event[5] !== 0) {
+      // event[5] is status
+      const statusNames = [
+        "Submitted",
+        "Approved",
+        "Declined",
+        "Cancelled",
+        "Closed",
+      ];
+      return {
+        valid: false,
+        reason: `Event status is ${statusNames[event[5]]} but must be Submitted`,
+      };
+    }
+
+    // Get event place details
+    const eventPlaceId = event[1]; // event[1] is eventPlaceId
+    const eventPlace = await readContract({
+      contract: eventManager,
+      method: "eventPlaces",
+      params: [eventPlaceId],
+    });
+    console.log("Event place details:", eventPlace);
+
+    // Check if the event place provider matches the caller
+    const placeProvider = eventPlace[1]; // eventPlace[1] is provider
+    console.log("Place provider:", placeProvider, "Caller:", account.address);
+
+    if (placeProvider.toLowerCase() !== account.address.toLowerCase()) {
+      return {
+        valid: false,
+        reason: `This event belongs to place owned by ${placeProvider}, but you are ${account.address}`,
+      };
+    }
+
+    return { valid: true };
+  } catch (error) {
+    console.error("Validation failed:", error);
+    return {
+      valid: false,
+      reason: `Validation check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+    };
+  }
+}
+
 export async function approveEvent(
   account: Account,
   eventId: bigint,
 ): Promise<TxHash> {
-  console.log("approveEvent called with:", { account: account.address, eventId });
+  console.log("approveEvent called with:", {
+    account: account.address,
+    eventId,
+  });
   console.log("eventManager contract:", {
     address: eventManager.address,
     chain: eventManager.chain,
   });
-  const transaction = prepareContractCall({
-    contract: eventManager,
-    method: "approveEvent",
-    params: [eventId],
-  });
-  console.log("prepareContractCall result:", transaction);
-  console.log("Sending transaction...");
-  const result = await sendTransaction({ account, transaction });
-  console.log("sendTransaction result:", result);
-  return result.transactionHash;
+
+  // Pre-flight validation
+  const validation = await validateEventApproval(account, eventId);
+  if (!validation.valid) {
+    console.error("Pre-flight validation failed:", validation.reason);
+    throw new Error(validation.reason);
+  }
+
+  try {
+    const transaction = prepareContractCall({
+      contract: eventManager,
+      method: "approveEvent",
+      params: [eventId],
+    });
+    console.log("prepareContractCall result:", transaction);
+    console.log("Sending transaction...");
+    const result = await sendTransaction({ account, transaction });
+    console.log("sendTransaction result:", result);
+    return result.transactionHash;
+  } catch (error) {
+    console.error("approveEvent failed:", error);
+    // Try to extract more meaningful error info
+    if (error && typeof error === "object" && "data" in error) {
+      const errorData = (error as { data?: { message?: string } }).data;
+      console.error("Contract revert reason:", errorData?.message);
+    }
+    throw error;
+  }
 }
 
 export async function declineEvent(
   account: Account,
   eventId: bigint,
 ): Promise<TxHash> {
-  console.log("declineEvent called with:", { account: account.address, eventId });
+  console.log("declineEvent called with:", {
+    account: account.address,
+    eventId,
+  });
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "declineEvent",
@@ -236,7 +340,10 @@ export async function cancelEvent(
   account: Account,
   eventId: bigint,
 ): Promise<TxHash> {
-  console.log("cancelEvent called with:", { account: account.address, eventId });
+  console.log("cancelEvent called with:", {
+    account: account.address,
+    eventId,
+  });
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "cancelEvent",
