@@ -183,52 +183,69 @@ export async function approveEvent(
   account: Account,
   eventId: bigint,
 ): Promise<TxHash> {
+  console.log("approveEvent called with:", { account: account.address, eventId });
+  console.log("eventManager contract:", {
+    address: eventManager.address,
+    chain: eventManager.chain,
+  });
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "approveEvent",
     params: [eventId],
   });
-  const { transactionHash } = await sendTransaction({ account, transaction });
-  return transactionHash;
+  console.log("prepareContractCall result:", transaction);
+  console.log("Sending transaction...");
+  const result = await sendTransaction({ account, transaction });
+  console.log("sendTransaction result:", result);
+  return result.transactionHash;
 }
 
 export async function declineEvent(
   account: Account,
   eventId: bigint,
 ): Promise<TxHash> {
+  console.log("declineEvent called with:", { account: account.address, eventId });
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "declineEvent",
     params: [eventId],
   });
-  const { transactionHash } = await sendTransaction({ account, transaction });
-  return transactionHash;
+  console.log("prepareContractCall result:", transaction);
+  const result = await sendTransaction({ account, transaction });
+  console.log("sendTransaction result:", result);
+  return result.transactionHash;
 }
 
 export async function closeEvent(
   account: Account,
   eventId: bigint,
 ): Promise<TxHash> {
+  console.log("closeEvent called with:", { account: account.address, eventId });
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "closeEvent",
     params: [eventId],
   });
-  const { transactionHash } = await sendTransaction({ account, transaction });
-  return transactionHash;
+  console.log("prepareContractCall result:", transaction);
+  const result = await sendTransaction({ account, transaction });
+  console.log("sendTransaction result:", result);
+  return result.transactionHash;
 }
 
 export async function cancelEvent(
   account: Account,
   eventId: bigint,
 ): Promise<TxHash> {
+  console.log("cancelEvent called with:", { account: account.address, eventId });
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "cancelEvent",
     params: [eventId],
   });
-  const { transactionHash } = await sendTransaction({ account, transaction });
-  return transactionHash;
+  console.log("prepareContractCall result:", transaction);
+  const result = await sendTransaction({ account, transaction });
+  console.log("sendTransaction result:", result);
+  return result.transactionHash;
 }
 
 export async function approveMintTicket(account: Account, ticketPrice: bigint) {
