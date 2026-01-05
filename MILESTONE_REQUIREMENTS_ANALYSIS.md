@@ -2,7 +2,7 @@
 
 ## Time Allocation Summary
 
-**Total Hours: 98 hours**
+**Total Hours: 104 hours**
 
 ---
 
@@ -155,17 +155,18 @@
 ## 6. Flexible Revenue Distribution System (9 hours)
 
 ### Requirements
-- **Master and DevTeam:** Hardcoded percentages (fixed shares) - 30% Master, 10% DevTeam
+- **Fixed Platform Shares:** Hardcoded percentages - 10% CyberiaDAO LLC (platform), 5% CVE PT PMA (land owner)
 - **Remaining funds:** Flexible distribution to multiple recipients
-- **Use case:** After Master (30%) and DevTeam (10%) receive their shares, the remaining 60% can be distributed flexibly to:
+- **Use case:** After CyberiaDAO LLC (10%) and CVE PT PMA (5%) receive their shares, the remaining 85% can be distributed flexibly to:
   - Local provider (default)
+  - Shaman
+  - Sales
   - Multiple partners (marketing, venue, sponsors)
   - Dynamic allocation per event or campaign
-  - DAO treasury or community pools
 
 ### Architecture: Fully Encapsulated Distribution Contract
 
-**Key Design Principle:** EventManager knows NOTHING about revenue distribution details. It simply transfers all funds to the DynamicRevenueSplitter contract, which handles all distribution logic internally (including fixed Master/DevTeam shares).
+**Key Design Principle:** EventManager knows NOTHING about revenue distribution details. It simply transfers all funds to the DynamicRevenueSplitter contract, which handles all distribution logic internally (including fixed CyberiaDAO LLC/CVE PT PMA shares).
 
 **Benefits:**
 - EventManager remains simple and focused on event management
@@ -176,8 +177,8 @@
 ### Implementation Tasks
 
 #### DynamicRevenueSplitter Contract (5h)
-- [ ] Create contract with immutable master and devTeam addresses
-- [ ] Define fixed share constants (30%, 10%, 60%)
+- [ ] Create contract with immutable cyberiaDAO and cvePtPma addresses
+- [ ] Define fixed share constants (10% CyberiaDAO, 5% CVE PT PMA, 85% flexible)
 - [ ] Implement Distribution struct and profile mappings
 - [ ] Implement `createDistributionProfile` function
 - [ ] Implement `updateDistributionProfile` function
@@ -188,15 +189,17 @@
 
 #### Integration with EventManager (1h)
 - [ ] Add `revenueSplitter` state variable to EventManager
-- [ ] Implement `setRevenueSplitter` function (MASTER_ROLE only)
+- [ ] Implement `setRevenueSplitter` function (admin only)
 - [ ] Update `distributeEventFunds` to approve and call splitter
-- [ ] Remove old distribution logic from EventManager
+- [ ] Remove old master/provider distribution logic from EventManager
+- [ ] Remove masterShare state variable (no longer needed)
 
 #### Testing (3h)
 - [ ] Test profile creation and updates
-- [ ] Test distribution calculations (30%, 10%, 60% splits)
+- [ ] Test distribution calculations (10%, 5%, 85% splits)
 - [ ] Test event-specific profiles vs default profile
 - [ ] Test edge cases (zero amounts, single recipient, many recipients)
+- [ ] Test flexible portion distribution to local provider, shaman, sales, partners
 - [ ] Integration tests with EventManager
 
 ---
@@ -206,13 +209,13 @@
 **State Variables:**
 ```solidity
 // Fixed recipients (immutable)
-address public immutable master;
-address public immutable devTeam;
+address public immutable cyberiaDAO;  // CyberiaDAO LLC - platform
+address public immutable cvePtPma;    // CVE PT PMA - land owner
 
 // Fixed shares (constants) - basis points where 10000 = 100%
-uint256 public constant MASTER_SHARE = 3000;   // 30%
-uint256 public constant DEVTEAM_SHARE = 1000;  // 10%
-uint256 public constant FLEXIBLE_SHARE = 6000; // 60%
+uint256 public constant CYBERIA_DAO_SHARE = 1000;  // 10%
+uint256 public constant CVE_PT_PMA_SHARE = 500;    // 5%
+uint256 public constant FLEXIBLE_SHARE = 8500;     // 85%
 
 // Distribution profiles for flexible portion
 mapping(uint256 => Distribution) public distributions;
@@ -222,14 +225,15 @@ uint256 public defaultProfileId;
 
 **Key Functions:**
 
-1. **`constructor(address _usdt, address _master, address _devTeam, address _admin)`**
-   - Sets immutable master and devTeam addresses
+1. **`constructor(address _usdt, address _cyberiaDAO, address _cvePtPma, address _admin)`**
+   - Sets immutable cyberiaDAO and cvePtPma addresses
    - Grants admin role
 
 2. **`createDistributionProfile(address[] recipients, uint256[] shares) → uint256 profileId`**
    - Admin-only
-   - Creates profile for flexible 60% portion
+   - Creates profile for flexible 85% portion
    - Shares must sum to 10000 (100% of flexible portion)
+   - Recipients can include: local provider, shaman, sales, marketing, venue, sponsors
    - Returns new profile ID
 
 3. **`updateDistributionProfile(uint256 profileId, address[] recipients, uint256[] shares)`**
@@ -249,8 +253,8 @@ uint256 public defaultProfileId;
    - Called by EventManager with total revenue
    - Logic:
      1. Pull all USDT from EventManager
-     2. Calculate: masterAmount (30%), devTeamAmount (10%), flexibleAmount (60%)
-     3. Transfer fixed shares to master and devTeam
+     2. Calculate: cyberiaDAOAmount (10%), cvePtPmaAmount (5%), flexibleAmount (85%)
+     3. Transfer fixed shares to CyberiaDAO LLC and CVE PT PMA
      4. Look up profile (event-specific or default)
      5. Distribute flexible portion according to profile
 
@@ -258,13 +262,14 @@ uint256 public defaultProfileId;
 
 ```
 100 USDT revenue → distributeRevenue(100, eventId: 42)
-├─ Master: 30 USDT (30% fixed)
-├─ DevTeam: 10 USDT (10% fixed)
-└─ Flexible: 60 USDT (60% split by profile)
-   ├─ If profile #1 = [provider: 5000, marketing: 3000, venue: 2000]
-   ├─ Provider: 30 USDT (50% of 60)
-   ├─ Marketing: 18 USDT (30% of 60)
-   └─ Venue: 12 USDT (20% of 60)
+├─ CyberiaDAO LLC: 10 USDT (10% fixed - platform)
+├─ CVE PT PMA: 5 USDT (5% fixed - land owner)
+└─ Flexible: 85 USDT (85% split by profile)
+   ├─ If profile #1 = [provider: 5000, shaman: 2000, sales: 2000, marketing: 1000]
+   ├─ Local Provider: 42.5 USDT (50% of 85)
+   ├─ Shaman: 17 USDT (20% of 85)
+   ├─ Sales: 17 USDT (20% of 85)
+   └─ Marketing: 8.5 USDT (10% of 85)
 ```
 
 ---
@@ -501,7 +506,9 @@ uint256 public defaultProfileId;
 
 ---
 
-## 15. Mimi Integration (8 hours)
+## 15. Mimi Integration (14 hours)
+
+### 15.1 Webhook Migration (8 hours)
 
 - Use mimi for shaman verification and socials
 
@@ -510,6 +517,74 @@ mimi implemented in Go and is a completely different service with it's own infra
 - Migrate mimi from long polling to webhooks
 - Implement webhook redirection to tickets service
 - Migrate tickets from long polling to webhooks
+
+### 15.2 Dynamic GitHub Project Boards with Semantic Classification (6 hours)
+
+**Repository:** `~/code/aishift/mimi`
+
+**Current State:** 
+1. GitHub project boards are hardcoded in `internal/bot/llm/agent/summary/summary.go`:
+```go
+var githubProjects = map[string]int{
+    "rockets":      2,
+    "supply":       3,
+    "inventory":    24,
+    "devops force": 33,
+}
+```
+
+2. Report generation logic in `prompts/summary.prompt` has hardcoded project categorization:
+   - "supply" and "inventory" projects are treated as supply-related (shown in 📦 Supplies section)
+   - Other projects are treated as task-related (shown in 🚀 Project and Task Status section)
+
+**Required:** 
+1. Dynamically fetch available GitHub project boards from the organization
+2. Develop an AI agent that semantically classifies projects into categories for report generation
+3. Use LLM to understand project meaning from title/description and assign appropriate category (e.g., "supply", "task", "infrastructure", "operations")
+
+#### Implementation Tasks
+
+##### Backend Changes (2.5h)
+- [ ] Modify `SummaryAgent` to fetch projects dynamically at runtime
+- [ ] Use existing `ListProjects` function from `internal/provider/github/db/db.go`
+- [ ] Cache fetched projects list until they are changed
+- [ ] Add environment variable for GitHub organization name (`GITHUB_ORG`)
+- [ ] Update project fetching logic to handle dynamic project IDs
+- [ ] Add error handling for when projects cannot be fetched
+- [ ] Add logging for project discovery and caching
+
+##### AI-Based Project Classification Agent (2h)
+- [ ] Create new prompt `project-classifier.prompt` for semantic project categorization
+- [ ] Define project categories: "supply" (inventory/materials), "task" (development/work), "infrastructure" (devops/systems), "operations" (admin/business)
+- [ ] Implement classification logic using LLM to analyze project title and description
+- [ ] Cache project classifications alongside project list
+- [ ] Add fallback rules if LLM classification fails (keyword matching)
+- [ ] Update `summary.prompt` to use dynamic categories instead of hardcoded project names
+- [ ] Pass categorized projects to summary generation with their semantic labels
+
+##### Configuration & Environment (0.5h)
+- [ ] Add `GITHUB_PROJECT_CACHE_TTL` environment variable
+- [ ] Add `GITHUB_AUTO_DISCOVER_PROJECTS` flag (default: true, fallback to hardcoded)
+- [ ] Add `GITHUB_PROJECT_CLASSIFICATION_MODEL` for LLM model selection
+- [ ] Update `.env.production` and `example.env` with new variables
+- [ ] Document configuration options in README
+
+##### Testing (1h)
+- [ ] Test project discovery with real GitHub API
+- [ ] Test AI classification accuracy with different project types
+- [ ] Test cache invalidation and refresh
+- [ ] Test fallback to hardcoded projects if API fails
+- [ ] Verify summary agent works with dynamically classified projects
+- [ ] Test report generation with various project category combinations
+- [ ] Test with organizations having different numbers of projects
+
+**Benefits:**
+- No need to update code when new projects are added
+- Automatically discovers and categorizes organization projects
+- Intelligent semantic understanding of project purpose
+- Flexible report structure adapts to project types
+- Reduces maintenance overhead
+- More flexible for multi-organization deployments
 
 ---
 
@@ -532,6 +607,7 @@ mimi implemented in Go and is a completely different service with it's own infra
 - [ ] Add search for Local Providers list (address, Instagram, Telegram)
 - [ ] Add search for Staff list (address, Instagram, Telegram)
 - [ ] Add search for Notifications list (title, body)
+- [ ] Add search for Event attendees list (address, Instagram, Telegram)
 - [ ] Test search across all entity types
 
 #### Frontend Search UI (3.5h)
@@ -542,6 +618,7 @@ mimi implemented in Go and is a completely different service with it's own infra
 - [ ] Integrate SearchBar into Local Providers list
 - [ ] Integrate SearchBar into Staff list
 - [ ] Integrate SearchBar into Notifications list
+- [ ] Integrate SearchBar into Event attendees list
 - [ ] Add clear search button (X icon)
 - [ ] Manage search state with React Query
 - [ ] Add loading indicator during search
@@ -567,3 +644,7 @@ mimi implemented in Go and is a completely different service with it's own infra
 - [ ] Update deployment scripts
 - [ ] Write configuration documentation
 - [ ] Update README with new features
+
+## 18. Give LocalProvider's authorities to master
+
+- [ ] Handle case for transferring places to master when LocalProvider is deleted
