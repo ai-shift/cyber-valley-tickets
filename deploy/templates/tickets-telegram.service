@@ -1,0 +1,26 @@
+[Unit]
+Description=Tickets Telegram Bot
+Documentation=https://github.com/ai-shift/cyber-valley-tickets
+After=network.target postgresql.service tickets-backend.service
+Wants=postgresql.service tickets-backend.service
+
+[Service]
+Type=simple
+User=tickets
+Group=tickets
+WorkingDirectory=/home/tickets/backend
+EnvironmentFile=/etc/env/tickets.env
+ExecStart=/home/tickets/.local/bin/uv run python manage.py telegram_bot
+Restart=always
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target
