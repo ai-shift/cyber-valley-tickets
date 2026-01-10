@@ -1,0 +1,6 @@
+# Environment configuration
+.env
+
+# Local testing
+*.log
+*.tmp

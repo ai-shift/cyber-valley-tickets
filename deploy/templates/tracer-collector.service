@@ -1,0 +1,22 @@
+[Unit]
+Description=Tracer Log Collector
+Documentation=https://github.com/ai-shift/tracer
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/tracer-collector -config /etc/tracer/collector.toml
+Restart=always
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target

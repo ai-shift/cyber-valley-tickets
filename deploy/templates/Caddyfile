@@ -1,0 +1,53 @@
+cyberia.my {
+    # API endpoint
+    handle /api* {
+        request_body {
+            max_size 5G
+        }
+        reverse_proxy http://127.0.0.1:8100
+    }
+
+    # IPFS endpoint
+    handle /ipfs* {
+        reverse_proxy http://127.0.0.1:8110
+    }
+
+    # Ganache endpoint
+    handle /ganache* {
+        uri strip_prefix /ganache
+        reverse_proxy http://localhost:8120
+    }
+
+    # Static files and SPA fallback
+    root * /home/tickets/client/dist
+    file_server
+
+    handle {
+        try_files {path} {path}/ /index.html
+    }
+
+    # Enable gzip compression
+    encode gzip zstd
+
+    # Cache static assets
+    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+    header @static Cache-Control "public, max-age=31536000, immutable"
+
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent MIME sniffing
+        X-Content-Type-Options "nosniff"
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # XSS Protection
+        X-XSS-Protection "1; mode=block"
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/cyberia.log
+        format json
+    }
+}
