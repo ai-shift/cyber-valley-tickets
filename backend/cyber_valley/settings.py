@@ -33,18 +33,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DJANGO_DEBUG", None))
+DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 if DEBUG:
     log.warning("!!! RUNNING IN DEBUG MODE !!!")
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-ALLOWED_HOSTS = (
-    ["localhost", "127.0.0.1", "cvland-tickets.aishift.co"]
-    if DEBUG
-    else ["cvland-tickets.aishift.co"]
-)
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 CORS_ALLOWED_ORIGINS = (
@@ -288,7 +284,9 @@ CONTRACTS_INFO: Final = (
 IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])
 IPFS_PUBLIC_HOST = os.environ["IPFS_PUBLIC_HOST"]
 
-ACHES = {
+# Cache configuration using Valkey (Redis-compatible)
+# Note: django_redis package works with Valkey since Valkey maintains Redis API compatibility
+CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": os.environ["VALKEY_HOST"],
