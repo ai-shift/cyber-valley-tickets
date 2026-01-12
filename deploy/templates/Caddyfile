@@ -1,6 +1,7 @@
-cyberia.my {
+{{DOMAIN_NAME}} {
     # API endpoint
     handle /api* {
+        # Large request body size for event image uploads (up to 5GB)
         request_body {
             max_size 5G
         }
@@ -29,7 +30,7 @@ cyberia.my {
     # Enable gzip compression
     encode gzip zstd
 
-    # Cache static assets
+    # Cache static assets (1 year = 31536000 seconds)
     @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
     header @static Cache-Control "public, max-age=31536000, immutable"
 

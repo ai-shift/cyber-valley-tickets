@@ -14,6 +14,12 @@ ExecStart=/home/tickets/.local/bin/uv run python manage.py runserver 8100
 Restart=always
 RestartSec=5
 
+# Resource limits
+MemoryMax=512M
+CPUQuota=200%
+TasksMax=256
+LimitNOFILE=10000
+
 # Security hardening
 NoNewPrivileges=yes
 PrivateTmp=yes
