@@ -120,7 +120,7 @@ PUBLIC_THIRDWEB_PUBLIC_CLIENT_ID=<from Thirdweb>
 
 **Infrastructure** (native):
 - PostgreSQL 15 (database)
-- Valkey/Redis (cache)
+- Valkey/Valkey (cache)
 - Caddy (web server + reverse proxy + auto-SSL)
 - Tracer collector (sends logs to tracer.aishift.co)
 
@@ -209,7 +209,7 @@ When you run `make setup`, the following happens:
 6. **Container Services** (07-09)
    - Starts IPFS container
    - Starts Ganache Ethereum node
-   - Installs and starts Valkey/Redis natively
+   - Installs and starts Valkey/Valkey natively
 
 7. **Observability** (10-setup-tracer.sh)
    - Fetches API key from aishift.co
@@ -267,7 +267,7 @@ ssh tickets@cyberia.my
 ssh root@cyberia.my "podman ps"
 ```
 
-### Check Valkey/Redis
+### Check Valkey/Valkey
 ```bash
 ssh root@cyberia.my "systemctl status valkey-server"
 # or
@@ -309,7 +309,7 @@ This deployment replaces the previous Ansible-based setup with:
 - Simpler bash scripts instead of Ansible playbooks
 - Caddy instead of Nginx (simpler config, auto-SSL)
 - Native systemd services instead of containerized backend
-- Native Valkey/Redis instead of containerized
+- Native Valkey/Valkey instead of containerized
 - Same functionality, easier to maintain
 
 ## Support
