@@ -14,6 +14,12 @@ ExecStart=/home/tickets/.local/bin/uv run python manage.py telegram_bot
 Restart=always
 RestartSec=5
 
+# Resource limits
+MemoryMax=256M
+CPUQuota=100%
+TasksMax=128
+LimitNOFILE=5000
+
 # Security hardening
 NoNewPrivileges=yes
 PrivateTmp=yes
