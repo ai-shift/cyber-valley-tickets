@@ -10,15 +10,13 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 def convert_array_to_latng(apps: Apps, schema_editor: BaseDatabaseSchemaEditor) -> None:
     """Convert geometry coordinates from [lng, lat] array to {lat, lng} object."""
     EventPlace = apps.get_model("events", "EventPlace")
-    # Check if geometry column exists
-    from django.db import connection
-
-    with connection.cursor() as cursor:
-        cursor.execute("PRAGMA table_info(events_eventplace)")
-        columns = [row[1] for row in cursor.fetchall()]
-        if "geometry" not in columns:
-            # Column doesn't exist yet, skip migration
-            return
+    # Check if geometry field exists in model
+    try:
+        # Try to access the field - will raise FieldDoesNotExist if not present
+        EventPlace._meta.get_field("geometry")
+    except Exception:
+        # Column doesn't exist yet, skip migration
+        return
 
     for place in EventPlace.objects.all():
         if place.geometry and isinstance(place.geometry, dict):
