@@ -30,6 +30,9 @@ const config: HardhatUserConfig = {
     cvlandDev: {
       url: `http://127.0.0.1:${process.env.GANACHE_PORT || 8545}`
     },
+    cyberia: {
+      url: "https://cyberia.my/ganache"
+    },
   }
 };
 
