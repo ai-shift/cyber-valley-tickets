@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+# Source common functions
+source "$(dirname "$0")/lib/common.sh"
+
+# Validate required environment variables
+require_env_vars TARGET_HOST DOMAIN_NAME
+
 echo "==> Deploying smart contracts to Ganache on ${TARGET_HOST}..."
 
 # Set up environment variables for deployment
@@ -25,9 +31,15 @@ echo "Compiling contracts..."
 cd ../ethereum
 pnpm exec hardhat compile
 
-# Clear previous deployments
-echo "Clearing previous deployments..."
-rm -rf ignition/deployments
+# Backup and clear previous deployments
+if [ -d ignition/deployments ]; then
+    BACKUP_DIR="ignition/deployments.backup.$(date +%Y%m%d_%H%M%S)"
+    echo "Backing up previous deployments to $BACKUP_DIR..."
+    mv ignition/deployments "$BACKUP_DIR"
+    echo "✓ Backup created"
+else
+    echo "No previous deployments to backup"
+fi
 
 # Deploy contracts
 echo "Deploying contracts to Ganache..."
@@ -39,8 +51,20 @@ ERC20_ADDRESS=$(echo "$CONTRACT_OUTPUT" | grep "export PUBLIC_ERC20_ADDRESS" | c
 TICKET_ADDRESS=$(echo "$CONTRACT_OUTPUT" | grep "export PUBLIC_EVENT_TICKET_ADDRESS" | cut -d'=' -f2)
 MANAGER_ADDRESS=$(echo "$CONTRACT_OUTPUT" | grep "export PUBLIC_EVENT_MANAGER_ADDRESS" | cut -d'=' -f2)
 
+# Validate extracted addresses
 if [ -z "$ERC20_ADDRESS" ] || [ -z "$TICKET_ADDRESS" ] || [ -z "$MANAGER_ADDRESS" ]; then
-    echo "ERROR: Failed to extract contract addresses from deployment output"
+    log_error "Failed to extract contract addresses from deployment output"
+    exit 1
+fi
+
+# Validate address formats
+if ! validate_eth_address "$ERC20_ADDRESS" "ERC20"; then
+    exit 1
+fi
+if ! validate_eth_address "$TICKET_ADDRESS" "Event Ticket"; then
+    exit 1
+fi
+if ! validate_eth_address "$MANAGER_ADDRESS" "Event Manager"; then
     exit 1
 fi
 

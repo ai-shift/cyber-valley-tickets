@@ -50,9 +50,9 @@ echo "Installing pnpm..."
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 echo "✓ pnpm installed"
 
-# Install redis-cli for testing Valkey
+# Install valkey-cli for testing Valkey (uses redis-tools package)
 apt-get install -y redis-tools
-echo "✓ redis-tools installed"
+echo "✓ valkey-tools (redis-tools) installed"
 
 echo "✓ All dependencies installed"
 EOF

@@ -1,16 +1,26 @@
 #!/bin/bash
 set -euo pipefail
 
+# Source common functions
+source "$(dirname "$0")/lib/common.sh"
+
+# Validate required environment variables
+require_env_vars TARGET_HOST
+
 echo "==> Starting Ganache on ${TARGET_HOST}..."
 
 ssh ${SSH_TARGET:-root@$TARGET_HOST} bash <<'EOF'
 set -euo pipefail
 
-# Ensure we're running as root
-if [ "$(id -u)" -ne 0 ]; then
-    echo "ERROR: This script must be run as root"
-    exit 1
-fi
+# Source common functions (if available on remote)
+require_root() {
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "ERROR: This script must be run as root"
+        exit 1
+    fi
+}
+
+require_root
 
 # Stop existing container if running
 podman stop ganache-node 2>/dev/null || true

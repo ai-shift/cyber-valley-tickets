@@ -1,10 +1,19 @@
 #!/bin/bash
 set -euo pipefail
 
+# Source common functions
+source "$(dirname "$0")/lib/common.sh"
+
+# Validate required environment variables
+require_env_vars TARGET_HOST DOMAIN_NAME
+
 echo "==> Setting up Caddy on ${TARGET_HOST}..."
 
-# Copy Caddyfile template
-scp templates/Caddyfile ${SSH_TARGET:-root@$TARGET_HOST}:/etc/caddy/sites/${DOMAIN_NAME}
+# Process Caddyfile template with variable substitution
+echo "Processing Caddyfile template..."
+sed "s|{{DOMAIN_NAME}}|${DOMAIN_NAME}|g" templates/Caddyfile | \
+  ssh ${SSH_TARGET:-root@$TARGET_HOST} "cat > /etc/caddy/sites/${DOMAIN_NAME}"
+echo "✓ Caddyfile uploaded"
 
 ssh ${SSH_TARGET:-root@$TARGET_HOST} bash <<EOF
 set -euo pipefail

@@ -1,13 +1,21 @@
 #!/bin/bash
 set -euo pipefail
 
+# Source common functions
+source "$(dirname "$0")/lib/common.sh"
+
+# Validate required environment variables
+require_env_vars TARGET_HOST
+
 echo "==> Building and deploying frontend..."
 
-# Build frontend locally
+# Build frontend locally (in subshell to avoid changing directory)
 echo "Building frontend..."
-cd ../client
-pnpm install
-pnpm build
+(
+  cd ../client
+  pnpm install
+  pnpm build
+)
 echo "✓ Frontend built"
 
 # rsync to server
