@@ -1,7 +1,7 @@
 .PHONY: help setup setup-user install-deps deploy-backend deploy-frontend deploy-all \
         start stop restart status logs logs-backend logs-indexer logs-reaper logs-telegram \
         setup-caddy start-ipfs start-ganache start-valkey setup-tracer deploy-backend-code redeploy-backend \
-        deploy-contracts
+        deploy-contracts health-check create-server-env
 
 # Load environment variables
 include .env
@@ -36,6 +36,11 @@ help:
 	@echo "  make logs-indexer       - Tail indexer logs"
 	@echo "  make logs-reaper        - Tail reaper logs"
 	@echo "  make logs-telegram      - Tail telegram bot logs"
+	@echo ""
+	@echo "Utilities:"
+	@echo "  make health-check       - Run health checks on deployment"
+	@echo "  make create-server-env  - Create /etc/env/tickets.env on server"
+	@echo "  make deploy-contracts   - Deploy smart contracts to Ganache"
 
 # Full setup
 setup: setup-user install-deps deploy-backend deploy-frontend start
@@ -139,3 +144,16 @@ logs-reaper:
 
 logs-telegram:
 	@ssh $(SSH_TARGET) "journalctl -u tickets-telegram -f"
+
+# Health check
+health-check:
+	@echo "Running health checks..."
+	@bash $(SCRIPTS_DIR)/12-health-check.sh
+
+# Create server environment file
+create-server-env:
+	@echo "Creating /etc/env/tickets.env on server..."
+	@bash -c "grep -v '^TARGET_' .env | grep -v '^DOMAIN_NAME' | grep -v '^#' | grep -v '^$$'" | \
+		ssh $(SSH_TARGET) "cat > /etc/env/tickets.env"
+	@echo "✓ Server environment file created"
+	@echo "⚠️  WARNING: Review /etc/env/tickets.env on server to ensure all values are correct"
