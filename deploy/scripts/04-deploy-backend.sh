@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+# Source common functions
+source "$(dirname "$0")/lib/common.sh"
+
+# Validate required environment variables
+require_env_vars TARGET_HOST DOMAIN_NAME
+
 echo "==> Deploying backend to ${TARGET_HOST}..."
 
 # rsync backend code to server
@@ -45,8 +51,13 @@ else
 
     # Run database migrations if env file exists
     echo "Running database migrations..."
-    cd /home/tickets/backend
-    sudo -u tickets bash -c "cd /home/tickets/backend && export \$(cat /etc/env/tickets.env | xargs) && /home/tickets/.local/bin/uv run python manage.py migrate"
+    su - tickets <<'MIGRATE_SCRIPT'
+cd /home/tickets/backend
+set -a
+source /etc/env/tickets.env
+set +a
+/home/tickets/.local/bin/uv run python manage.py migrate
+MIGRATE_SCRIPT
     echo "✓ Migrations complete"
 fi
 
