@@ -23,28 +23,28 @@
 ### Implementation Tasks
 
 #### Smart Contract Modifications (5h)
-- [ ] Add `TicketCategory` struct to EventManager
-- [ ] Implement `createCategory` function with permission checks
-- [ ] Implement `updateCategory` function
-- [ ] Modify `mintTicket` to support categories and discounts
+- [ ] @naqerl Add `TicketCategory` struct to EventManager
+- [ ] @naqerl Implement `createCategory` function with permission checks
+- [ ] @naqerl Implement `updateCategory` function
+- [ ] @naqerl Modify `mintTicket` to support categories and discounts
 
 #### Contract Tests (3.5h)
-- [ ] Test category creation/updates
-- [ ] Test quota enforcement
-- [ ] Test discount calculation
-- [ ] Test edge cases (unlimited quota, multiple buyers)
-- [ ] Test permission checks (VERIFIED_SHAMAN, LOCAL_PROVIDER)
+- [ ] @naqerl Test category creation/updates
+- [ ] @naqerl Test quota enforcement
+- [ ] @naqerl Test discount calculation
+- [ ] @naqerl Test edge cases (unlimited quota, multiple buyers)
+- [ ] @naqerl Test permission checks (VERIFIED_SHAMAN, LOCAL_PROVIDER)
 
 #### Backend Indexer (2h)
-- [ ] Index `TicketCategoryCreated` events
-- [ ] Index `TicketCategoryUpdated` events
-- [ ] Create API endpoints for listing categories
+- [ ] @naqerl Index `TicketCategoryCreated` events
+- [ ] @naqerl Index `TicketCategoryUpdated` events
+- [ ] @naqerl Create API endpoints for listing categories
 
 #### Frontend UI (2h)
-- [ ] Category selection dropdown on ticket purchase page
-- [ ] Category management interface for event creators
-- [ ] Display discount percentage on UI
-- [ ] Show quota remaining for each category
+- [ ] @redmoor Category selection dropdown on ticket purchase page
+- [ ] @redmoor Category management interface for event creators
+- [ ] @redmoor Display discount percentage on UI
+- [ ] @redmoor Show quota remaining for each category
 
 ---
 
@@ -58,10 +58,10 @@
 ### Implementation Tasks
 
 #### Frontend UI (1.5h)
-- [ ] Multi-ticket display component with grid layout
-- [ ] QR code generation for each ticket
-- [ ] "Show All Tickets" button on event page
-- [ ] Mobile-responsive ticket card layout
+- [ ] @redmoor Multi-ticket display component with grid layout
+- [ ] @redmoor QR code generation for each ticket
+- [ ] @redmoor "Show All Tickets" button on event page
+- [ ] @redmoor Mobile-responsive ticket card layout
 
 ### Questions
 
@@ -82,23 +82,24 @@
 ### Implementation Tasks
 
 #### Smart Contract (1h)
-- [ ] Add `referralData` parameter to `mintTicket` function
-- [ ] Emit `TicketMintedWithReferral` event
-- [ ] Write integration tests for referral tracking
-- [ ] Test edge cases (empty referral data, malformed data)
+- [ ] @naqerl Add `referralData` parameter to `mintTicket` function
+- [ ] @naqerl Emit `TicketMintedWithReferral` event
+- [ ] @naqerl Write integration tests for referral tracking
+- [ ] @naqerl Test edge cases (empty referral data, malformed data)
 
 #### Backend Tracking (1h)
-- [ ] Create event listener for `TicketMintedWithReferral`
-- [ ] Add referral database schema (referrer, referee, event, timestamp)
+- [ ] @naqerl Create event listener for `TicketMintedWithReferral`
+- [ ] @naqerl Add referral database schema (referrer, referee, event, timestamp)
 
 #### Frontend Integration (3h)
-- [ ] Parse referral code from URL parameter (`?ref=address`)
-- [ ] Store referral code in local storage
-- [ ] Pass referral data to `mintTicket` transaction
-- [ ] Design UI to accept referral code in the field
-- [ ] Program UI to accept referral code
+- [ ] @redmoor Parse referral code from URL parameter (`?ref=address`)
+- [ ] @redmoor Store referral code in local storage
+- [ ] @redmoor Pass referral data to `mintTicket` transaction
+- [ ] @redmoor Design UI to accept referral code in the field
+- [ ] @redmoor Program UI to accept referral code
 
 #### Select 3rd party provider for referrals and setup it (4h)
+- [ ] @naqerl Select 3rd party provider for referrals and setup it
 
 ### External Solutions Integration
 
@@ -134,21 +135,21 @@
 ### Implementation Tasks
 
 #### Smart Contract (2h)
-- [ ] Add `customEventDeposit` field to EventPlace struct
-- [ ] Add `minEventDeposit` global variable
-- [ ] Update `submitEventPlaceRequest` to accept custom deposit
-- [ ] Modify `submitEventRequest` to use custom deposit if set, else global price
-- [ ] Add validation: custom deposit >= minEventDeposit
+- [ ] @naqerl Add `customEventDeposit` field to EventPlace struct
+- [ ] @naqerl Add `minEventDeposit` global variable
+- [ ] @naqerl Update `submitEventPlaceRequest` to accept custom deposit
+- [ ] @naqerl Modify `submitEventRequest` to use custom deposit if set, else global price
+- [ ] @naqerl Add validation: custom deposit >= minEventDeposit
 
 #### Backend API (1h)
-- [ ] Update EventPlace model schema with deposit field
-- [ ] Index deposit field from blockchain events
-- [ ] Update API serializers to include deposit
+- [ ] @naqerl Update EventPlace model schema with deposit field
+- [ ] @naqerl Index deposit field from blockchain events
+- [ ] @naqerl Update API serializers to include deposit
 
 #### Frontend UI (1h)
-- [ ] Add deposit input field to event place creation form
-- [ ] Display deposit amount on event place details
-- [ ] Show deposit amount when creating event at a place
+- [ ] @redmoor Add deposit input field to event place creation form
+- [ ] @redmoor Display deposit amount on event place details
+- [ ] @redmoor Show deposit amount when creating event at a place
 
 ---
 
@@ -177,30 +178,30 @@
 ### Implementation Tasks
 
 #### DynamicRevenueSplitter Contract (5h)
-- [ ] Create contract with immutable cyberiaDAO and cvePtPma addresses
-- [ ] Define fixed share constants (10% CyberiaDAO, 5% CVE PT PMA, 85% flexible)
-- [ ] Implement Distribution struct and profile mappings
-- [ ] Implement `createDistributionProfile` function
-- [ ] Implement `updateDistributionProfile` function
-- [ ] Implement `setDefaultProfile` and `setEventProfile` functions
-- [ ] Implement `distributeRevenue` main function (pull funds, split, distribute)
-- [ ] Implement `_distributeFlexible` internal function
-- [ ] Add profile validation (shares sum to 10000)
+- [ ] @naqerl Create contract with immutable cyberiaDAO and cvePtPma addresses
+- [ ] @naqerl Define fixed share constants (10% CyberiaDAO, 5% CVE PT PMA, 85% flexible)
+- [ ] @naqerl Implement Distribution struct and profile mappings
+- [ ] @naqerl Implement `createDistributionProfile` function
+- [ ] @naqerl Implement `updateDistributionProfile` function
+- [ ] @naqerl Implement `setDefaultProfile` and `setEventProfile` functions
+- [ ] @naqerl Implement `distributeRevenue` main function (pull funds, split, distribute)
+- [ ] @naqerl Implement `_distributeFlexible` internal function
+- [ ] @naqerl Add profile validation (shares sum to 10000)
 
 #### Integration with EventManager (1h)
-- [ ] Add `revenueSplitter` state variable to EventManager
-- [ ] Implement `setRevenueSplitter` function (admin only)
-- [ ] Update `distributeEventFunds` to approve and call splitter
-- [ ] Remove old master/provider distribution logic from EventManager
-- [ ] Remove masterShare state variable (no longer needed)
+- [ ] @naqerl Add `revenueSplitter` state variable to EventManager
+- [ ] @naqerl Implement `setRevenueSplitter` function (admin only)
+- [ ] @naqerl Update `distributeEventFunds` to approve and call splitter
+- [ ] @naqerl Remove old master/provider distribution logic from EventManager
+- [ ] @naqerl Remove masterShare state variable (no longer needed)
 
 #### Testing (3h)
-- [ ] Test profile creation and updates
-- [ ] Test distribution calculations (10%, 5%, 85% splits)
-- [ ] Test event-specific profiles vs default profile
-- [ ] Test edge cases (zero amounts, single recipient, many recipients)
-- [ ] Test flexible portion distribution to local provider, shaman, sales, partners
-- [ ] Integration tests with EventManager
+- [ ] @naqerl Test profile creation and updates
+- [ ] @naqerl Test distribution calculations (10%, 5%, 85% splits)
+- [ ] @naqerl Test event-specific profiles vs default profile
+- [ ] @naqerl Test edge cases (zero amounts, single recipient, many recipients)
+- [ ] @naqerl Test flexible portion distribution to local provider, shaman, sales, partners
+- [ ] @naqerl Integration tests with EventManager
 
 ---
 
@@ -283,14 +284,14 @@ uint256 public defaultProfileId;
 ### Implementation Tasks
 
 #### Backend Implementation (2h)
-- [ ] Add `total_revenue` field to Event model (DecimalField)
-- [ ] Update indexer to increment revenue on `TicketMinted` events
-- [ ] Create `lifetime_revenue` API endpoint
+- [ ] @naqerl Add `total_revenue` field to Event model (DecimalField)
+- [ ] @naqerl Update indexer to increment revenue on `TicketMinted` events
+- [ ] @naqerl Create `lifetime_revenue` API endpoint
 
 #### Frontend UI (2h)
-- [ ] Design UI
-- [ ] Create LifetimeRevenueButton component
-- [ ] Add React Query hook for fetching revenue
+- [ ] @redmoor Design UI
+- [ ] @redmoor Create LifetimeRevenueButton component
+- [ ] @redmoor Add React Query hook for fetching revenue
 
 ### Implementation
 
@@ -327,15 +328,15 @@ uint256 public defaultProfileId;
 **Required:** Show Instagram or ENS instead of Ethereum address
 
 #### ENS Resolution Integration (2h)
-- [ ] Implement ENS lookup service (using ethers.js)
-- [ ] Add caching layer for ENS lookups
-- [ ] Handle reverse resolution (address → ENS name)
-- [ ] Add fallback to address if no ENS found
+- [ ] @redmoor Implement ENS lookup service (using ethers.js)
+- [ ] @redmoor Add caching layer for ENS lookups
+- [ ] @redmoor Handle reverse resolution (address → ENS name)
+- [ ] @redmoor Add fallback to address if no ENS found
 
 #### UI Integration (1h)
-- [ ] Create AddressDisplay component (ENS > address)
-- [ ] Update all address displays across components
-- [ ] Add tooltip showing full address on hover
+- [ ] @redmoor Create AddressDisplay component (ENS > address)
+- [ ] @redmoor Update all address displays across components
+- [ ] @redmoor Add tooltip showing full address on hover
 
 ### 9.5 Telegram Verification Success (1 hour)
 
@@ -345,38 +346,38 @@ uint256 public defaultProfileId;
 
 **Required:** Show event form when not logged in, "Login to Create" button instead of Submit
 
-- [ ] Check authentication state in event creation form
-- [ ] Replace "Submit" button with "Login to Create" when not authenticated
-- [ ] Show login modal on button click
-- [ ] Redirect back to form after login
+- [ ] @redmoor Check authentication state in event creation form
+- [ ] @redmoor Replace "Submit" button with "Login to Create" when not authenticated
+- [ ] @redmoor Show login modal on button click
+- [ ] @redmoor Redirect back to form after login
 
 ### 9.7 New Button → Popover (1 hours)
 
 **Required:** "New" button opens popover with "New Event" and "New Event Space" options
 
-- [ ] Create popover menu component
-- [ ] Add "New Event" and "New Event Space" options
-- [ ] Position popover correctly (below button)
+- [ ] @redmoor Create popover menu component
+- [ ] @redmoor Add "New Event" and "New Event Space" options
+- [ ] @redmoor Position popover correctly (below button)
 
 ### 9.8 Signing with Expiration (3 hours)
 
 **Required:** Reduce re-signing frequency by extending token lifetime
 
 #### Backend (2h)
-- [ ] Extend JWT token lifetime configuration
-- [ ] Add expiration timestamp to signature payload
-- [ ] Implement expiration validation in auth middleware
-- [ ] Add token refresh endpoint
+- [ ] @naqerl Extend JWT token lifetime configuration
+- [ ] @naqerl Add expiration timestamp to signature payload
+- [ ] @naqerl Implement expiration validation in auth middleware
+- [ ] @naqerl Add token refresh endpoint
 
 #### Frontend (1)
-- [ ] Store signature and expiration in local storage
-- [ ] Check expiration before API calls
-- [ ] Auto-refresh token when near expiration
-- [ ] Clear stored signature on logout
+- [ ] @redmoor Store signature and expiration in local storage
+- [ ] @redmoor Check expiration before API calls
+- [ ] @redmoor Auto-refresh token when near expiration
+- [ ] @redmoor Clear stored signature on logout
 
 ### 9.9 Notification Duplication (1h)
 
-- [ ] Mirror all notifications on the platform to telegram
+- [ ] @naqerl Mirror all notifications on the platform to telegram
 
 ---
 
@@ -389,14 +390,14 @@ uint256 public defaultProfileId;
 ### Implementation Tasks
 
 #### Backend API (1h)
-- [ ] Add share percentage to local provider list endpoint
-- [ ] Include social media fields in API response
-- [ ] Add filtering/sorting by share percentage
+- [ ] @naqerl Add share percentage to local provider list endpoint
+- [ ] @naqerl Include social media fields in API response
+- [ ] @naqerl Add filtering/sorting by share percentage
 
 #### Frontend UI (1h)
-- [ ] Update provider list table to show share percentage column
-- [ ] Display social media links (Instagram, Telegram, Discord)
-- [ ] Add visual indicators for verified accounts
+- [ ] @redmoor Update provider list table to show share percentage column
+- [ ] @redmoor Display social media links (Instagram, Telegram, Discord)
+- [ ] @redmoor Add visual indicators for verified accounts
 
 ---
 
@@ -407,30 +408,30 @@ uint256 public defaultProfileId;
 **Required:** Events layer cannot be hidden, checkbox always checked and disabled
 
 #### Tasks
-- [ ] Set events layer checkbox to always checked
-- [ ] Disable checkbox interaction
-- [ ] Add visual indicator that layer is always visible
+- [ ] @redmoor Set events layer checkbox to always checked
+- [ ] @redmoor Disable checkbox interaction
+- [ ] @redmoor Add visual indicator that layer is always visible
 
 ### 11.2 Feature Attributes Display (4 hour)
 
 **Required:** Show all attributes when clicking on map features
 
 #### Tasks
-- [ ] Implement backend to sync attributes
-- [ ] Implement popup component for feature details
-- [ ] Display all feature properties from GeoJSON
-- [ ] Format attributes for readability
-- [ ] Add close button to popup
+- [ ] @naqerl Implement backend to sync attributes
+- [ ] @redmoor Implement popup component for feature details
+- [ ] @redmoor Display all feature properties from GeoJSON
+- [ ] @redmoor Format attributes for readability
+- [ ] @redmoor Add close button to popup
 
 ### 11.3 Yandex-Style Map Pin (1 hour)
 
 **Required:** Use Yandex-style location pin instead of "E" icon
 
 #### Tasks
-- [ ] Create or import Yandex-style pin icon/SVG
-- [ ] Replace current "E" marker with new pin
-- [ ] Ensure pin works with different marker states (selected, hover)
-- [ ] Update pin color scheme to match design
+- [ ] @redmoor Create or import Yandex-style pin icon/SVG
+- [ ] @redmoor Replace current "E" marker with new pin
+- [ ] @redmoor Ensure pin works with different marker states (selected, hover)
+- [ ] @redmoor Update pin color scheme to match design
 
 ### 11.4 Layer List from Dima
 
@@ -439,18 +440,18 @@ uint256 public defaultProfileId;
 ### 11.5 Persist Rendered Map Between Navigations (1 hour)
 
 #### Tasks
-- [ ] Store map state (zoom, center, layers) in a store
-- [ ] Restore map state on navigation back to map page
-- [ ] Prevent unnecessary re-renders
-- [ ] Add reset button to clear saved state
+- [ ] @redmoor Store map state (zoom, center, layers) in a store
+- [ ] @redmoor Restore map state on navigation back to map page
+- [ ] @redmoor Prevent unnecessary re-renders
+- [ ] @redmoor Add reset button to clear saved state
 
 ---
 
 ## 12. Thirdweb OneKey Issue (2h)
 
 #### Tasks
-- [ ] Reproduce issue
-- [ ] Finds what's wrong
+- [ ] @redmoor Reproduce issue
+- [ ] @redmoor Finds what's wrong
 
 ---
 
@@ -461,29 +462,29 @@ uint256 public defaultProfileId;
 **Required:** Monitor service availability, send alerts on failure
 
 #### Uptime Kuma Setup (2h)
-- [ ] Install Uptime Kuma
-- [ ] Add service endpoints (backend API, frontend, indexer)
-- [ ] Configure monitoring intervals
+- [ ] @naqerl Install Uptime Kuma
+- [ ] @naqerl Add service endpoints (backend API, frontend, indexer)
+- [ ] @naqerl Configure monitoring intervals
 
 #### Alert Configuration (2h)
-- [ ] Set up Telegram webhook for alerts
-- [ ] Configure notification rules (failure thresholds)
-- [ ] Test alert delivery
-- [ ] Add status page URL to documentation
+- [ ] @naqerl Set up Telegram webhook for alerts
+- [ ] @naqerl Configure notification rules (failure thresholds)
+- [ ] @naqerl Test alert delivery
+- [ ] @naqerl Add status page URL to documentation
 
 ### 13.2 Hourly Service Health Check (1 hour)
 
 **Required:** Check services every hour, send Telegram alert on failure
 
 #### Health Endpoint Implementation (0.5h)
-- [ ] Create `/api/health/` endpoint in Django
-- [ ] Add service status checks (database, blockchain connection)
-- [ ] Return structured health status JSON
+- [ ] @naqerl Create `/api/health/` endpoint in Django
+- [ ] @naqerl Add service status checks (database, blockchain connection)
+- [ ] @naqerl Return structured health status JSON
 
 #### Monitoring Integration (0.5h)
-- [ ] Configure Uptime Kuma to check `/api/health/` hourly
-- [ ] Set alert threshold to status != "alive"
-- [ ] Test automated alerts
+- [ ] @naqerl Configure Uptime Kuma to check `/api/health/` hourly
+- [ ] @naqerl Set alert threshold to status != "alive"
+- [ ] @naqerl Test automated alerts
 
 ---
 
@@ -497,12 +498,12 @@ uint256 public defaultProfileId;
 ### Implementation Tasks
 
 #### Backend Analytics (3h)
-- [ ] Create weekly stats calculation endpoint
-- [ ] Calculate average verification time
+- [ ] @naqerl Create weekly stats calculation endpoint
+- [ ] @naqerl Calculate average verification time
 
 #### Frontend Dashboard (3h)
-- [ ] Design UI
-- [ ] Create verification stats table component
+- [ ] @redmoor Design UI
+- [ ] @redmoor Create verification stats table component
 
 ---
 
@@ -545,38 +546,38 @@ var githubProjects = map[string]int{
 #### Implementation Tasks
 
 ##### Backend Changes (2.5h)
-- [ ] Modify `SummaryAgent` to fetch projects dynamically at runtime
-- [ ] Use existing `ListProjects` function from `internal/provider/github/db/db.go`
-- [ ] Cache fetched projects list until they are changed
-- [ ] Add environment variable for GitHub organization name (`GITHUB_ORG`)
-- [ ] Update project fetching logic to handle dynamic project IDs
-- [ ] Add error handling for when projects cannot be fetched
-- [ ] Add logging for project discovery and caching
+- [ ] @naqerl Modify `SummaryAgent` to fetch projects dynamically at runtime
+- [ ] @naqerl Use existing `ListProjects` function from `internal/provider/github/db/db.go`
+- [ ] @naqerl Cache fetched projects list until they are changed
+- [ ] @naqerl Add environment variable for GitHub organization name (`GITHUB_ORG`)
+- [ ] @naqerl Update project fetching logic to handle dynamic project IDs
+- [ ] @naqerl Add error handling for when projects cannot be fetched
+- [ ] @naqerl Add logging for project discovery and caching
 
 ##### AI-Based Project Classification Agent (2h)
-- [ ] Create new prompt `project-classifier.prompt` for semantic project categorization
-- [ ] Define project categories: "supply" (inventory/materials), "task" (development/work), "infrastructure" (devops/systems), "operations" (admin/business)
-- [ ] Implement classification logic using LLM to analyze project title and description
-- [ ] Cache project classifications alongside project list
-- [ ] Add fallback rules if LLM classification fails (keyword matching)
-- [ ] Update `summary.prompt` to use dynamic categories instead of hardcoded project names
-- [ ] Pass categorized projects to summary generation with their semantic labels
+- [ ] @naqerl Create new prompt `project-classifier.prompt` for semantic project categorization
+- [ ] @naqerl Define project categories: "supply" (inventory/materials), "task" (development/work), "infrastructure" (devops/systems), "operations" (admin/business)
+- [ ] @naqerl Implement classification logic using LLM to analyze project title and description
+- [ ] @naqerl Cache project classifications alongside project list
+- [ ] @naqerl Add fallback rules if LLM classification fails (keyword matching)
+- [ ] @naqerl Update `summary.prompt` to use dynamic categories instead of hardcoded project names
+- [ ] @naqerl Pass categorized projects to summary generation with their semantic labels
 
 ##### Configuration & Environment (0.5h)
-- [ ] Add `GITHUB_PROJECT_CACHE_TTL` environment variable
-- [ ] Add `GITHUB_AUTO_DISCOVER_PROJECTS` flag (default: true, fallback to hardcoded)
-- [ ] Add `GITHUB_PROJECT_CLASSIFICATION_MODEL` for LLM model selection
-- [ ] Update `.env.production` and `example.env` with new variables
-- [ ] Document configuration options in README
+- [ ] @naqerl Add `GITHUB_PROJECT_CACHE_TTL` environment variable
+- [ ] @naqerl Add `GITHUB_AUTO_DISCOVER_PROJECTS` flag (default: true, fallback to hardcoded)
+- [ ] @naqerl Add `GITHUB_PROJECT_CLASSIFICATION_MODEL` for LLM model selection
+- [ ] @naqerl Update `.env.production` and `example.env` with new variables
+- [ ] @naqerl Document configuration options in README
 
 ##### Testing (1h)
-- [ ] Test project discovery with real GitHub API
-- [ ] Test AI classification accuracy with different project types
-- [ ] Test cache invalidation and refresh
-- [ ] Test fallback to hardcoded projects if API fails
-- [ ] Verify summary agent works with dynamically classified projects
-- [ ] Test report generation with various project category combinations
-- [ ] Test with organizations having different numbers of projects
+- [ ] @naqerl Test project discovery with real GitHub API
+- [ ] @naqerl Test AI classification accuracy with different project types
+- [ ] @naqerl Test cache invalidation and refresh
+- [ ] @naqerl Test fallback to hardcoded projects if API fails
+- [ ] @naqerl Verify summary agent works with dynamically classified projects
+- [ ] @naqerl Test report generation with various project category combinations
+- [ ] @naqerl Test with organizations having different numbers of projects
 
 **Benefits:**
 - No need to update code when new projects are added
@@ -599,52 +600,52 @@ var githubProjects = map[string]int{
 ### Implementation Tasks
 
 #### Backend Search Implementation (2.5h)
-- [ ] Add search query parameters to 7 list endpoints
-- [ ] Implement multi-field search using Django Q objects
-- [ ] Add search for Events list (title, place name, creator)
-- [ ] Add search for Event Places list (name, provider)
-- [ ] Add search for Verified Shamans list (address, Instagram, Telegram)
-- [ ] Add search for Local Providers list (address, Instagram, Telegram)
-- [ ] Add search for Staff list (address, Instagram, Telegram)
-- [ ] Add search for Notifications list (title, body)
-- [ ] Add search for Event attendees list (address, Instagram, Telegram)
-- [ ] Test search across all entity types
+- [ ] @naqerl Add search query parameters to 7 list endpoints
+- [ ] @naqerl Implement multi-field search using Django Q objects
+- [ ] @naqerl Add search for Events list (title, place name, creator)
+- [ ] @naqerl Add search for Event Places list (name, provider)
+- [ ] @naqerl Add search for Verified Shamans list (address, Instagram, Telegram)
+- [ ] @naqerl Add search for Local Providers list (address, Instagram, Telegram)
+- [ ] @naqerl Add search for Staff list (address, Instagram, Telegram)
+- [ ] @naqerl Add search for Notifications list (title, body)
+- [ ] @naqerl Add search for Event attendees list (address, Instagram, Telegram)
+- [ ] @naqerl Test search across all entity types
 
 #### Frontend Search UI (3.5h)
-- [ ] Create reusable SearchBar component with debouncing (300ms)
-- [ ] Integrate SearchBar into Events list
-- [ ] Integrate SearchBar into Event Places list
-- [ ] Integrate SearchBar into Verified Shamans list
-- [ ] Integrate SearchBar into Local Providers list
-- [ ] Integrate SearchBar into Staff list
-- [ ] Integrate SearchBar into Notifications list
-- [ ] Integrate SearchBar into Event attendees list
-- [ ] Add clear search button (X icon)
-- [ ] Manage search state with React Query
-- [ ] Add loading indicator during search
+- [ ] @redmoor Create reusable SearchBar component with debouncing (300ms)
+- [ ] @redmoor Integrate SearchBar into Events list
+- [ ] @redmoor Integrate SearchBar into Event Places list
+- [ ] @redmoor Integrate SearchBar into Verified Shamans list
+- [ ] @redmoor Integrate SearchBar into Local Providers list
+- [ ] @redmoor Integrate SearchBar into Staff list
+- [ ] @redmoor Integrate SearchBar into Notifications list
+- [ ] @redmoor Integrate SearchBar into Event attendees list
+- [ ] @redmoor Add clear search button (X icon)
+- [ ] @redmoor Manage search state with React Query
+- [ ] @redmoor Add loading indicator during search
 
 ---
 
 ## 17. Testing & Deployment (8 hours)
 
 ### End-to-End Testing (4 hours)
-- [ ] Test critical user flows (event creation, ticket purchase, verification)
-- [ ] Test contract interactions (categories, referrals, revenue distribution)
-- [ ] Verify revenue distribution calculations
-- [ ] Test search functionality across all lists
-- [ ] Validate role-based access controls
+- [ ] @naqerl Test critical user flows (event creation, ticket purchase, verification)
+- [ ] @naqerl Test contract interactions (categories, referrals, revenue distribution)
+- [ ] @naqerl Verify revenue distribution calculations
+- [ ] @naqerl Test search functionality across all lists
+- [ ] @naqerl Validate role-based access controls
 
 ### Bug Fixes & Polish (3 hours)
-- [ ] Fix issues found during testing
-- [ ] Handle edge cases
-- [ ] Performance optimization
-- [ ] UI/UX polish
+- [ ] @naqerl Fix issues found during testing
+- [ ] @naqerl Handle edge cases
+- [ ] @naqerl Performance optimization
+- [ ] @redmoor UI/UX polish
 
 ### Documentation & Deployment (1 hour)
-- [ ] Update deployment scripts
-- [ ] Write configuration documentation
-- [ ] Update README with new features
+- [ ] @naqerl Update deployment scripts
+- [ ] @naqerl Write configuration documentation
+- [ ] @naqerl Update README with new features
 
 ## 18. Give LocalProvider's authorities to master
 
-- [ ] Handle case for transferring places to master when LocalProvider is deleted
+- [ ] @naqerl Handle case for transferring places to master when LocalProvider is deleted
