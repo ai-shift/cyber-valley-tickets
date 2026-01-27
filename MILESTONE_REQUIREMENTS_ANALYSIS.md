@@ -428,9 +428,9 @@ uint256 public defaultProfileId;
 **Required:** Use Yandex-style location pin instead of "E" icon
 
 #### Tasks
-- [ ] @redmoor Create or import Yandex-style pin icon/SVG
-- [ ] @redmoor Replace current "E" marker with new pin
-- [ ] @redmoor Update pin color scheme to match design ( make it green )
+- [x] @redmoor Create or import Yandex-style pin icon/SVG
+- [x] @redmoor Replace current "E" marker with new pin
+- [x] @redmoor Update pin color scheme to match design ( make it green )
 
 ### 11.4 Layer List from Dima
 
@@ -439,10 +439,10 @@ uint256 public defaultProfileId;
 ### 11.5 Persist Rendered Map Between Navigations (1 hour)
 
 #### Tasks
-- [ ] @redmoor Store map state (zoom, center, layers) in a store
-- [ ] @redmoor Restore map state on navigation back to map page
-- [ ] @redmoor Prevent unnecessary re-renders
-- [ ] @redmoor Add reset button to clear saved state
+- [x] @redmoor Store map state (zoom, center, layers) in a store
+- [x] @redmoor Restore map state on navigation back to map page
+- [x] @redmoor Prevent unnecessary re-renders
+- [x] @redmoor Add reset button to clear saved state
 
 ---
 
