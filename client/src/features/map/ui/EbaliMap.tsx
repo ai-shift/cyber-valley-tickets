@@ -11,14 +11,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/shared/ui/sheet.tsx";
-import { useGeodata } from "../hooks/useGeodata.tsx";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { useMapState } from "../model/slice.ts";
 import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
-
-type GeodataKey = string;
 
 type EbaliMapProps = {
   initialCenter?: LatLng;
@@ -40,8 +37,6 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   const {
     isInitial,
     resetState,
-    displayedGroups,
-    toggleGroup,
     zoom,
     center,
     selectedPlacemark,
@@ -50,16 +45,18 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     setCenter,
     setSelectedPlacemark,
     setInfoWindowShown,
+    layersTitles,
+    fetchLayersTitles,
+    getDisplayedLayers,
   } = useMapState();
   const map = useMap();
   const [showGroups, setShowGroups] = useState(false);
 
-  const { layersTitles, loadingLayers, errorLayers, geodata } =
-    useGeodata(displayedGroups);
+  useEffect(() => {
+    fetchLayersTitles();
+  }, []);
 
-  const displayGroupHandler = (value: GeodataKey) => {
-    toggleGroup(value);
-  };
+  const displayedLayers = getDisplayedLayers();
 
   const showPlacemarkInfo = (placemark: PlacemarkType) => {
     if (placemark) {
@@ -123,16 +120,10 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
           <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
           <div className="h-full overflow-y-auto px-4">
             {layersTitles.map((title) => {
-              const placemarks = geodata[title] as PlacemarkType[];
               return (
                 <LayerControl
                   key={title}
-                  value={title}
-                  isLoading={loadingLayers.includes(title)}
-                  isError={errorLayers.includes(title)}
-                  isDisplayed={displayedGroups.includes(title)}
-                  setIsDisplayed={() => displayGroupHandler(title)}
-                  placemarks={placemarks}
+                  layerName={title}
                   showInfo={showPlacemarkInfo}
                   closeGroups={() => setShowGroups(false)}
                 />
@@ -141,8 +132,8 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
           </div>
         </SheetContent>
       </Sheet>
-      {displayedGroups.map((layer) => {
-        return geodata[layer]?.map((placemark, idx) => (
+      {Object.values(displayedLayers).map((layer) => {
+        return layer.map((placemark, idx) => (
           <Placemark
             onClick={(placemark) => showPlacemarkInfo(placemark)}
             key={`${placemark.name}-${idx}`}
