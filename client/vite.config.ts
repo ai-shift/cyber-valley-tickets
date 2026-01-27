@@ -1,12 +1,16 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
+import reactSWC from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), nodePolyfills()],
+  plugins: [reactSWC(), tailwindcss(), nodePolyfills()],
   envPrefix: "PUBLIC_",
   server: {
     port: Number(process.env.VITE_PORT),
