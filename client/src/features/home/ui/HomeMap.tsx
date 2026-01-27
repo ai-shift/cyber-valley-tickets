@@ -116,7 +116,9 @@ export const HomeMap: React.FC = () => {
           headerDisabled
           position={selectedPlace.geometry.coordinates[0]}
         >
-          <h2 className="text-primary text-lg">{selectedPlace.title}</h2>
+          <h2 className="text-primary text-xl font-bold">
+            {selectedPlace.title}
+          </h2>
           <ListEvents events={selectedPlace.events} />
         </InfoWindow>
       )}
