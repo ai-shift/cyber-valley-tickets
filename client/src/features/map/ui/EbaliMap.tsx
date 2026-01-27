@@ -85,7 +85,9 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     <GMap
       className={twMerge("w-full h-[50dvh] relative", className)}
       mapId="fb99876bf33e90419a932304"
-      defaultCenter={initialCenter ?? center ?? { lat: -8.2980705, lng: 115.088186 }}
+      defaultCenter={
+        initialCenter ?? center ?? { lat: -8.2980705, lng: 115.088186 }
+      }
       defaultZoom={zoom ?? 15}
       onClick={onMapClick}
       gestureHandling={requireTwoFingerScroll ? "cooperative" : "greedy"}
