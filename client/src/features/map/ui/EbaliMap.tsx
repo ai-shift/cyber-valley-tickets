@@ -1,6 +1,6 @@
-import { Map as GMap, InfoWindow } from "@vis.gl/react-google-maps";
-import { Layers } from "lucide-react";
-import { useState } from "react";
+import { Map as GMap, InfoWindow, useMap } from "@vis.gl/react-google-maps";
+import { Layers, RotateCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
@@ -39,6 +39,8 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   layersOpacity = 1,
 }) => {
   const {
+    isInitial,
+    resetState,
     displayedGroups,
     toggleGroup,
     zoom,
@@ -52,6 +54,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     setSelectedPlacemark,
     setInfoWindowShown,
   } = useMapState();
+  const map = useMap();
   const [showGroups, setShowGroups] = useState(false);
 
   const { layersTitles, loadingLayers, errorLayers, geodata } =
@@ -81,6 +84,14 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     setInfoWindowShown(false);
   };
 
+  useEffect(() => {
+    if (!map) return;
+    if (isInitial) {
+      map.setZoom(zoom);
+      map.setCenter(center);
+    }
+  }, [isInitial, zoom, center]);
+
   return (
     <GMap
       className={twMerge("w-full h-[50dvh] relative", className)}
@@ -95,18 +106,23 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       reuseMaps={true}
       mapTypeId="satellite"
       disableDefaultUI
-      zoom={zoom}
       onZoomChanged={(ev) => {
         setZoom(ev.detail.zoom);
       }}
-      center={center}
       onCenterChanged={(ev) => {
         setCenter(ev.detail.center as LatLng);
       }}
     >
+      <button
+        className="top-3 right-3 absolute h-14 rounded-full aspect-square bg-black flex items-center justify-center"
+        type="button"
+        onClick={resetState}
+      >
+        <RotateCcw className="stroke-primary" />
+      </button>
       <Sheet open={showGroups} onOpenChange={setShowGroups} modal={false}>
         <SheetTrigger>
-          <div className="absolute top-3 right-3 aspect-square h-10 rounded-full bg-black flex items-center justify-center">
+          <div className="absolute top-3 left-3 aspect-square h-14 rounded-full bg-black flex items-center justify-center">
             <Layers className="w-6 h-6 text-primary" />
           </div>
         </SheetTrigger>
