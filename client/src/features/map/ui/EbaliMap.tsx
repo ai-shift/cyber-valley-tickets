@@ -3,9 +3,8 @@ import { Layers, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-import { extractPlacemarkId } from "../lib/extractPlacemarkId.ts";
-
 import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
+import { debounce } from "@/shared/lib/debounce.ts";
 import {
   Sheet,
   SheetContent,
@@ -45,12 +44,10 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     toggleGroup,
     zoom,
     center,
-    selectedId,
     selectedPlacemark,
     infoWindowShown,
     setZoom,
     setCenter,
-    setSelectedId,
     setSelectedPlacemark,
     setInfoWindowShown,
   } = useMapState();
@@ -65,21 +62,13 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   };
 
   const showPlacemarkInfo = (placemark: PlacemarkType) => {
-    const id = extractPlacemarkId(placemark);
-    setSelectedId(id);
     if (placemark) {
       setSelectedPlacemark(placemark);
-    }
-
-    if (id !== selectedId) {
       setInfoWindowShown(true);
-    } else {
-      setInfoWindowShown(!infoWindowShown);
     }
   };
 
   const onMapClick = () => {
-    setSelectedId("");
     setSelectedPlacemark(null);
     setInfoWindowShown(false);
   };
@@ -91,6 +80,9 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       map.setCenter(center);
     }
   }, [isInitial, zoom, center]);
+
+  const debSetZoom = debounce(setZoom, 500);
+  const debSetCenter = debounce(setCenter, 500);
 
   return (
     <GMap
@@ -107,10 +99,10 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       mapTypeId="satellite"
       disableDefaultUI
       onZoomChanged={(ev) => {
-        setZoom(ev.detail.zoom);
+        debSetZoom(ev.detail.zoom);
       }}
       onCenterChanged={(ev) => {
-        setCenter(ev.detail.center as LatLng);
+        debSetCenter(ev.detail.center as LatLng);
       }}
     >
       <button
@@ -120,6 +112,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       >
         <RotateCcw className="stroke-primary" />
       </button>
+
       <Sheet open={showGroups} onOpenChange={setShowGroups} modal={false}>
         <SheetTrigger>
           <div className="absolute top-3 left-3 aspect-square h-14 rounded-full bg-black flex items-center justify-center">

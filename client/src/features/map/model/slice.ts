@@ -9,7 +9,6 @@ export type MapState = {
   isInitial: boolean;
   zoom: number;
   center: LatLng;
-  selectedId: string;
   selectedPlacemark: PlacemarkType | null;
   infoWindowShown: boolean;
   displayedGroups: GeodataKey[];
@@ -18,7 +17,6 @@ export type MapState = {
 export type MapAction = {
   setZoom: (zoom: number) => void;
   setCenter: (center: LatLng) => void;
-  setSelectedId: (id: string) => void;
   setSelectedPlacemark: (placemark: PlacemarkType | null) => void;
   setInfoWindowShown: (shown: boolean) => void;
   setDisplayedGroups: (groups: GeodataKey[]) => void;
@@ -36,13 +34,11 @@ export const useMapState = create<MapState & MapAction>()(
   persist(
     (set, get) => ({
       ...initialPos,
-      selectedId: "",
       selectedPlacemark: null,
       infoWindowShown: false,
       displayedGroups: [],
       setZoom: (zoom: number) => set({ zoom, isInitial: false }),
       setCenter: (center: LatLng) => set({ center, isInitial: false }),
-      setSelectedId: (id: string) => set({ selectedId: id }),
       setSelectedPlacemark: (placemark: PlacemarkType | null) =>
         set({ selectedPlacemark: placemark }),
       setInfoWindowShown: (shown: boolean) => set({ infoWindowShown: shown }),
