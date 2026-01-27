@@ -6,31 +6,40 @@ import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
 type GeodataKey = string;
 
 export type MapState = {
+  isInitial: boolean;
   zoom: number;
   center: LatLng;
   selectedId: string;
   selectedPlacemark: PlacemarkType | null;
   infoWindowShown: boolean;
+  displayedGroups: GeodataKey[];
+}
+
+export type MapAction = {
   setZoom: (zoom: number) => void;
   setCenter: (center: LatLng) => void;
   setSelectedId: (id: string) => void;
   setSelectedPlacemark: (placemark: PlacemarkType | null) => void;
   setInfoWindowShown: (shown: boolean) => void;
-
-  displayedGroups: GeodataKey[];
   setDisplayedGroups: (groups: GeodataKey[]) => void;
   toggleGroup: (group: GeodataKey) => void;
-};
+  resetState: () => void;
+}
 
-export const useMapState = create<MapState>()(
-  persist(
-    (set, get) => ({
+const initialState: MapState = {
+      isInitial: true,
       zoom: 16,
       center: { lat: -8.2980705, lng: 115.088186 },
       selectedId: "",
       selectedPlacemark: null,
       infoWindowShown: false,
-      displayedGroups: ["paths"],
+      displayedGroups: [],
+}
+
+export const useMapState = create<MapState & MapAction>()(
+  persist(
+    (set, get) => ({
+      ...initialState,
       setZoom: (zoom: number) => set({ zoom }),
       setCenter: (center: LatLng) => set({ center }),
       setSelectedId: (id: string) => set({ selectedId: id }),
@@ -47,6 +56,7 @@ export const useMapState = create<MapState>()(
             : [...current, group],
         });
       },
+      resetState: () => set(initialState),
     }),
     { name: "mapState" },
   ),
