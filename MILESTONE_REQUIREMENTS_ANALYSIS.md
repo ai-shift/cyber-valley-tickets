@@ -409,8 +409,8 @@ uint256 public defaultProfileId;
 
 #### Tasks
 - [ ] @redmoor Set events layer checkbox to always checked
-- [ ] @redmoor Disable checkbox interaction
-- [ ] @redmoor Add visual indicator that layer is always visible
+- [ ] @redmoor Disable checkbox interaction (add event layer with checkbox that cannot be unchecked)
+- [ ] TBD @redmoor Add visual indicator that layer is always visible
 
 ### 11.2 Feature Attributes Display (4 hour)
 
@@ -418,8 +418,8 @@ uint256 public defaultProfileId;
 
 #### Tasks
 - [ ] @naqerl Implement backend to sync attributes
-- [ ] @redmoor Implement popup component for feature details
-- [ ] @redmoor Display all feature properties from GeoJSON
+- [ ] @redmoor Implement popup component for feature details ( additional information on places popups )
+- [ ] @redmoor Display all feature properties from GeoJSON ( additional information on places popups )
 - [ ] @redmoor Format attributes for readability
 - [ ] @redmoor Add close button to popup
 
@@ -430,8 +430,7 @@ uint256 public defaultProfileId;
 #### Tasks
 - [ ] @redmoor Create or import Yandex-style pin icon/SVG
 - [ ] @redmoor Replace current "E" marker with new pin
-- [ ] @redmoor Ensure pin works with different marker states (selected, hover)
-- [ ] @redmoor Update pin color scheme to match design
+- [ ] @redmoor Update pin color scheme to match design ( make it green )
 
 ### 11.4 Layer List from Dima
 
@@ -450,8 +449,8 @@ uint256 public defaultProfileId;
 ## 12. Thirdweb OneKey Issue (2h)
 
 #### Tasks
-- [ ] @redmoor Reproduce issue
-- [ ] @redmoor Finds what's wrong
+- [ ] @naqerl Reproduce issue
+- [ ] @naqerl Finds what's wrong
 
 ---
 
