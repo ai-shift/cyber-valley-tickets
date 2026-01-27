@@ -26,28 +26,28 @@ export type MapAction = {
   resetState: () => void;
 }
 
-const initialState: MapState = {
+const initialPos: Pick<MapState, "isInitial" | "zoom" | "center"> = {
       isInitial: true,
       zoom: 16,
       center: { lat: -8.2980705, lng: 115.088186 },
-      selectedId: "",
-      selectedPlacemark: null,
-      infoWindowShown: false,
-      displayedGroups: [],
 }
 
 export const useMapState = create<MapState & MapAction>()(
   persist(
     (set, get) => ({
-      ...initialState,
-      setZoom: (zoom: number) => set({ zoom }),
-      setCenter: (center: LatLng) => set({ center }),
+      ...initialPos,
+      selectedId: "",
+      selectedPlacemark: null,
+      infoWindowShown: false,
+      displayedGroups: [],
+      setZoom: (zoom: number) => set({ zoom, isInitial: false }),
+      setCenter: (center: LatLng) => set({ center, isInitial: false }),
       setSelectedId: (id: string) => set({ selectedId: id }),
       setSelectedPlacemark: (placemark: PlacemarkType | null) =>
-        set({ selectedPlacemark: placemark }),
-      setInfoWindowShown: (shown: boolean) => set({ infoWindowShown: shown }),
+        set({ selectedPlacemark: placemark  }),
+      setInfoWindowShown: (shown: boolean) => set({ infoWindowShown: shown  }),
       setDisplayedGroups: (groups: GeodataKey[]) =>
-        set({ displayedGroups: groups }),
+        set({ displayedGroups: groups  }),
       toggleGroup: (group: GeodataKey) => {
         const current = get().displayedGroups;
         set({
@@ -56,7 +56,7 @@ export const useMapState = create<MapState & MapAction>()(
             : [...current, group],
         });
       },
-      resetState: () => set(initialState),
+      resetState: () => set((state) => ({...state, ...initialPos}))
     }),
     { name: "mapState" },
   ),

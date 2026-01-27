@@ -95,9 +95,11 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       reuseMaps={true}
       mapTypeId="satellite"
       disableDefaultUI
+      zoom={zoom}
       onZoomChanged={(ev) => {
         setZoom(ev.detail.zoom);
       }}
+      center={center}
       onCenterChanged={(ev) => {
         setCenter(ev.detail.center as LatLng);
       }}
