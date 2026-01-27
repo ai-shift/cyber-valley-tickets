@@ -1,10 +1,14 @@
 import { eventQueries } from "@/entities/event";
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
-import { EbaliMap, useMapState } from "@/features/map";
+import { EbaliMap } from "@/features/map";
 import { useQuery } from "@tanstack/react-query";
-import { AdvancedMarker, Pin, InfoWindow, useMap } from "@vis.gl/react-google-maps";
-import { Undo2 } from "lucide-react";
+import {
+  AdvancedMarker,
+  InfoWindow,
+  Pin,
+  useMap,
+} from "@vis.gl/react-google-maps";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
@@ -19,7 +23,6 @@ export const HomeMap: React.FC = () => {
   );
   const [searchParams] = useSearchParams();
   const map = useMap();
-  const {isInitial, resetState} = useMapState();
   const hasInitialized = useRef(false);
 
   const placesWithEvents = useMemo(
@@ -67,23 +70,7 @@ export const HomeMap: React.FC = () => {
       if (foundPlace) {
         setSelectedPlace(foundPlace);
       }
-    } else if (places.length === 1) {
-      const coord = places[0]?.geometry.coordinates[0];
-      if (coord) {
-        map.panTo(coord);
-        map.setZoom(15);
-      }
-    } else {
-      const bounds = new google.maps.LatLngBounds();
-      for (const place of places) {
-        const coord = place.geometry.coordinates[0];
-        if (coord) {
-          bounds.extend(coord);
-        }
-      }
-      map.fitBounds(bounds, { top: 20, right: 20, bottom: 20, left: 20 });
     }
-
     hasInitialized.current = true;
   }, [map, placesWithEvents, searchParams]);
 
@@ -106,13 +93,6 @@ export const HomeMap: React.FC = () => {
       requireTwoFingerScroll={false}
       layersOpacity={0.4}
     >
-      {!isInitial && 
-        <div className="top-4 left-4 absolute h-10 rounded-full aspect-square bg-black flex items-center justify-center">
-          <button type="button" onClick={resetState}>
-            <Undo2 className="stroke-primary"/>
-          </button>
-        </div>
-      }
       {Object.values(placesWithEvents).map((place) => {
         const coord = place.geometry.coordinates[0];
         if (!coord) return null;
@@ -123,9 +103,10 @@ export const HomeMap: React.FC = () => {
             position={coord}
           >
             <Pin
-              background={'#76FF05'}
-              borderColor={'#000000'}
-              glyphColor={'#000000'}
+              background={"#76FF05"}
+              borderColor={"#000000"}
+              glyphColor={"#000000"}
+              scale={2}
             />
           </AdvancedMarker>
         );
