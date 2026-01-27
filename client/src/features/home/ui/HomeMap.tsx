@@ -102,7 +102,7 @@ export const HomeMap: React.FC = () => {
     <EbaliMap
       className="h-full"
       requireTwoFingerScroll={false}
-      layersOpacity={1}
+      layersOpacity={0.4}
     >
       {Object.values(placesWithEvents).map((place) => {
         const coord = place.geometry.coordinates[0];
