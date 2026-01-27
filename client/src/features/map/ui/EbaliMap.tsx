@@ -38,16 +38,24 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   requireTwoFingerScroll = true,
   layersOpacity = 1,
 }) => {
-  const { displayedGroups, toggleGroup } = useMapState();
+  const {
+    displayedGroups,
+    toggleGroup,
+    zoom,
+    center,
+    selectedId,
+    selectedPlacemark,
+    infoWindowShown,
+    setZoom,
+    setCenter,
+    setSelectedId,
+    setSelectedPlacemark,
+    setInfoWindowShown,
+  } = useMapState();
   const [showGroups, setShowGroups] = useState(false);
 
   const { layersTitles, loadingLayers, errorLayers, geodata } =
     useGeodata(displayedGroups);
-
-  const [selectedId, setSelectedId] = useState("");
-  const [selectedPlacemark, setSelectedPlacemark] =
-    useState<PlacemarkType | null>(null);
-  const [infoWindowShown, setInfoWindowShown] = useState(false);
 
   const displayGroupHandler = (value: GeodataKey) => {
     toggleGroup(value);
@@ -63,7 +71,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     if (id !== selectedId) {
       setInfoWindowShown(true);
     } else {
-      setInfoWindowShown((isShown) => !isShown);
+      setInfoWindowShown(!infoWindowShown);
     }
   };
 
@@ -77,14 +85,20 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     <GMap
       className={twMerge("w-full h-[50dvh] relative", className)}
       mapId="fb99876bf33e90419a932304"
-      defaultCenter={initialCenter ?? { lat: -8.2980705, lng: 115.088186 }}
-      defaultZoom={16}
+      defaultCenter={initialCenter ?? center ?? { lat: -8.2980705, lng: 115.088186 }}
+      defaultZoom={zoom ?? 15}
       onClick={onMapClick}
       gestureHandling={requireTwoFingerScroll ? "cooperative" : "greedy"}
       colorScheme="DARK"
       reuseMaps={true}
       mapTypeId="satellite"
       disableDefaultUI
+      onZoomChanged={(ev) => {
+        setZoom(ev.detail.zoom);
+      }}
+      onCenterChanged={(ev) => {
+        setCenter(ev.detail.center as LatLng);
+      }}
     >
       <Sheet open={showGroups} onOpenChange={setShowGroups} modal={false}>
         <SheetTrigger>
