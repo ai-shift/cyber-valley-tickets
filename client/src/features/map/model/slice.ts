@@ -12,7 +12,7 @@ export type MapState = {
 export const useMapState = create<MapState>()(
   persist(
     (set, get) => ({
-      displayedGroups: ["paths"],
+      displayedGroups: ["events", "trails", "places"],
       setDisplayedGroups: (groups: GeodataKey[]) =>
         set({ displayedGroups: groups }),
       toggleGroup: (group: GeodataKey) => {
