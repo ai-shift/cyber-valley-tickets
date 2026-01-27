@@ -40,15 +40,14 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     zoom,
     center,
     selectedPlacemark,
-    infoWindowShown,
     setZoom,
     setCenter,
     setSelectedPlacemark,
-    setInfoWindowShown,
     layersTitles,
     fetchLayersTitles,
     getDisplayedLayers,
   } = useMapState();
+
   const map = useMap();
   const [showGroups, setShowGroups] = useState(false);
 
@@ -61,13 +60,11 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   const showPlacemarkInfo = (placemark: PlacemarkType) => {
     if (placemark) {
       setSelectedPlacemark(placemark);
-      setInfoWindowShown(true);
     }
   };
 
   const onMapClick = () => {
     setSelectedPlacemark(null);
-    setInfoWindowShown(false);
   };
 
   useEffect(() => {
@@ -142,12 +139,12 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
           />
         ));
       })}
-      {infoWindowShown && selectedPlacemark && (
+      {selectedPlacemark && (
         <InfoWindow
           pixelOffset={selectedPlacemark.type === "point" ? [0, -25] : [0, 0]}
           headerDisabled
           position={getPlacemarkPosition(selectedPlacemark)}
-          onCloseClick={() => setInfoWindowShown(false)}
+          onCloseClick={() => setSelectedPlacemark(null)}
           className="text-lg"
         >
           <div className="flex justify-between items-center gap-12">

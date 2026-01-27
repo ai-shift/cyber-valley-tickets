@@ -11,7 +11,6 @@ export type MapState = {
   zoom: number;
   center: LatLng;
   selectedPlacemark: PlacemarkType | null;
-  infoWindowShown: boolean;
   displayedGroups: GeodataKey[];
   layersTitles: string[];
   loadingTitles: boolean;
@@ -24,7 +23,6 @@ export type MapAction = {
   setZoom: (zoom: number) => void;
   setCenter: (center: LatLng) => void;
   setSelectedPlacemark: (placemark: PlacemarkType | null) => void;
-  setInfoWindowShown: (shown: boolean) => void;
   setDisplayedGroups: (groups: GeodataKey[]) => void;
   toggleGroup: (group: GeodataKey) => void;
   resetState: () => void;
@@ -56,7 +54,6 @@ export const useMapState = create<MapState & MapAction>()(
       setCenter: (center: LatLng) => set({ center, isInitial: false }),
       setSelectedPlacemark: (placemark: PlacemarkType | null) =>
         set({ selectedPlacemark: placemark }),
-      setInfoWindowShown: (shown: boolean) => set({ infoWindowShown: shown }),
       setDisplayedGroups: (groups: GeodataKey[]) =>
         set({ displayedGroups: groups }),
       toggleGroup: (group: GeodataKey) => {
