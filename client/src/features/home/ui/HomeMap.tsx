@@ -9,6 +9,7 @@ import {
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
+import { X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
@@ -116,9 +117,18 @@ export const HomeMap: React.FC = () => {
           headerDisabled
           position={selectedPlace.geometry.coordinates[0]}
         >
-          <h2 className="text-primary text-xl font-bold">
-            {selectedPlace.title}
-          </h2>
+          <div className="flex justify-between items-center gap-12">
+            <h2 className="text-primary text-xl font-bold">
+              {selectedPlace.title}
+            </h2>
+            <button
+              className="h-8 aspect-square flex items-center justify-center ml-auto mr-0"
+              type="button"
+              onClick={() => setSelectedPlace(null)}
+            >
+              <X className="w-full h-full stroke-secondary/70" />
+            </button>
+          </div>
           <ListEvents events={selectedPlace.events} />
         </InfoWindow>
       )}

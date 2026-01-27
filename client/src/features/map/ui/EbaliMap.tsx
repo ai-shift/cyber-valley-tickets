@@ -1,5 +1,5 @@
 import { Map as GMap, InfoWindow, useMap } from "@vis.gl/react-google-maps";
-import { Layers, RotateCcw } from "lucide-react";
+import { Layers, RotateCcw, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -159,7 +159,16 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
           onCloseClick={() => setInfoWindowShown(false)}
           className="text-lg"
         >
-          <h2>{selectedPlacemark.name}</h2>
+          <div className="flex justify-between items-center gap-12">
+            <h2 className="text-2xl">{selectedPlacemark.name}</h2>
+            <button
+              className="h-8 aspect-square flex items-center justify-center ml-auto mr-0"
+              type="button"
+              onClick={() => setSelectedPlacemark(null)}
+            >
+              <X className="w-full h-full stroke-secondary/70" />
+            </button>
+          </div>
         </InfoWindow>
       )}
       <MapLongPressHandler onLongPressMs={700} onLongPress={longPressHandler} />
