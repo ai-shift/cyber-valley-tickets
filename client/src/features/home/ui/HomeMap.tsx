@@ -1,9 +1,10 @@
 import { eventQueries } from "@/entities/event";
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
-import { EbaliMap, EventCircle } from "@/features/map";
+import { EbaliMap, useMapState } from "@/features/map";
 import { useQuery } from "@tanstack/react-query";
-import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, Pin, InfoWindow, useMap } from "@vis.gl/react-google-maps";
+import { Undo2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
@@ -18,6 +19,7 @@ export const HomeMap: React.FC = () => {
   );
   const [searchParams] = useSearchParams();
   const map = useMap();
+  const {isInitial, resetState} = useMapState();
   const hasInitialized = useRef(false);
 
   const placesWithEvents = useMemo(
@@ -100,23 +102,32 @@ export const HomeMap: React.FC = () => {
 
   return (
     <EbaliMap
-      className="h-full"
+      className="h-full relative"
       requireTwoFingerScroll={false}
       layersOpacity={0.4}
     >
+      {!isInitial && 
+        <div className="top-4 left-4 absolute h-10 rounded-full aspect-square bg-black flex items-center justify-center">
+          <button type="button" onClick={resetState}>
+            <Undo2 className="stroke-primary"/>
+          </button>
+        </div>
+      }
       {Object.values(placesWithEvents).map((place) => {
         const coord = place.geometry.coordinates[0];
         if (!coord) return null;
         return (
-          <EventCircle
+          <AdvancedMarker
             onClick={() => setSelectedPlace(place)}
             key={place.id}
-            center={coord}
-            radius={35}
-            fillColor="#76ff05"
-            strokeColor="#76ff05"
-            strokeWeight={1}
-          />
+            position={coord}
+          >
+            <Pin
+              background={'#76FF05'}
+              borderColor={'#000000'}
+              glyphColor={'#000000'}
+            />
+          </AdvancedMarker>
         );
       })}
       {selectedPlace?.geometry.coordinates[0] && (
