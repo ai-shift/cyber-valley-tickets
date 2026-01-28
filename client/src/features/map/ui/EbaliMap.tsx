@@ -1,4 +1,4 @@
-import { Map as GMap, InfoWindow, useMap } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, Map as GMap, InfoWindow, Pin, useMap } from "@vis.gl/react-google-maps";
 import { Layers, RotateCcw, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -16,6 +16,8 @@ import { useMapState } from "../model/slice.ts";
 import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
+import { PlacemarkEventList } from "./PlacemarkEventList.tsx";
+import { EventsLayerControl } from "./EventsLayerControl.tsx";
 
 type EbaliMapProps = {
   initialCenter?: LatLng;
@@ -46,6 +48,9 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     layersTitles,
     fetchLayersTitles,
     getDisplayedLayers,
+    selectEventPlace,
+    selectedPlace,
+    eventPlaceLayer,
   } = useMapState();
 
   const map = useMap();
@@ -57,14 +62,9 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
 
   const displayedLayers = getDisplayedLayers();
 
-  const showPlacemarkInfo = (placemark: PlacemarkType) => {
-    if (placemark) {
-      setSelectedPlacemark(placemark);
-    }
-  };
-
   const onMapClick = () => {
     setSelectedPlacemark(null);
+    selectEventPlace(null);
   };
 
   useEffect(() => {
@@ -116,12 +116,13 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         <SheetContent side="left" aria-describedby={undefined}>
           <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
           <div className="h-full overflow-y-auto px-4">
+            <EventsLayerControl />
             {layersTitles.map((title) => {
               return (
                 <LayerControl
                   key={title}
                   layerName={title}
-                  showInfo={showPlacemarkInfo}
+                  showInfo={setSelectedPlacemark}
                   closeGroups={() => setShowGroups(false)}
                 />
               );
@@ -132,12 +133,30 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       {Object.values(displayedLayers).map((layer) => {
         return layer.map((placemark, idx) => (
           <Placemark
-            onClick={(placemark) => showPlacemarkInfo(placemark)}
+            onClick={(placemark) => setSelectedPlacemark(placemark)}
             key={`${placemark.name}-${idx}`}
             placemark={placemark as PlacemarkType}
             opacity={layersOpacity}
           />
         ));
+      })}
+      {Object.values(eventPlaceLayer).map((place) => {
+        const coord = place.geometry.coordinates[0];
+        if (!coord) return null;
+        return (
+          <AdvancedMarker
+            onClick={() => selectEventPlace(place.id)}
+            key={place.id}
+            position={coord}
+          >
+            <Pin
+              background={"#76FF05"}
+              borderColor={"#000000"}
+              glyphColor={"#000000"}
+              scale={2}
+            />
+          </AdvancedMarker>
+        );
       })}
       {selectedPlacemark && (
         <InfoWindow
@@ -157,6 +176,26 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
               <X className="w-full h-full stroke-secondary/70" />
             </button>
           </div>
+        </InfoWindow>
+      )}
+      {selectedPlace && (
+        <InfoWindow
+          headerDisabled
+          position={selectedPlace.geometry.coordinates[0]}
+        >
+          <div className="flex justify-between items-center gap-12">
+            <h2 className="text-primary text-xl font-bold">
+              {selectedPlace.title}
+            </h2>
+            <button
+              className="h-8 aspect-square flex items-center justify-center ml-auto mr-0"
+              type="button"
+              onClick={() => selectEventPlace(null)}
+            >
+              <X className="w-full h-full stroke-secondary/70" />
+            </button>
+          </div>
+          <PlacemarkEventList events={selectedPlace.events} />
         </InfoWindow>
       )}
       <MapLongPressHandler onLongPressMs={700} onLongPress={longPressHandler} />
