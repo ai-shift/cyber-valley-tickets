@@ -56,10 +56,7 @@ export const Router = () => {
                       element={<EditEventPage />}
                     />
                   </Route>
-                    <Route
-                      path="/events/create"
-                      element={<CreateEventPage />}
-                    />
+                  <Route path="/events/create" element={<CreateEventPage />} />
                 </Route>
 
                 <Route element={<ProtectedRoute />}>
