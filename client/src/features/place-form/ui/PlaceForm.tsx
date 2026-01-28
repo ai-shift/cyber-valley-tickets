@@ -19,9 +19,9 @@ import { Input } from "@/shared/ui/input";
 import { type EventPlace, placesQueries } from "@/entities/place";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { Switch } from "@/shared/ui/switch";
+import { useCheckSubmit } from "../hooks/useCheckSubmit";
 import { usePlacePersist } from "../hooks/usePlacePersist";
 import { formSchema } from "../model/formSchema";
-import { useCheckSubmit } from "../hooks/useCheckSubmit";
 
 import type { LatLng } from "@/entities/geodata";
 import { EbaliMap } from "@/features/map";

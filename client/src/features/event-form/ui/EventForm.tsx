@@ -20,7 +20,6 @@ import { PlaceSelect } from "./PlaceSelect";
 
 import type { Socials } from "@/entities/user";
 import { Camera } from "@/features/camera";
-import { useCheckSubmit } from "../hooks/useCheckSubmit";
 import { TimePicker } from "@/features/time-input";
 import { assertIsDefined } from "@/shared/lib/assert";
 import { getTimeString } from "@/shared/lib/getTimeString";
@@ -37,6 +36,7 @@ import {
 import { fromUnixTime } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import type { z } from "zod";
+import { useCheckSubmit } from "../hooks/useCheckSubmit";
 import { useEventPersist } from "../hooks/useEventPersist";
 import { useFetchImage } from "../hooks/useFetchImage";
 import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";

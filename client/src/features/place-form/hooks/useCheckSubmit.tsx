@@ -1,5 +1,5 @@
 import { useAuthSlice } from "@/app/providers";
-import { User } from "@/entities/user";
+import type { User } from "@/entities/user";
 import { useLogin } from "@/features/login";
 import { checkPermission } from "@/shared/lib/RBAC";
 import { Button } from "@/shared/ui/button";
@@ -7,15 +7,15 @@ import { useNavigate } from "react-router";
 
 export const useCheckSubmit = () => {
   const { user } = useAuthSlice();
-  const canCreatePlace = checkPermission(user?.role, "place:create")
+  const canCreatePlace = checkPermission(user?.role, "place:create");
 
   const props: WithCheckProps = {
     user,
-    canCreatePlace
-  }
+    canCreatePlace,
+  };
 
-  return {WithSubmitCheck, props}
-}
+  return { WithSubmitCheck, props };
+};
 
 type WithCheckProps = {
   children?: React.ReactNode;
@@ -29,7 +29,7 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
   canCreatePlace,
 }) => {
   const { LoginBtn, buttonProps } = useLogin();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   if (!user)
     return (
@@ -40,5 +40,15 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
       />
     );
 
-  return canCreatePlace ? <>{children}</> : <Button className="w-full" type="button" onClick={() => navigate("/verify")}>Verify yourself to create a place</Button>
+  return canCreatePlace ? (
+    <>{children}</>
+  ) : (
+    <Button
+      className="w-full"
+      type="button"
+      onClick={() => navigate("/verify")}
+    >
+      Verify yourself to create a place
+    </Button>
+  );
 };
