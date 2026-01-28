@@ -14,6 +14,7 @@ export const EventsLayerControl = () => {
           <>
             <input
               type="checkbox"
+              readOnly
               checked={true}
             />
             <img

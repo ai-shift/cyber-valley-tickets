@@ -148,6 +148,7 @@ export const useMapState = create<MapState & MapAction>()(
         const placeRecord = get().eventPlaceLayer;
         if (placeId === null) {
           set({selectedPlace: null})
+          return
         }
         set({selectedPlace: placeRecord[placeId]})
       }
