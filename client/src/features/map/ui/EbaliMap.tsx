@@ -1,4 +1,10 @@
-import { AdvancedMarker, Map as GMap, InfoWindow, Pin, useMap } from "@vis.gl/react-google-maps";
+import {
+  AdvancedMarker,
+  Map as GMap,
+  InfoWindow,
+  Pin,
+  useMap,
+} from "@vis.gl/react-google-maps";
 import { Layers, RotateCcw, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -13,11 +19,11 @@ import {
 } from "@/shared/ui/sheet.tsx";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { useMapState } from "../model/slice.ts";
+import { EventsLayerControl } from "./EventsLayerControl.tsx";
 import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
 import { PlacemarkEventList } from "./PlacemarkEventList.tsx";
-import { EventsLayerControl } from "./EventsLayerControl.tsx";
 
 type EbaliMapProps = {
   initialCenter?: LatLng;
