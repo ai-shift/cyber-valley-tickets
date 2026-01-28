@@ -21,6 +21,7 @@ import { handleNumericInput } from "@/shared/lib/handleNumericInput";
 import { Switch } from "@/shared/ui/switch";
 import { usePlacePersist } from "../hooks/usePlacePersist";
 import { formSchema } from "../model/formSchema";
+import { useCheckSubmit } from "../hooks/useCheckSubmit";
 
 import type { LatLng } from "@/entities/geodata";
 import { EbaliMap } from "@/features/map";
@@ -41,6 +42,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   disableFields,
 }) => {
   const { data: places } = useQuery(placesQueries.list());
+  const { WithSubmitCheck, props } = useCheckSubmit();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -248,11 +250,13 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           )}
         />
 
-        <span className="self-center">
-          <Button className="text-lg p-5" type="submit">
-            Submit
-          </Button>
-        </span>
+        <div className="sticky bottom-10 w-full mt-5">
+          <WithSubmitCheck {...props}>
+            <Button className="block mx-auto" type="submit" variant="default">
+              Submit
+            </Button>
+          </WithSubmitCheck>
+        </div>
       </form>
     </Form>
   );
