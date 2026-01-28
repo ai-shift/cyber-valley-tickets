@@ -20,6 +20,7 @@ import { PlaceSelect } from "./PlaceSelect";
 
 import type { Socials } from "@/entities/user";
 import { Camera } from "@/features/camera";
+import { useCheckSubmit } from "../hooks/useCheckSubmit";
 import { TimePicker } from "@/features/time-input";
 import { assertIsDefined } from "@/shared/lib/assert";
 import { getTimeString } from "@/shared/lib/getTimeString";
@@ -61,6 +62,8 @@ export const EventForm: React.FC<EventFormProps> = ({
     return (
       <ErrorMessage errors={new Error("No availible places to create event")} />
     );
+
+  const { WithSubmitCheck, props } = useCheckSubmit();
 
   const eventForEdit = existingEvent
     ? mapEventToEventForm(existingEvent)
@@ -390,9 +393,13 @@ export const EventForm: React.FC<EventFormProps> = ({
             );
           }}
         />
-        <Button className="block mx-auto" type="submit" variant="default">
-          Submit
-        </Button>
+        <div className="sticky bottom-10 w-full mt-5">
+          <WithSubmitCheck {...props}>
+            <Button className="block mx-auto" type="submit" variant="default">
+              Submit
+            </Button>
+          </WithSubmitCheck>
+        </div>
       </form>
     </Form>
   );
