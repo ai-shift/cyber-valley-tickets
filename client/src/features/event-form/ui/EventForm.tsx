@@ -393,7 +393,7 @@ export const EventForm: React.FC<EventFormProps> = ({
             );
           }}
         />
-        <div className="sticky bottom-10 w-full mt-5">
+        <div className="sticky bottom-5 w-full mt-5">
           <WithSubmitCheck {...props}>
             <Button className="block mx-auto" type="submit" variant="default">
               Submit
