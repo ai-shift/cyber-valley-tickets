@@ -20,15 +20,20 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PRODUCTION_FRONTEND=false
 
 # Parse command line arguments
+STOP_MODE=false
 while [[ $# -gt 0 ]]; do
     case $1 in
         --production-frontend)
             PRODUCTION_FRONTEND=true
             shift
             ;;
+        --stop)
+            STOP_MODE=true
+            shift
+            ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [--production-frontend]"
+            echo "Usage: $0 [--production-frontend] [--stop]"
             exit 1
             ;;
     esac
@@ -161,9 +166,46 @@ restart_service() {
     tmux send-keys -t "$SESSION_NAME:$window_name" "$make_command" Enter
 }
 
+# Helper: Stop all services and cleanup
+stop_services() {
+    log_section "Stopping Services"
+
+    log_info "Stopping tmux session" "stopping"
+    if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+        tmux kill-session -t "$SESSION_NAME"
+        log_success "Tmux session stopped" "done"
+    else
+        log_warning "No tmux session found" "skipped"
+    fi
+
+    log_info "Stopping podman containers" "stopping"
+    for name in "ganache" "ipfs" "valkey"; do
+        podman ps -a \
+            | grep "cvland-$name" \
+            | awk '{print $1}' \
+            | xargs -r -I{} sh -c 'podman stop {} || true; podman rm {} || true' 2>/dev/null &
+    done
+    wait
+    log_success "Podman containers stopped" "done"
+
+    log_info "Cleaning up temporary files" "cleaning"
+    rm -f /tmp/done.* /tmp/exit_code.* /tmp/contract_vars.txt
+    rm -f /tmp/backend.log /tmp/frontend.log /tmp/indexer.log /tmp/telegram-bot.log
+    log_success "Temporary files cleaned" "done"
+
+    log_section "Stop Complete"
+    echo -e "${GREEN}${BOLD}All services stopped!${NC}"
+}
+
 # ============================================================================
 # MAIN SCRIPT
 # ============================================================================
+
+# Handle stop mode
+if [[ "$STOP_MODE" == true ]]; then
+    stop_services
+    exit 0
+fi
 
 # Check prerequisites
 check_and_install_tmux
@@ -261,26 +303,63 @@ log_success "Contracts deployed successfully" "done"
 log_info "Updating contract addresses in .env" "starting"
 # Extract contract addresses from deployment output
 tmux capture-pane -pt "$SESSION_NAME:buf" | grep '^export' > /tmp/contract_vars.txt
+
+# Verify contract addresses were captured
+if [[ ! -s /tmp/contract_vars.txt ]]; then
+    log_error "No contract addresses found in deployment output" "failed"
+    echo -e "${RED}Check the buf window for deployment errors:${NC}"
+    echo -e "  ${CYAN}tmux attach -t $SESSION_NAME:buf${NC}"
+    exit 1
+fi
+
 # Update .env file with new contract addresses
 python3 <<'PY'
+import sys
 from pathlib import Path
-splitted=[
-    line.rstrip().split("=")
-    for line
-    in Path("/tmp/contract_vars.txt").read_text().splitlines()
-]
-env_file = Path(".env")
-updated = []
-for line in env_file.read_text().splitlines():
-    for replacement in splitted:
-        if not line.startswith(f"{replacement[0]}="):
-            continue
-        updated.append("=".join(replacement))
-        break
-    else:
-        updated.append(line.rstrip())
-env_file.write_text("\n".join(updated))
+
+try:
+    contract_vars = Path("/tmp/contract_vars.txt").read_text().splitlines()
+    if not contract_vars:
+        print("ERROR: No contract addresses found", file=sys.stderr)
+        sys.exit(1)
+    
+    splitted = []
+    for line in contract_vars:
+        if "=" in line:
+            parts = line.rstrip().split("=", 1)
+            if len(parts) == 2:
+                splitted.append(parts)
+    
+    if not splitted:
+        print("ERROR: Could not parse contract addresses", file=sys.stderr)
+        sys.exit(1)
+    
+    env_file = Path(".env")
+    if not env_file.exists():
+        print("ERROR: .env file not found", file=sys.stderr)
+        sys.exit(1)
+    
+    updated = []
+    for line in env_file.read_text().splitlines():
+        for replacement in splitted:
+            if line.startswith(f"{replacement[0]}="):
+                updated.append("=".join(replacement))
+                break
+        else:
+            updated.append(line.rstrip())
+    
+    env_file.write_text("\n".join(updated))
+    print(f"Updated {len(splitted)} contract addresses")
+except Exception as e:
+    print(f"ERROR: {e}", file=sys.stderr)
+    sys.exit(1)
 PY
+
+if [[ $? -ne 0 ]]; then
+    log_error "Failed to update contract addresses in .env" "failed"
+    exit 1
+fi
+
 rm -f /tmp/contract_vars.txt
 log_success "Contract addresses updated" "done"
 
@@ -290,11 +369,21 @@ log_section "Starting Indexer & Restarting Services"
 log_info "Starting blockchain indexer" "starting"
 create_tmux_window "indexer" "/tmp/indexer.log"
 tmux send-keys -t "$SESSION_NAME:indexer" "make -C backend/ run-indexer" Enter
+sleep 2
+if ! tmux list-windows -t "$SESSION_NAME" | grep -q "indexer"; then
+    log_error "Failed to create indexer window" "failed"
+    exit 1
+fi
 log_success "Blockchain indexer started" "started"
 
 log_info "Starting telegram bot" "starting"
 create_tmux_window "telegram-bot" "/tmp/telegram-bot.log"
 tmux send-keys -t "$SESSION_NAME:telegram-bot" "make -C backend/ run-telegram-bot" Enter
+sleep 2
+if ! tmux list-windows -t "$SESSION_NAME" | grep -q "telegram-bot"; then
+    log_error "Failed to create telegram-bot window" "failed"
+    exit 1
+fi
 log_success "Telegram bot started" "started"
 
 restart_service "Backend" "backend" "/tmp/backend.log" "make -C backend/ run"
@@ -309,6 +398,10 @@ if [[ "$PRODUCTION_FRONTEND" == true ]]; then
 else
     restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
 fi
+
+# Give indexer time to process historical events
+log_info "Waiting for indexer to process events" "waiting"
+sleep 5
 
 log_info "Waiting for services to restart" "waiting"
 wait_for_service "/tmp/backend.log" "Starting development server at" "Backend"
