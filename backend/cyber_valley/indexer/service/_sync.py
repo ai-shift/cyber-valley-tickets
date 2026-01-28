@@ -266,7 +266,14 @@ def _sync_event_place_updated(
 
 @transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
-    event = Event.objects.get(id=event_data.event_id)
+# FIXME: Fix this try_catch 
+    try:
+        event = Event.objects.get(id=event_data.event_id)
+    except Event.DoesNotExist:
+        log.error(
+            "Event %s not found for ticket minting, skipping", event_data.event_id
+        )
+        return
     owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.owner)
 
     cid = _multihash2cid(event_data)

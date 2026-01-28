@@ -28,7 +28,6 @@ export const Placemark: React.FC<PlacemarkProps> = ({
             alt={`${placemark.name} marker`}
             width={32}
             height={32}
-            style={{ opacity }}
           />
         </AdvancedMarker>
       );
@@ -49,7 +48,7 @@ export const Placemark: React.FC<PlacemarkProps> = ({
           onClick={clickHandler}
           path={placemark.coordinates}
           strokeColor={truncateColorString(placemark.line_color)}
-          strokeOpacity={opacity}
+          strokeOpacity={1}
         />
       );
   }
