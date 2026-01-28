@@ -57,13 +57,23 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     selectEventPlace,
     selectedPlace,
     eventPlaceLayer,
+    displayedGroups,
+    fetchLayer,
   } = useMapState();
 
   const map = useMap();
   const [showGroups, setShowGroups] = useState(false);
 
   useEffect(() => {
-    fetchLayersTitles();
+    const loadInitialData = async () => {
+      await fetchLayersTitles();
+      for (const group of displayedGroups) {
+        if (layersTitles.includes(group)) {
+          fetchLayer(group);
+        }
+      }
+    };
+    loadInitialData();
   }, []);
 
   const displayedLayers = getDisplayedLayers();
