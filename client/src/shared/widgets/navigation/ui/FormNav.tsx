@@ -51,15 +51,26 @@ export const FormNav = () => {
           );
         })}
       </div>
-      <button
-        type="button"
-        className="card h-14 aspect-square flex justify-center items-center shadow-lg transition-colors"
-        onClick={toggleOpen}
-      >
-        <PlusIcon
-          className={`stroke-white size-8 transition-transform duration-200 ${open ? "rotate-45" : ""}`}
-        />
-      </button>
+      <div className="flex items-center gap-3">
+        <span
+          className={`text-primary text-lg font-medium transition-all duration-200 ${
+            open
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-4 pointer-events-none"
+          }`}
+        >
+          Create
+        </span>
+        <button
+          type="button"
+          className="card h-14 aspect-square flex justify-center items-center shadow-lg transition-colors"
+          onClick={toggleOpen}
+        >
+          <PlusIcon
+            className={`stroke-white size-8 transition-transform duration-200 ${open ? "rotate-45" : ""}`}
+          />
+        </button>
+      </div>
     </div>
   );
 };
