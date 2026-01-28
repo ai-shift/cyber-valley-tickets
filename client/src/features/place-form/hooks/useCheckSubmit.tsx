@@ -36,7 +36,7 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
       <LoginBtn
         {...buttonProps}
         className="w-full"
-        title="Login to create an event"
+        title="Login to create a place"
       />
     );
 
@@ -48,7 +48,7 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
       type="button"
       onClick={() => navigate("/verify")}
     >
-      Verify yourself to create a place
+      Verify to create a place
     </Button>
   );
 };
