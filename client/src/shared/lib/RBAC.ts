@@ -51,7 +51,11 @@ export const RBAC_ROLES: RoleControl = {
 
 export type Permissions = `${Resource}:${Action}`;
 
-export function checkPermission(role: Role, ...permissions: Permissions[]) {
+export function checkPermission(role: Role | undefined, ...permissions: Permissions[]) {
+  if (role == null) {
+    return false
+  }
+
   for (const permission of permissions) {
     const [source, action] = permission.split(":") as [Resource, Action];
 
