@@ -8,6 +8,8 @@ import EventTicketModule from "../ignition/modules/EventTicket";
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const DEV_TEAM_EOA = MASTER_EOA;
 const API_HOST = process.env.PUBLIC_API_HOST;
+const BACKEND_PORT = process.env.BACKEND_PORT || "8000";
+const BACKEND_HOST = `http://127.0.0.1:${BACKEND_PORT}`;
 const IPFS_HOST = process.env.IPFS_PUBLIC_HOST;
 
 async function main() {
@@ -88,7 +90,7 @@ async function main() {
     body.append("title", cfg.title);
     body.append("description", "foo");
     body.append("geometry", JSON.stringify(cfg.geometry));
-    const resp = await fetch(`${API_HOST}/api/ipfs/places/meta`, {
+    const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
       method: "PUT",
       headers: {
@@ -182,7 +184,7 @@ async function main() {
     const imgBlob = new Blob([imgBuffer]);
 
     // Upload socials
-    const socialsResponse = await fetch(`${API_HOST}/api/ipfs/users/socials`, {
+    const socialsResponse = await fetch(`${BACKEND_HOST}/api/ipfs/users/socials`, {
       method: "PUT",
       body: JSON.stringify(cfg.socials),
       headers: {
@@ -203,7 +205,7 @@ async function main() {
     body.set("website", cfg.website);
     body.set("cover", imgBlob, "image.jpg");
     body.set("socials_cid", socials.cid);
-    const eventMetaResponse = await fetch(`${API_HOST}/api/ipfs/events/meta`, {
+    const eventMetaResponse = await fetch(`${BACKEND_HOST}/api/ipfs/events/meta`, {
       body,
       method: "PUT",
       headers: {
@@ -262,7 +264,7 @@ async function main() {
   ];
   for (const cfg of tickets) {
     // Upload socials
-    const socialsResponse = await fetch(`${API_HOST}/api/ipfs/tickets/meta`, {
+    const socialsResponse = await fetch(`${BACKEND_HOST}/api/ipfs/tickets/meta`, {
       method: "PUT",
       body: JSON.stringify({
         eventid: cfg.eventId,

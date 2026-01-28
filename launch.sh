@@ -117,14 +117,21 @@ create_tmux_window() {
     fi
 }
 
-# Helper: Run command in buf window and wait
+# Helper: Run command in buf window and wait for completion with exit code check
 run_buf_command() {
   local cmd=$1
   local done=/tmp/done.$$
+  local exit_code_file=/tmp/exit_code.$$
+  rm -f "$done" "$exit_code_file"
   tmux send-keys -t "$SESSION_NAME:buf" \
-       "$cmd; touch '$done'" C-m
+       "$cmd; echo \$? > '$exit_code_file'; touch '$done'" C-m
   until [[ -f $done ]]; do sleep 0.1; done
-  rm -f "$done"
+  local exit_code=$(cat "$exit_code_file" 2>/dev/null || echo "1")
+  rm -f "$done" "$exit_code_file"
+  if [[ "$exit_code" -ne 0 ]]; then
+    return 1
+  fi
+  return 0
 }
 
 # Helper: Wait for service to start by monitoring log
@@ -198,7 +205,10 @@ tmux new-window -t "$SESSION_NAME" -n "buf" -c "$SCRIPT_DIR"
 log_section "Starting Services"
 
 log_info "Starting Ganache blockchain" "starting"
-run_buf_command "make -C ethereum/ ganache"
+if ! run_buf_command "make -C ethereum/ ganache"; then
+    log_error "Ganache blockchain failed to start" "failed"
+    exit 1
+fi
 log_success "Ganache blockchain ready" "started"
 
 log_info "Starting Django backend server" "starting"
@@ -223,18 +233,29 @@ fi
 log_section "Database Configuration"
 
 log_info "Seeding database with initial data" "starting"
-run_buf_command "make -C backend/ seed-db"
+if ! run_buf_command "make -C backend/ seed-db"; then
+    log_error "Database seeding failed" "failed"
+    exit 1
+fi
 log_success "Database seeding completed" "done"
 
 log_info "Synchronizing geodata" "starting"
-run_buf_command "make -C backend/ sync-geodata"
+if ! run_buf_command "make -C backend/ sync-geodata"; then
+    log_error "Geodata synchronization failed" "failed"
+    exit 1
+fi
 log_success "Geodata synchronization completed" "done"
 
 # ============================================================================
 log_section "Smart Contract Deployment"
 
 log_info "Deploying contracts to local network" "starting"
-run_buf_command "make -C ethereum/ deploy-dev"
+if ! run_buf_command "make -C ethereum/ deploy-dev"; then
+    log_error "Contract deployment failed" "failed"
+    echo -e "${RED}Check the buf window for error details:${NC}"
+    echo -e "  ${CYAN}tmux attach -t $SESSION_NAME:buf${NC}"
+    exit 1
+fi
 log_success "Contracts deployed successfully" "done"
 
 log_info "Updating contract addresses in .env" "starting"
@@ -280,7 +301,10 @@ restart_service "Backend" "backend" "/tmp/backend.log" "make -C backend/ run"
 
 if [[ "$PRODUCTION_FRONTEND" == true ]]; then
     log_info "Starting frontend build" "starting"
-    run_buf_command "make -C client/ build"
+    if ! run_buf_command "make -C client/ build"; then
+        log_error "Frontend build failed" "failed"
+        exit 1
+    fi
     log_success "Frontend build" "done"
 else
     restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"

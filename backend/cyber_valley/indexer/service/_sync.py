@@ -266,7 +266,7 @@ def _sync_event_place_updated(
 
 @transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
-# FIXME: Fix this try_catch 
+    # FIXME: Fix this try_catch
     try:
         event = Event.objects.get(id=event_data.event_id)
     except Event.DoesNotExist:
