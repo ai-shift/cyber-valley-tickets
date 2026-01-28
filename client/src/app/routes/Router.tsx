@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import {
   AccountPage,
   CreateEventPage,
-  CreatePlacePage,
+  CreatePlaceUnifiedPage,
   EditEventPage,
   EventAttendeesPage,
   EventsDetailsPage,
@@ -19,7 +19,6 @@ import {
   NotificationsPage,
   Page404,
   PurchasePage,
-  RequestPlacePage,
   ShamanVerificationPage,
   SocialsPage,
   UpdatePlacePage,
@@ -59,13 +58,12 @@ export const Router = () => {
                   <Route path="/events/create" element={<CreateEventPage />} />
                 </Route>
 
+                <Route
+                  path="/place/create"
+                  element={<CreatePlaceUnifiedPage />}
+                />
+
                 <Route element={<ProtectedRoute />}>
-                  <Route
-                    path="/request-place"
-                    element={<RestrictedTo userRoles={["verifiedshaman"]} />}
-                  >
-                    <Route index element={<RequestPlacePage />} />
-                  </Route>
                   <Route
                     path="/manage"
                     element={
@@ -84,10 +82,6 @@ export const Router = () => {
                       element={<RestrictedTo userRoles={["localprovider"]} />}
                     >
                       <Route index element={<ManagePlacesPage />} />
-                      <Route
-                        path="/manage/place/create"
-                        element={<CreatePlacePage />}
-                      />
                       <Route
                         path="/manage/place/update"
                         element={<UpdatePlacePage />}
