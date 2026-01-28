@@ -1,11 +1,5 @@
-import { useAuthSlice } from "@/app/providers";
 import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
-import { getCurrencySymbol, hasEnoughtTokens } from "@/shared/lib/web3";
-import { Loader } from "@/shared/ui/Loader";
-import { useEffect, useState } from "react";
-import { Link } from "react-router";
-import { useActiveAccount } from "thirdweb/react";
 
 import { EventForm } from "@/features/event-form";
 import { EventDataProvider } from "./EventDataProvider";
@@ -27,51 +21,14 @@ const CreateEventWithData: React.FC<CreateEventWithData> = ({
   return <EventForm events={events} places={places} onSumbit={onSubmit} />;
 };
 
-export const CreateEvent: React.FC<CreateEventProps> = ({ onSubmit }) => {
-  const account = useActiveAccount();
-  const [canCreate, setCanCreate] = useState(false);
-  const [requriedTokens, setRequiredTokens] = useState(BigInt(0));
-  const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuthSlice();
-  useEffect(() => {
-    if (account == null) return;
-    hasEnoughtTokens(account).then(({ enoughTokens, balanceAfterPayment }) => {
-      console.log("Balance after payment", balanceAfterPayment);
-      setCanCreate(enoughTokens);
-      setRequiredTokens(balanceAfterPayment);
-      setIsLoading(false);
-    });
-  }, [account]);
-  return isLoading ? (
-    <Loader />
-  ) : user!.socials.length === 0 ? (
-    <p className="my-24 text-center">
-      Set socials first{" "}
-      <Link className="text-secondary underline" to="/socials">
-        here
-      </Link>
-    </p>
-  ) : canCreate ? (
-    <EventDataProvider>
-      {({ events, places }) => (
-        <CreateEventWithData
-          events={events}
-          places={places}
-          onSubmit={onSubmit}
-        />
-      )}
-    </EventDataProvider>
-  ) : (
-    <p className="my-24 text-center text-red-500">
-      Not enough tokens to create event
-      <br />
-      You need {requriedTokens}{" "}
-      <img
-        src={getCurrencySymbol()}
-        className="h-6 aspect-square inline"
-        alt="currency"
-      />{" "}
-      more
-    </p>
-  );
-};
+export const CreateEvent: React.FC<CreateEventProps> = ({ onSubmit }) => (
+  <EventDataProvider>
+    {({ events, places }) => (
+      <CreateEventWithData
+        events={events}
+        places={places}
+        onSubmit={onSubmit}
+      />
+    )}
+  </EventDataProvider>
+);
