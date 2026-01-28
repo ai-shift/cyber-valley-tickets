@@ -79,7 +79,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-7 mb-10"
+        className="flex flex-col gap-7"
       >
         <FormField
           control={form.control}
@@ -250,7 +250,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           )}
         />
 
-        <div className="sticky bottom-10 w-full mt-5">
+        <div className="sticky bottom-5 w-full mt-5">
           <WithSubmitCheck {...props}>
             <Button className="block mx-auto" type="submit" variant="default">
               Submit
