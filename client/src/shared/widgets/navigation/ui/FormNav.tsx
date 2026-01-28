@@ -10,7 +10,7 @@ const formRoutes = [
     icon: Calendar,
   },
   {
-    path: "/manage/place/create",
+    path: "/place/create",
     title: "Place",
     icon: LandPlot,
   },
