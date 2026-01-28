@@ -443,7 +443,6 @@ uint256 public defaultProfileId;
 - [x] @redmoor Restore map state on navigation back to map page
 - [x] @redmoor Prevent unnecessary re-renders
 - [x] @redmoor Add reset button to clear saved state
-
 ---
 
 ## 12. Thirdweb OneKey Issue (2h)

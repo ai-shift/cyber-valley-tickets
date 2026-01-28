@@ -20,8 +20,11 @@ echo "✓ Frontend built"
 
 # rsync to server
 echo "Syncing frontend to ${TARGET_HOST}..."
-rsync -avz --delete \
-  ../client/dist/ ${SSH_TARGET:-root@$TARGET_HOST}:/home/tickets/client/dist/
+(
+    cd ../client
+    rsync -avz --delete \
+          dist/ ${SSH_TARGET:-root@$TARGET_HOST}:/home/tickets/client/dist/
+)
 
 # Set ownership
 ssh ${SSH_TARGET:-root@$TARGET_HOST} bash <<'EOF'
