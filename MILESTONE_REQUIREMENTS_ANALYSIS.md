@@ -346,18 +346,18 @@ uint256 public defaultProfileId;
 
 **Required:** Show event form when not logged in, "Login to Create" button instead of Submit
 
-- [ ] @redmoor Check authentication state in event creation form
-- [ ] @redmoor Replace "Submit" button with "Login to Create" when not authenticated
-- [ ] @redmoor Show login modal on button click
-- [ ] @redmoor Redirect back to form after login
+- [x] @redmoor Check authentication state in event creation form
+- [x] @redmoor Replace "Submit" button with "Login to Create" when not authenticated
+- [x] @redmoor Show login modal on button click
+- [x] @redmoor Redirect back to form after login
 
 ### 9.7 New Button → Popover (1 hours)
 
 **Required:** "New" button opens popover with "New Event" and "New Event Space" options
 
-- [ ] @redmoor Create popover menu component
-- [ ] @redmoor Add "New Event" and "New Event Space" options
-- [ ] @redmoor Position popover correctly (below button)
+- [x] @redmoor Create popover menu component
+- [x] @redmoor Add "New Event" and "New Event Space" options
+- [x] @redmoor Position popover correctly (below button)
 
 ### 9.8 Signing with Expiration (3 hours)
 
