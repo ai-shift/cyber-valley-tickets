@@ -7,29 +7,24 @@ import { useMap } from "@vis.gl/react-google-maps";
 import { twMerge } from "tailwind-merge";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { getThumbUrl } from "../lib/getThumbUrl.ts";
+import { useMapState } from "../model/slice.ts";
 
 type LayerControlProps = {
-  value: string;
-  isLoading: boolean;
-  isError: boolean;
-  isDisplayed: boolean;
-  setIsDisplayed: (groupName: string) => void;
-  placemarks: Placemark[];
+  layerName: string;
   showInfo: (placemark: Placemark) => void;
   closeGroups: () => void;
 };
 
 export const LayerControl: React.FC<LayerControlProps> = ({
-  value,
-  isLoading,
-  isError,
-  isDisplayed,
-  setIsDisplayed,
-  placemarks,
+  layerName: value,
   showInfo,
   closeGroups,
 }) => {
   const map = useMap();
+  const { getDisplayedLayers, toggleGroup, loadingLayers, error } =
+    useMapState();
+
+  const current = getDisplayedLayers()[value];
 
   const handleClick = (placemark: Placemark) => {
     if (!map) {
@@ -45,6 +40,10 @@ export const LayerControl: React.FC<LayerControlProps> = ({
     closeGroups();
   };
 
+  const isDisplayed = !!current;
+  const isLoading = loadingLayers.includes(value);
+  const isError = !!error;
+
   return (
     <Expandable defaultOpened>
       <ExpandableTrigger className="capitalize flex gap-3 text-xl items-center w-full">
@@ -53,7 +52,7 @@ export const LayerControl: React.FC<LayerControlProps> = ({
             <input
               type="checkbox"
               checked={isDisplayed}
-              onChange={() => setIsDisplayed(value)}
+              onChange={() => toggleGroup(value)}
               onClick={(e) => e.stopPropagation()}
             />
             <img
@@ -73,7 +72,7 @@ export const LayerControl: React.FC<LayerControlProps> = ({
       {isDisplayed && !isError && (
         <ExpandableContent>
           <div className="flex flex-col items-start">
-            {placemarks?.map((placemark, idx) => (
+            {current?.map((placemark, idx) => (
               <button
                 type="button"
                 className="flex gap-1 items-center justify-center"
