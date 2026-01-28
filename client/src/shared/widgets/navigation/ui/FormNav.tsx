@@ -1,6 +1,7 @@
 import { Calendar, LandPlot, PlusIcon } from "lucide-react";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { NavLink } from "react-router";
 
 import { CardCut } from "@/shared/ui/CardCut";
@@ -27,6 +28,14 @@ export const FormNav = () => {
 
   return (
     <div className="relative">
+      {open &&
+        createPortal(
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 animate-in fade-in duration-200"
+            onClick={() => setOpen(false)}
+          />,
+          document.body,
+        )}
       <div
         className={`absolute bottom-20 right-0 flex flex-col gap-3 items-end transition-all duration-200 ${
           open
