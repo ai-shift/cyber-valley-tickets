@@ -9,7 +9,7 @@ export const NavContainer: React.FC = () => {
         <Outlet />
       </div>
       <div className="absolute z-100 right-5 bottom-20">
-          <FormNav />
+        <FormNav />
       </div>
       <div className="relative">
         <Nav className="bg-background bottom-0 left-0 right-0 p-2 rounded-b-3xl" />
