@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware";
 
 import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
 import { getGeodata, getGeodataLayer } from "@/entities/geodata/api/queries";
+import { PlaceWithEvents } from "./type";
+import { Event } from "@/entities/event";
 
 type GeodataKey = string;
 
@@ -10,6 +12,7 @@ export type MapState = {
   isInitial: boolean;
   zoom: number;
   center: LatLng;
+
   selectedPlacemark: PlacemarkType | null;
   displayedGroups: GeodataKey[];
   layersTitles: string[];
@@ -17,11 +20,16 @@ export type MapState = {
   error: string;
   loadingLayers: string[];
   fetchedLayers: Record<string, PlacemarkType[]>;
+
+  selectedPlace: PlaceWithEvents | null;
+  eventPlaceLayer: Record<number, PlaceWithEvents>;
+  events: Event[];
 };
 
 export type MapAction = {
   setZoom: (zoom: number) => void;
   setCenter: (center: LatLng) => void;
+
   setSelectedPlacemark: (placemark: PlacemarkType | null) => void;
   setDisplayedGroups: (groups: GeodataKey[]) => void;
   toggleGroup: (group: GeodataKey) => void;
@@ -29,6 +37,9 @@ export type MapAction = {
   fetchLayersTitles: () => Promise<void>;
   fetchLayer: (layerName: string) => Promise<void>;
   getDisplayedLayers: () => Record<string, PlacemarkType[]>;
+
+  setEventLayer: (record: Record<number, PlaceWithEvents>, events: Event[]) => void;
+  selectEventPlace: (placeId: number | null) => void;
 };
 
 const initialPos: Pick<MapState, "isInitial" | "zoom" | "center"> = {
@@ -49,6 +60,9 @@ export const useMapState = create<MapState & MapAction>()(
       error: "",
       loadingLayers: [],
       fetchedLayers: {},
+      selectedPlace: null,
+      events: [],
+      eventPlaceLayer: {},
 
       setZoom: (zoom: number) => set({ zoom, isInitial: false }),
       setCenter: (center: LatLng) => set({ center, isInitial: false }),
@@ -122,6 +136,21 @@ export const useMapState = create<MapState & MapAction>()(
 
         return result;
       },
+
+      setEventLayer: (record: Record<number, PlaceWithEvents>, events: Event[]) => {
+        set({
+          events, 
+          eventPlaceLayer: record,
+        })
+      },
+
+      selectEventPlace: (placeId: number | null) => {
+        const placeRecord = get().eventPlaceLayer;
+        if (placeId === null) {
+          set({selectedPlace: null})
+        }
+        set({selectedPlace: placeRecord[placeId]})
+      }
     }),
     { name: "mapState" },
   ),
