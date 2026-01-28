@@ -19,11 +19,6 @@ export const routes: Route[] = [
     icon: "event place_1",
   },
   {
-    path: "/events/create",
-    title: "New",
-    icon: "create",
-  },
-  {
     path: "/notifications",
     title: "Notifs",
     icon: "nnotification_3",
