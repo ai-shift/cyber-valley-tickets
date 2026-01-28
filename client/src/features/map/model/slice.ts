@@ -54,7 +54,7 @@ export const useMapState = create<MapState & MapAction>()(
       ...initialPos,
       selectedPlacemark: null,
       infoWindowShown: false,
-      displayedGroups: [],
+      displayedGroups: ["events", "trails", "places"],
       layersTitles: [],
       loadingTitles: false,
       error: "",
