@@ -1,10 +1,10 @@
+import { useLogin } from "@/features/login/hooks/useLogin";
 import { Outlet } from "react-router";
 import { useAuthSlice } from "../model/authSlice";
-import { useLogin } from "@/features/login/hooks/useLogin";
 
 export const ProtectedRoute: React.FC = () => {
   const { hasJWT } = useAuthSlice();
-  const {LoginBtn} = useLogin()
+  const { LoginBtn, buttonProps } = useLogin();
 
   if (hasJWT) {
     return <Outlet />;
@@ -16,7 +16,7 @@ export const ProtectedRoute: React.FC = () => {
           You have to be logged in to access this resource.
         </h2>
         <div className="flex justify-center items-center mt-20">
-          <LoginBtn />
+          <LoginBtn {...buttonProps} />
         </div>
       </div>
     </div>
