@@ -3,6 +3,8 @@ import { Calendar, LandPlot, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "react-router";
 
+import { CardCut } from "@/shared/ui/CardCut";
+
 const formRoutes = [
   {
     path: "/events/create",
@@ -44,9 +46,12 @@ export const FormNav = () => {
               <span className="text-primary text-lg font-medium">
                 {route.title}
               </span>
-              <div className="card h-12 border-primary/50 aspect-square flex justify-center items-center shadow-lg transition-colors">
+              <CardCut
+                className="h-12 aspect-square shadow-lg transition-colors"
+                pathClassName="text-primary stroke-[5px] fill-black stroke-primary"
+              >
                 <IconComponent className="text-white size-5" />
-              </div>
+              </CardCut>
             </NavLink>
           );
         })}
@@ -61,15 +66,17 @@ export const FormNav = () => {
         >
           Create
         </span>
-        <button
-          type="button"
-          className="card h-14 aspect-square flex justify-center items-center shadow-lg transition-colors"
-          onClick={toggleOpen}
+        <CardCut
+          asChild
+          className="h-14 aspect-square shadow-lg transition-colors cursor-pointer"
+          pathClassName="text-primary stroke-[7px] fill-black stroke-primary"
         >
-          <PlusIcon
-            className={`stroke-white size-8 transition-transform duration-200 ${open ? "rotate-45" : ""}`}
-          />
-        </button>
+          <button type="button" onClick={toggleOpen}>
+            <PlusIcon
+              className={`stroke-white size-8 transition-transform duration-200 ${open ? "rotate-45" : ""}`}
+            />
+          </button>
+        </CardCut>
       </div>
     </div>
   );
