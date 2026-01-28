@@ -3,9 +3,7 @@ import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { EbaliMap, useMapState } from "@/features/map";
 import { useQuery } from "@tanstack/react-query";
-import {
-  useMap,
-} from "@vis.gl/react-google-maps";
+import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router";
 
@@ -22,35 +20,36 @@ export const HomeMap: React.FC = () => {
   const { selectEventPlace, setEventLayer } = useMapState();
 
   const approvedEvents = useMemo(
-    () => 
-      (events ?? ([] as Event[]))
-      .filter((event) => event.status === "approved")
- ,[events])
+    () =>
+      (events ?? ([] as Event[])).filter(
+        (event) => event.status === "approved",
+      ),
+    [events],
+  );
 
   const placesWithEvents = useMemo(
     () =>
-      approvedEvents
-        .reduce<Record<number, PlaceWithEvents>>((acc, event) => {
-          const { place } = event;
-          const placeId = place.id;
-          const { place: _, ...eventWithoutPlace } = event;
+      approvedEvents.reduce<Record<number, PlaceWithEvents>>((acc, event) => {
+        const { place } = event;
+        const placeId = place.id;
+        const { place: _, ...eventWithoutPlace } = event;
 
-          if (!acc[placeId]) {
-            acc[placeId] = {
-              ...place,
-              events: [],
-            };
-          }
+        if (!acc[placeId]) {
+          acc[placeId] = {
+            ...place,
+            events: [],
+          };
+        }
 
-          acc[placeId].events.push(eventWithoutPlace as Omit<Event, "place">);
-          return acc;
-        }, {}),
+        acc[placeId].events.push(eventWithoutPlace as Omit<Event, "place">);
+        return acc;
+      }, {}),
     [approvedEvents],
   );
 
   useEffect(() => {
-    setEventLayer(placesWithEvents, approvedEvents)
-  }, [approvedEvents, placesWithEvents, setEventLayer])
+    setEventLayer(placesWithEvents, approvedEvents);
+  }, [approvedEvents, placesWithEvents, setEventLayer]);
 
   useEffect(() => {
     if (!map || hasInitialized.current) {
@@ -87,5 +86,3 @@ export const HomeMap: React.FC = () => {
     />
   );
 };
-
-

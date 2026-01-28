@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+import type { Event } from "@/entities/event";
 import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
 import { getGeodata, getGeodataLayer } from "@/entities/geodata/api/queries";
-import { PlaceWithEvents } from "./type";
-import { Event } from "@/entities/event";
+import type { PlaceWithEvents } from "./type";
 
 type GeodataKey = string;
 
@@ -38,7 +38,10 @@ export type MapAction = {
   fetchLayer: (layerName: string) => Promise<void>;
   getDisplayedLayers: () => Record<string, PlacemarkType[]>;
 
-  setEventLayer: (record: Record<number, PlaceWithEvents>, events: Event[]) => void;
+  setEventLayer: (
+    record: Record<number, PlaceWithEvents>,
+    events: Event[],
+  ) => void;
   selectEventPlace: (placeId: number | null) => void;
 };
 
@@ -137,21 +140,24 @@ export const useMapState = create<MapState & MapAction>()(
         return result;
       },
 
-      setEventLayer: (record: Record<number, PlaceWithEvents>, events: Event[]) => {
+      setEventLayer: (
+        record: Record<number, PlaceWithEvents>,
+        events: Event[],
+      ) => {
         set({
-          events, 
+          events,
           eventPlaceLayer: record,
-        })
+        });
       },
 
       selectEventPlace: (placeId: number | null) => {
         const placeRecord = get().eventPlaceLayer;
         if (placeId === null) {
-          set({selectedPlace: null})
-          return
+          set({ selectedPlace: null });
+          return;
         }
-        set({selectedPlace: placeRecord[placeId]})
-      }
+        set({ selectedPlace: placeRecord[placeId] });
+      },
     }),
     { name: "mapState" },
   ),

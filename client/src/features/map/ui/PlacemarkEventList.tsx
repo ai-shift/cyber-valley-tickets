@@ -1,11 +1,13 @@
+import type { Event } from "@/entities/event";
 import { useNavigate } from "react-router";
-import { Event } from "@/entities/event"
 
 type PlacemarkEventListProps = {
   events: Omit<Event, "place">[];
 };
 
-export const PlacemarkEventList: React.FC<PlacemarkEventListProps> = ({ events }) => {
+export const PlacemarkEventList: React.FC<PlacemarkEventListProps> = ({
+  events,
+}) => {
   const navigate = useNavigate();
 
   return (
