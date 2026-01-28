@@ -2,13 +2,14 @@ import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { apiClient } from "@/shared/api";
 import { client } from "@/shared/lib/web3";
+import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
+import { useCallback, useMemo } from "react";
 import type { LoginPayload, VerifyLoginPayloadParams } from "thirdweb/auth";
 import { useConnectModal } from "thirdweb/react";
 import { darkTheme } from "thirdweb/react";
 import { createWallet, injectedProvider } from "thirdweb/wallets";
-import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
 
 const wallets = [
   createWallet("inApp", {
@@ -44,15 +45,19 @@ export const useLogin = () => {
   const { login: authLogin } = useAuthSlice();
   const { connect, isConnecting } = useConnectModal();
 
-  const installedWallets = injectedSupportedWalletIds
-    .filter((wallet) => injectedProvider(wallet) != null)
-    .map((wallet) => createWallet(wallet));
+  const installedWallets = useMemo(
+    () =>
+      injectedSupportedWalletIds
+        .filter((wallet) => injectedProvider(wallet) != null)
+        .map((wallet) => createWallet(wallet)),
+    [],
+  );
 
   if (installedWallets.length < 1) {
     console.log("Installed wallets wasn't found");
   }
 
-  const login = async () => {
+  const login = useCallback(async () => {
     const wallet = await connect({
       client,
       wallets,
@@ -82,25 +87,50 @@ export const useLogin = () => {
           });
         },
         isLoggedIn: async () => {
-          const resp = await fetch("api/auth/verify");
+          const resp = await fetch("/api/auth/verify");
           return resp.status === 200;
         },
         doLogout: async () => {
-          await fetch("api/auth/logout");
+          await fetch("/api/auth/logout");
         },
       },
     });
     console.log("connected", wallet);
-  };
+  }, [connect, authLogin]);
 
-  const LoginBtn = () => (
+  const buttonProps = useMemo(
+    () => ({
+      login,
+      isConnecting,
+    }),
+    [login, isConnecting],
+  );
+
+  return { LoginBtn, buttonProps };
+};
+
+type LoginBtnProps = {
+  login: () => Promise<void>;
+  isConnecting: boolean;
+  className?: string;
+  title?: string;
+};
+
+const LoginBtn: React.FC<LoginBtnProps> = ({
+  login,
+  isConnecting,
+  className,
+  title,
+}) => {
+  return (
     <div>
       {isConnecting ? (
         <Loader className="h-60" />
       ) : (
-        <Button onClick={login}>Login</Button>
+        <Button className={className} onClick={login}>
+          {title ?? "Login"}
+        </Button>
       )}
     </div>
   );
-  return { LoginBtn };
 };
