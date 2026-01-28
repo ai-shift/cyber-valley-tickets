@@ -108,6 +108,15 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
       reuseMaps={true}
       mapTypeId="satellite"
       disableDefaultUI
+      restriction={{
+        latLngBounds: {
+          north: -8.0,
+          south: -8.9,
+          west: 114.4,
+          east: 115.8,
+        },
+        strictBounds: false,
+      }}
       onZoomChanged={(ev) => {
         debSetZoom(ev.detail.zoom);
       }}
