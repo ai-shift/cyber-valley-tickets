@@ -408,9 +408,9 @@ uint256 public defaultProfileId;
 **Required:** Events layer cannot be hidden, checkbox always checked and disabled
 
 #### Tasks
-- [ ] @redmoor Set events layer checkbox to always checked
-- [ ] @redmoor Disable checkbox interaction (add event layer with checkbox that cannot be unchecked)
-- [ ] TBD @redmoor Add visual indicator that layer is always visible
+- [x] @redmoor Set events layer checkbox to always checked
+- [x] @redmoor Disable checkbox interaction (add event layer with checkbox that cannot be unchecked)
+- [x] @redmoor Add visual indicator that layer is always visible
 
 ### 11.2 Feature Attributes Display (4 hour)
 
