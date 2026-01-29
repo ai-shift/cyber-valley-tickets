@@ -5,13 +5,19 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { RemoveStaffBtn } from "./RemoveStaffBtn";
 
 interface StaffListProps {
-  searchQuery?: string;
+  searchParamName?: string;
 }
 
-export const StaffList: React.FC<StaffListProps> = ({ searchQuery }) => {
+export const StaffList: React.FC<StaffListProps> = ({
+  searchParamName = "search",
+}) => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get(searchParamName) || undefined;
+
   const {
     data: users,
     isLoading,

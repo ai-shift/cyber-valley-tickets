@@ -2,15 +2,19 @@ import { notificationQueries } from "@/entities/notification";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { NotificationCard } from "./NotificationCard";
 
 interface NotificationsListProps {
-  searchQuery?: string;
+  searchParamName?: string;
 }
 
 export const NotificationsList: React.FC<NotificationsListProps> = ({
-  searchQuery,
+  searchParamName = "search",
 }) => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get(searchParamName) || undefined;
+
   const {
     data: notifications,
     isLoading,
