@@ -141,7 +141,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** @description Available events in the syste */
+    /** @description Available events in the system */
     get: operations["api_events_list"];
     put?: never;
     post?: never;
@@ -223,6 +223,22 @@ export interface paths {
       cookie?: never;
     };
     get: operations["api_events_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/events/{id}/attendees/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["api_events_attendees_list"];
     put?: never;
     post?: never;
     delete?: never;
@@ -886,6 +902,7 @@ export interface components {
     };
     ApiAuthWeb3LoginRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiAuthWeb3NonceRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiEventsAttendeesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsStatusRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
@@ -2430,7 +2447,10 @@ export interface operations {
   };
   api_events_list: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description Search events by title, place name, or creator address */
+        search?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -2839,6 +2859,87 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse404"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_events_attendees_list: {
+    parameters: {
+      query?: {
+        /** @description Search attendees by address or social media handles */
+        search?: string;
+      };
+      header?: never;
+      path: {
+        /** @description A unique integer value identifying this event. */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Attendee"][];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiEventsAttendeesListErrorResponse400"];
         };
       };
       401: {
@@ -3332,7 +3433,10 @@ export interface operations {
   };
   api_notifications_list: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description Search notifications by title or body */
+        search?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -3552,7 +3656,10 @@ export interface operations {
   };
   api_places_list: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description Search places by name or provider address */
+        search?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -3896,7 +4003,10 @@ export interface operations {
   };
   api_users_local_providers_list: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description Search local providers by address or social media handles */
+        search?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -4034,7 +4144,10 @@ export interface operations {
   };
   api_users_staff_list: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description Search staff by address or social media handles */
+        search?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -4101,7 +4214,10 @@ export interface operations {
   };
   api_users_verified_shamans_list: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description Search verified shamans by address or social media handles */
+        search?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
