@@ -35,11 +35,21 @@
       },
       {
         "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "role": "MASTER_ROLE",
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+        "account": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -80,11 +90,21 @@
       },
       {
         "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
         "role": "MASTER_ROLE",
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+        "account": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -103,8 +123,36 @@
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       }
+    ],
+    "DynamicRevenueSplitter.DefaultProfileSet": [
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      }
+    ],
+    "DynamicRevenueSplitter.DistributionProfileCreated": [
+      {
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      }
     ]
   },
-  "events_count": 20,
+  "events_count": 28,
   "test_name": "declineEventPlace"
 }

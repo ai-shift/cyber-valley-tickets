@@ -14,8 +14,32 @@ SOL_TO_JSON_SCHEMA_TYPES = {
     "uint8": "integer",
     "address": "string",
     "bytes32": "string",
+    "string": "string",
     "bool": "boolean",
+    "address[]": "array",
+    "uint256[]": "array",
 }
+
+
+def event_abi_to_json_schema(abi: dict[str, Any]) -> dict[str, Any]:
+    properties = {}
+    for arg in abi["inputs"]:
+        arg_type = arg["type"]
+        if arg_type.endswith("[]"):
+            base_type = arg_type[:-2]
+            properties[arg["name"]] = {
+                "type": "array",
+                "items": {"type": SOL_TO_JSON_SCHEMA_TYPES[base_type]},
+            }
+        else:
+            properties[arg["name"]] = {"type": SOL_TO_JSON_SCHEMA_TYPES[arg_type]}
+
+    return {
+        "type": "object",
+        "required": [arg["name"] for arg in abi["inputs"]],
+        "properties": properties,
+    }
+
 
 FIELD_PATCHES = {
     "digest": {
@@ -100,17 +124,6 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(f"Models saved to {settings.EVENT_MODELS_BASE_PATH}")
         )
-
-
-def event_abi_to_json_schema(abi: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "type": "object",
-        "required": [arg["name"] for arg in abi["inputs"]],
-        "properties": {
-            arg["name"]: {"type": SOL_TO_JSON_SCHEMA_TYPES[arg["type"]]}
-            for arg in abi["inputs"]
-        },
-    }
 
 
 def apply_patches(output_path: Path, events_abi: list[dict[str, Any]]) -> None:

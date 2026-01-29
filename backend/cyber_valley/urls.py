@@ -22,7 +22,9 @@ from rest_framework import routers
 from .events.views import (
     EventPlaceViewSet,
     EventViewSet,
+    event_categories,
     event_status,
+    lifetime_revenue,
     ticket_info,
     ticket_nonce,
     upload_event_meta_to_ipfs,
@@ -49,7 +51,17 @@ router.register(r"geodata", GeodataViewSet, basename="geodata")
 urlpatterns = [
     path("", SpectacularSwaggerView.as_view(), name="swagger"),
     path("api/", include(router.urls)),
+    path(
+        "api/events/<int:event_id>/categories",
+        event_categories,
+        name="event_categories",
+    ),
     path("api/events/<int:event_id>/status", event_status, name="event_status"),
+    path(
+        "api/events/<int:event_id>/lifetime_revenue",
+        lifetime_revenue,
+        name="lifetime_revenue",
+    ),
     path(
         "api/events/<int:event_id>/tickets/<int:ticket_id>",
         ticket_info,

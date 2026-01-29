@@ -23,7 +23,7 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -36,6 +36,7 @@ from .serializers import (
     EventPlaceSerializer,
     EventSerializer,
     StaffEventSerializer,
+    TicketCategorySerializer,
     UploadEventMetaToIpfsSerializer,
     UploadPlaceMetaToIpfsSerializer,
     UploadTicketMetaToIpfsSerializer,
@@ -159,6 +160,17 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
             )
         serializer = AttendeeSerializer([ticket.owner for ticket in tickets], many=True)
         return Response(serializer.data)
+
+
+@extend_schema(
+    responses=TicketCategorySerializer(many=True),
+)
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def event_categories(_request: Request, event_id: int) -> Response:
+    event = get_object_or_404(Event, id=event_id)
+    categories = event.categories.order_by("category_id")
+    return Response(TicketCategorySerializer(categories, many=True).data)
 
 
 # NOTE: There is a problem with DNS to fetch event meta info via HTTP
@@ -360,5 +372,41 @@ def event_status(_: Request, event_id: int) -> Response:
                 "total": event.tickets_bought,
                 "redeemed": redeemed,
             }
+        }
+    )
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {
+                "total_revenue": {
+                    "type": "integer",
+                    "description": "Total revenue in USDT (6 decimals)",
+                },
+                "ticket_revenue": {
+                    "type": "integer",
+                    "description": "Revenue from ticket sales",
+                },
+                "deposit": {"type": "integer", "description": "Event request deposit"},
+                "tickets_sold": {
+                    "type": "integer",
+                    "description": "Number of tickets sold",
+                },
+            },
+        }
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def lifetime_revenue(_: Request, event_id: int) -> Response:
+    event = get_object_or_404(Event, id=event_id)
+    return Response(
+        {
+            "total_revenue": event.total_revenue + event.paid_deposit,
+            "ticket_revenue": event.total_revenue,
+            "deposit": event.paid_deposit,
+            "tickets_sold": event.tickets_bought,
         }
     )

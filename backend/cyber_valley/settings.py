@@ -279,6 +279,11 @@ CONTRACTS_INFO: Final = (
         / "ethereum_artifacts/contracts/CyberValleyEventManager.sol"
         / "CyberValleyEventManager.json"
     ),
+    (
+        BASE_DIR
+        / "ethereum_artifacts/contracts/DynamicRevenueSplitter.sol"
+        / "DynamicRevenueSplitter.json"
+    ),
 )
 
 IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])

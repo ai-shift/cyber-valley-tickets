@@ -1,3 +1,6 @@
+ -include .env.example
+ -include .env
+
 install:
 	@command -v uv >/dev/null 2>&1 || { \
 		echo "Installing uv..."; \

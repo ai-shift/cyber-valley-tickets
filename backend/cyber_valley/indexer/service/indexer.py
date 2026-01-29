@@ -21,13 +21,19 @@ from web3.types import LogReceipt, LogsSubscriptionArg
 
 from ..models import LastProcessedBlock, LogProcessingError
 from ._sync import synchronize_event
-from .events import CyberValleyEventManager, CyberValleyEventTicket, SimpleERC20Xylose
+from .events import (
+    CyberValleyEventManager,
+    CyberValleyEventTicket,
+    DynamicRevenueSplitter,
+    SimpleERC20Xylose,
+)
 
 log = logging.getLogger(__name__)
 
 _EVENTS_MODULES: Final = (
     CyberValleyEventManager,
     CyberValleyEventTicket,
+    DynamicRevenueSplitter,
     SimpleERC20Xylose,
 )
 

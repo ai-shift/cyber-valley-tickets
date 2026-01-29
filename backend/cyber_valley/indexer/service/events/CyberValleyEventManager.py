@@ -72,16 +72,6 @@ class EventUpdated(BaseModel):
     size: int
 
 
-class FundsDistributed(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    master: str
-    master_amount: int = Field(..., alias="masterAmount")
-    provider_amount: int = Field(..., alias="providerAmount")
-    provider: str
-
-
 class NewEventPlaceRequest(BaseModel):
     model_config = ConfigDict(
         frozen=True,
@@ -145,6 +135,30 @@ class RoleRevoked(BaseModel):
     sender: str
 
 
+class TicketCategoryCreated(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    category_id: int = Field(..., alias="categoryId")
+    event_id: int = Field(..., alias="eventId")
+    name: str
+    discount_percentage: int = Field(..., alias="discountPercentage")
+    quota: int
+    has_quota: bool = Field(..., alias="hasQuota")
+
+
+class TicketCategoryUpdated(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    category_id: int = Field(..., alias="categoryId")
+    event_id: int = Field(..., alias="eventId")
+    name: str
+    discount_percentage: int = Field(..., alias="discountPercentage")
+    quota: int
+    has_quota: bool = Field(..., alias="hasQuota")
+
+
 class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
@@ -159,7 +173,6 @@ class CyberValleyEvents(BaseModel):
         None, alias="EventTicketVerified"
     )
     event_updated: EventUpdated | None = Field(None, alias="EventUpdated")
-    funds_distributed: FundsDistributed | None = Field(None, alias="FundsDistributed")
     new_event_place_request: NewEventPlaceRequest | None = Field(
         None, alias="NewEventPlaceRequest"
     )
@@ -167,3 +180,9 @@ class CyberValleyEvents(BaseModel):
     role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
+    ticket_category_created: TicketCategoryCreated | None = Field(
+        None, alias="TicketCategoryCreated"
+    )
+    ticket_category_updated: TicketCategoryUpdated | None = Field(
+        None, alias="TicketCategoryUpdated"
+    )

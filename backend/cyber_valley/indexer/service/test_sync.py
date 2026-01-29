@@ -88,7 +88,6 @@ def test_sync_new_event_request(user: UserType, event_place: EventPlace) -> None
             "creator": user.address,
             "eventPlaceId": event_place.id,
             "ticketPrice": 150,
-            "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 5,
             "digest": multihash.digest,
@@ -118,7 +117,6 @@ def test_sync_new_event_request_event_place_not_found(user: UserType) -> None:
             "creator": user.address,
             "eventPlaceId": 999,
             "ticketPrice": 150,
-            "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 5,
             "digest": HexBytes(
@@ -164,7 +162,6 @@ def test_sync_event_updated(event: Event) -> None:
             "id": event.id,
             "eventPlaceId": new_event_place.id,
             "ticketPrice": 200,
-            "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
             "digest": multihash.digest,
@@ -188,7 +185,6 @@ def test_sync_event_updated_event_not_found(event_place: EventPlace) -> None:
             "id": 999,
             "eventPlaceId": event_place.id,
             "ticketPrice": 200,
-            "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
             "digest": HexBytes(
@@ -212,7 +208,6 @@ def test_sync_event_updated_event_place_not_found(event: Event) -> None:
             "id": event.id,
             "eventPlaceId": 999,
             "ticketPrice": 200,
-            "cancelDate": 1678886400,
             "startDate": 1679059200,
             "daysAmount": 7,
             "digest": HexBytes(

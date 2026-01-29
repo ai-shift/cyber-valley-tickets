@@ -24,6 +24,7 @@ class EventPlace(models.Model):
     min_days = models.PositiveSmallIntegerField(null=False)
     geometry = models.JSONField(null=False)
     days_before_cancel = models.PositiveSmallIntegerField(null=False)
+    custom_event_deposit = models.PositiveIntegerField(default=0)
     available = models.BooleanField(null=False, default=True)
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default="submitted", null=False
@@ -50,6 +51,8 @@ class Event(models.Model):
     tickets_bought = models.PositiveSmallIntegerField(null=False)
     start_date = models.DateTimeField(null=False)
     days_amount = models.PositiveSmallIntegerField(null=False)
+    paid_deposit = models.PositiveIntegerField(default=0)
+    total_revenue = models.PositiveIntegerField(default=0)
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default="submitted", null=False
     )
@@ -68,6 +71,12 @@ class Ticket(models.Model):
     event = models.ForeignKey(
         Event, on_delete=models.CASCADE, related_name="tickets", null=False
     )
+    category = models.ForeignKey(
+        "TicketCategory",
+        on_delete=models.SET_NULL,
+        related_name="tickets",
+        null=True,
+    )
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="tickets", null=False
     )
@@ -80,3 +89,35 @@ class Ticket(models.Model):
 
     class Meta:
         unique_together = ("event", "owner")
+
+
+class TicketCategory(models.Model):
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name="categories", null=False
+    )
+    category_id = models.PositiveIntegerField()
+    name = models.CharField(max_length=100)
+    discount = models.PositiveSmallIntegerField()
+    quota = models.PositiveIntegerField()
+    has_quota = models.BooleanField(default=False)
+    tickets_bought = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ("event", "category_id")
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.category_id})"
+
+
+class Referral(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="referrals")
+    ticket = models.OneToOneField(
+        Ticket, on_delete=models.CASCADE, related_name="referral"
+    )
+    referrer = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="referrals_given"
+    )
+    referee = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="referrals_received"
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)

@@ -12,14 +12,18 @@ from django.utils import timezone
 from pydantic import BaseModel
 from returns.result import safe
 
-from cyber_valley.events.models import Event, EventPlace, Ticket
+from cyber_valley.events.models import Event, EventPlace, Ticket, TicketCategory
 from cyber_valley.notifications.helpers import send_notification
 from cyber_valley.telegram_bot.verification_helpers import (
     send_all_pending_verifications_to_provider,
 )
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
-from .events import CyberValleyEventManager, CyberValleyEventTicket
+from .events import (
+    CyberValleyEventManager,
+    CyberValleyEventTicket,
+    DynamicRevenueSplitter,
+)
 
 log = logging.getLogger(__name__)
 
@@ -62,18 +66,31 @@ def synchronize_event(event_data: BaseModel) -> None:
             _sync_ticket_redeemed(event_data)
             log.info("Ticket redeemed")
         case (
-            CyberValleyEventTicket.RoleGranted() | CyberValleyEventManager.RoleGranted()
+            CyberValleyEventTicket.RoleGranted()
+            | CyberValleyEventManager.RoleGranted()
+            | DynamicRevenueSplitter.RoleGranted()
         ):
             _sync_role_granted(event_data)
             log.info("Role granted")
-        case CyberValleyEventManager.RoleAdminChanged():
+        case (
+            CyberValleyEventManager.RoleAdminChanged()
+            | DynamicRevenueSplitter.RoleAdminChanged()
+        ):
             pass
-        case CyberValleyEventManager.RoleRevoked():
+        case (
+            CyberValleyEventManager.RoleRevoked() | DynamicRevenueSplitter.RoleRevoked()
+        ):
             _sync_role_revoked(event_data)
-            log.info("Ticket redeemed")
-        case CyberValleyEventManager.FundsDistributed():
-            _sync_funds_ditributed(event_data)
-            log.info("Funds distributed")
+            log.info("Role revoked")
+        case DynamicRevenueSplitter.RevenueDistributed():
+            _sync_revenue_distributed(event_data)
+            log.info("Revenue distributed")
+        case CyberValleyEventManager.TicketCategoryCreated():
+            _sync_ticket_category_created(event_data)
+            log.info("Ticket category created")
+        case CyberValleyEventManager.TicketCategoryUpdated():
+            _sync_ticket_category_updated(event_data)
+            log.info("Ticket category updated")
         case CyberValleyEventTicket.Transfer():
             pass
         case _:
@@ -299,7 +316,8 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
 
     if created:
         event.tickets_bought += 1
-        event.save()
+        event.total_revenue += event.ticket_price
+        event.save(update_fields=["tickets_bought", "total_revenue"])
 
         send_notification(
             user=owner,
@@ -394,9 +412,10 @@ def _send_pending_verifications_to_new_provider(user: CyberValleyUser) -> None:
 @transaction.atomic
 def _sync_role_granted(
     event_data: CyberValleyEventManager.RoleGranted
-    | CyberValleyEventTicket.RoleGranted,
+    | CyberValleyEventTicket.RoleGranted
+    | DynamicRevenueSplitter.RoleGranted,
 ) -> None:
-    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE"):
+    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE", "ADMIN_ROLE"):
         return
 
     user_role = ROLE_MAPPING.get(event_data.role)
@@ -433,9 +452,10 @@ def _sync_role_granted(
 @transaction.atomic
 def _sync_role_revoked(
     event_data: CyberValleyEventManager.RoleRevoked
-    | CyberValleyEventTicket.RoleRevoked,
+    | CyberValleyEventTicket.RoleRevoked
+    | DynamicRevenueSplitter.RoleRevoked,
 ) -> None:
-    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE"):
+    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE", "ADMIN_ROLE"):
         return
 
     revoked_role = ROLE_MAPPING.get(event_data.role)
@@ -464,21 +484,15 @@ def _sync_role_revoked(
         )
 
 
-def _sync_funds_ditributed(evt: CyberValleyEventManager.FundsDistributed) -> None:
-    master = CyberValleyUser.objects.get(address=evt.master)
+def _sync_revenue_distributed(evt: DynamicRevenueSplitter.RevenueDistributed) -> None:
+    event = Event.objects.get(id=evt.event_id)
     send_notification(
-        user=master,
-        title="Funds distributed",
+        user=event.creator,
+        title="Revenue distributed",
         body=(
-            f"Earned {evt.master_amount}\n"
-            f"Sent to LocalProvider({evt.provider}) {evt.provider_amount}"
+            "Revenue for event "
+            f"{event.title} was distributed. Total amount: {evt.amount}"
         ),
-    )
-    provider = CyberValleyUser.objects.get(address=evt.provider)
-    send_notification(
-        user=provider,
-        title="Funds distributed",
-        body=(f"Earned {evt.provider_amount}"),
     )
 
 
@@ -501,3 +515,43 @@ def _multihash2cid(multihash: MultihashLike) -> None | str:
     multihash_bytes = bytes([hash_function, size]) + hash_bytes
 
     return base58.b58encode(multihash_bytes).decode("utf-8")
+
+
+def _sync_ticket_category_created(
+    event_data: CyberValleyEventManager.TicketCategoryCreated,
+) -> None:
+    event = Event.objects.get(id=event_data.event_id)
+
+    TicketCategory.objects.update_or_create(
+        event=event,
+        category_id=event_data.category_id,
+        defaults={
+            "name": event_data.name,
+            "discount": event_data.discount_percentage,
+            "quota": event_data.quota if event_data.has_quota else 0,
+            "has_quota": event_data.has_quota,
+        },
+    )
+
+
+def _sync_ticket_category_updated(
+    event_data: CyberValleyEventManager.TicketCategoryUpdated,
+) -> None:
+    try:
+        category = TicketCategory.objects.get(
+            category_id=event_data.category_id,
+            event_id=event_data.event_id,
+        )
+    except TicketCategory.DoesNotExist:
+        log.warning(
+            "Category %s for event %s not found, skipping update",
+            event_data.category_id,
+            event_data.event_id,
+        )
+        return
+
+    category.name = event_data.name
+    category.discount = event_data.discount_percentage
+    category.quota = event_data.quota if event_data.has_quota else 0
+    category.has_quota = event_data.has_quota
+    category.save(update_fields=["name", "discount", "quota", "has_quota"])
