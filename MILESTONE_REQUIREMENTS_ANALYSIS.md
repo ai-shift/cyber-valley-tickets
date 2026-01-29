@@ -328,6 +328,7 @@ uint256 public defaultProfileId;
 **Required:** Show Instagram or ENS instead of Ethereum address
 
 #### ENS Resolution Integration (2h)
+- [ ] @naqerl Check this commit 99034f5 in dev. The hook should work. Maybe the issue in something else.
 - [ ] @redmoor Implement ENS lookup service (using ethers.js)
 - [ ] @redmoor Add caching layer for ENS lookups
 - [ ] @redmoor Handle reverse resolution (address → ENS name)
