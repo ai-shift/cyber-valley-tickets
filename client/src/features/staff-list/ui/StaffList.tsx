@@ -3,12 +3,20 @@ import { userQueries } from "@/entities/user";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
+import { SearchBar } from "@/shared/ui/SearchBar";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { RemoveStaffBtn } from "./RemoveStaffBtn";
 
 export const StaffList: React.FC = () => {
-  const { data: users, isLoading, error } = useQuery(userQueries.staff());
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || undefined;
+  const {
+    data: users,
+    isLoading,
+    error,
+  } = useQuery(userQueries.staff(searchQuery));
   const { removedStaff, addedStaff } = useStaffState();
 
   const addresses = users?.map((user) => user.address) ?? [];
@@ -28,16 +36,19 @@ export const StaffList: React.FC = () => {
     );
 
   return (
-    <ul className="divide-y divide-secondary/60 py-2">
-      {uniqueAddresses.map((address) => (
-        <ManageItem
-          key={address}
-          title={formatAddress(address as `0x${string}`)}
-          render={() => [
-            <RemoveStaffBtn key={address} staffAddress={address} />,
-          ]}
-        />
-      ))}
-    </ul>
+    <div className="flex flex-col gap-4">
+      <SearchBar placeholder="Search staff by address or socials..." />
+      <ul className="divide-y divide-secondary/60 py-2">
+        {uniqueAddresses.map((address) => (
+          <ManageItem
+            key={address}
+            title={formatAddress(address as `0x${string}`)}
+            render={() => [
+              <RemoveStaffBtn key={address} staffAddress={address} />,
+            ]}
+          />
+        ))}
+      </ul>
+    </div>
   );
 };
