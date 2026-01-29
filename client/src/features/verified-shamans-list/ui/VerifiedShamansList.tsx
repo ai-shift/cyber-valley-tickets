@@ -3,16 +3,20 @@ import { useVerifiedShamanState } from "@/entities/verifiedshaman/model/slice";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
+import { SearchBar } from "@/shared/ui/SearchBar";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { RemoveVerifiedShamanBtn } from "./RemoveVerifiedShamanBtn";
 
 export const VerifiedShamansList: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || undefined;
   const {
     data: users,
     isLoading,
     error,
-  } = useQuery(userQueries.verifiedShamans());
+  } = useQuery(userQueries.verifiedShamans(searchQuery));
 
   const { removedVerifiedShaman, addedVerifiedShaman } =
     useVerifiedShamanState();
@@ -36,16 +40,19 @@ export const VerifiedShamansList: React.FC = () => {
   ];
 
   return (
-    <ul className="divide-y divide-secondary/60 py-2">
-      {uniqueAddresses.map((address) => (
-        <ManageItem
-          key={address}
-          title={formatAddress(address as `0x${string}`)}
-          render={() => [
-            <RemoveVerifiedShamanBtn key={address} shamanAddress={address} />,
-          ]}
-        />
-      ))}
-    </ul>
+    <div className="flex flex-col gap-4">
+      <SearchBar placeholder="Search verified shamans by address or socials..." />
+      <ul className="divide-y divide-secondary/60 py-2">
+        {uniqueAddresses.map((address) => (
+          <ManageItem
+            key={address}
+            title={formatAddress(address as `0x${string}`)}
+            render={() => [
+              <RemoveVerifiedShamanBtn key={address} shamanAddress={address} />,
+            ]}
+          />
+        ))}
+      </ul>
+    </div>
   );
 };

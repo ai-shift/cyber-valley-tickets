@@ -6,6 +6,8 @@ import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
+import { SearchBar } from "@/shared/ui/SearchBar";
+import { useSearchParams } from "react-router";
 
 type EventsListProps = {
   limit?: number;
@@ -13,7 +15,13 @@ type EventsListProps = {
 };
 
 export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
-  const { data: events, error, isLoading } = useQuery(eventQueries.list());
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || undefined;
+  const {
+    data: events,
+    error,
+    isLoading,
+  } = useQuery(eventQueries.list(searchQuery));
   const { user } = useAuthSlice();
 
   const maybeUser = user ?? ({ role: "customer" } as User);
@@ -27,15 +35,18 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
     : events;
   const limitedEvents = limit ? displayEvents.slice(0, limit) : displayEvents;
 
-  if (limitedEvents.length <= 0) {
-    return <p className="text-center text-secondary/60">No events!</p>;
-  }
-
   return (
-    <div className={"flex flex-col gap-6 px-3"}>
-      {limitedEvents.map((event) => (
-        <EventCard key={event.id} event={event} />
-      ))}
+    <div className="flex flex-col gap-4">
+      <SearchBar placeholder="Search events by title, place, or creator..." />
+      {limitedEvents.length <= 0 ? (
+        <p className="text-center text-secondary/60">No events!</p>
+      ) : (
+        <div className="flex flex-col gap-6 px-3">
+          {limitedEvents.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
