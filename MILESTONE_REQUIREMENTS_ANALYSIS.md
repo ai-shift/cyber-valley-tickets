@@ -598,29 +598,29 @@ var githubProjects = map[string]int{
 ### Implementation Tasks
 
 #### Backend Search Implementation (2.5h)
-- [ ] @naqerl Add search query parameters to 7 list endpoints
-- [ ] @naqerl Implement multi-field search using Django Q objects
-- [ ] @naqerl Add search for Events list (title, place name, creator)
-- [ ] @naqerl Add search for Event Places list (name, provider)
-- [ ] @naqerl Add search for Verified Shamans list (address, Instagram, Telegram)
-- [ ] @naqerl Add search for Local Providers list (address, Instagram, Telegram)
-- [ ] @naqerl Add search for Staff list (address, Instagram, Telegram)
-- [ ] @naqerl Add search for Notifications list (title, body)
-- [ ] @naqerl Add search for Event attendees list (address, Instagram, Telegram)
-- [ ] @naqerl Test search across all entity types
+- [x] @naqerl Add search query parameters to 7 list endpoints
+- [x] @naqerl Implement multi-field search using Django Q objects
+- [x] @naqerl Add search for Events list (title, place name, creator)
+- [x] @naqerl Add search for Event Places list (name, provider)
+- [x] @naqerl Add search for Verified Shamans list (address, Instagram, Telegram)
+- [x] @naqerl Add search for Local Providers list (address, Instagram, Telegram)
+- [x] @naqerl Add search for Staff list (address, Instagram, Telegram)
+- [x] @naqerl Add search for Notifications list (title, body)
+- [x] @naqerl Add search for Event attendees list (address, Instagram, Telegram)
+- [x] @naqerl Test search across all entity types
 
 #### Frontend Search UI (3.5h)
-- [ ] @redmoor Create reusable SearchBar component with debouncing (300ms)
-- [ ] @redmoor Integrate SearchBar into Events list
-- [ ] @redmoor Integrate SearchBar into Event Places list
-- [ ] @redmoor Integrate SearchBar into Verified Shamans list
-- [ ] @redmoor Integrate SearchBar into Local Providers list
-- [ ] @redmoor Integrate SearchBar into Staff list
-- [ ] @redmoor Integrate SearchBar into Notifications list
-- [ ] @redmoor Integrate SearchBar into Event attendees list
-- [ ] @redmoor Add clear search button (X icon)
-- [ ] @redmoor Manage search state with React Query
-- [ ] @redmoor Add loading indicator during search
+- [x] @redmoor Create reusable SearchBar component with debouncing (300ms)
+- [x] @redmoor Integrate SearchBar into Events list
+- [x] @redmoor Integrate SearchBar into Event Places list
+- [x] @redmoor Integrate SearchBar into Verified Shamans list
+- [x] @redmoor Integrate SearchBar into Local Providers list
+- [x] @redmoor Integrate SearchBar into Staff list
+- [x] @redmoor Integrate SearchBar into Notifications list
+- [x] @redmoor Integrate SearchBar into Event attendees list
+- [x] @redmoor Add clear search button (X icon)
+- [x] @redmoor Manage search state with React Query
+- [x] @redmoor Add loading indicator during search
 
 ---
 
