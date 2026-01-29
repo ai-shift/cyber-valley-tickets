@@ -23,17 +23,17 @@
 ### Implementation Tasks
 
 #### Smart Contract Modifications (5h)
-- [ ] @naqerl Add `TicketCategory` struct to EventManager
-- [ ] @naqerl Implement `createCategory` function with permission checks
-- [ ] @naqerl Implement `updateCategory` function
-- [ ] @naqerl Modify `mintTicket` to support categories and discounts
+- [x] @naqerl Add `TicketCategory` struct to EventManager
+- [x] @naqerl Implement `createCategory` function with permission checks
+- [x] @naqerl Implement `updateCategory` function
+- [x] @naqerl Modify `mintTicket` to support categories and discounts
 
 #### Contract Tests (3.5h)
-- [ ] @naqerl Test category creation/updates
-- [ ] @naqerl Test quota enforcement
-- [ ] @naqerl Test discount calculation
-- [ ] @naqerl Test edge cases (unlimited quota, multiple buyers)
-- [ ] @naqerl Test permission checks (VERIFIED_SHAMAN, LOCAL_PROVIDER)
+- [x] @naqerl Test category creation/updates
+- [x] @naqerl Test quota enforcement
+- [x] @naqerl Test discount calculation
+- [x] @naqerl Test edge cases (unlimited quota, multiple buyers)
+- [x] @naqerl Test permission checks (VERIFIED_SHAMAN, LOCAL_PROVIDER)
 
 #### Backend Indexer (2h)
 - [ ] @naqerl Index `TicketCategoryCreated` events
@@ -178,30 +178,30 @@
 ### Implementation Tasks
 
 #### DynamicRevenueSplitter Contract (5h)
-- [ ] @naqerl Create contract with immutable cyberiaDAO and cvePtPma addresses
-- [ ] @naqerl Define fixed share constants (10% CyberiaDAO, 5% CVE PT PMA, 85% flexible)
-- [ ] @naqerl Implement Distribution struct and profile mappings
-- [ ] @naqerl Implement `createDistributionProfile` function
-- [ ] @naqerl Implement `updateDistributionProfile` function
-- [ ] @naqerl Implement `setDefaultProfile` and `setEventProfile` functions
-- [ ] @naqerl Implement `distributeRevenue` main function (pull funds, split, distribute)
-- [ ] @naqerl Implement `_distributeFlexible` internal function
-- [ ] @naqerl Add profile validation (shares sum to 10000)
+- [x] @naqerl Create contract with immutable cyberiaDAO and cvePtPma addresses
+- [x] @naqerl Define fixed share constants (10% CyberiaDAO, 5% CVE PT PMA, 85% flexible)
+- [x] @naqerl Implement Distribution struct and profile mappings
+- [x] @naqerl Implement `createDistributionProfile` function
+- [x] @naqerl Implement `updateDistributionProfile` function
+- [x] @naqerl Implement `setDefaultProfile` and `setEventProfile` functions
+- [x] @naqerl Implement `distributeRevenue` main function (pull funds, split, distribute)
+- [x] @naqerl Implement `_distributeFlexible` internal function
+- [x] @naqerl Add profile validation (shares sum to 10000)
 
 #### Integration with EventManager (1h)
-- [ ] @naqerl Add `revenueSplitter` state variable to EventManager
-- [ ] @naqerl Implement `setRevenueSplitter` function (admin only)
-- [ ] @naqerl Update `distributeEventFunds` to approve and call splitter
-- [ ] @naqerl Remove old master/provider distribution logic from EventManager
-- [ ] @naqerl Remove masterShare state variable (no longer needed)
+- [x] @naqerl Add `revenueSplitter` state variable to EventManager
+- [x] @naqerl Implement `setRevenueSplitter` function (admin only)
+- [x] @naqerl Update `distributeEventFunds` to approve and call splitter
+- [x] @naqerl Remove old master/provider distribution logic from EventManager
+- [x] @naqerl Remove masterShare state variable (no longer needed)
 
 #### Testing (3h)
-- [ ] @naqerl Test profile creation and updates
-- [ ] @naqerl Test distribution calculations (10%, 5%, 85% splits)
-- [ ] @naqerl Test event-specific profiles vs default profile
-- [ ] @naqerl Test edge cases (zero amounts, single recipient, many recipients)
-- [ ] @naqerl Test flexible portion distribution to local provider, shaman, sales, partners
-- [ ] @naqerl Integration tests with EventManager
+- [x] @naqerl Test profile creation and updates
+- [x] @naqerl Test distribution calculations (10%, 5%, 85% splits)
+- [x] @naqerl Test event-specific profiles vs default profile
+- [x] @naqerl Test edge cases (zero amounts, single recipient, many recipients)
+- [x] @naqerl Test flexible portion distribution to local provider, shaman, sales, partners
+- [x] @naqerl Integration tests with EventManager
 
 ---
 
