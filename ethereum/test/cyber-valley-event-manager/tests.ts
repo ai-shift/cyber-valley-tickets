@@ -51,7 +51,7 @@ describe("CyberValleyEventManager", () => {
     testStartBlock = await provider.getBlockNumber();
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     const currentBlock = await provider.getBlockNumber();
     const txHashes: string[] = [];
 
@@ -63,7 +63,9 @@ describe("CyberValleyEventManager", () => {
     for (let i = testStartBlock + 1; i <= currentBlock; i++) {
       const block = await provider.getBlock(i, true);
       if (block && block.transactions.length > 0) {
-        console.log(`\nBlock ${i} (${block.transactions.length} transactions):`);
+        console.log(
+          `\nBlock ${i} (${block.transactions.length} transactions):`,
+        );
         for (const txHash of block.transactions) {
           const tx = await provider.getTransaction(txHash as string);
           if (tx) {
@@ -79,27 +81,51 @@ describe("CyberValleyEventManager", () => {
     console.log(`\nTotal transactions in test: ${txHashes.length}`);
     console.log(`${"=".repeat(80)}\n`);
   });
-  describe("setMasterShare", () => {
-    itExpectsOnlyMaster("setMasterShare", [50]);
 
-    it("sets master share value", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
-      await eventManager.connect(master).setMasterShare(75);
-      expect(await eventManager.masterShare()).to.equal(75);
+  async function createSubmittedEvent() {
+    const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+      await loadFixture(deployContract);
+    await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+    await ERC20.connect(creator).approve(
+      await eventManager.getAddress(),
+      eventRequestSubmitionPrice,
+    );
+    const { eventPlaceId } = await createEventPlace(
+      eventManager,
+      verifiedShaman,
+      localProvider,
+      {},
+    );
+    const { getEventId } = await submitEventRequest(eventManager, creator, {
+      eventPlaceId,
+      startDate: await timestamp(10),
+    });
+    const eventId = await getEventId();
+    return {
+      eventManager,
+      ERC20,
+      verifiedShaman,
+      localProvider,
+      creator,
+      eventId,
+    };
+  }
+  describe("setRevenueSplitter", () => {
+    itExpectsOnlyMaster("setRevenueSplitter", [ethers.ZeroAddress]);
+
+    it("sets revenue splitter address", async () => {
+      const { eventManager, master, splitter } =
+        await loadFixture(deployContract);
+      const newSplitter = await splitter.getAddress();
+      await eventManager.connect(master).setRevenueSplitter(newSplitter);
+      expect(await eventManager.revenueSplitter()).to.equal(newSplitter);
     });
 
-    it("reverts when share is 0", async () => {
+    it("reverts when splitter is zero address", async () => {
       const { eventManager, master } = await loadFixture(deployContract);
       await expect(
-        eventManager.connect(master).setMasterShare(0),
-      ).to.be.revertedWith("share should be greater than 0");
-    });
-
-    it("reverts when share is greater than 100", async () => {
-      const { eventManager, master } = await loadFixture(deployContract);
-      await expect(
-        eventManager.connect(master).setMasterShare(101),
-      ).to.be.revertedWith("share should be less or equal to 100");
+        eventManager.connect(master).setRevenueSplitter(ethers.ZeroAddress),
+      ).to.be.revertedWith("Splitter address cannot be zero");
     });
   });
 
@@ -134,11 +160,15 @@ describe("CyberValleyEventManager", () => {
         .connect(master)
         .grantRole(VERIFIED_SHAMAN_ROLE, await localProvider.getAddress());
 
-      const tx = await eventManager.connect(localProvider).submitEventPlaceRequest(
-        ...submitEventPlaceRequestArgsToArray(defaultCreateEventPlaceRequest),
-      );
+      const tx = await eventManager
+        .connect(localProvider)
+        .submitEventPlaceRequest(
+          ...submitEventPlaceRequestArgsToArray(defaultCreateEventPlaceRequest),
+        );
 
-      const args = submitEventPlaceRequestArgsToArray(defaultCreateEventPlaceRequest);
+      const args = submitEventPlaceRequestArgsToArray(
+        defaultCreateEventPlaceRequest,
+      );
       await expect(tx)
         .to.emit(eventManager, "EventPlaceUpdated")
         .withArgs(
@@ -640,7 +670,7 @@ describe("CyberValleyEventManager", () => {
       );
       const tx = await eventManager
         .connect(owner)
-        .mintTicket(
+        ["mintTicket(uint256,bytes32,uint8,uint8)"](
           eventId,
           multihash.digest,
           multihash.hashFunction,
@@ -682,7 +712,7 @@ describe("CyberValleyEventManager", () => {
       );
       await eventManager
         .connect(owner)
-        .mintTicket(
+        ["mintTicket(uint256,bytes32,uint8,uint8)"](
           eventId,
           multihash.digest,
           multihash.hashFunction,
@@ -691,7 +721,7 @@ describe("CyberValleyEventManager", () => {
       await expect(
         eventManager
           .connect(owner)
-          .mintTicket(
+          ["mintTicket(uint256,bytes32,uint8,uint8)"](
             eventId,
             multihash.digest,
             multihash.hashFunction,
@@ -733,7 +763,7 @@ describe("CyberValleyEventManager", () => {
       );
       const tx = await eventManager
         .connect(owner)
-        .mintTicket(
+        ["mintTicket(uint256,bytes32,uint8,uint8)"](
           eventId,
           multihash.digest,
           multihash.hashFunction,
@@ -781,7 +811,7 @@ describe("CyberValleyEventManager", () => {
       );
       const tx = eventManager
         .connect(owner)
-        .mintTicket(
+        ["mintTicket(uint256,bytes32,uint8,uint8)"](
           eventId,
           multihash.digest,
           multihash.hashFunction,
@@ -797,6 +827,175 @@ describe("CyberValleyEventManager", () => {
           multihash.hashFunction,
           multihash.size,
         );
+    });
+  });
+
+  describe("ticket categories", () => {
+    itExpectsOnlyVerifiedShaman("createCategory", [
+      BigInt(0),
+      "Families",
+      1000,
+      10,
+      true,
+    ]);
+
+    it("reverts creating category after event is approved", async () => {
+      const { eventManager, verifiedShaman, localProvider, eventId } =
+        await createSubmittedEvent();
+      await eventManager.connect(localProvider).approveEvent(eventId);
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "Families", 1000, 10, true),
+      ).to.be.revertedWith("Event must be in submitted state");
+    });
+
+    it("allows one unlimited category per event", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice * 2n);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice * 2n,
+      );
+      const { eventPlaceId } = await createEventPlace(
+        eventManager,
+        verifiedShaman,
+        localProvider,
+        {},
+      );
+      const { getEventId: getFirstEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        {
+          eventPlaceId,
+          startDate: await timestamp(10),
+        },
+      );
+      const { getEventId: getSecondEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        {
+          eventPlaceId,
+          startDate: await timestamp(20),
+        },
+      );
+      const firstEventId = await getFirstEventId();
+      const secondEventId = await getSecondEventId();
+
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(firstEventId, "Regular", 0, 0, false);
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(secondEventId, "Regular", 0, 0, false),
+      ).to.not.be.reverted;
+    });
+
+    it("applies discount for unlimited categories", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
+      const { eventPlaceId } = await createEventPlace(
+        eventManager,
+        verifiedShaman,
+        localProvider,
+        {},
+      );
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { getEventId } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+        startDate: await timestamp(10),
+        ticketPrice: 100,
+      });
+      const eventId = await getEventId();
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Regular", 1000, 0, false);
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      await ERC20.connect(owner).mint(90);
+      await ERC20.connect(owner).approve(await eventManager.getAddress(), 90);
+      await expect(
+        eventManager
+          .connect(owner)
+          ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+            eventId,
+            0,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          ),
+      ).to.changeTokenBalances(
+        ERC20,
+        [await eventManager.getAddress(), await owner.getAddress()],
+        [90, -90],
+      );
+    });
+
+    it("enforces quota for limited categories", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
+      const { eventPlaceId } = await createEventPlace(
+        eventManager,
+        verifiedShaman,
+        localProvider,
+        {},
+      );
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { getEventId } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+        startDate: await timestamp(10),
+        ticketPrice: 100,
+      });
+      const eventId = await getEventId();
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Families", 0, 1, true);
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      await ERC20.connect(owner).mint(200);
+      await ERC20.connect(owner).approve(await eventManager.getAddress(), 200);
+      await eventManager
+        .connect(owner)
+        ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+          eventId,
+          0,
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          18,
+          32,
+        );
+      await expect(
+        eventManager
+          .connect(owner)
+          ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+            eventId,
+            0,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          ),
+      ).to.be.revertedWith("Category quota exceeded");
     });
   });
 
@@ -957,6 +1156,7 @@ describe("CyberValleyEventManager", () => {
         verifiedShaman,
         localProvider,
         creator,
+        staff,
       } = await loadFixture(deployContract);
       const { tx } = await createAndCloseEvent(
         eventManager,
@@ -967,17 +1167,20 @@ describe("CyberValleyEventManager", () => {
         {},
       );
       const totalFunds = Number(eventRequestSubmitionPrice);
-      const masterAmount = Math.floor((totalFunds * 50) / 100);
-      const remainder = totalFunds - masterAmount;
-      const providerAmount = Math.floor((remainder * 100) / 100);
+      // Fixed: 10% (10) to master, 5% (5) to staff
+      // Flexible: 85% (85) to localProvider
+      const masterAmount = 10;
+      const staffAmount = 5;
+      const providerAmount = 85;
       await expect(tx).to.changeTokenBalances(
         ERC20,
         [
           await master.getAddress(),
+          await staff.getAddress(),
           await localProvider.getAddress(),
           await eventManager.getAddress(),
         ],
-        [masterAmount, providerAmount, -(masterAmount + providerAmount)],
+        [masterAmount, staffAmount, providerAmount, -totalFunds],
       );
     });
   });
@@ -999,6 +1202,68 @@ describe("CyberValleyEventManager", () => {
       await expect(tx)
         .to.emit(eventManager, "EventStatusChanged")
         .withArgs(request.eventId, 3);
+    });
+
+    it("refunds discounted ticket price", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { eventPlaceId } = await createEventPlace(
+        eventManager,
+        verifiedShaman,
+        localProvider,
+      );
+      const { getEventId } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+        ticketPrice: 100,
+        startDate: await timestamp(10),
+      });
+      const eventId = await getEventId();
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Families", 1000, 10, true);
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      const discountedPrice = 90n;
+      await ERC20.connect(owner).mint(discountedPrice);
+      await ERC20.connect(owner).approve(
+        await eventManager.getAddress(),
+        discountedPrice,
+      );
+      await eventManager
+        .connect(owner)
+        ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+          eventId,
+          0,
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          18,
+          32,
+        );
+
+      const tx = await eventManager.connect(localProvider).cancelEvent(eventId);
+      await expect(tx).to.changeTokenBalances(
+        ERC20,
+        [
+          await eventManager.getAddress(),
+          await owner.getAddress(),
+          await localProvider.getAddress(),
+        ],
+        [
+          -(eventRequestSubmitionPrice + discountedPrice),
+          discountedPrice,
+          eventRequestSubmitionPrice,
+        ],
+      );
     });
 
     it("reverts to cancel cancelled event", async () => {
@@ -1176,7 +1441,7 @@ describe("CyberValleyEventManager", () => {
         for (let j = 0; j < ticketCount; j++) {
           await eventManager
             .connect(customer)
-            .mintTicket(
+            ["mintTicket(uint256,bytes32,uint8,uint8)"](
               eventId,
               multihash.digest,
               multihash.hashFunction,
@@ -1216,69 +1481,46 @@ describe("CyberValleyEventManager", () => {
   });
 
   describe("Fund Distribution", () => {
-    const testDistribution = async (
-      totalAmount: number,
-      masterSharePercent: number,
-      providerSharePercent: number,
-    ) => {
+    it("distributes funds through DynamicRevenueSplitter on closeEvent", async () => {
       const {
         ERC20,
         eventManager,
-        eventTicket,
+        splitter,
         master,
+        staff,
         verifiedShaman,
         localProvider,
         creator,
-        staff,
+        owner,
       } = await loadFixture(deployContract);
 
-      await eventManager.connect(master).setMasterShare(masterSharePercent);
-      await eventManager
-        .connect(master)
-        .grantLocalProvider(
-          await localProvider.getAddress(),
-          providerSharePercent,
-        );
-
-      // Mint tokens for event submission (100 tokens)
-      await ERC20.connect(creator).mint(100);
+      // Setup event and tickets
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        100,
+        eventRequestSubmitionPrice,
       );
 
       const { eventPlaceId } = await createEventPlace(
         eventManager,
         verifiedShaman,
         localProvider,
-        {
-          maxTickets: 1000,
-          minTickets: 1,
-          minPrice: 1,
-        },
+        { maxTickets: 100, minTickets: 1, minPrice: 10 },
       );
 
-      // Submit event with ticket price = 1 token
-      const { tx: submitEventRequestTx, getEventId } = await submitEventRequest(
+      const { tx: submitTx, getEventId } = await submitEventRequest(
         eventManager,
         creator,
-        {
-          eventPlaceId,
-          ticketPrice: 1,
-        },
+        { eventPlaceId, ticketPrice: 10 },
       );
-      await submitEventRequestTx;
+      await submitTx;
       const eventId = await getEventId();
-
       await eventManager.connect(localProvider).approveEvent(eventId);
 
-      // Buy exactly totalAmount tickets to reach the desired amount
-      await ERC20.connect(staff).mint(totalAmount);
-      await ERC20.connect(staff).approve(
-        await eventManager.getAddress(),
-        totalAmount,
-      );
-
+      // Buy 10 tickets @ 10 USDT = 100 USDT
+      const ticketPrice = 10;
+      const ticketCount = 10;
+      const totalTicketCost = ticketPrice * ticketCount;
       const multihash = {
         digest:
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -1286,10 +1528,15 @@ describe("CyberValleyEventManager", () => {
         size: 32,
       };
 
-      for (let i = 0; i < totalAmount; i++) {
+      await ERC20.connect(owner).mint(totalTicketCost);
+      await ERC20.connect(owner).approve(
+        await eventManager.getAddress(),
+        totalTicketCost,
+      );
+      for (let i = 0; i < ticketCount; i++) {
         await eventManager
-          .connect(staff)
-          .mintTicket(
+          .connect(owner)
+          ["mintTicket(uint256,bytes32,uint8,uint8)"](
             eventId,
             multihash.digest,
             multihash.hashFunction,
@@ -1297,74 +1544,80 @@ describe("CyberValleyEventManager", () => {
           );
       }
 
+      // Total = 100 (tickets) + 100 (event request price from data.ts) = 200 USDT
+      const totalAmount = 200;
+
+      // Move time to allow closing
       await time.increase(100_000_000);
 
+      // Close event and check distribution
+      // Fixed: 10% (20) to master, 5% (10) to staff
+      // Flexible: 85% (170) to localProvider (set in helpers.ts default profile)
+
       const tx = await eventManager.connect(localProvider).closeEvent(eventId);
-
-      // Total funds = submission price (100) + ticket sales (totalAmount)
-      const actualTotalAmount = 100 + totalAmount;
-
-      const masterAmount = Math.floor(
-        (actualTotalAmount * masterSharePercent) / 100,
-      );
-      const remainder = actualTotalAmount - masterAmount;
-      const providerAmount = Math.floor(
-        (remainder * providerSharePercent) / 100,
-      );
-      const dust = actualTotalAmount - masterAmount - providerAmount;
-      const finalMasterAmount = masterAmount + dust;
 
       await expect(tx).to.changeTokenBalances(
         ERC20,
         [
           await master.getAddress(),
+          await staff.getAddress(),
           await localProvider.getAddress(),
           await eventManager.getAddress(),
         ],
-        [finalMasterAmount, providerAmount, -actualTotalAmount],
+        [20, 10, 170, -200],
       );
 
-      expect(finalMasterAmount + providerAmount).to.equal(actualTotalAmount);
-    };
-
-    it("distributes 100 tokens correctly (50/50 split)", async () => {
-      await testDistribution(100, 50, 100);
+      await expect(tx)
+        .to.emit(splitter, "RevenueDistributed")
+        .withArgs(totalAmount, eventId);
     });
 
-    it("distributes 1 token correctly (rounds to master)", async () => {
-      await testDistribution(1, 50, 100);
-    });
+    it("uses event-specific profile if set", async () => {
+      const {
+        ERC20,
+        eventManager,
+        splitter,
+        master,
+        staff,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
 
-    it("distributes 3 tokens correctly (odd number)", async () => {
-      await testDistribution(3, 50, 100);
-    });
+      const customer = owner;
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { eventPlaceId } = await createEventPlace(
+        eventManager,
+        verifiedShaman,
+        localProvider,
+      );
+      const { tx: submitTx, getEventId } = await submitEventRequest(
+        eventManager,
+        creator,
+        { eventPlaceId },
+      );
+      await submitTx;
+      const eventId = await getEventId();
+      await eventManager.connect(localProvider).approveEvent(eventId);
 
-    it("distributes 99 tokens correctly (large odd)", async () => {
-      await testDistribution(99, 50, 100);
-    });
+      // Create and set event-specific profile
+      await splitter
+        .connect(master)
+        .createDistributionProfile([await customer.getAddress()], [10000]);
+      await splitter.connect(master).setEventProfile(eventId, 2);
 
-    it("distributes with 30/70 master/provider split", async () => {
-      await testDistribution(100, 30, 100);
-    });
+      await time.increase(100_000_000);
+      const totalAmount = Number(eventRequestSubmitionPrice); // No tickets sold, just request price
 
-    it("distributes with 70/30 master/provider split", async () => {
-      await testDistribution(100, 70, 100);
-    });
+      const tx = await eventManager.connect(localProvider).closeEvent(eventId);
 
-    it("distributes with 33/50 master/provider split", async () => {
-      await testDistribution(100, 33, 50);
-    });
-
-    it("distributes random amount: 137 tokens", async () => {
-      await testDistribution(137, 50, 100);
-    });
-
-    it("distributes random amount: 271 tokens", async () => {
-      await testDistribution(271, 50, 100);
-    });
-
-    it("distributes with provider getting 25% of remainder", async () => {
-      await testDistribution(100, 50, 25);
+      // 85% of 100 = 85 to customer
+      await expect(tx).to.changeTokenBalance(ERC20, customer, 85);
     });
   });
 });
