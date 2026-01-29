@@ -13,24 +13,24 @@ export const userQueries = {
       queryFn: getCurrentUser,
       select: (queryData) => queryData?.data,
     }),
-  staff: () =>
+  staff: (search?: string) =>
     queryOptions({
-      queryKey: ["user", "list", "staff"],
-      queryFn: getUsersStaff,
+      queryKey: ["user", "list", "staff", search || ""],
+      queryFn: () => getUsersStaff(search),
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),
-  localproviders: () =>
+  localproviders: (search?: string) =>
     queryOptions({
-      queryKey: ["user", "list", "localproviders"],
-      queryFn: getUsersLocalproviders,
+      queryKey: ["user", "list", "localproviders", search || ""],
+      queryFn: () => getUsersLocalproviders(search),
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),
-  verifiedShamans: () =>
+  verifiedShamans: (search?: string) =>
     queryOptions({
-      queryKey: ["user", "list", "verifiedshamans"],
-      queryFn: getUsersVerifiedShamans,
+      queryKey: ["user", "list", "verifiedshamans", search || ""],
+      queryFn: () => getUsersVerifiedShamans(search),
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),

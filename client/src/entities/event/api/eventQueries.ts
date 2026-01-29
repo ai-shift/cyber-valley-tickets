@@ -2,10 +2,10 @@ import { queryOptions } from "@tanstack/react-query";
 import { getDetailEvent, getEvents } from "./queries";
 
 export const eventQueries = {
-  list: () =>
+  list: (search?: string) =>
     queryOptions({
-      queryKey: ["events", "lists"],
-      queryFn: getEvents,
+      queryKey: ["events", "lists", search || ""],
+      queryFn: () => getEvents(search),
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),
