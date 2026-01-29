@@ -1,8 +1,14 @@
 from datetime import UTC, datetime
 
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +19,19 @@ from .models import Notification
 from .serializers import NotificationSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search notifications by title or body",
+                required=False,
+            ),
+        ],
+    )
+)
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
     serializer_class = NotificationSerializer
     permission_classes = (IsAuthenticated,)
@@ -26,7 +45,13 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
     def get_queryset(self) -> QuerySet[Notification, Notification]:
         user = self.request.user
         assert user.is_authenticated  # XXX: Required for the MyPy check
-        return Notification.objects.filter(user=user).order_by("-created_at")
+        queryset = Notification.objects.filter(user=user).order_by("-created_at")
+        search_query = self.request.query_params.get("search", "")
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | Q(body__icontains=search_query)
+            )
+        return queryset
 
     @extend_schema(responses={204: OpenApiResponse()})
     @action(detail=False, methods=["post"], url_path="seen/(?P<notification_id>[^/.]+)")

@@ -1,7 +1,9 @@
 import ipfshttpclient
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Q
 from drf_spectacular.utils import (
+    OpenApiParameter,
     extend_schema,
 )
 from rest_framework import viewsets
@@ -37,7 +39,18 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
         serializer = CurrentUserSerializer(request.user)
         return Response(serializer.data)
 
-    @extend_schema(responses=StaffSerializer(many=True))
+    @extend_schema(
+        responses=StaffSerializer(many=True),
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search staff by address or social media handles",
+                required=False,
+            ),
+        ],
+    )
     @action(detail=False, methods=["get"], name="Current user")
     def staff(self, request: Request) -> Response:
         assert request.user.is_authenticated
@@ -47,26 +60,66 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
         ):
             return Response("Available only to local provider or master", status=401)
         staff = User.objects.filter(role=CyberValleyUser.STAFF)
+        search_query = request.query_params.get("search", "")
+        if search_query:
+            staff = staff.filter(
+                Q(address__icontains=search_query)
+                | Q(socials__value__icontains=search_query)
+            )
         serializer = CurrentUserSerializer(staff, many=True)
         return Response(serializer.data)
 
-    @extend_schema(responses=CurrentUserSerializer(many=True))
+    @extend_schema(
+        responses=CurrentUserSerializer(many=True),
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search local providers by address or social media handles",
+                required=False,
+            ),
+        ],
+    )
     @action(detail=False, methods=["get"], name="Local Providers")
     def local_providers(self, request: Request) -> Response:
         assert request.user.is_authenticated
         if request.user.role != CyberValleyUser.MASTER:
             return Response("Available only to master", status=401)
         local_providers = User.objects.filter(role=CyberValleyUser.LOCAL_PROVIDER)
+        search_query = request.query_params.get("search", "")
+        if search_query:
+            local_providers = local_providers.filter(
+                Q(address__icontains=search_query)
+                | Q(socials__value__icontains=search_query)
+            )
         serializer = CurrentUserSerializer(local_providers, many=True)
         return Response(serializer.data)
 
-    @extend_schema(responses=CurrentUserSerializer(many=True))
+    @extend_schema(
+        responses=CurrentUserSerializer(many=True),
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search verified shamans by address or social media handles",
+                required=False,
+            ),
+        ],
+    )
     @action(detail=False, methods=["get"], name="Verified Shamans")
     def verified_shamans(self, request: Request) -> Response:
         assert request.user.is_authenticated
         if request.user.role != CyberValleyUser.LOCAL_PROVIDER:
             return Response("Available only to local provider", status=401)
         verified_shamans = User.objects.filter(role=CyberValleyUser.VERIFIED_SHAMAN)
+        search_query = request.query_params.get("search", "")
+        if search_query:
+            verified_shamans = verified_shamans.filter(
+                Q(address__icontains=search_query)
+                | Q(socials__value__icontains=search_query)
+            )
         serializer = CurrentUserSerializer(verified_shamans, many=True)
         return Response(serializer.data)
 
