@@ -1,4 +1,7 @@
 import { EventsList, uniteFilter } from "@/features/events-list";
+import { SearchBar } from "@/shared/ui/SearchBar";
+
+const SEARCH_PARAM_NAME = "search";
 
 export const Home = () => {
   return (
@@ -9,7 +12,16 @@ export const Home = () => {
         </h1>
       </div>
       <section className="mt-8">
-        <EventsList filterFn={uniteFilter} />
+        <div className="flex flex-col gap-4">
+          <SearchBar
+            paramName={SEARCH_PARAM_NAME}
+            placeholder="Search events by title, place, or creator..."
+          />
+          <EventsList
+            filterFn={uniteFilter}
+            searchParamName={SEARCH_PARAM_NAME}
+          />
+        </div>
       </section>
     </div>
   );

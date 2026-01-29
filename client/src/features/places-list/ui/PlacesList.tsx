@@ -3,14 +3,20 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { NavigateUpdatePlace } from "../ui/NavigateUpdatePlace.tsx";
 import { ManageRequestedPlace } from "./ManageRequestedPlace.tsx";
 
 interface PlacesListProps {
-  searchQuery?: string;
+  searchParamName?: string;
 }
 
-export const PlacesList: React.FC<PlacesListProps> = ({ searchQuery }) => {
+export const PlacesList: React.FC<PlacesListProps> = ({
+  searchParamName = "search",
+}) => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get(searchParamName) || undefined;
+
   const {
     data: places,
     isLoading,

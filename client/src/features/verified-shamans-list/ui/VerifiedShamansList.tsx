@@ -5,15 +5,19 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { RemoveVerifiedShamanBtn } from "./RemoveVerifiedShamanBtn";
 
 interface VerifiedShamansListProps {
-  searchQuery?: string;
+  searchParamName?: string;
 }
 
 export const VerifiedShamansList: React.FC<VerifiedShamansListProps> = ({
-  searchQuery,
+  searchParamName = "search",
 }) => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get(searchParamName) || undefined;
+
   const {
     data: users,
     isLoading,

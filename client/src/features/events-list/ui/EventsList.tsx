@@ -6,18 +6,22 @@ import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
+import { useSearchParams } from "react-router";
 
 type EventsListProps = {
   limit?: number;
   filterFn?: (event: Event, user: User) => boolean;
-  searchQuery?: string;
+  searchParamName?: string;
 };
 
 export const EventsList: React.FC<EventsListProps> = ({
   limit,
   filterFn,
-  searchQuery,
+  searchParamName = "search",
 }) => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get(searchParamName) || undefined;
+
   const {
     data: events,
     error,
