@@ -15,6 +15,7 @@ import { ethers } from "hardhat";
 import type {
   CyberValleyEventManager,
   CyberValleyEventTicket,
+  DynamicRevenueSplitter,
   SimpleERC20Xylose,
 } from "../../typechain-types";
 import {
@@ -54,12 +55,14 @@ export type ContractsFixture = {
   ERC20: SimpleERC20Xylose & BaseContract;
   eventManager: CyberValleyEventManager & BaseContract;
   eventTicket: CyberValleyEventTicket & BaseContract;
+  splitter: DynamicRevenueSplitter & BaseContract;
   owner: Signer;
   master: Signer;
   localProvider: Signer;
   verifiedShaman: Signer;
   creator: Signer;
   staff: Signer;
+  signer: Signer;
 };
 
 const blockchainRestoreDisabled = process.env.DISABLE_BLOCKHAIN_RESTORE != null;
@@ -80,7 +83,7 @@ const loadFixture = blockchainRestoreDisabled
 export { loadFixture };
 
 export async function deployContract(): Promise<ContractsFixture> {
-  const [owner, master, localProvider, verifiedShaman, creator, staff] =
+  const [owner, master, localProvider, verifiedShaman, creator, staff, signer] =
     await ethers.getSigners();
   const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
@@ -95,6 +98,16 @@ export async function deployContract(): Promise<ContractsFixture> {
     master,
     "",
   );
+  const DynamicRevenueSplitterFactory = await ethers.getContractFactory(
+    "DynamicRevenueSplitter",
+  );
+  const splitter = await DynamicRevenueSplitterFactory.deploy(
+    await ERC20.getAddress(),
+    await master.getAddress(), // CyberiaDAO placeholder
+    await staff.getAddress(), // CVE PT PMA placeholder
+    await master.getAddress(), // admin
+  );
+
   const eventManager = await CyberValleyEventManagerFactory.deploy(
     await ERC20.getAddress(),
     await eventTicket.getAddress(),
@@ -105,10 +118,20 @@ export async function deployContract(): Promise<ContractsFixture> {
   await eventTicket
     .connect(master)
     .setEventManagerAddress(await eventManager.getAddress());
-  await eventManager.connect(master).setMasterShare(50);
+
   await eventManager
     .connect(master)
-    .grantLocalProvider(await localProvider.getAddress(), 100);
+    .setRevenueSplitter(await splitter.getAddress());
+
+  // Setup a default profile: 100% of flexible share goes to localProvider
+  await splitter
+    .connect(master)
+    .createDistributionProfile([await localProvider.getAddress()], [10000]);
+  await splitter.connect(master).setDefaultProfile(1);
+
+  await eventManager
+    .connect(master)
+    .grantLocalProvider(await localProvider.getAddress());
   const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
   await eventManager
     .connect(master)
@@ -121,12 +144,14 @@ export async function deployContract(): Promise<ContractsFixture> {
     ERC20,
     eventManager,
     eventTicket,
+    splitter,
     owner,
     master,
     localProvider,
     verifiedShaman,
     creator,
     staff,
+    signer,
   };
 }
 
@@ -445,13 +470,19 @@ export function itExpectsOnlyVerifiedShaman<
     const { eventManager, owner } = await loadFixture(deployContract);
     const method = eventManager[methodName];
     assert(method != null);
-    const verifiedShamanRole = await eventManager.VERIFIED_SHAMAN_ROLE();
-    await expect(method.apply(eventManager, request))
-      .to.be.revertedWithCustomError(
-        eventManager,
-        "AccessControlUnauthorizedAccount",
-      )
-      .withArgs(await owner.getAddress(), verifiedShamanRole);
+    if (methodName === "submitEventPlaceRequest") {
+      await expect(method.apply(eventManager, request)).to.be.revertedWith(
+        "access denied",
+      );
+    } else {
+      const verifiedShamanRole = await eventManager.VERIFIED_SHAMAN_ROLE();
+      await expect(method.apply(eventManager, request))
+        .to.be.revertedWithCustomError(
+          eventManager,
+          "AccessControlUnauthorizedAccount",
+        )
+        .withArgs(await owner.getAddress(), verifiedShamanRole);
+    }
   });
 }
 

@@ -1,6 +1,7 @@
 import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
+import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const BACKEND_EOA = "0xEd7f6CA6e91AaA3Ff2C3918B5cAF02FF449Ab3A4";
@@ -22,17 +23,33 @@ async function main() {
   });
   await eventTicket.setEventManagerAddress(await eventManager.getAddress());
 
+  const { splitter } = await hre.ignition.deploy(RevenueSplitterModule, {
+    parameters: {
+      DynamicRevenueSplitter: {
+        usdt: await erc20.getAddress(),
+        cyberiaDAO: MASTER_EOA, // Placeholder
+        cvePtPma: DEV_TEAM_EOA, // Placeholder
+        admin: MASTER_EOA,
+      },
+    },
+  });
+
   const [master, localProvider] = await hre.ethers.getSigners();
-  await eventManager.connect(master).setMasterShare(50);
   await eventManager
     .connect(master)
-    .grantLocalProvider(localProvider.address, 100);
+    .setRevenueSplitter(await splitter.getAddress());
+
+  // Setup default profile
+  await splitter
+    .connect(master)
+    .createDistributionProfile([localProvider.address], [10000]);
+  await splitter.connect(master).setDefaultProfile(1);
+
+  await eventManager.connect(master).grantLocalProvider(localProvider.address);
 
   // Grant BACKEND_ROLE to backend EOA
   const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
-  await eventManager
-    .connect(master)
-    .grantRole(BACKEND_ROLE, BACKEND_EOA);
+  await eventManager.connect(master).grantRole(BACKEND_ROLE, BACKEND_EOA);
 
   console.log(`export PUBLIC_ERC20_ADDRESS=${await erc20.getAddress()}`);
   console.log(
@@ -40,6 +57,9 @@ async function main() {
   );
   console.log(
     `export PUBLIC_EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`,
+  );
+  console.log(
+    `export PUBLIC_REVENUE_SPLITTER_ADDRESS=${await splitter.getAddress()}`,
   );
 }
 

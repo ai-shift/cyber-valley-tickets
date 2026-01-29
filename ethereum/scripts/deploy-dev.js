@@ -1,9 +1,10 @@
-import bs58 from "bs58";
 import fs from "fs";
 import path from "path";
+import bs58 from "bs58";
 import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
+import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const DEV_TEAM_EOA = MASTER_EOA;
@@ -37,19 +38,42 @@ async function main() {
   });
   await eventTicket.setEventManagerAddress(await eventManager.getAddress());
 
+  const { splitter } = await hre.ignition.deploy(RevenueSplitterModule, {
+    parameters: {
+      DynamicRevenueSplitter: {
+        usdt: await erc20.getAddress(),
+        cyberiaDAO: MASTER_EOA, // Placeholder
+        cvePtPma: DEV_TEAM_EOA, // Placeholder
+        admin: MASTER_EOA,
+      },
+    },
+  });
+
   // Seed state
-  const [master, creatorSlave, completeSlave, verifiedShaman, localProvider, backend] =
-    await hre.ethers.getSigners();
-  await eventManager.connect(master).setMasterShare(50);
+  const [
+    master,
+    creatorSlave,
+    completeSlave,
+    verifiedShaman,
+    localProvider,
+    backend,
+  ] = await hre.ethers.getSigners();
+
   await eventManager
     .connect(master)
-    .grantLocalProvider(localProvider.address, 100);
+    .setRevenueSplitter(await splitter.getAddress());
+
+  // Setup default profile
+  await splitter
+    .connect(master)
+    .createDistributionProfile([localProvider.address], [10000]);
+  await splitter.connect(master).setDefaultProfile(1);
+
+  await eventManager.connect(master).grantLocalProvider(localProvider.address);
 
   // Grant BACKEND_ROLE to backend test signer and actual backend EOA
   const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
-  await eventManager
-    .connect(master)
-    .grantRole(BACKEND_ROLE, backend.address);
+  await eventManager.connect(master).grantRole(BACKEND_ROLE, backend.address);
 
   // Grant VERIFIED_SHAMAN_ROLE to verifiedShaman (via backend role)
   const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
@@ -74,14 +98,14 @@ async function main() {
       title: "foo",
       geometry: {
         type: "Point",
-        coordinates: [{lat: -8.291059, lng: 115.0841631}],
+        coordinates: [{ lat: -8.291059, lng: 115.0841631 }],
       },
     },
     {
       title: "bar",
       geometry: {
         type: "Point",
-        coordinates: [{lat: -8.299827, lng: 115.098407}],
+        coordinates: [{ lat: -8.299827, lng: 115.098407 }],
       },
     },
   ];
@@ -130,7 +154,15 @@ async function main() {
     // Approve event place as local provider
     await eventManager.connect(localProvider).approveEventPlace(eventPlaceId);
 
-    console.log("place created", "config", cfg, "multihash", mh, "id", eventPlaceId.toString());
+    console.log(
+      "place created",
+      "config",
+      cfg,
+      "multihash",
+      mh,
+      "id",
+      eventPlaceId.toString(),
+    );
   }
 
   // Submit event requests
@@ -142,7 +174,10 @@ async function main() {
       price: 100,
       startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       daysAmount: 3,
-      cover: path.join(__dirname, "seed-data/event-covers/event-1-onepiece.jpg"),
+      cover: path.join(
+        __dirname,
+        "seed-data/event-covers/event-1-onepiece.jpg",
+      ),
       creator: creatorSlave,
       socials: {
         network: "telegram",

@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "./CyberValleyEventTicket.sol";
 import "./DateOverlapChecker.sol";
 import "./CyberValley.sol";
+import "./IDynamicRevenueSplitter.sol";
 
 // TODO: Pad layout after general work finish
 contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
@@ -17,6 +18,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     bytes32 public constant LOCAL_PROVIDER_ROLE = keccak256("LOCAL_PROVIDER_ROLE");
     bytes32 public constant VERIFIED_SHAMAN_ROLE = keccak256("VERIFIED_SHAMAN_ROLE");
     bytes32 public constant BACKEND_ROLE = keccak256("BACKEND_ROLE");
+
+    uint256 public constant NO_CATEGORY = type(uint256).max;
 
     enum EventPlaceStatus {
         Submitted,
@@ -46,6 +49,15 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     }
 
     // TODO: Add IPFS multihash
+    struct TicketCategory {
+        string name;
+        uint256 eventId;
+        uint16 discountPercentage;
+        uint16 quota;
+        bool hasQuota;
+        uint16 sold;
+    }
+
     struct Event {
         address creator;
         uint256 eventPlaceId;
@@ -55,6 +67,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         EventStatus status;
         address[] customers;
         CyberValley.Multihash meta;
+        uint256 networth;
     }
 
     event NewEventPlaceRequest(
@@ -107,18 +120,36 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 size
     );
     event EventTicketVerified(uint256 tokenId);
-    event FundsDistributed(address master, uint256 masterAmount, uint256 providerAmount, address provider);
+
+    event TicketCategoryCreated(
+        uint256 categoryId,
+        uint256 indexed eventId,
+        string name,
+        uint16 discountPercentage,
+        uint16 quota,
+        bool hasQuota
+    );
+    event TicketCategoryUpdated(
+        uint256 categoryId,
+        uint256 indexed eventId,
+        string name,
+        uint16 discountPercentage,
+        uint16 quota,
+        bool hasQuota
+    );
 
     IERC20 public usdtTokenContract;
     CyberValleyEventTicket public eventTicketContract;
 
     address public master;
     uint256 public eventRequestPrice;
-    uint8 public masterShare;
+    address public revenueSplitter;
 
     EventPlace[] public eventPlaces;
     Event[] public events;
-    mapping(address => uint8) public localProviderShare;
+    TicketCategory[] public categories;
+    mapping(uint256 => uint256[]) public categoryCounters;
+    mapping(uint256 => uint16[]) public ticketPrices;
 
     modifier onlyExistingEvent(uint256 eventId) {
         require(eventId < events.length, "Event with given id does not exist");
@@ -142,15 +173,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _setRoleAdmin(VERIFIED_SHAMAN_ROLE, BACKEND_ROLE);
     }
 
-    function grantLocalProvider(address eoa, uint8 share) external onlyRole(MASTER_ROLE) {
-        require(share > 0, "share should be greater than 0");
-        require(share <= 100, "share should be less or eqaul to 100 ");
-        localProviderShare[eoa] = share;
+    function grantLocalProvider(address eoa) external onlyRole(MASTER_ROLE) {
         _grantRole(LOCAL_PROVIDER_ROLE, eoa);
     }
 
     function revokeLocalProvider(address eoa) external onlyRole(MASTER_ROLE) {
-        delete localProviderShare[eoa];
         _revokeRole(LOCAL_PROVIDER_ROLE, eoa);
     }
 
@@ -158,10 +185,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _revokeRole(VERIFIED_SHAMAN_ROLE, eoa);
     }
 
-    function setMasterShare(uint8 share) external onlyRole(MASTER_ROLE) {
-        require(share > 0, "share should be greater than 0");
-        require(share <= 100, "share should be less or equal to 100");
-        masterShare = share;
+    function setRevenueSplitter(address _splitter) external onlyRole(MASTER_ROLE) {
+        require(_splitter != address(0), "Splitter address cannot be zero");
+        revenueSplitter = _splitter;
     }
 
     function submitEventPlaceRequest(
@@ -376,7 +402,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                     digest: digest,
                     hashFunction: hashFunction,
                     size: size
-                })
+                }),
+                networth: eventRequestPrice
             })
         );
         validateEvent(events[events.length - 1]);
@@ -532,16 +559,52 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 hashFunction,
         uint8 size
     ) external onlyExistingEvent(eventId) {
+        _mintTicketInternal(eventId, NO_CATEGORY, digest, hashFunction, size);
+    }
+
+    function mintTicket(
+        uint256 eventId,
+        uint256 categoryId,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
+    ) external onlyExistingEvent(eventId) {
+        _mintTicketInternal(eventId, categoryId, digest, hashFunction, size);
+    }
+
+    function _mintTicketInternal(
+        uint256 eventId,
+        uint256 categoryId,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size
+    ) internal onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
+        require(evt.status == EventStatus.Approved, "Event is not approved");
         require(
             evt.customers.length < eventPlaces[evt.eventPlaceId].maxTickets,
             "Sold out"
         );
+        
+        uint16 price = evt.ticketPrice;
+
+        if (categoryId != NO_CATEGORY) {
+            require(categoryId < categories.length, "Category does not exist");
+            TicketCategory storage category = categories[categoryId];
+            require(category.eventId == eventId, "Category does not belong to this event");
+
+            if (category.hasQuota) {
+                require(category.sold < category.quota, "Category quota exceeded");
+                category.sold++;
+            }
+            price = applyDiscount(evt.ticketPrice, category.discountPercentage);
+        }
+        
         require(
             usdtTokenContract.transferFrom(
                 msg.sender,
                 address(this),
-                evt.ticketPrice
+                price
             ),
             "Failed to transfer tokens"
         );
@@ -553,6 +616,17 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             size
         );
         evt.customers.push(msg.sender);
+        ticketPrices[eventId].push(price);
+        evt.networth += price;
+    }
+
+    function applyDiscount(uint16 originalPrice, uint16 discountPercentage) internal pure returns (uint16) {
+        if (discountPercentage == 0) {
+            return originalPrice;
+        }
+        uint256 price = uint256(originalPrice);
+        uint256 discount = (price * uint256(discountPercentage)) / 10000;
+        return uint16(price - discount);
     }
 
     function closeEvent(
@@ -569,8 +643,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             block.timestamp > eventEndDate,
             "Event has not been finished yet"
         );
-        uint256 networth = calcEventNetworth(evt);
-        distributeEventFunds(evt.eventPlaceId, networth);
+        distributeEventFunds(eventId, evt.networth);
         evt.status = EventStatus.Closed;
         emit EventStatusChanged(eventId, evt.status);
     }
@@ -585,9 +658,14 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Only event in approved state can be cancelled"
         );
 
+        uint16[] storage prices = ticketPrices[eventId];
         for (uint256 i = 0; i < evt.customers.length; i++) {
+            uint256 refundAmount = evt.ticketPrice;
+            if (i < prices.length) {
+                refundAmount = prices[i];
+            }
             require(
-                usdtTokenContract.transfer(evt.customers[i], evt.ticketPrice),
+                usdtTokenContract.transfer(evt.customers[i], refundAmount),
                 "Failed to refund customer"
             );
         }
@@ -597,45 +675,19 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Failed to transfer provider payment"
         );
 
+        evt.networth = 0;
         evt.status = EventStatus.Cancelled;
         emit EventStatusChanged(eventId, evt.status);
-	emit FundsDistributed(master, 0, eventRequestPrice, msg.sender);
     }
 
-    function calcEventNetworth(
-        Event storage evt
-    ) internal view returns (uint256) {
-        return evt.ticketPrice * evt.customers.length + eventRequestPrice;
-    }
-
-    // TODO: Puflish event with funds distribution
+    // TODO: Publish event with funds distribution
     function distributeEventFunds(
-        uint256 eventPlaceId,
+        uint256 eventId,
         uint256 totalAmount
     ) internal {
-        address provider = eventPlaces[eventPlaceId].provider;
-        uint8 providerSharePercentage = localProviderShare[provider];
-
-        uint256 masterAmount = (totalAmount * masterShare) / 100;
-	uint256 reminder = totalAmount - masterAmount;
-	masterAmount += (reminder * (100 - providerSharePercentage)) / 100;
-        uint256 providerAmount = totalAmount - masterAmount;
-
-        if (masterAmount > 0) {
-            require(
-                usdtTokenContract.transfer(master, masterAmount),
-                "Failed to transfer master share"
-            );
-        }
-
-        if (providerAmount > 0) {
-            require(
-                usdtTokenContract.transfer(provider, providerAmount),
-                "Failed to transfer provider share"
-            );
-        }
-
-	emit FundsDistributed(master, masterAmount, providerAmount, provider);
+        require(revenueSplitter != address(0), "Revenue splitter not set");
+        usdtTokenContract.approve(revenueSplitter, totalAmount);
+        IDynamicRevenueSplitter(revenueSplitter).distributeRevenue(totalAmount, eventId);
     }
 
     function floorTimestampToDate(
@@ -658,10 +710,116 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         return date - (daysAmount - 1) * SECONDS_IN_DAY;
     }
 
+    function _eventHasUnlimitedCategory(uint256 eventId) internal view returns (bool) {
+        uint256[] storage eventCategories = categoryCounters[eventId];
+        for (uint256 i = 0; i < eventCategories.length; i++) {
+            if (!categories[eventCategories[i]].hasQuota) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function ensureEventBelongsToProvider(uint256 eventPlaceId) internal view {
         require(
             eventPlaces[eventPlaceId].provider == msg.sender,
            "Given event belongs to another provider"
         );
+    }
+
+    function createCategory(
+        uint256 eventId,
+        string memory name,
+        uint16 discountPercentage,
+        uint16 quota,
+        bool hasQuota
+    ) external onlyRole(VERIFIED_SHAMAN_ROLE) {
+        require(eventId < events.length, "Event does not exist");
+        Event storage evt = events[eventId];
+        require(evt.status == EventStatus.Submitted, "Event must be in submitted state");
+        require(discountPercentage <= 10000, "Discount too high");
+        
+        if (hasQuota == false) {
+            require(
+                !_eventHasUnlimitedCategory(eventId),
+                "Only one unlimited quota category allowed"
+            );
+        }
+        
+        categories.push(TicketCategory({
+            name: name,
+            eventId: eventId,
+            discountPercentage: discountPercentage,
+            quota: quota,
+            hasQuota: hasQuota,
+            sold: 0
+        }));
+        
+        uint256 categoryId = categories.length - 1;
+        categoryCounters[eventId].push(categoryId);
+        
+        emit TicketCategoryCreated(
+            categoryId,
+            eventId,
+            name,
+            discountPercentage,
+            quota,
+            hasQuota
+        );
+    }
+
+    function updateCategory(
+        uint256 categoryId,
+        string memory name,
+        uint16 discountPercentage,
+        uint16 quota,
+        bool hasQuota
+    ) external onlyRole(LOCAL_PROVIDER_ROLE) {
+        require(categoryId < categories.length, "Category does not exist");
+        require(discountPercentage <= 10000, "Discount too high");
+        TicketCategory storage category = categories[categoryId];
+        
+        Event storage evt = events[category.eventId];
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
+        require(
+            place.provider == msg.sender,
+            "Only the local provider of the event can update categories"
+        );
+        require(evt.status == EventStatus.Submitted, "Event must be in submitted state");
+        
+        if (hasQuota == false) {
+            require(category.hasQuota == false, "Cannot change from limited to unlimited quota");
+        }
+        
+        category.name = name;
+        category.discountPercentage = discountPercentage;
+        category.quota = quota;
+        category.hasQuota = hasQuota;
+        
+        emit TicketCategoryUpdated(
+            categoryId,
+            category.eventId,
+            name,
+            discountPercentage,
+            quota,
+            hasQuota
+        );
+    }
+
+    function getCategory(uint256 categoryId) external view returns (
+        string memory name,
+        uint256 eventId,
+        uint16 discountPercentage,
+        uint16 quota,
+        bool hasQuota,
+        uint16 sold
+    ) {
+        require(categoryId < categories.length, "Category does not exist");
+        TicketCategory storage category = categories[categoryId];
+        return (category.name, category.eventId, category.discountPercentage, category.quota, category.hasQuota, category.sold);
+    }
+
+    function getCategoriesForEvent(uint256 eventId) external view returns (uint256[] memory) {
+        return categoryCounters[eventId];
     }
 }
