@@ -6,17 +6,18 @@ import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
-import { SearchBar } from "@/shared/ui/SearchBar";
-import { useSearchParams } from "react-router";
 
 type EventsListProps = {
   limit?: number;
   filterFn?: (event: Event, user: User) => boolean;
+  searchQuery?: string;
 };
 
-export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search") || undefined;
+export const EventsList: React.FC<EventsListProps> = ({
+  limit,
+  filterFn,
+  searchQuery,
+}) => {
   const {
     data: events,
     error,
@@ -35,18 +36,15 @@ export const EventsList: React.FC<EventsListProps> = ({ limit, filterFn }) => {
     : events;
   const limitedEvents = limit ? displayEvents.slice(0, limit) : displayEvents;
 
+  if (limitedEvents.length <= 0) {
+    return <p className="text-center text-secondary/60">No events!</p>;
+  }
+
   return (
-    <div className="flex flex-col gap-4">
-      <SearchBar placeholder="Search events by title, place, or creator..." />
-      {limitedEvents.length <= 0 ? (
-        <p className="text-center text-secondary/60">No events!</p>
-      ) : (
-        <div className="flex flex-col gap-6 px-3">
-          {limitedEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
-      )}
+    <div className="flex flex-col gap-6 px-3">
+      {limitedEvents.map((event) => (
+        <EventCard key={event.id} event={event} />
+      ))}
     </div>
   );
 };
