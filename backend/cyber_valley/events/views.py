@@ -7,15 +7,17 @@ import ipfshttpclient
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
-from django.db.models import Case, IntegerField, When
+from django.db.models import Case, IntegerField, Q, When
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import (
+    OpenApiParameter,
     PolymorphicProxySerializer,
     extend_schema,
     extend_schema_view,
 )
 from rest_framework import viewsets
 from rest_framework.decorators import (
+    action,
     api_view,
     parser_classes,
     permission_classes,
@@ -25,8 +27,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from django.db.models.query import QuerySet
+
 from .models import Event, EventPlace, Ticket
 from .serializers import (
+    AttendeeSerializer,
     CreatorEventSerializer,
     EventPlaceSerializer,
     EventSerializer,
@@ -40,16 +45,50 @@ from .ticket_serializer import TicketSerializer
 log = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search places by name or provider address",
+                required=False,
+            ),
+        ],
+    )
+)
 class EventPlaceViewSet(viewsets.ReadOnlyModelViewSet[EventPlace]):
     queryset = EventPlace.objects.filter(status="approved").prefetch_related(
         "event_set"
     )
     serializer_class = EventPlaceSerializer
 
+    def get_queryset(self) -> QuerySet[EventPlace]:
+        queryset = EventPlace.objects.filter(status="approved").prefetch_related(
+            "event_set"
+        )
+        search_query = self.request.query_params.get("search", "")
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query)
+                | Q(provider__address__icontains=search_query)
+            )
+        return queryset
+
 
 @extend_schema_view(
     list=extend_schema(
-        description="Available events in the syste",
+        description="Available events in the system",
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search events by title, place name, or creator address",
+                required=False,
+            ),
+        ],
         responses=PolymorphicProxySerializer(
             component_name="RoleBasedEvent",
             serializers=[CreatorEventSerializer, StaffEventSerializer],
@@ -70,11 +109,56 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
     ).order_by("status_priority", "-created_at")
     serializer_class = StaffEventSerializer
 
+    def get_queryset(self) -> QuerySet[Event]:
+        queryset = Event.objects.annotate(
+            status_priority=Case(
+                When(status="approved", then=1),
+                When(status="submitted", then=2),
+                When(status="cancelled", then=3),
+                When(status="closed", then=4),
+                When(status="declined", then=5),
+                output_field=IntegerField(),
+            )
+        ).order_by("status_priority", "-created_at")
+        search_query = self.request.query_params.get("search", "")
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query)
+                | Q(place__title__icontains=search_query)
+                | Q(creator__address__icontains=search_query)
+            )
+        return queryset
+
     def get_serializer_class(self) -> type[EventSerializer]:
         if self.request.user.is_staff:
             return StaffEventSerializer
 
         return CreatorEventSerializer
+
+    @extend_schema(
+        responses=AttendeeSerializer(many=True),
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Search attendees by address or social media handles",
+                required=False,
+            ),
+        ],
+    )
+    @action(detail=True, methods=["get"], name="Event Attendees")
+    def attendees(self, request: Request, pk: int | None = None) -> Response:
+        event = get_object_or_404(Event, pk=pk)
+        tickets = Ticket.objects.filter(event=event).select_related("owner")
+        search_query = request.query_params.get("search", "")
+        if search_query:
+            tickets = tickets.filter(
+                Q(owner__address__icontains=search_query)
+                | Q(owner__socials__value__icontains=search_query)
+            )
+        serializer = AttendeeSerializer([ticket.owner for ticket in tickets], many=True)
+        return Response(serializer.data)
 
 
 # NOTE: There is a problem with DNS to fetch event meta info via HTTP
