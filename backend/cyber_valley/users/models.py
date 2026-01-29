@@ -38,6 +38,7 @@ class CyberValleyUser(AbstractBaseUser):
 
     address = AddressField(primary_key=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=CUSTOMER)
+    default_share = models.PositiveSmallIntegerField(default=0)
     # XXX: This field is requred because of bug in simplejwt
     is_active = models.BooleanField(default=True)
 

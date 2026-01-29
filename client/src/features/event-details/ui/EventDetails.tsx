@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuthSlice } from "@/app/providers";
 import type { LatLng } from "@/entities/geodata";
 import { StatusBage } from "@/features/events-list/ui/StatusBage";
+import { LifetimeRevenueButton } from "@/features/lifetime-revenue";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
@@ -127,6 +128,14 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${ticketPrice}`}
         />
       </div>
+      {(isCreator || isLocalprovider) && (
+        <div className="px-4 py-2">
+          <LifetimeRevenueButton
+            eventId={eventId}
+            onClick={() => navigate("revenue")}
+          />
+        </div>
+      )}
       <Button
         filling="outline"
         className="m-5"

@@ -9,7 +9,7 @@ async function main() {
   const [master] = await hre.ethers.getSigners();
   const eventManager = await hre.ethers.getContractAt(
     "CyberValleyEventManager",
-    EVENT_MANAGER_ADDRESS
+    EVENT_MANAGER_ADDRESS,
   );
 
   const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
@@ -21,7 +21,9 @@ async function main() {
   }
 
   console.log(`Granting BACKEND_ROLE to ${BACKEND_EOA}...`);
-  const tx = await eventManager.connect(master).grantRole(BACKEND_ROLE, BACKEND_EOA);
+  const tx = await eventManager
+    .connect(master)
+    .grantRole(BACKEND_ROLE, BACKEND_EOA);
   await tx.wait();
   console.log(`BACKEND_ROLE granted successfully. TX: ${tx.hash}`);
 }

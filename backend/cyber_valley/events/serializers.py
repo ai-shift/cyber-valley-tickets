@@ -16,7 +16,7 @@ from cyber_valley.users.models import CyberValleyUser as UserType
 from cyber_valley.users.models import UserSocials
 from cyber_valley.users.serializers import UploadSocialsSerializer
 
-from .models import Event, EventPlace
+from .models import Event, EventPlace, TicketCategory
 
 User = get_user_model()
 
@@ -78,6 +78,8 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     creator = CreatorSerializer(required=True)
     start_date_timestamp = serializers.SerializerMethodField()
     attendees = serializers.SerializerMethodField()
+    total_revenue = serializers.IntegerField(read_only=True)
+    paid_deposit = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Event
@@ -96,6 +98,8 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "start_date_timestamp",
             "tickets_bought",
             "attendees",
+            "total_revenue",
+            "paid_deposit",
         )
 
     def get_start_date_timestamp(self, obj: Event) -> int:
@@ -104,6 +108,20 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     @extend_schema_field(serializers.ListSerializer(child=AttendeeSerializer()))
     def get_attendees(self, obj: Event) -> list[dict[str, Any]]:
         return [AttendeeSerializer(ticket.owner).data for ticket in obj.tickets.all()]
+
+
+class TicketCategorySerializer(serializers.ModelSerializer[TicketCategory]):
+    class Meta:
+        model = TicketCategory
+        fields = (
+            "category_id",
+            "name",
+            "discount",
+            "quota",
+            "has_quota",
+            "tickets_bought",
+        )
+        read_only_fields = fields
 
 
 @extend_schema_serializer(

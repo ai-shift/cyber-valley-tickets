@@ -424,12 +424,11 @@ export async function removeStaff(
 export async function grantLocalProvider(
   account: Account,
   address: string,
-  share: number,
 ): Promise<TxHash> {
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "grantLocalProvider",
-    params: [address, share],
+    params: [address],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;

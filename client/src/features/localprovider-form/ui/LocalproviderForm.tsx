@@ -40,7 +40,7 @@ export const LocalproviderForm: React.FC = () => {
       throw new Error("Account isn't connected");
     }
     sendTx(
-      grantLocalProvider(account, values.address, values.share).then(() => {
+      grantLocalProvider(account, values.address).then(() => {
         setIsOpen(true);
         optimisticAddLocalprovider(values.address);
         form.reset();

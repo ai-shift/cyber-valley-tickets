@@ -10,21 +10,24 @@ async function main() {
   const [master] = await hre.ethers.getSigners();
   const eventManager = await hre.ethers.getContractAt(
     "CyberValleyEventManager",
-    EVENT_MANAGER_ADDRESS
+    EVENT_MANAGER_ADDRESS,
   );
 
   const LOCAL_PROVIDER_ROLE = await eventManager.LOCAL_PROVIDER_ROLE();
-  const hasRole = await eventManager.hasRole(LOCAL_PROVIDER_ROLE, LOCAL_PROVIDER_EOA);
+  const hasRole = await eventManager.hasRole(
+    LOCAL_PROVIDER_ROLE,
+    LOCAL_PROVIDER_EOA,
+  );
 
   if (hasRole) {
     console.log(`EOA ${LOCAL_PROVIDER_EOA} already has LOCAL_PROVIDER_ROLE`);
-    const share = await eventManager.localProviderShare(LOCAL_PROVIDER_EOA);
-    console.log(`Current share: ${share}%`);
     return;
   }
 
-  console.log(`Granting LOCAL_PROVIDER_ROLE to ${LOCAL_PROVIDER_EOA} with ${SHARE}% share...`);
-  const tx = await eventManager.connect(master).grantLocalProvider(LOCAL_PROVIDER_EOA, SHARE);
+  console.log(`Granting LOCAL_PROVIDER_ROLE to ${LOCAL_PROVIDER_EOA}...`);
+  const tx = await eventManager
+    .connect(master)
+    .grantLocalProvider(LOCAL_PROVIDER_EOA);
   await tx.wait();
   console.log(`LOCAL_PROVIDER_ROLE granted successfully. TX: ${tx.hash}`);
 }
