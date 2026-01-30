@@ -158,11 +158,11 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         </SheetContent>
       </Sheet>
       {Object.values(displayedLayers).map((layer) => {
-        return layer.map((placemark) => (
+        return layer.map((placemark, idx) => (
           <Placemark
             onClick={(placemark) => setSelectedPlacemark(placemark)}
             // Fix: Use unique identifier instead of index for stable key
-            key={`${placemark.name}-${placemark.type}-${JSON.stringify(placemark.coordinates[0])}`}
+            key={`${placemark.name}-${placemark.type}-${JSON.stringify(placemark.coordinates[0])}-${idx}`}
             placemark={placemark as PlacemarkType}
             opacity={layersOpacity}
           />
