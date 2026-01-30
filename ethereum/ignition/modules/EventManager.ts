@@ -13,11 +13,10 @@ const EventManagerModule = buildModule("EventManager", (m) => {
     eventTicket,
     masterAddress,
     EVENT_REQUEST_PRICE,
-    initialOffset
-  ],);
+    initialOffset,
+  ]);
 
-  return { eventManager }
-
+  return { eventManager };
 });
 
 export default EventManagerModule;

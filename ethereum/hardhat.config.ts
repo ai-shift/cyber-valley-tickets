@@ -1,9 +1,9 @@
-import { vars, HardhatUserConfig } from "hardhat/config";
+import type { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "hardhat-tracer";
 import "@nomicfoundation/hardhat-ethers";
-import '@typechain/hardhat'
-import '@nomicfoundation/hardhat-chai-matchers'
+import "@typechain/hardhat";
+import "@nomicfoundation/hardhat-chai-matchers";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -25,15 +25,15 @@ const config: HardhatUserConfig = {
       timeout: 60000,
     },
     cvlandTest: {
-      url: "https://cvland-tickets.aishift.co/ganache"
+      url: "https://cvland-tickets.aishift.co/ganache",
     },
     cvlandDev: {
-      url: `http://127.0.0.1:${process.env.GANACHE_PORT || 8545}`
+      url: `http://127.0.0.1:${process.env.GANACHE_PORT || 8545}`,
     },
     cyberia: {
-      url: "https://cyberia.my/ganache"
+      url: "https://cyberia.my/ganache",
     },
-  }
+  },
 };
 
 export default config;
