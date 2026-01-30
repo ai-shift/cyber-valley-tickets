@@ -64,7 +64,12 @@ export const HomeMap: React.FC = () => {
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
 
-    if (lat && lng && Number(lat) && Number(lng)) {
+    if (
+      lat &&
+      lng &&
+      !Number.isNaN(Number(lat)) &&
+      !Number.isNaN(Number(lng))
+    ) {
       map.panTo({ lat: Number(lat), lng: Number(lng) });
       map.setZoom(16);
       const foundPlace = places.find((place) => {
@@ -76,7 +81,7 @@ export const HomeMap: React.FC = () => {
       }
     }
     hasInitialized.current = true;
-  }, [map, placesWithEvents, searchParams]);
+  }, [map, placesWithEvents, searchParams, selectEventPlace]);
 
   return (
     <EbaliMap
