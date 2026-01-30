@@ -3,7 +3,7 @@ import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef } from "react";
 
 type MouseClickEvent = {
-  domEvent: MouseClickEvent;
+  domEvent: MouseEvent;
   latLng: google.maps.LatLng;
 };
 
