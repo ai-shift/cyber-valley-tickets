@@ -1,5 +1,5 @@
-import Lottie from "lottie-react";
 import animationData from "@/lotties/vagina.json";
+import Lottie from "lottie-react";
 import { useState } from "react";
 import type { Ticket } from "../model/types";
 import { TicketQR } from "./TicketQR";
@@ -95,7 +95,11 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket }) => {
           <div className="card w-full h-full flex flex-col items-center justify-center bg-black border-primary">
             {isFlipped && isRedeemed ? (
               <div className="w-full h-full flex items-center justify-center p-4">
-                <Lottie animationData={animationData} loop={true} className="w-full h-full" />
+                <Lottie
+                  animationData={animationData}
+                  loop={true}
+                  className="w-full h-full"
+                />
               </div>
             ) : (
               <>
