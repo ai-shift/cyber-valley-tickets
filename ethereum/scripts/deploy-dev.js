@@ -280,20 +280,38 @@ async function main() {
 
   // Mint tickets
   const tickets = [
+    // Event 0 - Multiple tickets for multi-ticket listing test
     {
       owner: completeSlave,
       eventId: 0,
       socials: {
         network: "instagram",
-        value: "@username1",
+        value: "@buyer1_event0",
       },
     },
+    {
+      owner: completeSlave,
+      eventId: 0,
+      socials: {
+        network: "telegram",
+        value: "@buyer2_event0",
+      },
+    },
+    {
+      owner: completeSlave,
+      eventId: 0,
+      socials: {
+        network: "discord",
+        value: "@buyer3_event0",
+      },
+    },
+    // Event 1 - Single ticket
     {
       owner: completeSlave,
       eventId: 1,
       socials: {
         network: "discord",
-        value: "@username2",
+        value: "@buyer_event1",
       },
     },
   ];
