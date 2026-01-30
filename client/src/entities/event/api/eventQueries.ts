@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getDetailEvent, getEvents, getLifetimeRevenue } from "./queries";
+import { getDetailEvent, getEvents, getTotalRevenue } from "./queries";
 
 export const eventQueries = {
   list: (search?: string) =>
@@ -16,10 +16,10 @@ export const eventQueries = {
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),
-  lifetimeRevenue: (eventId: number) =>
+  totalRevenue: () =>
     queryOptions({
-      queryKey: ["events", "lifetime_revenue", eventId],
-      queryFn: () => getLifetimeRevenue(eventId),
+      queryKey: ["events", "total_revenue"],
+      queryFn: getTotalRevenue,
       select: (queryData) => queryData?.data,
       refetchInterval: 5000,
     }),
