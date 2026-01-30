@@ -1,3 +1,4 @@
+import { useReferralFromUrl } from "@/features/referral";
 import type { ReactNode } from "react";
 
 type AppContainerProps = {
@@ -5,6 +6,8 @@ type AppContainerProps = {
 };
 
 export const AppContainer: React.FC<AppContainerProps> = ({ children }) => {
+  useReferralFromUrl();
+
   return (
     <div className="h-[100dvh] sm:py-3 flex justify-center items-center">
       <main
