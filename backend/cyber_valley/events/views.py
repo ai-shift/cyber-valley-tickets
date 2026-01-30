@@ -410,3 +410,29 @@ def lifetime_revenue(_: Request, event_id: int) -> Response:
             "tickets_sold": event.tickets_bought,
         }
     )
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {
+                "total_revenue": {
+                    "type": "integer",
+                    "description": (
+                        "Total revenue across all events in USDT (6 decimals)"
+                    ),
+                },
+            },
+        }
+    }
+)
+@api_view(["GET"])
+def total_revenue(_: Request) -> Response:
+    from django.db.models import Sum
+
+    total = Event.objects.aggregate(
+        total=Sum("total_revenue") + Sum("paid_deposit"),
+    )["total"]
+
+    return Response({"total_revenue": total or 0})

@@ -27,6 +27,7 @@ from .events.views import (
     lifetime_revenue,
     ticket_info,
     ticket_nonce,
+    total_revenue,
     upload_event_meta_to_ipfs,
     upload_place_meta_to_ipfs,
     upload_ticket_meta_to_ipfs,
@@ -62,6 +63,7 @@ urlpatterns = [
         lifetime_revenue,
         name="lifetime_revenue",
     ),
+    path("api/events/total_revenue", total_revenue, name="total_revenue"),
     path(
         "api/events/<int:event_id>/tickets/<int:ticket_id>",
         ticket_info,
