@@ -12,16 +12,15 @@ type EventAttendeesProps = {
 
 export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
   const {
-    data: event,
+    data: attendees,
     error,
     isLoading,
-  } = useQuery(eventQueries.detail(eventId));
+  } = useQuery(eventQueries.attendees(eventId));
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
-  if (!event) return <ErrorMessage errors={error} />;
+  if (!attendees) return <ErrorMessage errors={error} />;
 
-  const attendees = event.attendees;
   if (attendees.length < 1) {
     return (
       <div className="w-full aspect-square flex flex-col gap-3 items-center justify-center text-center">
@@ -38,6 +37,7 @@ export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
           <tr>
             <th>Address</th>
             <th>Social</th>
+            <th>Tickets</th>
           </tr>
         </thead>
         <tbody>
@@ -53,8 +53,9 @@ export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
                 </a>
               </td>
               <td>
-                {a.socials.network}: {a.socials.value}
+                {a.socials?.network}: {a.socials?.value}
               </td>
+              <td>{a.ticketsCount}</td>
             </tr>
           ))}
         </tbody>

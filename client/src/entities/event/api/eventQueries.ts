@@ -1,5 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getDetailEvent, getEvents, getTotalRevenue } from "./queries";
+import {
+  getDetailEvent,
+  getEventAttendees,
+  getEvents,
+  getTotalRevenue,
+} from "./queries";
 
 export const eventQueries = {
   list: (search?: string) =>
@@ -22,5 +27,12 @@ export const eventQueries = {
       queryFn: getTotalRevenue,
       select: (queryData) => queryData?.data,
       refetchInterval: 5000,
+    }),
+  attendees: (eventId: number) =>
+    queryOptions({
+      queryKey: ["events", eventId, "attendees"],
+      queryFn: () => getEventAttendees(eventId),
+      select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
     }),
 };
