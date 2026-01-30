@@ -1,10 +1,11 @@
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
 import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
 import { ExpandableTrigger } from "@/shared/ui/expandable/ui/ExpandableTrigger";
+import { memo } from "react";
 import { twMerge } from "tailwind-merge";
 import { useMapState } from "../model/slice";
 
-export const EventsLayerControl = () => {
+export const EventsLayerControl = memo(() => {
   const { events, selectEventPlace } = useMapState();
 
   return (
@@ -46,4 +47,4 @@ export const EventsLayerControl = () => {
       </ExpandableContent>
     </Expandable>
   );
-};
+});
