@@ -16,11 +16,5 @@ export const getDetailEvent = async (id: number) =>
     },
   });
 
-export const getLifetimeRevenue = async (eventId: number) =>
-  await apiClient.GET("/api/events/{event_id}/lifetime_revenue", {
-    params: {
-      path: {
-        event_id: eventId,
-      },
-    },
-  });
+export const getTotalRevenue = async () =>
+  await apiClient.GET("/api/events/total_revenue");
