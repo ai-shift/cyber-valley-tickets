@@ -28,7 +28,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
 
   if (event.status !== "approved") return null;
 
-  const ticket = user.tickets.find((ticket) => ticket.eventId === event.id);
+  const tickets = user.tickets.filter((ticket) => ticket.eventId === event.id);
   const hasPassed = isEventPassed(event.startDateTimestamp, event.daysAmount);
   const isCreator = user.address === event.creator.address;
 
@@ -55,8 +55,8 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   if (isCreator) return null;
   return (
     <>
-      {ticket ? (
-        <ShowTicket hasPassed={hasPassed} ticket={ticket} />
+      {tickets.length > 0 ? (
+        <ShowTicket hasPassed={hasPassed} tickets={tickets} />
       ) : (
         <Button className="w-full" disabled={hasPassed} onClick={initOrder}>
           Get ticket
