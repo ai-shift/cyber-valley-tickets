@@ -90,7 +90,6 @@ export const useMapState = create<MapState & MapAction>()(
       fetchLayersTitles: async () => {
         set({ loadingTitles: true });
         const { data, error } = await getGeodata();
-        console.log("data", data, "error", error);
         if (data) {
           set({ layersTitles: data });
         }

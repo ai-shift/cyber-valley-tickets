@@ -16,6 +16,8 @@ import { Button } from "@/shared/ui/button";
 import { useNavigate } from "react-router";
 import { DetailsBlock } from "./DetailsBlock";
 
+import { useLogin } from "@/features/login";
+
 type EventDetailsProps = {
   eventId: number;
 };
@@ -23,6 +25,7 @@ type EventDetailsProps = {
 export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   const navigate = useNavigate();
   const { user } = useAuthSlice();
+  const { LoginBtn, buttonProps } = useLogin();
   const {
     data: event,
     error,
@@ -148,18 +151,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           </div>
         </>
       ) : (
-        <Button
-          className="m-5"
-          onClick={() =>
-            navigate("/login", {
-              state: {
-                goBack: true,
-              },
-            })
-          }
-        >
-          Login to get the ticket
-        </Button>
+        <LoginBtn {...buttonProps} title="Login to get the ticket" />
       )}
     </div>
   );
