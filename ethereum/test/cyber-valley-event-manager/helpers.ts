@@ -299,6 +299,48 @@ export async function createEvent(
   return { request, tx, eventId };
 }
 
+export async function createEventForCategories(
+  eventManager: CyberValleyEventManager,
+  ERC20: SimpleERC20Xylose,
+  verifiedShaman: Signer,
+  localProvider: Signer,
+  creator: Signer,
+  eventPlacePatch: Partial<CreateEventPlaceArgs>,
+  submitEventPatch: Partial<Event>,
+): Promise<{
+  request: SubmitEventRequestArgs;
+  eventId: BigNumberish;
+  eventPlaceId: BigNumberish;
+}> {
+  // Mint tokens & approve
+  await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+  await ERC20.connect(creator).approve(
+    await eventManager.getAddress(),
+    eventRequestSubmitionPrice,
+  );
+
+  // Create event place
+  const { eventPlaceId } = await createEventPlace(
+    eventManager,
+    verifiedShaman,
+    localProvider,
+    eventPlacePatch,
+  );
+
+  // Submit request (event is in "Submitted" state, not approved)
+  const { request, getEventId } = await submitEventRequest(
+    eventManager,
+    creator,
+    {
+      eventPlaceId,
+      ...submitEventPatch,
+    },
+  );
+
+  const eventId = await getEventId();
+  return { request, eventId, eventPlaceId };
+}
+
 export async function submitEventRequest(
   eventManager: CyberValleyEventManager,
   creator: Signer,
