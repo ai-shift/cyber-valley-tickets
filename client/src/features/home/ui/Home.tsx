@@ -6,8 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 const SEARCH_PARAM_NAME = "search";
 
 const formatRevenue = (amount: number | undefined) => {
-  if (amount === undefined) return "0.00";
-  return (amount / 1_000_000).toFixed(2);
+  if (amount === undefined) return "0";
+  return amount;
 };
 
 export const Home = () => {
@@ -22,7 +22,7 @@ export const Home = () => {
         <div className="text-right">
           <p className="text-sm text-muted-foreground">Total Revenue</p>
           <p className="text-xl font-bold text-primary">
-            {formatRevenue(revenue?.total_revenue)} USDT
+            {formatRevenue(revenue?.totalRevenue)} USDT
           </p>
         </div>
       </div>
