@@ -9,6 +9,7 @@ import {
   createAndCloseEvent,
   createAndUpdateEventPlace,
   createEvent,
+  createEventForCategories,
   createEventPlace,
   declineEventPlace,
   deployContract,
@@ -727,7 +728,7 @@ describe("CyberValleyEventManager", () => {
             multihash.hashFunction,
             multihash.size,
           ),
-      ).to.be.revertedWith("Sold out");
+      ).to.be.revertedWith("No tickets available without category");
     });
 
     it("transfers required amount of tokens", async () => {
@@ -996,6 +997,424 @@ describe("CyberValleyEventManager", () => {
             32,
           ),
       ).to.be.revertedWith("Category quota exceeded");
+    });
+
+    it("should revert when creating category with quota exceeding maxTickets", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "BigCategory", 1000, 150, true),
+      ).to.be.revertedWith("Quota exceeds event capacity");
+    });
+
+    it("should revert when total category quotas exceed maxTickets", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create first category with quota = 60
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category1", 1000, 60, true);
+      // Try to create second category with quota = 50 (total would be 110 > 100)
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "Category2", 1000, 50, true),
+      ).to.be.revertedWith("Total category quotas exceed event capacity");
+    });
+
+    it("should revert when creating category with quota = 0", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        {},
+      );
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "ZeroQuota", 1000, 0, true),
+      ).to.be.revertedWith("Quota must be greater than 0");
+    });
+
+    it("should allow creating categories until quotas sum to maxTickets", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create category1 with quota = 50
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category1", 1000, 50, true);
+      // Create category2 with quota = 50 (total = 100)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category2", 1000, 50, true);
+      // Try to create category3 with quota = 1 (should fail, total would be 101)
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "Category3", 1000, 1, true),
+      ).to.be.revertedWith("Total category quotas exceed event capacity");
+    });
+
+    it("should allow creating unlimited category when quotas fill maxTickets", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create category1 with quota = 100 (fills all capacity)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "FullCapacity", 1000, 100, true);
+      // Create unlimited category (should succeed)
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "Unlimited", 500, 0, false),
+      ).to.not.be.reverted;
+    });
+
+    it("should revert when updating category quota below sold amount", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        {},
+      );
+      // Create category with quota = 50
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category", 0, 50, true);
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      // Buy 10 tickets from category
+      await ERC20.connect(owner).mint(1000);
+      await ERC20.connect(owner).approve(await eventManager.getAddress(), 1000);
+      for (let i = 0; i < 10; i++) {
+        await eventManager
+          .connect(owner)
+          ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+            eventId,
+            0,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          );
+      }
+
+      // Try to update quota to 5 (less than 10 sold) - should fail because event is approved
+      await expect(
+        eventManager
+          .connect(localProvider)
+          .updateCategory(0, "Category", 0, 5, true),
+      ).to.be.revertedWith("Event must be in submitted state");
+    });
+
+    it("should revert when updating increases total quotas beyond maxTickets", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create category1 with quota = 60
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category1", 1000, 60, true);
+      // Create category2 with quota = 30
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category2", 1000, 30, true);
+      // Try to update category2 quota to 50 (total would be 110 > 100)
+      await expect(
+        eventManager
+          .connect(localProvider)
+          .updateCategory(1, "Category2", 1000, 50, true),
+      ).to.be.revertedWith("Total category quotas exceed event capacity");
+    });
+
+    it("should allow updating category within quota constraints", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create category1 with quota = 50
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category1", 1000, 50, true);
+      // Create category2 with quota = 30
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category2", 1000, 30, true);
+      // Update category2 quota to 40 (total = 90, should succeed)
+      await expect(
+        eventManager
+          .connect(localProvider)
+          .updateCategory(1, "Category2", 1000, 40, true),
+      ).to.not.be.reverted;
+    });
+
+    it("should calculate NO_CATEGORY tickets correctly", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create category1 with quota = 30
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category1", 0, 30, true);
+      // Create category2 with quota = 40
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category2", 0, 40, true);
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      // Mint 30 tickets without category (should succeed, 100 - 30 - 40 = 30 available)
+      await ERC20.connect(owner).mint(3000);
+      await ERC20.connect(owner).approve(await eventManager.getAddress(), 3000);
+      for (let i = 0; i < 30; i++) {
+        await eventManager
+          .connect(owner)
+          ["mintTicket(uint256,bytes32,uint8,uint8)"](
+            eventId,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          );
+      }
+
+      // Try to mint 31st ticket without category (should revert)
+      await expect(
+        eventManager
+          .connect(owner)
+          ["mintTicket(uint256,bytes32,uint8,uint8)"](
+            eventId,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          ),
+      ).to.be.revertedWith("No tickets available without category");
+    });
+
+    it("should prevent NO_CATEGORY minting when all tickets allocated to categories", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create category1 with quota = 60
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category1", 0, 60, true);
+      // Create category2 with quota = 40 (fills all 100)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category2", 0, 40, true);
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      // Try to mint without category (should fail, no tickets available)
+      await ERC20.connect(owner).mint(100);
+      await ERC20.connect(owner).approve(await eventManager.getAddress(), 100);
+      await expect(
+        eventManager
+          .connect(owner)
+          ["mintTicket(uint256,bytes32,uint8,uint8)"](
+            eventId,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          ),
+      ).to.be.revertedWith("No tickets available without category");
+    });
+
+    it("should track totalCategoryQuota correctly after multiple operations", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create category1 with quota = 30 (totalCategoryQuota = 30)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category1", 1000, 30, true);
+      // Create category2 with quota = 40 (totalCategoryQuota = 70)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category2", 1000, 40, true);
+
+      // Verify we can only add 30 more (100 - 70 = 30)
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "Category3", 1000, 31, true),
+      ).to.be.revertedWith("Total category quotas exceed event capacity");
+
+      // Update category1 quota to 50 (totalCategoryQuota = 90)
+      await eventManager
+        .connect(localProvider)
+        .updateCategory(0, "Category1", 1000, 50, true);
+
+      // Now we can only add 10 more (100 - 90 = 10)
+      await expect(
+        eventManager
+          .connect(verifiedShaman)
+          .createCategory(eventId, "Category3", 1000, 11, true),
+      ).to.be.revertedWith("Total category quotas exceed event capacity");
+
+      // But 10 should work
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Category3", 1000, 10, true);
+    });
+
+    it("should allow NO_CATEGORY minting when categories have unlimited quota", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+      } = await loadFixture(deployContract);
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        { maxTickets: 100 },
+        {},
+      );
+      // Create unlimited category (doesn't count toward totalCategoryQuota)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Unlimited", 500, 0, false);
+      // Create category with quota = 30
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Limited", 0, 30, true);
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
+      // NO_CATEGORY tickets = 100 - 30 = 70 (unlimited category doesn't count)
+      await ERC20.connect(owner).mint(7000);
+      await ERC20.connect(owner).approve(await eventManager.getAddress(), 7000);
+
+      // Should be able to mint 70 tickets without category
+      for (let i = 0; i < 70; i++) {
+        await eventManager
+          .connect(owner)
+          ["mintTicket(uint256,bytes32,uint8,uint8)"](
+            eventId,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          );
+      }
+
+      // 71st should fail
+      await expect(
+        eventManager
+          .connect(owner)
+          ["mintTicket(uint256,bytes32,uint8,uint8)"](
+            eventId,
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            18,
+            32,
+          ),
+      ).to.be.revertedWith("No tickets available without category");
     });
   });
 
