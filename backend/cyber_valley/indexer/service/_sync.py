@@ -287,7 +287,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     try:
         event = Event.objects.get(id=event_data.event_id)
     except Event.DoesNotExist:
-        log.error(
+        log.exception(
             "Event %s not found for ticket minting, skipping", event_data.event_id
         )
         return
