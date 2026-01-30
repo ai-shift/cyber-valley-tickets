@@ -17,7 +17,7 @@ export const TicketQR: React.FC<TicketQRProps> = ({ ticket }) => {
     <div className="flex justify-center items-center py-20">
       <QRCode
         bgColor="#000000"
-        fgColor="#ffffff"
+        fgColor="#76FF05"
         value={`${ticket.eventId},${ticket.id},${data.nonce}`}
       />
     </div>
