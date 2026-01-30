@@ -11,6 +11,13 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from pydantic import BaseModel
 from returns.result import safe
+from tenacity import (
+    before_sleep_log,
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from cyber_valley.events.models import Event, EventPlace, Ticket, TicketCategory
 from cyber_valley.notifications.helpers import send_notification
@@ -281,6 +288,20 @@ def _sync_event_place_updated(
         )
 
 
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_exponential(multiplier=1, min=1, max=10),
+    retry=retry_if_exception_type(ipfshttpclient.exceptions.ProtocolError),
+    before_sleep=before_sleep_log(log, logging.WARNING),
+)
+def _fetch_ticket_metadata(cid: str) -> tuple[dict, dict]:
+    """Fetch ticket metadata from IPFS with retry logic."""
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        ticket_meta = client.get_json(cid)
+        socials = client.get_json(ticket_meta["socials"])
+    return ticket_meta, socials
+
+
 @transaction.atomic
 def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None:
     # FIXME: Fix this try_catch
@@ -294,9 +315,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.owner)
 
     cid = _multihash2cid(event_data)
-    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
-        ticket_meta = client.get_json(cid)
-        socials = client.get_json(ticket_meta["socials"])
+    ticket_meta, socials = _fetch_ticket_metadata(cid)
 
     with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
