@@ -107,18 +107,27 @@ function usePolygon(props: PolygonProps) {
       ["mouseout", "onMouseOut"],
     ];
 
+    const listeners: google.maps.MapsEventListener[] = [];
+
     for (const el of eventsMapper) {
       const [eventName, eventCallback] = el;
-      gme.addListener(polygon, eventName, (e: google.maps.MapMouseEvent) => {
-        const callback = callbacks.current[eventCallback];
-        if (callback) callback(e);
-      });
+      const listener = gme.addListener(
+        polygon,
+        eventName,
+        (e: google.maps.MapMouseEvent) => {
+          const callback = callbacks.current[eventCallback];
+          if (callback) callback(e);
+        },
+      );
+      listeners.push(listener);
     }
 
     return () => {
-      gme.clearInstanceListeners(polygon);
+      for (const listener of listeners) {
+        gme.removeListener(listener);
+      }
     };
-  }, [polygon]);
+  }, [polygon, callbacks]);
 
   return polygon;
 }

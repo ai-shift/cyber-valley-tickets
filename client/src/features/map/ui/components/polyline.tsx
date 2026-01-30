@@ -107,18 +107,27 @@ function usePolyline(props: PolylineProps) {
       ["mouseout", "onMouseOut"],
     ];
 
+    const listeners: google.maps.MapsEventListener[] = [];
+
     for (const el of eventsMapper) {
       const [eventName, eventCallback] = el;
-      gme.addListener(polyline, eventName, (e: google.maps.MapMouseEvent) => {
-        const callback = callbacks.current[eventCallback];
-        if (callback) callback(e);
-      });
+      const listener = gme.addListener(
+        polyline,
+        eventName,
+        (e: google.maps.MapMouseEvent) => {
+          const callback = callbacks.current[eventCallback];
+          if (callback) callback(e);
+        },
+      );
+      listeners.push(listener);
     }
 
     return () => {
-      gme.clearInstanceListeners(polyline);
+      for (const listener of listeners) {
+        gme.removeListener(listener);
+      }
     };
-  }, [polyline]);
+  }, [polyline, callbacks]);
 
   return polyline;
 }

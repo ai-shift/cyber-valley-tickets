@@ -108,22 +108,22 @@ export const EventCircle: React.FC<EventCircleProps> = ({
     overlay.setMap(map);
     overlayRef.current = overlay;
 
+    const listeners: google.maps.MapsEventListener[] = [];
+
     const zoomListener = map.addListener("zoom_changed", () => {
       overlay.draw();
     });
+    listeners.push(zoomListener);
 
     if (onClick) {
       const clickListener = circle.addListener("click", onClick);
-      return () => {
-        google.maps.event.removeListener(clickListener);
-        google.maps.event.removeListener(zoomListener);
-        circle.setMap(null);
-        overlay.setMap(null);
-      };
+      listeners.push(clickListener);
     }
 
     return () => {
-      google.maps.event.removeListener(zoomListener);
+      for (const listener of listeners) {
+        google.maps.event.removeListener(listener);
+      }
       circle.setMap(null);
       overlay.setMap(null);
     };
