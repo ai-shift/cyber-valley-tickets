@@ -980,6 +980,11 @@ export const eventManager = getContract({
           name: "size",
           type: "uint8",
         },
+        {
+          internalType: "string",
+          name: "referralData",
+          type: "string",
+        },
       ],
       name: "mintTicket",
       outputs: [],
