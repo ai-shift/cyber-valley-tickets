@@ -10,7 +10,10 @@ async function main() {
     "0xEd7f6CA6e91AaA3Ff2C3918B5cAF02FF449Ab3A4", // Backend account (might have tokens)
   ];
 
-  const ERC20 = await hre.ethers.getContractAt("SimpleERC20Xylose", erc20Address);
+  const ERC20 = await hre.ethers.getContractAt(
+    "SimpleERC20Xylose",
+    erc20Address,
+  );
   const decimals = await ERC20.decimals();
 
   console.log("ERC20 Contract:", erc20Address);
@@ -23,7 +26,9 @@ async function main() {
     try {
       // Simulate what thirdweb/frontend does
       const balance = await ERC20.balanceOf(address);
-      console.log(`  ✓ ERC20 Balance: ${hre.ethers.formatUnits(balance, decimals)} (${balance.toString()} wei)`);
+      console.log(
+        `  ✓ ERC20 Balance: ${hre.ethers.formatUnits(balance, decimals)} (${balance.toString()} wei)`,
+      );
 
       const ethBalance = await hre.ethers.provider.getBalance(address);
       console.log(`  ✓ ETH Balance: ${hre.ethers.formatEther(ethBalance)}`);
@@ -31,7 +36,9 @@ async function main() {
       // Check if can create event
       const eventPrice = 100n;
       const canCreate = balance >= eventPrice;
-      console.log(`  ${canCreate ? '✓' : '✗'} Can create event: ${canCreate} (needs ${eventPrice}, has ${balance})`);
+      console.log(
+        `  ${canCreate ? "✓" : "✗"} Can create event: ${canCreate} (needs ${eventPrice}, has ${balance})`,
+      );
     } catch (error) {
       console.log(`  ✗ Error: ${error.message}`);
     }
@@ -41,13 +48,14 @@ async function main() {
   // Test eth_call directly (what browsers do)
   console.log("=== Testing raw JSON-RPC call (like browser) ===");
   const balanceOfSelector = "0x70a08231"; // balanceOf(address)
-  const paddedAddress = "0x000000000000000000000000b402FD4dA064Ce84c92B1AA57DaB01faB5aFE82C";
+  const paddedAddress =
+    "0x000000000000000000000000b402FD4dA064Ce84c92B1AA57DaB01faB5aFE82C";
   const callData = balanceOfSelector + paddedAddress.slice(2);
 
   try {
     const result = await hre.ethers.provider.call({
       to: erc20Address,
-      data: callData
+      data: callData,
     });
     console.log(`✓ Raw eth_call result: ${result}`);
     console.log(`  Decoded: ${BigInt(result).toString()}`);
