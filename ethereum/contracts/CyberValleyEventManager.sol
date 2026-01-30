@@ -68,6 +68,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address[] customers;
         CyberValley.Multihash meta;
         uint256 networth;
+        uint256 totalCategoryQuota; // Gas-efficient tracking of category quotas
+        uint256 noCategorySold; // Track NO_CATEGORY tickets sold
     }
 
     event NewEventPlaceRequest(
@@ -403,7 +405,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                     hashFunction: hashFunction,
                     size: size
                 }),
-                networth: eventRequestPrice
+                networth: eventRequestPrice,
+                totalCategoryQuota: 0,
+                noCategorySold: 0
             })
         );
         validateEvent(events[events.length - 1]);
@@ -581,11 +585,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     ) internal onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         require(evt.status == EventStatus.Approved, "Event is not approved");
-        require(
-            evt.customers.length < eventPlaces[evt.eventPlaceId].maxTickets,
-            "Sold out"
-        );
-        
+
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
         uint16 price = evt.ticketPrice;
 
         if (categoryId != NO_CATEGORY) {
@@ -598,8 +599,14 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 category.sold++;
             }
             price = applyDiscount(evt.ticketPrice, category.discountPercentage);
+        } else {
+            // Gas-efficient NO_CATEGORY validation
+            // NO_CATEGORY tickets available = maxTickets - totalCategoryQuota - noCategorySold
+            require(evt.noCategorySold < place.maxTickets - evt.totalCategoryQuota,
+                "No tickets available without category");
+            evt.noCategorySold++;
         }
-        
+
         require(
             usdtTokenContract.transferFrom(
                 msg.sender,
@@ -738,14 +745,23 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         Event storage evt = events[eventId];
         require(evt.status == EventStatus.Submitted, "Event must be in submitted state");
         require(discountPercentage <= 10000, "Discount too high");
-        
-        if (hasQuota == false) {
+
+        // Gas-efficient quota validation using stored totalCategoryQuota
+        if (hasQuota) {
+            require(quota > 0, "Quota must be greater than 0");
+            EventPlace storage place = eventPlaces[evt.eventPlaceId];
+            require(quota <= place.maxTickets, "Quota exceeds event capacity");
+            require(evt.totalCategoryQuota + quota <= place.maxTickets,
+                "Total category quotas exceed event capacity");
+            // Update stored total
+            evt.totalCategoryQuota += quota;
+        } else {
             require(
                 !_eventHasUnlimitedCategory(eventId),
                 "Only one unlimited quota category allowed"
             );
         }
-        
+
         categories.push(TicketCategory({
             name: name,
             eventId: eventId,
@@ -754,10 +770,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             hasQuota: hasQuota,
             sold: 0
         }));
-        
+
         uint256 categoryId = categories.length - 1;
         categoryCounters[eventId].push(categoryId);
-        
+
         emit TicketCategoryCreated(
             categoryId,
             eventId,
@@ -778,7 +794,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         require(categoryId < categories.length, "Category does not exist");
         require(discountPercentage <= 10000, "Discount too high");
         TicketCategory storage category = categories[categoryId];
-        
+
         Event storage evt = events[category.eventId];
         EventPlace storage place = eventPlaces[evt.eventPlaceId];
         require(
@@ -786,16 +802,33 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Only the local provider of the event can update categories"
         );
         require(evt.status == EventStatus.Submitted, "Event must be in submitted state");
-        
-        if (hasQuota == false) {
+
+        // Gas-efficient quota validation using stored totalCategoryQuota
+        if (hasQuota) {
+            require(quota > 0, "Quota must be greater than 0");
+            require(quota >= category.sold, "Quota cannot be less than tickets already sold");
+            require(quota <= place.maxTickets, "Quota exceeds event capacity");
+
+            // Calculate new total: subtract old quota, add new quota
+            uint256 newTotalQuota = evt.totalCategoryQuota;
+            if (category.hasQuota) {
+                newTotalQuota -= category.quota;
+            }
+            newTotalQuota += quota;
+            require(newTotalQuota <= place.maxTickets,
+                "Total category quotas exceed event capacity");
+
+            // Update stored total
+            evt.totalCategoryQuota = newTotalQuota;
+        } else {
             require(category.hasQuota == false, "Cannot change from limited to unlimited quota");
         }
-        
+
         category.name = name;
         category.discountPercentage = discountPercentage;
         category.quota = quota;
         category.hasQuota = hasQuota;
-        
+
         emit TicketCategoryUpdated(
             categoryId,
             category.eventId,
