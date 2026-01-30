@@ -103,7 +103,7 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
                 name="search",
                 type=str,
                 location=OpenApiParameter.QUERY,
-                description="Search verified shamans by address or social media handles",
+                description="Search verified shamans by address or socials",
                 required=False,
             ),
         ],
