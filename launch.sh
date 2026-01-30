@@ -366,6 +366,12 @@ log_success "Contract addresses updated" "done"
 # ============================================================================
 log_section "Starting Indexer & Restarting Services"
 
+log_info "Waiting for IPFS to be ready" "waiting"
+until curl -s http://127.0.0.1:5001/api/v0/version >/dev/null 2>&1; do
+    sleep 1
+done
+log_success "IPFS is ready" "ready"
+
 log_info "Starting blockchain indexer" "starting"
 create_tmux_window "indexer" "/tmp/indexer.log"
 tmux send-keys -t "$SESSION_NAME:indexer" "make -C backend/ run-indexer" Enter
