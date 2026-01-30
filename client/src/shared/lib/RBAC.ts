@@ -2,7 +2,13 @@ import type { components } from "@/shared/api";
 
 export type Role = components["schemas"]["RoleEnum"];
 
-export type Resource = "event" | "place" | "ticket" | "staff" | "localprovider";
+export type Resource =
+  | "event"
+  | "place"
+  | "ticket"
+  | "staff"
+  | "localprovider"
+  | "category";
 export type Action =
   | "create"
   | "read"
@@ -11,7 +17,8 @@ export type Action =
   | "delete"
   | "purchase"
   | "redeem"
-  | "accept/decline";
+  | "accept/decline"
+  | "update";
 
 type PartialRecord<K extends string | number | symbol, T> = { [P in K]?: T };
 type ResourceActions = PartialRecord<Resource, Action[]>;
@@ -37,12 +44,14 @@ export const RBAC_ROLES: RoleControl = {
     event: ["read", "create"],
     ticket: ["purchase"],
     place: ["request"],
+    category: ["create"],
   },
   localprovider: {
     event: ["read", "create", "edit", "accept/decline"],
     ticket: ["redeem"],
     place: ["create", "accept/decline", "edit"],
     staff: ["create", "delete"],
+    category: ["update"],
   },
   master: {
     localprovider: ["create", "delete"],
