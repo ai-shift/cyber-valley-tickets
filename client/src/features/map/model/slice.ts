@@ -75,12 +75,15 @@ export const useMapState = create<MapState & MapAction>()(
         set({ displayedGroups: groups }),
       toggleGroup: (group: GeodataKey) => {
         const { displayedGroups, fetchLayer } = get();
-        fetchLayer(group);
+        const isAdding = !displayedGroups.includes(group);
         set({
-          displayedGroups: displayedGroups.includes(group)
-            ? displayedGroups.filter((g) => g !== group)
-            : [...displayedGroups, group],
+          displayedGroups: isAdding
+            ? [...displayedGroups, group]
+            : displayedGroups.filter((g) => g !== group),
         });
+        if (isAdding) {
+          fetchLayer(group);
+        }
       },
       resetState: () => set((state) => ({ ...state, ...initialPos })),
 
@@ -99,22 +102,22 @@ export const useMapState = create<MapState & MapAction>()(
       },
 
       fetchLayer: async (layerName: string) => {
-        const { fetchedLayers, loadingLayers } = get();
+        const { fetchedLayers } = get();
         if (fetchedLayers[layerName]) {
           return;
         }
-        set({
-          loadingLayers: [...loadingLayers, layerName],
+        set((state) => ({
+          loadingLayers: [...state.loadingLayers, layerName],
           error: "",
-        });
+        }));
         const { data, error } = await getGeodataLayer(layerName);
         if (data) {
-          set({
+          set((state) => ({
             fetchedLayers: {
-              ...fetchedLayers,
+              ...state.fetchedLayers,
               [layerName]: data as PlacemarkType[],
             },
-          });
+          }));
         }
         if (error) {
           console.error(`Failed to fetch layer ${layerName}:`, error);
@@ -122,9 +125,11 @@ export const useMapState = create<MapState & MapAction>()(
             error: `Failed to fetch the layer: ${layerName}`,
           });
         }
-        set({
-          loadingLayers: loadingLayers.filter((layer) => layer !== layerName),
-        });
+        set((state) => ({
+          loadingLayers: state.loadingLayers.filter(
+            (layer) => layer !== layerName,
+          ),
+        }));
       },
 
       getDisplayedLayers: () => {
