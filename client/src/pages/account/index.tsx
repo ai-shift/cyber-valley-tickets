@@ -309,11 +309,31 @@ const LocalProviderView = (): React.ReactNode => (
 const MasterView = (): React.ReactNode => (
   <div className="p-5">
     <h3 className="text-xl font-semibold text-primary mb-4">Management</h3>
-    <Link
-      className="card border-primary/30 text-center text-xl py-5"
-      to="/manage/localproviders"
-    >
-      Manage local providers
-    </Link>
+    <div className="flex flex-col gap-7">
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/localproviders"
+      >
+        Manage local providers
+      </Link>
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/place"
+      >
+        Manage places
+      </Link>
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/staff"
+      >
+        Manage staff
+      </Link>
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/verifiedshamans"
+      >
+        Manage verified shamans
+      </Link>
+    </div>
   </div>
 );

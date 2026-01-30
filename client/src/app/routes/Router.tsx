@@ -86,7 +86,9 @@ export const Router = () => {
                     <Route index element={<ManagePage />} />
                     <Route
                       path="/manage/place"
-                      element={<RestrictedTo userRoles={["localprovider"]} />}
+                      element={
+                        <RestrictedTo userRoles={["localprovider", "master"]} />
+                      }
                     >
                       <Route index element={<ManagePlacesPage />} />
                       <Route
@@ -96,7 +98,9 @@ export const Router = () => {
                     </Route>
                     <Route
                       path="/manage/staff"
-                      element={<RestrictedTo userRoles={["localprovider"]} />}
+                      element={
+                        <RestrictedTo userRoles={["localprovider", "master"]} />
+                      }
                     >
                       <Route index element={<ManageStaffPage />} />
                     </Route>
@@ -108,7 +112,9 @@ export const Router = () => {
                     </Route>
                     <Route
                       path="/manage/verifiedshamans"
-                      element={<RestrictedTo userRoles={["localprovider"]} />}
+                      element={
+                        <RestrictedTo userRoles={["localprovider", "master"]} />
+                      }
                     >
                       <Route index element={<ManageVerifiedShamansPage />} />
                     </Route>
