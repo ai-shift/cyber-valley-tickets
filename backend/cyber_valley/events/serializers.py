@@ -70,14 +70,17 @@ class CreatorSerializer(serializers.ModelSerializer[UserType]):
 
 
 class AttendeeSerializer(CreatorSerializer):
-    pass
+    tickets_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("address", "socials", "tickets_count")
 
 
 class EventSerializer(serializers.ModelSerializer[Event]):
     place = EventPlaceSerializer(required=True)
     creator = CreatorSerializer(required=True)
     start_date_timestamp = serializers.SerializerMethodField()
-    attendees = serializers.SerializerMethodField()
     total_revenue = serializers.IntegerField(read_only=True)
     paid_deposit = serializers.IntegerField(read_only=True)
 
@@ -97,17 +100,12 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "website",
             "start_date_timestamp",
             "tickets_bought",
-            "attendees",
             "total_revenue",
             "paid_deposit",
         )
 
     def get_start_date_timestamp(self, obj: Event) -> int:
         return int(obj.start_date.timestamp())
-
-    @extend_schema_field(serializers.ListSerializer(child=AttendeeSerializer()))
-    def get_attendees(self, obj: Event) -> list[dict[str, Any]]:
-        return [AttendeeSerializer(ticket.owner).data for ticket in obj.tickets.all()]
 
 
 class TicketCategorySerializer(serializers.ModelSerializer[TicketCategory]):

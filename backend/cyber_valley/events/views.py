@@ -5,9 +5,11 @@ from pathlib import Path
 
 import ipfshttpclient
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
-from django.db.models import Case, IntegerField, Q, When
+from django.db.models import Case, Count, IntegerField, Q, When
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import (
     OpenApiParameter,
@@ -27,8 +29,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from django.db.models.query import QuerySet
-
 from .models import Event, EventPlace, Ticket
 from .serializers import (
     AttendeeSerializer,
@@ -43,6 +43,7 @@ from .serializers import (
 )
 from .ticket_serializer import TicketSerializer
 
+User = get_user_model()
 log = logging.getLogger(__name__)
 
 
@@ -151,14 +152,27 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
     @action(detail=True, methods=["get"], name="Event Attendees")
     def attendees(self, request: Request, pk: int | None = None) -> Response:
         event = get_object_or_404(Event, pk=pk)
-        tickets = Ticket.objects.filter(event=event).select_related("owner")
         search_query = request.query_params.get("search", "")
+
+        # Get unique owners with ticket counts
+        owner_addresses = (
+            Ticket.objects.filter(event=event)
+            .values_list("owner_id", flat=True)
+            .distinct()
+        )
+
+        # Get owners with ticket count annotation
+        owners = User.objects.filter(address__in=owner_addresses).annotate(
+            tickets_count=Count("tickets", filter=Q(tickets__event=event))
+        )
+
         if search_query:
-            tickets = tickets.filter(
-                Q(owner__address__icontains=search_query)
-                | Q(owner__socials__value__icontains=search_query)
+            owners = owners.filter(
+                Q(address__icontains=search_query)
+                | Q(socials__value__icontains=search_query)
             )
-        serializer = AttendeeSerializer([ticket.owner for ticket in tickets], many=True)
+
+        serializer = AttendeeSerializer(owners, many=True)
         return Response(serializer.data)
 
 
@@ -417,7 +431,7 @@ def lifetime_revenue(_: Request, event_id: int) -> Response:
         (200, "application/json"): {
             "type": "object",
             "properties": {
-                "total_revenue": {
+                "totalRevenue": {
                     "type": "integer",
                     "description": (
                         "Total revenue across all events in USDT (6 decimals)"
@@ -435,4 +449,4 @@ def total_revenue(_: Request) -> Response:
         total=Sum("total_revenue") + Sum("paid_deposit"),
     )["total"]
 
-    return Response({"total_revenue": total or 0})
+    return Response({"totalRevenue": total or 0})
