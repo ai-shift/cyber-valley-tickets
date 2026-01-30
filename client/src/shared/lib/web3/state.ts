@@ -865,11 +865,6 @@ export const eventManager = getContract({
           name: "eoa",
           type: "address",
         },
-        {
-          internalType: "uint8",
-          name: "share",
-          type: "uint8",
-        },
       ],
       name: "grantLocalProvider",
       outputs: [],
