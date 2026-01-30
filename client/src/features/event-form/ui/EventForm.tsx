@@ -43,6 +43,7 @@ import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace"
 import { getPlaceDefaults } from "../lib/getPlaceDefaults";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
+import { CategorySection } from "./CategorySection";
 import { PlaceCard } from "./PlaceCard";
 
 type EventFormProps = {
@@ -90,6 +91,7 @@ export const EventForm: React.FC<EventFormProps> = ({
           title: "",
           description: "",
           website: "",
+          categories: [],
           ...getPlaceDefaults(places[0], events, eventIdsToExclude),
         },
   });
@@ -393,6 +395,7 @@ export const EventForm: React.FC<EventFormProps> = ({
             );
           }}
         />
+        <CategorySection control={form.control} selectedPlace={selectedPlace} />
         <div className="sticky bottom-5 w-full mt-5">
           <WithSubmitCheck {...props}>
             <Button className="block mx-auto" type="submit" variant="default">

@@ -34,6 +34,14 @@ export function createFormSchema(
       daysAmount: z
         .number()
         .refine((val) => val >= 1, "Duration must be at least 1 day"),
+      categories: z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          discount: z.number(),
+          quota: z.number(),
+        }),
+      ),
     })
     .superRefine((data, ctx) => {
       const place = places.find((p) => `${p.id}` === data.place);
