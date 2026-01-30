@@ -2,6 +2,7 @@ import { useAuthSlice } from "@/app/providers";
 import type { Order } from "@/entities/order";
 import type { Socials } from "@/entities/user";
 import { useSendTx } from "@/shared/hooks/sendTx";
+import { getCurrencySymbol } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
@@ -59,6 +60,12 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
       ? "Your will recieve your ticket within several minutes."
       : "Your order will be published within several minutes.";
 
+  // Calculate final price for display on button
+  const finalPrice =
+    order.type === "buy_ticket"
+      ? (order.ticket.finalPrice ?? order.ticket.ticketPrice)
+      : null;
+
   return (
     <article className="card border-primary/30">
       {error && <PaymentFailed cause={error} />}
@@ -68,7 +75,18 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         <div className="flex justify-center py-6">
           <span>
             <Button onClick={() => mutate(order)} className="mx-auto">
-              {error ? "Try again" : "Confirm"}
+              {error
+                ? "Try again"
+                : finalPrice
+                  ? `Pay ${finalPrice}`
+                  : "Confirm"}
+              {finalPrice && (
+                <img
+                  src={getCurrencySymbol()}
+                  className="h-4 aspect-square inline ml-1"
+                  alt="currency"
+                />
+              )}
             </Button>
           </span>
         </div>

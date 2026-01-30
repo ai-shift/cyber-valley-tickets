@@ -2,7 +2,7 @@ import { useOrderStore } from "@/entities/order";
 import { useReferralStorage } from "@/features/referral";
 import { ReferralManager } from "@/features/referral/ui/ReferralManager";
 import { CategorySelect } from "@/features/ticket/ui/CategorySelect";
-import { useState } from "react";
+import { useHideFormNav } from "@/shared/widgets/navigation/hooks/useHideFormNav";
 import { ConfirmPayment } from "./ConfirmPayment";
 import { PurchaseEvent } from "./PurchaseEvent";
 import { PurchaseTicket } from "./PurchaseTicket";
@@ -10,17 +10,12 @@ import { PurchaseTicket } from "./PurchaseTicket";
 import type { CategoryOption } from "@/features/ticket/ui/CategorySelect";
 
 export const Purchase: React.FC = () => {
+  useHideFormNav();
   const { order, setTicketOrder } = useOrderStore();
   const { address: referralAddress } = useReferralStorage();
 
-  // Local state for category selection on purchase page
-  const [selectedCategory, setSelectedCategory] =
-    useState<CategoryOption | null>(null);
-
   // Handle category selection and update the order
   const handleCategorySelect = (category: CategoryOption | null) => {
-    setSelectedCategory(category);
-
     if (order?.type === "buy_ticket") {
       const ticket = order.ticket;
       const finalPrice = category
@@ -50,9 +45,7 @@ export const Purchase: React.FC = () => {
             <CategorySelect
               eventId={order.ticket.eventId}
               ticketPrice={order.ticket.ticketPrice}
-              selectedCategoryId={
-                order.ticket.categoryId ?? selectedCategory?.categoryId ?? null
-              }
+              selectedCategoryId={order.ticket.categoryId ?? null}
               onCategorySelect={handleCategorySelect}
             />
           </div>

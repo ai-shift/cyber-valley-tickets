@@ -172,18 +172,6 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
           </span>
         </div>
       )}
-
-      <div className="flex justify-between items-center text-lg font-medium pt-2 border-t border-input/20">
-        <span>Final Price:</span>
-        <span>
-          {finalPrice}{" "}
-          <img
-            src={getCurrencySymbol()}
-            className="h-6 aspect-square inline"
-            alt="currency"
-          />
-        </span>
-      </div>
     </div>
   );
 };
