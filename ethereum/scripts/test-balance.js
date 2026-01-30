@@ -22,7 +22,10 @@ async function main() {
   console.log("\n2. Testing ERC20 contract:");
   const erc20Address = "0xf6292eE7F9d03BA5844666DD4981d8b38b8d598d";
   try {
-    const ERC20 = await hre.ethers.getContractAt("SimpleERC20Xylose", erc20Address);
+    const ERC20 = await hre.ethers.getContractAt(
+      "SimpleERC20Xylose",
+      erc20Address,
+    );
 
     const name = await ERC20.name();
     const symbol = await ERC20.symbol();
@@ -33,7 +36,9 @@ async function main() {
     console.log(`   ✓ Name: ${name}`);
     console.log(`   ✓ Symbol: ${symbol}`);
     console.log(`   ✓ Decimals: ${decimals}`);
-    console.log(`   ✓ Total Supply: ${hre.ethers.formatUnits(totalSupply, decimals)}`);
+    console.log(
+      `   ✓ Total Supply: ${hre.ethers.formatUnits(totalSupply, decimals)}`,
+    );
   } catch (error) {
     console.log(`   ✗ ERC20 contract check failed: ${error.message}`);
     return;
@@ -43,12 +48,17 @@ async function main() {
   console.log("\n3. Testing balance check for random address:");
   const testAddress = "0xb402FD4dA064Ce84c92B1AA57DaB01faB5aFE82C"; // From watson investigation
   try {
-    const ERC20 = await hre.ethers.getContractAt("SimpleERC20Xylose", erc20Address);
+    const ERC20 = await hre.ethers.getContractAt(
+      "SimpleERC20Xylose",
+      erc20Address,
+    );
     const balance = await ERC20.balanceOf(testAddress);
     const decimals = await ERC20.decimals();
 
     console.log(`   ✓ Address: ${testAddress}`);
-    console.log(`   ✓ ERC20 Balance: ${hre.ethers.formatUnits(balance, decimals)}`);
+    console.log(
+      `   ✓ ERC20 Balance: ${hre.ethers.formatUnits(balance, decimals)}`,
+    );
 
     // Also check ETH balance
     const ethBalance = await provider.getBalance(testAddress);
@@ -62,13 +72,18 @@ async function main() {
   console.log("\n4. Testing EventManager contract:");
   const eventManagerAddress = "0xadA1E7CCA885304914d1857637A67A9E611474AF";
   try {
-    const EventManager = await hre.ethers.getContractAt("CyberValleyEventManager", eventManagerAddress);
+    const EventManager = await hre.ethers.getContractAt(
+      "CyberValleyEventManager",
+      eventManagerAddress,
+    );
 
     const eventRequestPrice = await EventManager.eventRequestPrice();
     const decimals = 6; // USDT decimals
 
     console.log(`   ✓ Contract found at ${eventManagerAddress}`);
-    console.log(`   ✓ Event Request Price: ${hre.ethers.formatUnits(eventRequestPrice, decimals)}`);
+    console.log(
+      `   ✓ Event Request Price: ${hre.ethers.formatUnits(eventRequestPrice, decimals)}`,
+    );
   } catch (error) {
     console.log(`   ✗ EventManager contract check failed: ${error.message}`);
   }

@@ -5,6 +5,10 @@ export interface OrderTicket {
   eventId: number;
   eventTitle: string;
   ticketPrice: number;
+  categoryId?: number;
+  categoryName?: string;
+  discount?: number;
+  finalPrice?: number;
 }
 
 interface BaseOrder {

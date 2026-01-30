@@ -13,6 +13,7 @@ import { pluralDays } from "@/shared/lib/pluralDays";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
+import { useHideFormNav } from "@/shared/widgets/navigation/hooks/useHideFormNav";
 import { useNavigate } from "react-router";
 import { DetailsBlock } from "./DetailsBlock";
 
@@ -23,6 +24,7 @@ type EventDetailsProps = {
 };
 
 export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
+  useHideFormNav();
   const navigate = useNavigate();
   const { user } = useAuthSlice();
   const { LoginBtn, buttonProps } = useLogin();
@@ -130,6 +132,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${ticketPrice}`}
         />
       </div>
+
       <Button
         filling="outline"
         className="m-5"

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 
+import { useReferralFromUrl } from "@/features/referral";
 import {
   AccountPage,
   CreateEventPage,
@@ -28,11 +29,17 @@ import { AuthProvider, GoogleMapsProvider, QueryProvider } from "../providers";
 import { ProtectedRoute } from "../providers/authProvider/ui/ProtectedRoute";
 import { RestrictedTo } from "../providers/restrictToProvider/RestrictedTo";
 
+const ReferralHandler = () => {
+  useReferralFromUrl();
+  return null;
+};
+
 export const Router = () => {
   return (
     <BrowserRouter>
       <QueryProvider>
         <GoogleMapsProvider>
+          <ReferralHandler />
           <Routes>
             <Route element={<AuthProvider />}>
               <Route element={<NavContainer />}>

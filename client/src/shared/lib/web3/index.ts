@@ -383,6 +383,26 @@ export async function mintTicket(
   return transactionHash;
 }
 
+export async function mintTicketWithCategory(
+  account: Account,
+  eventId: bigint,
+  categoryId: bigint,
+  socialsCID: string,
+  _referralData?: string,
+): Promise<TxHash> {
+  const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
+  const mintTransaction = prepareContractCall({
+    contract: eventManager,
+    method: "mintTicket",
+    params: [eventId, categoryId, digest, hashFunction, size],
+  });
+  const { transactionHash } = await sendTransaction({
+    account,
+    transaction: mintTransaction,
+  });
+  return transactionHash;
+}
+
 export async function redeemTicket(
   account: Account,
   ticketId: bigint,
@@ -483,4 +503,39 @@ export async function hasEnoughtTokens(
 
 function babs(x: bigint): bigint {
   return x < 0 ? -x : x;
+}
+
+export async function createCategory(
+  account: Account,
+  eventId: bigint,
+  name: string,
+  discountPercentage: number,
+  quota: number,
+  hasQuota: boolean,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "createCategory",
+    params: [eventId, name, discountPercentage, quota, hasQuota],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function updateCategory(
+  account: Account,
+  _eventId: bigint,
+  categoryId: bigint,
+  name: string,
+  discountPercentage: number,
+  quota: number,
+  hasQuota: boolean,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: eventManager,
+    method: "updateCategory",
+    params: [categoryId, name, discountPercentage, quota, hasQuota],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
 }
