@@ -6,7 +6,7 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { Layers, RotateCcw, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
@@ -65,23 +65,25 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
   const [showGroups, setShowGroups] = useState(false);
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      await fetchLayersTitles();
-      for (const group of displayedGroups) {
-        if (layersTitles.includes(group)) {
-          fetchLayer(group);
-        }
+    fetchLayersTitles();
+  }, [fetchLayersTitles]);
+
+  useEffect(() => {
+    if (layersTitles.length === 0) return;
+
+    for (const group of displayedGroups) {
+      if (layersTitles.includes(group)) {
+        fetchLayer(group);
       }
-    };
-    loadInitialData();
-  }, []);
+    }
+  }, [layersTitles, displayedGroups, fetchLayer]);
 
   const displayedLayers = getDisplayedLayers();
 
-  const onMapClick = () => {
+  const onMapClick = useCallback(() => {
     setSelectedPlacemark(null);
     selectEventPlace(null);
-  };
+  }, [setSelectedPlacemark, selectEventPlace]);
 
   useEffect(() => {
     if (!map) return;
@@ -91,8 +93,8 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     }
   }, [isInitial, zoom, center]);
 
-  const debSetZoom = debounce(setZoom, 500);
-  const debSetCenter = debounce(setCenter, 500);
+  const debSetZoom = useMemo(() => debounce(setZoom, 500), [setZoom]);
+  const debSetCenter = useMemo(() => debounce(setCenter, 500), [setCenter]);
 
   return (
     <GMap
@@ -156,10 +158,11 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         </SheetContent>
       </Sheet>
       {Object.values(displayedLayers).map((layer) => {
-        return layer.map((placemark, idx) => (
+        return layer.map((placemark) => (
           <Placemark
             onClick={(placemark) => setSelectedPlacemark(placemark)}
-            key={`${placemark.name}-${idx}`}
+            // Fix: Use unique identifier instead of index for stable key
+            key={`${placemark.name}-${placemark.type}-${JSON.stringify(placemark.coordinates[0])}`}
             placemark={placemark as PlacemarkType}
             opacity={layersOpacity}
           />
