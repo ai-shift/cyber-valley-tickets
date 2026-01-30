@@ -5,7 +5,7 @@ import { getUnixTime } from "date-fns";
 
 export const uniteFilter = (event: Event, user: User) => {
   if (checkPermission(user.role, "event:edit", "event:accept/decline"))
-  if (event.creator.address === user.address) return true;
+    if (event.creator.address === user.address) return true;
   return event.status === "approved";
 };
 
@@ -45,7 +45,8 @@ const isUpcoming = (user: User) => (event: Event) => {
   }
   if (
     event.status === "submitted" &&
-    (checkPermission(user.role, "event:edit", "event:accept/decline") || user.address === event.creator.address)
+    (checkPermission(user.role, "event:edit", "event:accept/decline") ||
+      user.address === event.creator.address)
   ) {
     return true;
   }
