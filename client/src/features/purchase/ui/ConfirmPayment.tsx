@@ -13,9 +13,13 @@ import { purchase } from "../api/purchase";
 
 export type ConfirmPaymentProps = {
   order: Order;
+  referralAddress?: string;
 };
 
-export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
+export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
+  order,
+  referralAddress,
+}) => {
   const navigate = useNavigate();
   const account = useActiveAccount();
   const { user } = useAuthSlice();
@@ -27,7 +31,13 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({ order }) => {
       if (!account || !user) {
         return Promise.reject("Account or user are missing");
       }
-      return purchase(sendTx, account, order, user.socials[0] as Socials);
+      return purchase(
+        sendTx,
+        account,
+        order,
+        user.socials[0] as Socials,
+        referralAddress,
+      );
     },
     onSuccess: () => {
       setIsSuccess(true);

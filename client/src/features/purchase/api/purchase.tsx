@@ -11,6 +11,7 @@ import type { EventDto } from "@/entities/event";
 import type { Order, OrderTicket } from "@/entities/order";
 import type { Socials } from "@/entities/user";
 import { cleanEventLocal } from "@/features/event-form";
+import { clearReferral } from "@/features/referral";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
 
@@ -19,6 +20,7 @@ export const purchase = async (
   account: Account,
   order: Order,
   socials: Socials,
+  referralAddress?: string,
 ) => {
   const pickFetch: {
     [K in typeof order.type]: (
@@ -26,6 +28,7 @@ export const purchase = async (
       account: Account,
       order: Order,
       socials: Socials,
+      referralAddress?: string,
     ) => Promise<void>;
   } = {
     create_event: createEvent,
@@ -33,7 +36,7 @@ export const purchase = async (
     update_event: updateEvent,
   };
 
-  await pickFetch[order.type](sendTx, account, order, socials);
+  await pickFetch[order.type](sendTx, account, order, socials, referralAddress);
 };
 
 const purchaseTicket = async (
@@ -41,6 +44,7 @@ const purchaseTicket = async (
   account: Account,
   order: Order,
   socials: Socials,
+  referralAddress?: string,
 ) => {
   if (order.type !== "buy_ticket")
     throw new Error("There is no ticket in the order");
@@ -53,9 +57,19 @@ const purchaseTicket = async (
   sendTx(approve);
   await approve;
   await new Promise((r) => setTimeout(r, 1000));
-  const tx = mintTicket(account, BigInt(order.ticket.eventId), data.cid);
+  const tx = mintTicket(
+    account,
+    BigInt(order.ticket.eventId),
+    data.cid,
+    referralAddress,
+  );
   sendTx(tx);
   await tx;
+
+  // Clear referral after successful purchase
+  if (referralAddress) {
+    clearReferral();
+  }
 };
 
 const updateEvent = async (
@@ -63,6 +77,7 @@ const updateEvent = async (
   account: Account,
   order: Order,
   socials: Socials,
+  _referralAddress?: string,
 ) => {
   if (order.type !== "update_event")
     throw new Error("There is no event in the order");
@@ -97,6 +112,7 @@ const createEvent = async (
   account: Account,
   order: Order,
   socials: Socials,
+  _referralAddress?: string,
 ) => {
   if (order.type !== "create_event")
     throw new Error("There is no event in the order");
