@@ -1,19 +1,19 @@
-import type { Role } from "@/shared/lib/RBAC";
+import { type View, checkView } from "@/shared/lib/RBAC";
 import { Navigate, Outlet } from "react-router";
 import { useAuthSlice } from "../authProvider";
 
 type RestrictedToProps = {
-  userRoles: Role[];
+  view: View;
 };
 
-export const RestrictedTo: React.FC<RestrictedToProps> = ({ userRoles }) => {
+export const RestrictedTo: React.FC<RestrictedToProps> = ({ view }) => {
   const { user } = useAuthSlice();
 
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/account" />;
   }
 
-  if (!userRoles.includes(user.role)) {
+  if (!checkView(user.role, view)) {
     return <Navigate to="/" />;
   }
 

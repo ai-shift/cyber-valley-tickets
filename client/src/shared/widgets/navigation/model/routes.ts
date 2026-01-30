@@ -1,10 +1,11 @@
-import type { Role } from "@/shared/lib/RBAC";
+import type { View } from "@/shared/lib/RBAC";
 
 export type Route = {
   path: string;
   title: string;
   icon?: string;
-  restrictedTo?: Role[];
+  view?: View;
+  requireLogin?: boolean;
 };
 
 export const routes: Route[] = [
@@ -22,7 +23,7 @@ export const routes: Route[] = [
     path: "/notifications",
     title: "Notifs",
     icon: "nnotification_3",
-    restrictedTo: ["customer", "verifiedshaman", "localprovider", "master"],
+    requireLogin: true,
   },
   {
     path: "/account",

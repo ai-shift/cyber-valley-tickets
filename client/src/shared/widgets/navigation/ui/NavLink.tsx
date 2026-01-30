@@ -1,4 +1,4 @@
-import type { Role } from "@/shared/lib/RBAC";
+import { type Role, checkView } from "@/shared/lib/RBAC";
 import { useLocation } from "react-router";
 import { NavLink as Link } from "react-router";
 import type { Route } from "../model/routes";
@@ -10,17 +10,18 @@ type NavLinkProps = {
 };
 
 export const NavLink: React.FC<NavLinkProps> = ({ route, role, badgeText }) => {
-  const { path, title, icon, restrictedTo } = route;
+  const { path, title, icon, view, requireLogin } = route;
   const { pathname } = useLocation();
 
   const isCurrent = path === "/" ? pathname === "/" : pathname.startsWith(path);
   const iconName = icon || title.toLowerCase();
 
-  const canDisplay = !restrictedTo || (role && restrictedTo.includes(role));
+  const isLogged = !requireLogin || role != null
+  const canDisplay = !view || checkView(role, view);
   const showBadge = badgeText && badgeText !== "0";
 
   return (
-    canDisplay && (
+    canDisplay && isLogged && (
       <Link
         to={path}
         className={({ isActive }) =>
