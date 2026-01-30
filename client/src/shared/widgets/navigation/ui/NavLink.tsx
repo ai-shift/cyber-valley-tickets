@@ -16,12 +16,13 @@ export const NavLink: React.FC<NavLinkProps> = ({ route, role, badgeText }) => {
   const isCurrent = path === "/" ? pathname === "/" : pathname.startsWith(path);
   const iconName = icon || title.toLowerCase();
 
-  const isLogged = !requireLogin || role != null
+  const isLogged = !requireLogin || role != null;
   const canDisplay = !view || checkView(role, view);
   const showBadge = badgeText && badgeText !== "0";
 
   return (
-    canDisplay && isLogged && (
+    canDisplay &&
+    isLogged && (
       <Link
         to={path}
         className={({ isActive }) =>
