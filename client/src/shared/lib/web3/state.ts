@@ -989,6 +989,105 @@ export const eventManager = getContract({
     {
       inputs: [
         {
+          internalType: "uint256",
+          name: "eventId",
+          type: "uint256",
+        },
+        {
+          internalType: "uint256",
+          name: "categoryId",
+          type: "uint256",
+        },
+        {
+          internalType: "bytes32",
+          name: "digest",
+          type: "bytes32",
+        },
+        {
+          internalType: "uint8",
+          name: "hashFunction",
+          type: "uint8",
+        },
+        {
+          internalType: "uint8",
+          name: "size",
+          type: "uint8",
+        },
+      ],
+      name: "mintTicket",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "eventId",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "name",
+          type: "string",
+        },
+        {
+          internalType: "uint16",
+          name: "discountPercentage",
+          type: "uint16",
+        },
+        {
+          internalType: "uint16",
+          name: "quota",
+          type: "uint16",
+        },
+        {
+          internalType: "bool",
+          name: "hasQuota",
+          type: "bool",
+        },
+      ],
+      name: "createCategory",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "categoryId",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "name",
+          type: "string",
+        },
+        {
+          internalType: "uint16",
+          name: "discountPercentage",
+          type: "uint16",
+        },
+        {
+          internalType: "uint16",
+          name: "quota",
+          type: "uint16",
+        },
+        {
+          internalType: "bool",
+          name: "hasQuota",
+          type: "bool",
+        },
+      ],
+      name: "updateCategory",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
           internalType: "bytes32",
           name: "role",
           type: "bytes32",
