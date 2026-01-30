@@ -284,19 +284,19 @@ async function main() {
 
   // Create categories for events 0 and 1 (before they are approved)
   const categories = [
-    // Categories for event 0
+    // Categories for event 0 (maxTickets: 100)
     {
       eventId: 0,
       name: "Women",
       discountPercentage: 2000, // 20% discount (basis points: 10000 = 100%)
-      quota: 50,
+      quota: 30,
       hasQuota: true,
     },
     {
       eventId: 0,
       name: "Locals",
       discountPercentage: 1000, // 10% discount
-      quota: 100,
+      quota: 50,
       hasQuota: true,
     },
     {
@@ -306,12 +306,12 @@ async function main() {
       quota: 0,
       hasQuota: false, // Unlimited
     },
-    // Categories for event 1
+    // Categories for event 1 (maxTickets: 100)
     {
       eventId: 1,
       name: "Early Bird",
       discountPercentage: 1500, // 15% discount
-      quota: 30,
+      quota: 25,
       hasQuota: true,
     },
     {
