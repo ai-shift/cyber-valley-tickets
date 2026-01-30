@@ -18,6 +18,7 @@ import { useNavigate } from "react-router";
 import { DetailsBlock } from "./DetailsBlock";
 
 import { useLogin } from "@/features/login";
+import { checkPermission } from "@/shared/lib/RBAC";
 
 type EventDetailsProps = {
   eventId: number;
@@ -58,7 +59,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   }
 
   const isCreator = user?.address === event.creator.address;
-  const isLocalprovider = user?.role === "localprovider";
+  const isPermitted = checkPermission(user?.role, "event:edit")
 
   return (
     <div className="flex flex-col">
@@ -111,7 +112,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           icon="/icons/calendar.svg"
           title="Date and time"
           information={`${formatTimestamp(startDateTimestamp)} (${getTimeString(startDateTimestamp)})`}
-          className={cn(isCreator || isLocalprovider || "col-span-2")}
+          className={cn(isCreator || isPermitted || "col-span-2")}
         />
         <DetailsBlock
           icon="/icons/duration_2.svg"
@@ -119,7 +120,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           information={`${daysAmount} ${pluralDays(daysAmount)}`}
         />
 
-        {(isCreator || isLocalprovider) && (
+        {(isCreator || isPermitted) && (
           <DetailsBlock
             icon="/icons/Attendees_2.svg"
             title="Tickets available"
@@ -144,7 +145,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         <>
           <MaybeManageEvent
             eventId={eventId}
-            canEdit={isLocalprovider}
+            canEdit={isPermitted}
             role={user.role}
             status={event.status}
           />
