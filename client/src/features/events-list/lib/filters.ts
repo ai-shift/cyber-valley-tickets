@@ -1,9 +1,10 @@
 import type { Event } from "@/entities/event";
 import type { User } from "@/entities/user";
+import { checkPermission } from "@/shared/lib/RBAC";
 import { getUnixTime } from "date-fns";
 
 export const uniteFilter = (event: Event, user: User) => {
-  if (user.role === "localprovider") return true;
+  if (checkPermission(user.role, "event:edit", "event:accept/decline"))
   if (event.creator.address === user.address) return true;
   return event.status === "approved";
 };
@@ -20,7 +21,7 @@ export const myEventsFilter = (
     upcoming: isUpcoming(user),
   };
 
-  if (user.role === "localprovider") {
+  if (checkPermission(user.role, "event:edit", "event:accept/decline")) {
     return mapper[option](event);
   }
 
@@ -44,7 +45,7 @@ const isUpcoming = (user: User) => (event: Event) => {
   }
   if (
     event.status === "submitted" &&
-    (user.role === "localprovider" || user.address === event.creator.address)
+    (checkPermission(user.role, "event:edit", "event:accept/decline") || user.address === event.creator.address)
   ) {
     return true;
   }

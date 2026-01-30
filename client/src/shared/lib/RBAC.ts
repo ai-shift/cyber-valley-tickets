@@ -55,6 +55,11 @@ export const RBAC_ROLES: RoleControl = {
   },
   master: {
     localprovider: ["create", "delete"],
+    event: ["read", "create", "edit", "accept/decline"],
+    ticket: ["redeem"],
+    place: ["create", "accept/decline", "edit"],
+    staff: ["create", "delete"],
+    category: ["update"],
   },
 };
 
