@@ -65,6 +65,35 @@ export const RBAC_ROLES: RoleControl = {
 
 export type Permissions = `${Resource}:${Action}`;
 
+export type View =
+  | "manage-places"
+  | "manage-staff"
+  | "manage-localproviders"
+  | "manage-verifiedshamans";
+
+export const RBAC_VIEWS: Record<Role, View[]> = {
+  customer: [],
+  creator: [],
+  staff: [],
+  verifiedshaman: [],
+  localprovider: ["manage-places", "manage-staff", "manage-verifiedshamans"],
+  master: [
+    "manage-places",
+    "manage-staff",
+    "manage-localproviders",
+    "manage-verifiedshamans",
+  ],
+};
+
+export function checkView(role: Role | undefined, view: View): boolean {
+  if (role == null) {
+    return false;
+  }
+  const views = RBAC_VIEWS[role];
+  if (!views) return false;
+  return views.includes(view);
+}
+
 export function checkPermission(
   role: Role | undefined,
   ...permissions: Permissions[]

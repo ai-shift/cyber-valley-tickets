@@ -71,24 +71,9 @@ export const Router = () => {
                 />
 
                 <Route element={<ProtectedRoute />}>
-                  <Route
-                    path="/manage"
-                    element={
-                      <RestrictedTo
-                        userRoles={[
-                          "master",
-                          "localprovider",
-                          "verifiedshaman",
-                        ]}
-                      />
-                    }
-                  >
-                    <Route index element={<ManagePage />} />
                     <Route
                       path="/manage/place"
-                      element={
-                        <RestrictedTo userRoles={["localprovider", "master"]} />
-                      }
+                      element={<RestrictedTo view="manage-places" />}
                     >
                       <Route index element={<ManagePlacesPage />} />
                       <Route
@@ -98,28 +83,22 @@ export const Router = () => {
                     </Route>
                     <Route
                       path="/manage/staff"
-                      element={
-                        <RestrictedTo userRoles={["localprovider", "master"]} />
-                      }
+                      element={<RestrictedTo view="manage-staff" />}
                     >
                       <Route index element={<ManageStaffPage />} />
                     </Route>
                     <Route
                       path="/manage/localproviders"
-                      element={<RestrictedTo userRoles={["master"]} />}
+                      element={<RestrictedTo view="manage-localproviders" />}
                     >
                       <Route index element={<ManageLocalprovidersPage />} />
                     </Route>
                     <Route
                       path="/manage/verifiedshamans"
-                      element={
-                        <RestrictedTo userRoles={["localprovider", "master"]} />
-                      }
+                      element={<RestrictedTo view="manage-verifiedshamans" />}
                     >
                       <Route index element={<ManageVerifiedShamansPage />} />
                     </Route>
-                  </Route>
-
                   <Route
                     path="/notifications"
                     element={<NotificationsPage />}
