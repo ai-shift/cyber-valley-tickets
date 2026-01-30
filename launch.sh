@@ -145,6 +145,12 @@ wait_for_service() {
     local pattern="$2"
     local service_name="$3"
 
+    # First check if pattern already exists in log (service started quickly)
+    if grep -q "$pattern" "$log_file" 2>/dev/null; then
+        return 0
+    fi
+
+    # Otherwise wait for new lines
     if timeout 60 tail -f "$log_file" | grep -q "$pattern"; then
         return 0
     else
