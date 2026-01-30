@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import bs58 from "bs58";
 import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
@@ -219,14 +219,17 @@ async function main() {
     const imgBlob = new Blob([imgBuffer]);
 
     // Upload socials
-    const socialsResponse = await fetch(`${BACKEND_HOST}/api/ipfs/users/socials`, {
-      method: "PUT",
-      body: JSON.stringify(cfg.socials),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${cfg.creator.address}`,
+    const socialsResponse = await fetch(
+      `${BACKEND_HOST}/api/ipfs/users/socials`,
+      {
+        method: "PUT",
+        body: JSON.stringify(cfg.socials),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${cfg.creator.address}`,
+        },
       },
-    });
+    );
     if (!socialsResponse.ok) {
       const body = await socialsResponse.text();
       throw new Error(`failed to upload socials with ${body}`);
@@ -240,13 +243,16 @@ async function main() {
     body.set("website", cfg.website);
     body.set("cover", imgBlob, "image.jpg");
     body.set("socials_cid", socials.cid);
-    const eventMetaResponse = await fetch(`${BACKEND_HOST}/api/ipfs/events/meta`, {
-      body,
-      method: "PUT",
-      headers: {
-        Authorization: `Token ${cfg.creator.address}`,
+    const eventMetaResponse = await fetch(
+      `${BACKEND_HOST}/api/ipfs/events/meta`,
+      {
+        body,
+        method: "PUT",
+        headers: {
+          Authorization: `Token ${cfg.creator.address}`,
+        },
       },
-    });
+    );
     if (!eventMetaResponse.ok) {
       const body = await eventMetaResponse.text();
       throw new Error(`failed to upload event's meta with ${body}`);
@@ -272,7 +278,74 @@ async function main() {
     console.log("event created", "config", cfg, "multihash", mh);
   }
 
-  // Approve some events
+  // Create ticket categories BEFORE approving events
+  // Categories can only be created when event is in "Submitted" state
+  console.log("Creating ticket categories...");
+
+  // Create categories for events 0 and 1 (before they are approved)
+  const categories = [
+    // Categories for event 0
+    {
+      eventId: 0,
+      name: "Women",
+      discountPercentage: 2000, // 20% discount (basis points: 10000 = 100%)
+      quota: 50,
+      hasQuota: true,
+    },
+    {
+      eventId: 0,
+      name: "Locals",
+      discountPercentage: 1000, // 10% discount
+      quota: 100,
+      hasQuota: true,
+    },
+    {
+      eventId: 0,
+      name: "Families",
+      discountPercentage: 5000, // 50% discount
+      quota: 0,
+      hasQuota: false, // Unlimited
+    },
+    // Categories for event 1
+    {
+      eventId: 1,
+      name: "Early Bird",
+      discountPercentage: 1500, // 15% discount
+      quota: 30,
+      hasQuota: true,
+    },
+    {
+      eventId: 1,
+      name: "Students",
+      discountPercentage: 2500, // 25% discount
+      quota: 0,
+      hasQuota: false, // Unlimited
+    },
+  ];
+
+  for (const category of categories) {
+    const tx = await eventManager
+      .connect(verifiedShaman)
+      .createCategory(
+        category.eventId,
+        category.name,
+        category.discountPercentage,
+        category.quota,
+        category.hasQuota,
+      );
+    await tx.wait();
+    console.log(
+      "Category created:",
+      category.name,
+      "for event",
+      events[category.eventId].title,
+      "discount:",
+      category.discountPercentage / 100,
+      "%",
+    );
+  }
+
+  // Approve events after creating categories
   for (let eventId = 0; eventId < events.length - 1; eventId++) {
     await eventManager.connect(localProvider).approveEvent(eventId);
     console.log("event", events[eventId].title, "approved");
@@ -317,20 +390,23 @@ async function main() {
   ];
   for (const cfg of tickets) {
     // Upload socials
-    const socialsResponse = await fetch(`${BACKEND_HOST}/api/ipfs/tickets/meta`, {
-      method: "PUT",
-      body: JSON.stringify({
-        eventid: cfg.eventId,
-        socials: cfg.socials,
-        // NOTE: Ugly AF, but pausing this script and running indexer is  even worse
-        eventcover: `${IPFS_HOST}/ipfs/${events[cfg.eventId].coverCID}`,
-        eventtitle: events[cfg.eventId].title,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${cfg.owner.address}`,
+    const socialsResponse = await fetch(
+      `${BACKEND_HOST}/api/ipfs/tickets/meta`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          eventid: cfg.eventId,
+          socials: cfg.socials,
+          // NOTE: Ugly AF, but pausing this script and running indexer is  even worse
+          eventcover: `${IPFS_HOST}/ipfs/${events[cfg.eventId].coverCID}`,
+          eventtitle: events[cfg.eventId].title,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${cfg.owner.address}`,
+        },
       },
-    });
+    );
     if (!socialsResponse.ok) {
       const body = await socialsResponse.text();
       throw new Error(

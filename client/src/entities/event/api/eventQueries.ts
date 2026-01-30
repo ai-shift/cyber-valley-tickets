@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import {
   getDetailEvent,
   getEventAttendees,
+  getEventCategories,
   getEvents,
   getTotalRevenue,
 } from "./queries";
@@ -32,6 +33,13 @@ export const eventQueries = {
     queryOptions({
       queryKey: ["events", eventId, "attendees"],
       queryFn: () => getEventAttendees(eventId),
+      select: (queryData) => queryData?.data,
+      refetchInterval: 3000,
+    }),
+  categories: (eventId: number) =>
+    queryOptions({
+      queryKey: ["events", eventId, "categories"],
+      queryFn: () => getEventCategories(eventId),
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),

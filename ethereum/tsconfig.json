@@ -9,7 +9,7 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "allowJs": true,
+    "allowJs": true
   },
   "include": ["./scripts", "./test", "./typechain-types", "./lib"],
   "files": ["./hardhat.config.ts"]

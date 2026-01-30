@@ -27,3 +27,12 @@ export const getEventAttendees = async (eventId: number) =>
       },
     },
   });
+
+export const getEventCategories = async (eventId: number) =>
+  await apiClient.GET("/api/events/{event_id}/categories", {
+    params: {
+      path: {
+        event_id: eventId,
+      },
+    } as unknown as { path: { eventId: number } },
+  });

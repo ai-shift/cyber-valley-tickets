@@ -12,6 +12,7 @@ export function mapEventToEventForm(event: Event): EventFormInput {
     ticketPrice: event.ticketPrice,
     startDate: new Date(event.startDateTimestamp),
     daysAmount: event.daysAmount,
+    categories: [],
   };
 }
 
