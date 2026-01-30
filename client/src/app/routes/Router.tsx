@@ -12,7 +12,6 @@ import {
   HomePage,
   LoginPage,
   ManageLocalprovidersPage,
-  ManagePage,
   ManagePlacesPage,
   ManageStaffPage,
   ManageVerifiedShamansPage,
@@ -71,34 +70,34 @@ export const Router = () => {
                 />
 
                 <Route element={<ProtectedRoute />}>
+                  <Route
+                    path="/manage/place"
+                    element={<RestrictedTo view="manage-places" />}
+                  >
+                    <Route index element={<ManagePlacesPage />} />
                     <Route
-                      path="/manage/place"
-                      element={<RestrictedTo view="manage-places" />}
-                    >
-                      <Route index element={<ManagePlacesPage />} />
-                      <Route
-                        path="/manage/place/update"
-                        element={<UpdatePlacePage />}
-                      />
-                    </Route>
-                    <Route
-                      path="/manage/staff"
-                      element={<RestrictedTo view="manage-staff" />}
-                    >
-                      <Route index element={<ManageStaffPage />} />
-                    </Route>
-                    <Route
-                      path="/manage/localproviders"
-                      element={<RestrictedTo view="manage-localproviders" />}
-                    >
-                      <Route index element={<ManageLocalprovidersPage />} />
-                    </Route>
-                    <Route
-                      path="/manage/verifiedshamans"
-                      element={<RestrictedTo view="manage-verifiedshamans" />}
-                    >
-                      <Route index element={<ManageVerifiedShamansPage />} />
-                    </Route>
+                      path="/manage/place/update"
+                      element={<UpdatePlacePage />}
+                    />
+                  </Route>
+                  <Route
+                    path="/manage/staff"
+                    element={<RestrictedTo view="manage-staff" />}
+                  >
+                    <Route index element={<ManageStaffPage />} />
+                  </Route>
+                  <Route
+                    path="/manage/localproviders"
+                    element={<RestrictedTo view="manage-localproviders" />}
+                  >
+                    <Route index element={<ManageLocalprovidersPage />} />
+                  </Route>
+                  <Route
+                    path="/manage/verifiedshamans"
+                    element={<RestrictedTo view="manage-verifiedshamans" />}
+                  >
+                    <Route index element={<ManageVerifiedShamansPage />} />
+                  </Route>
                   <Route
                     path="/notifications"
                     element={<NotificationsPage />}
