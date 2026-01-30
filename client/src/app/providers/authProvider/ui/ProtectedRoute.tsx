@@ -23,7 +23,7 @@ export const ProtectedRoute: React.FC = () => {
 
   if (!hasJWT) {
     return null;
-  } else {
-    return <Outlet />;
   }
+
+  return <Outlet />;
 };
