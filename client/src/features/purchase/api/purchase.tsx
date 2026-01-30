@@ -2,6 +2,7 @@ import {
   approveMintTicket,
   approveSubmitEventRequest,
   mintTicket,
+  mintTicketWithCategory,
   submitEventRequest,
   updateEvent as updateEventContract,
 } from "@/shared/lib/web3";
@@ -49,11 +50,22 @@ const purchaseTicket = async (
 
   if (!data || !data.cid) throw new Error("Can't fetch CID");
 
-  const approve = approveMintTicket(account, BigInt(order.ticket.ticketPrice));
+  const finalPrice = order.ticket.finalPrice ?? order.ticket.ticketPrice;
+  const approve = approveMintTicket(account, BigInt(finalPrice));
   sendTx(approve);
   await approve;
   await new Promise((r) => setTimeout(r, 1000));
-  const tx = mintTicket(account, BigInt(order.ticket.eventId), data.cid);
+
+  const hasCategory = order.ticket.categoryId !== undefined;
+  const tx = hasCategory
+    ? mintTicketWithCategory(
+        account,
+        BigInt(order.ticket.eventId),
+        BigInt(order.ticket.categoryId!),
+        data.cid,
+      )
+    : mintTicket(account, BigInt(order.ticket.eventId), data.cid);
+
   sendTx(tx);
   await tx;
 };
