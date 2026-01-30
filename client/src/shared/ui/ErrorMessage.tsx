@@ -4,7 +4,7 @@ import { cn } from "../lib/utils";
 
 type ErrorMessageProps = {
   // TS sucks, so null is required to get rid of it's yelling
-  errors: ApiError | ApiError[] | Error | null;
+  errors: ApiError | ApiError[] | Error | string | null;
   className?: string;
 };
 
@@ -21,6 +21,8 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
         formattedErrors.add(stringErrors);
       }
     }
+  } else if (typeof errors === "string") {
+    formattedErrors.add(errors);
   } else if (errors == null) {
     formattedErrors.add("Empty error message");
   } else if ("errors" in errors) {
