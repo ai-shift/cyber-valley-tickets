@@ -58,10 +58,10 @@
 ### Implementation Tasks
 
 #### Frontend UI (1.5h)
-- [ ] @redmoor Multi-ticket display component with grid layout
-- [ ] @redmoor QR code generation for each ticket
-- [ ] @redmoor "Show All Tickets" button on event page
-- [ ] @redmoor Mobile-responsive ticket card layout
+- [x] @redmoor Multi-ticket display component with grid layout
+- [x] @redmoor QR code generation for each ticket
+- [x] @redmoor "Show All Tickets" button on event page
+- [x] @redmoor Mobile-responsive ticket card layout
 
 ### Questions
 
@@ -147,9 +147,9 @@
 - [ ] @naqerl Update API serializers to include deposit
 
 #### Frontend UI (1h)
-- [ ] @redmoor Add deposit input field to event place creation form
-- [ ] @redmoor Display deposit amount on event place details
-- [ ] @redmoor Show deposit amount when creating event at a place
+- [ ] @naqerl Add deposit input field to event place creation form
+- [ ] @naqerl Display deposit amount on event place details
+- [ ] @naqerl Show deposit amount when creating event at a place
 
 ---
 
