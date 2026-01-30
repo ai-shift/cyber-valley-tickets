@@ -9,8 +9,8 @@ export const useEnsLookup = () => {
   const account = useActiveAccount();
   console.log("Current account", account);
 
-  const { data } = useEnsName({client, address: account?.address})
-  console.log("Data", data)
+  const { data } = useEnsName({ client, address: account?.address });
+  console.log("Data", data);
 
   return data;
-}
+};
