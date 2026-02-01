@@ -179,6 +179,30 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     }
 
     function revokeLocalProvider(address eoa) external onlyRole(MASTER_ROLE) {
+        // Transfer all EventPlaces owned by the LocalProvider to Master
+        for (uint256 i = 0; i < eventPlaces.length; i++) {
+            if (eventPlaces[i].provider == eoa) {
+                eventPlaces[i].provider = master;
+
+                // Emit EventPlaceUpdated event for the transfer
+                emit EventPlaceUpdated(
+                    master,
+                    i,
+                    eventPlaces[i].maxTickets,
+                    eventPlaces[i].minTickets,
+                    eventPlaces[i].minPrice,
+                    eventPlaces[i].daysBeforeCancel,
+                    eventPlaces[i].minDays,
+                    eventPlaces[i].available,
+                    eventPlaces[i].status,
+                    eventPlaces[i].meta.digest,
+                    eventPlaces[i].meta.hashFunction,
+                    eventPlaces[i].meta.size,
+                    eventPlaces[i].eventDepositSize
+                );
+            }
+        }
+
         _revokeRole(LOCAL_PROVIDER_ROLE, eoa);
     }
 
