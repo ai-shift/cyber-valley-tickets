@@ -695,6 +695,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
+        "",
       );
       await expect(tx).to.emit(eventTicket, "TicketMinted");
     });
@@ -743,6 +744,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
+        "",
       );
       // Second mint should revert due to category quota
       await expect(
@@ -752,6 +754,7 @@ describe("CyberValleyEventManager", () => {
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
+          "",
         ),
       ).to.be.revertedWith("Category quota exceeded");
     });
@@ -794,6 +797,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
+        "",
       );
       await expect(tx).to.changeTokenBalances(
         ERC20,
@@ -842,6 +846,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
+        "",
       );
       await expect(tx)
         .to.emit(eventTicket, "TicketMinted")
@@ -853,6 +858,7 @@ describe("CyberValleyEventManager", () => {
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
+          "",
         );
     });
   });
@@ -968,6 +974,7 @@ describe("CyberValleyEventManager", () => {
             "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
             18,
             32,
+            "",
           ),
       ).to.changeTokenBalances(
         ERC20,
@@ -1017,6 +1024,7 @@ describe("CyberValleyEventManager", () => {
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
           18,
           32,
+          "",
         );
       await expect(
         eventManager
@@ -1027,6 +1035,7 @@ describe("CyberValleyEventManager", () => {
             "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
             18,
             32,
+            "",
           ),
       ).to.be.revertedWith("Category quota exceeded");
     });
@@ -1181,6 +1190,7 @@ describe("CyberValleyEventManager", () => {
             "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
             18,
             32,
+            "",
           );
       }
 
@@ -1544,6 +1554,7 @@ describe("CyberValleyEventManager", () => {
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
           18,
           32,
+          "",
         );
 
       const tx = await eventManager.connect(localProvider).cancelEvent(eventId);
@@ -1746,6 +1757,7 @@ describe("CyberValleyEventManager", () => {
             multihash.digest,
             multihash.hashFunction,
             multihash.size,
+        "",
           );
         }
       }
@@ -1846,6 +1858,7 @@ describe("CyberValleyEventManager", () => {
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
+        "",
         );
       }
 
