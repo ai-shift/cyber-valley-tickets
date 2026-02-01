@@ -24,7 +24,7 @@ class EventPlace(models.Model):
     min_days = models.PositiveSmallIntegerField(null=False)
     geometry = models.JSONField(null=False)
     days_before_cancel = models.PositiveSmallIntegerField(null=False)
-    custom_event_deposit = models.PositiveIntegerField(default=0)
+    event_deposit_size = models.PositiveIntegerField(default=0)
     available = models.BooleanField(null=False, default=True)
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default="submitted", null=False

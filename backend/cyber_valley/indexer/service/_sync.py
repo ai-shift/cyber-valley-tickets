@@ -272,6 +272,8 @@ def _sync_event_place_updated(
     place.days_before_cancel = event_data.days_before_cancel
     place.available = event_data.available
     place.status = _map_eventplace_status(event_data.status)
+    if hasattr(event_data, "event_deposit_size"):
+        place.event_deposit_size = event_data.event_deposit_size
     place.save()
 
     if created:
