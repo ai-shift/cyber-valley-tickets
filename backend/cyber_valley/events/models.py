@@ -73,9 +73,9 @@ class Ticket(models.Model):
     )
     category = models.ForeignKey(
         "TicketCategory",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="tickets",
-        null=True,
+        null=False,
     )
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="tickets", null=False

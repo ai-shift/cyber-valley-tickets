@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from hexbytes import HexBytes
 
-from cyber_valley.events.models import Event, EventPlace, Ticket
+from cyber_valley.events.models import Event, EventPlace, Ticket, TicketCategory
 from cyber_valley.notifications.models import Notification
 from cyber_valley.users.models import CyberValleyUser as UserType
 
@@ -65,6 +65,19 @@ def event(user: UserType, event_place: EventPlace) -> Event:
         description="Test Description",
         created_at=timezone.now(),
         updated_at=timezone.now(),
+    )
+
+
+@pytest.fixture
+def ticket_category(event: Event) -> TicketCategory:
+    return TicketCategory.objects.create(
+        event=event,
+        category_id=0,
+        name="Standard",
+        discount=0,
+        quota=0,
+        has_quota=False,
+        tickets_bought=0,
     )
 
 
@@ -270,7 +283,9 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
 
 
 @pytest.mark.django_db
-def test_sync_ticket_minted(event: Event, user: UserType) -> None:
+def test_sync_ticket_minted(
+    event: Event, user: UserType, ticket_category: TicketCategory
+) -> None:
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
         ticket_meta_cid = client.add_json(
@@ -286,6 +301,7 @@ def test_sync_ticket_minted(event: Event, user: UserType) -> None:
         {
             "eventId": event.id,
             "ticketId": 123,
+            "categoryId": ticket_category.category_id,
             "owner": user.address,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
@@ -298,9 +314,13 @@ def test_sync_ticket_minted(event: Event, user: UserType) -> None:
     ticket = Ticket.objects.get(id=str(event_data.ticket_id))
     assert ticket.event == event
     assert ticket.owner == user
+    assert ticket.category == ticket_category
 
     event.refresh_from_db()
     assert event.tickets_bought == 1
+
+    ticket_category.refresh_from_db()
+    assert ticket_category.tickets_bought == 1
 
     notification = Notification.objects.get(user=user)
     assert notification.title == "Your ticket minted"
@@ -319,6 +339,7 @@ def test_sync_ticket_minted_event_not_found(user: UserType) -> None:
         {
             "eventId": 999,
             "ticketId": 123,
+            "categoryId": 0,
             "owner": user.address,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
