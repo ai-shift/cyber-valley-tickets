@@ -289,6 +289,11 @@ export async function createEvent(
 
   const eventId = await getEventId();
 
+  // Create a default category (required before approval)
+  await eventManager
+    .connect(verifiedShaman)
+    .createCategory(eventId, "Standard", 0, 0, false);
+
   // Approve
   const tx = eventManager.connect(localProvider).approveEvent(
     ...approveEventArgsToArray({

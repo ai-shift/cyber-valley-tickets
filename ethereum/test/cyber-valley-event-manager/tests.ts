@@ -488,6 +488,25 @@ describe("CyberValleyEventManager", () => {
       );
       await expect(tx).to.be.revertedWith("Event with given id does not exist");
     });
+
+    it("reverts when event has no categories", async () => {
+      const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+        await loadFixture(deployContract);
+      // Use createEventForCategories to create event without auto-approval
+      const { eventId } = await createEventForCategories(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        {},
+      );
+      // Try to approve without creating any categories
+      await expect(
+        eventManager.connect(localProvider).approveEvent(eventId),
+      ).to.be.revertedWith("Event must have at least one category");
+    });
   });
 
   describe("declineEvent", () => {
@@ -669,14 +688,14 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
         ticketPrice,
       );
-      const tx = await eventManager
-        .connect(owner)
-        ["mintTicket(uint256,bytes32,uint8,uint8)"](
-          eventId,
-          multihash.digest,
-          multihash.hashFunction,
-          multihash.size,
-        );
+      // Use category 0 (the default category created by createEvent)
+      const tx = await eventManager.connect(owner).mintTicket(
+        eventId,
+        0, // categoryId
+        multihash.digest,
+        multihash.hashFunction,
+        multihash.size,
+      );
       await expect(tx).to.emit(eventTicket, "TicketMinted");
     });
 
@@ -689,16 +708,22 @@ describe("CyberValleyEventManager", () => {
         creator,
         owner,
       } = await loadFixture(deployContract);
-      const { eventId } = await createEvent(
+      const { eventId } = await createEventForCategories(
         eventManager,
         ERC20,
         verifiedShaman,
         localProvider,
         creator,
-        { maxTickets: 1, minTickets: 1 },
-        {},
+        { maxTickets: 2, minTickets: 1 },
         {},
       );
+      // Create a category with quota of 1
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Limited", 0, 1, true);
+      // Approve the event
+      await eventManager.connect(localProvider).approveEvent(eventId);
+
       const ticketPrice = 20;
       const multihash = {
         digest:
@@ -711,24 +736,24 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
         ticketPrice * 2,
       );
-      await eventManager
-        .connect(owner)
-        ["mintTicket(uint256,bytes32,uint8,uint8)"](
+      // Mint first ticket with category 0 (the limited category)
+      await eventManager.connect(owner).mintTicket(
+        eventId,
+        0, // categoryId for "Limited"
+        multihash.digest,
+        multihash.hashFunction,
+        multihash.size,
+      );
+      // Second mint should revert due to category quota
+      await expect(
+        eventManager.connect(owner).mintTicket(
           eventId,
+          0, // categoryId for "Limited"
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
-        );
-      await expect(
-        eventManager
-          .connect(owner)
-          ["mintTicket(uint256,bytes32,uint8,uint8)"](
-            eventId,
-            multihash.digest,
-            multihash.hashFunction,
-            multihash.size,
-          ),
-      ).to.be.revertedWith("No tickets available without category");
+        ),
+      ).to.be.revertedWith("Category quota exceeded");
     });
 
     it("transfers required amount of tokens", async () => {
@@ -762,14 +787,14 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
         ticketPrice,
       );
-      const tx = await eventManager
-        .connect(owner)
-        ["mintTicket(uint256,bytes32,uint8,uint8)"](
-          eventId,
-          multihash.digest,
-          multihash.hashFunction,
-          multihash.size,
-        );
+      // Use category 0 (the default category created by createEvent)
+      const tx = await eventManager.connect(owner).mintTicket(
+        eventId,
+        0, // categoryId
+        multihash.digest,
+        multihash.hashFunction,
+        multihash.size,
+      );
       await expect(tx).to.changeTokenBalances(
         ERC20,
         [await eventManager.getAddress(), await owner.getAddress()],
@@ -810,19 +835,20 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
         ticketPrice,
       );
-      const tx = eventManager
-        .connect(owner)
-        ["mintTicket(uint256,bytes32,uint8,uint8)"](
-          eventId,
-          multihash.digest,
-          multihash.hashFunction,
-          multihash.size,
-        );
+      // Use category 0 (the default category created by createEvent)
+      const tx = eventManager.connect(owner).mintTicket(
+        eventId,
+        0, // categoryId
+        multihash.digest,
+        multihash.hashFunction,
+        multihash.size,
+      );
       await expect(tx)
         .to.emit(eventTicket, "TicketMinted")
         .withArgs(
           eventId,
           1,
+          0, // categoryId (default category)
           await owner.getAddress(),
           multihash.digest,
           multihash.hashFunction,
@@ -843,7 +869,13 @@ describe("CyberValleyEventManager", () => {
     it("reverts creating category after event is approved", async () => {
       const { eventManager, verifiedShaman, localProvider, eventId } =
         await createSubmittedEvent();
+      // Create a category first (required for approval)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Default", 0, 0, false);
+      // Now approve the event
       await eventManager.connect(localProvider).approveEvent(eventId);
+      // Try to create another category after approval
       await expect(
         eventManager
           .connect(verifiedShaman)
@@ -930,7 +962,7 @@ describe("CyberValleyEventManager", () => {
       await expect(
         eventManager
           .connect(owner)
-          ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+          .mintTicket(
             eventId,
             0,
             "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -979,7 +1011,7 @@ describe("CyberValleyEventManager", () => {
       await ERC20.connect(owner).approve(await eventManager.getAddress(), 200);
       await eventManager
         .connect(owner)
-        ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+        .mintTicket(
           eventId,
           0,
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -989,7 +1021,7 @@ describe("CyberValleyEventManager", () => {
       await expect(
         eventManager
           .connect(owner)
-          ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+          .mintTicket(
             eventId,
             0,
             "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -1143,7 +1175,7 @@ describe("CyberValleyEventManager", () => {
       for (let i = 0; i < 10; i++) {
         await eventManager
           .connect(owner)
-          ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+          .mintTicket(
             eventId,
             0,
             "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -1216,104 +1248,6 @@ describe("CyberValleyEventManager", () => {
       ).to.not.be.reverted;
     });
 
-    it("should calculate NO_CATEGORY tickets correctly", async () => {
-      const {
-        eventManager,
-        ERC20,
-        verifiedShaman,
-        localProvider,
-        creator,
-        owner,
-      } = await loadFixture(deployContract);
-      const { eventId } = await createEventForCategories(
-        eventManager,
-        ERC20,
-        verifiedShaman,
-        localProvider,
-        creator,
-        { maxTickets: 100 },
-        {},
-      );
-      // Create category1 with quota = 30
-      await eventManager
-        .connect(verifiedShaman)
-        .createCategory(eventId, "Category1", 0, 30, true);
-      // Create category2 with quota = 40
-      await eventManager
-        .connect(verifiedShaman)
-        .createCategory(eventId, "Category2", 0, 40, true);
-      await eventManager.connect(localProvider).approveEvent(eventId);
-
-      // Mint 30 tickets without category (should succeed, 100 - 30 - 40 = 30 available)
-      await ERC20.connect(owner).mint(3000);
-      await ERC20.connect(owner).approve(await eventManager.getAddress(), 3000);
-      for (let i = 0; i < 30; i++) {
-        await eventManager
-          .connect(owner)
-          ["mintTicket(uint256,bytes32,uint8,uint8)"](
-            eventId,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-          );
-      }
-
-      // Try to mint 31st ticket without category (should revert)
-      await expect(
-        eventManager
-          .connect(owner)
-          ["mintTicket(uint256,bytes32,uint8,uint8)"](
-            eventId,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-          ),
-      ).to.be.revertedWith("No tickets available without category");
-    });
-
-    it("should prevent NO_CATEGORY minting when all tickets allocated to categories", async () => {
-      const {
-        eventManager,
-        ERC20,
-        verifiedShaman,
-        localProvider,
-        creator,
-        owner,
-      } = await loadFixture(deployContract);
-      const { eventId } = await createEventForCategories(
-        eventManager,
-        ERC20,
-        verifiedShaman,
-        localProvider,
-        creator,
-        { maxTickets: 100 },
-        {},
-      );
-      // Create category1 with quota = 60
-      await eventManager
-        .connect(verifiedShaman)
-        .createCategory(eventId, "Category1", 0, 60, true);
-      // Create category2 with quota = 40 (fills all 100)
-      await eventManager
-        .connect(verifiedShaman)
-        .createCategory(eventId, "Category2", 0, 40, true);
-      await eventManager.connect(localProvider).approveEvent(eventId);
-
-      // Try to mint without category (should fail, no tickets available)
-      await ERC20.connect(owner).mint(100);
-      await ERC20.connect(owner).approve(await eventManager.getAddress(), 100);
-      await expect(
-        eventManager
-          .connect(owner)
-          ["mintTicket(uint256,bytes32,uint8,uint8)"](
-            eventId,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-          ),
-      ).to.be.revertedWith("No tickets available without category");
-    });
-
     it("should track totalCategoryQuota correctly after multiple operations", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
@@ -1358,63 +1292,6 @@ describe("CyberValleyEventManager", () => {
       await eventManager
         .connect(verifiedShaman)
         .createCategory(eventId, "Category3", 1000, 10, true);
-    });
-
-    it("should allow NO_CATEGORY minting when categories have unlimited quota", async () => {
-      const {
-        eventManager,
-        ERC20,
-        verifiedShaman,
-        localProvider,
-        creator,
-        owner,
-      } = await loadFixture(deployContract);
-      const { eventId } = await createEventForCategories(
-        eventManager,
-        ERC20,
-        verifiedShaman,
-        localProvider,
-        creator,
-        { maxTickets: 100 },
-        {},
-      );
-      // Create unlimited category (doesn't count toward totalCategoryQuota)
-      await eventManager
-        .connect(verifiedShaman)
-        .createCategory(eventId, "Unlimited", 500, 0, false);
-      // Create category with quota = 30
-      await eventManager
-        .connect(verifiedShaman)
-        .createCategory(eventId, "Limited", 0, 30, true);
-      await eventManager.connect(localProvider).approveEvent(eventId);
-
-      // NO_CATEGORY tickets = 100 - 30 = 70 (unlimited category doesn't count)
-      await ERC20.connect(owner).mint(7000);
-      await ERC20.connect(owner).approve(await eventManager.getAddress(), 7000);
-
-      // Should be able to mint 70 tickets without category
-      for (let i = 0; i < 70; i++) {
-        await eventManager
-          .connect(owner)
-          ["mintTicket(uint256,bytes32,uint8,uint8)"](
-            eventId,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-          );
-      }
-
-      // 71st should fail
-      await expect(
-        eventManager
-          .connect(owner)
-          ["mintTicket(uint256,bytes32,uint8,uint8)"](
-            eventId,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-          ),
-      ).to.be.revertedWith("No tickets available without category");
     });
   });
 
@@ -1661,7 +1538,7 @@ describe("CyberValleyEventManager", () => {
       );
       await eventManager
         .connect(owner)
-        ["mintTicket(uint256,uint256,bytes32,uint8,uint8)"](
+        .mintTicket(
           eventId,
           0,
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -1833,6 +1710,11 @@ describe("CyberValleyEventManager", () => {
       await submitEventRequestTx;
       const eventId = await getEventId();
 
+      // Create a default category (required for approval)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Standard", 0, 0, false);
+
       await eventManager.connect(localProvider).approveEvent(eventId);
 
       const customers = [customer1, customer2, customer3];
@@ -1858,14 +1740,13 @@ describe("CyberValleyEventManager", () => {
         );
 
         for (let j = 0; j < ticketCount; j++) {
-          await eventManager
-            .connect(customer)
-            ["mintTicket(uint256,bytes32,uint8,uint8)"](
-              eventId,
-              multihash.digest,
-              multihash.hashFunction,
-              multihash.size,
-            );
+          await eventManager.connect(customer).mintTicket(
+            eventId,
+            0, // categoryId
+            multihash.digest,
+            multihash.hashFunction,
+            multihash.size,
+          );
         }
       }
 
@@ -1934,6 +1815,12 @@ describe("CyberValleyEventManager", () => {
       );
       await submitTx;
       const eventId = await getEventId();
+
+      // Create a default category (required for approval)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Standard", 0, 0, false);
+
       await eventManager.connect(localProvider).approveEvent(eventId);
 
       // Buy 10 tickets @ 10 USDT = 100 USDT
@@ -1953,14 +1840,13 @@ describe("CyberValleyEventManager", () => {
         totalTicketCost,
       );
       for (let i = 0; i < ticketCount; i++) {
-        await eventManager
-          .connect(owner)
-          ["mintTicket(uint256,bytes32,uint8,uint8)"](
-            eventId,
-            multihash.digest,
-            multihash.hashFunction,
-            multihash.size,
-          );
+        await eventManager.connect(owner).mintTicket(
+          eventId,
+          0, // categoryId
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+        );
       }
 
       // Total = 100 (tickets) + 100 (event request price from data.ts) = 200 USDT
@@ -2022,6 +1908,12 @@ describe("CyberValleyEventManager", () => {
       );
       await submitTx;
       const eventId = await getEventId();
+
+      // Create a default category (required for approval)
+      await eventManager
+        .connect(verifiedShaman)
+        .createCategory(eventId, "Standard", 0, 0, false);
+
       await eventManager.connect(localProvider).approveEvent(eventId);
 
       // Create and set event-specific profile
