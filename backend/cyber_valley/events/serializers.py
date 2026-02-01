@@ -265,3 +265,46 @@ class UploadTicketMetaToIpfsSerializer(serializers.Serializer[TicketMetaData]):
 
     def create(self, validated_data: dict[str, Any]) -> TicketMetaData:
         return TicketMetaData(**validated_data)
+
+
+@dataclass
+class OrderTicketItem:
+    category_id: int
+    category_name: str
+    price: int
+    quantity: int
+
+
+@dataclass
+class OrderMetaData:
+    event_id: int
+    buyer_address: str
+    socials: dict[str, Any]
+    tickets: list[OrderTicketItem]
+    total_tickets: int
+    total_price: int
+    currency: str
+    referral_data: str
+
+
+class OrderTicketItemSerializer(serializers.Serializer[OrderTicketItem]):
+    category_id = serializers.IntegerField()
+    category_name = serializers.CharField()
+    price = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+
+
+class UploadOrderMetaToIpfsSerializer(serializers.Serializer[OrderMetaData]):
+    event_id = serializers.IntegerField()
+    buyer_address = serializers.CharField()
+    socials = UploadSocialsSerializer()
+    tickets = OrderTicketItemSerializer(many=True)
+    total_tickets = serializers.IntegerField(min_value=1)
+    total_price = serializers.IntegerField(min_value=0)
+    currency = serializers.CharField(default="USDC")
+    referral_data = serializers.CharField(default="", allow_blank=True)
+
+    def create(self, validated_data: dict[str, Any]) -> OrderMetaData:
+        tickets_data = validated_data.pop("tickets", [])
+        tickets = [OrderTicketItem(**t) for t in tickets_data]
+        return OrderMetaData(tickets=tickets, **validated_data)
