@@ -1714,6 +1714,7 @@ export interface components {
       readonly role: components["schemas"]["RoleEnum"];
       readonly tickets: components["schemas"]["Ticket"][];
       readonly socials: components["schemas"]["SaveSocials"][];
+      readonly defaultShare: number;
     };
     Error401: {
       code: components["schemas"]["ErrorCode401Enum"];
