@@ -9699,10 +9699,15 @@
                             "$ref": "#/components/schemas/SaveSocials"
                         },
                         "readOnly": true
+                    },
+                    "defaultShare": {
+                        "type": "integer",
+                        "readOnly": true
                     }
                 },
                 "required": [
                     "address",
+                    "defaultShare",
                     "role",
                     "socials",
                     "tickets"

@@ -49,11 +49,18 @@ export const LocalproviderList: React.FC<LocalproviderListProps> = ({
           <ManageItem
             key={address}
             title={
-              <AddressDisplay
-                address={address}
-                socials={user?.socials}
-                showFullAddressInTooltip
-              />
+              <div className="flex flex-col gap-1">
+                <AddressDisplay
+                  address={address}
+                  socials={user?.socials}
+                  showFullAddressInTooltip
+                />
+                {user?.defaultShare !== undefined && user.defaultShare > 0 && (
+                  <span className="text-sm text-muted-foreground">
+                    Share: {user.defaultShare}%
+                  </span>
+                )}
+              </div>
             }
             render={() => [
               <RemoveLocalproviderBtn
