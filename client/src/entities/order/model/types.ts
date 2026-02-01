@@ -1,10 +1,21 @@
 import type { EventDto } from "@/entities/event/@x/order";
 import type { EventDtoWithId } from "@/entities/event/model/types";
 
+export interface TicketAllocation {
+  categoryId: number;
+  categoryName: string;
+  discount: number;
+  count: number;
+  finalPricePerTicket: number;
+}
+
 export interface OrderTicket {
   eventId: number;
   eventTitle: string;
   ticketPrice: number;
+  totalTickets: number;
+  allocations: TicketAllocation[];
+  // Legacy single-ticket fields kept for backward compatibility
   categoryId?: number;
   categoryName?: string;
   discount?: number;
