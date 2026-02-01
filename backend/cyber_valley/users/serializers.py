@@ -15,11 +15,16 @@ class SaveSocialsSerializer(serializers.ModelSerializer[UserSocials]):
 class CurrentUserSerializer(serializers.ModelSerializer[CyberValleyUser]):
     tickets = TicketSerializer(many=True, read_only=True)
     socials = serializers.SerializerMethodField()
+    roles = serializers.SerializerMethodField()
 
     class Meta:
         model = CyberValleyUser
-        fields = ("address", "role", "tickets", "socials", "default_share")
+        fields = ("address", "role", "roles", "tickets", "socials", "default_share")
         read_only_fields = fields
+
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
+    def get_roles(self, obj: CyberValleyUser) -> list[str]:
+        return list(obj.roles.values_list("name", flat=True))
 
     @extend_schema_field(SaveSocialsSerializer(many=True))
     def get_socials(self, obj: CyberValleyUser) -> list[dict[str, str]]:

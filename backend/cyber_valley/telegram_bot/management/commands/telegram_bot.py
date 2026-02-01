@@ -306,7 +306,7 @@ class AddressLinkingStrategy:
         )
 
         # If user is a local provider, send all pending verification requests
-        if user.role == CyberValleyUser.LOCAL_PROVIDER:
+        if user.has_role(CyberValleyUser.LOCAL_PROVIDER):
             send_all_pending_verifications_to_provider(
                 chat_id=chat_id, username=telegram_username
             )

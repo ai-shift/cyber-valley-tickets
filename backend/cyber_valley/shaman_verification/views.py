@@ -22,7 +22,7 @@ def send_verification_to_local_providers(
     verification_request: VerificationRequest,
 ) -> None:
     local_providers = CyberValleyUser.objects.filter(
-        role=CyberValleyUser.LOCAL_PROVIDER
+        roles__name=CyberValleyUser.LOCAL_PROVIDER
     )
 
     for provider in local_providers:
