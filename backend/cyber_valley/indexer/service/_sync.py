@@ -24,7 +24,7 @@ from cyber_valley.notifications.helpers import send_notification
 from cyber_valley.telegram_bot.verification_helpers import (
     send_all_pending_verifications_to_provider,
 )
-from cyber_valley.users.models import CyberValleyUser, UserSocials
+from cyber_valley.users.models import CyberValleyUser, Role, UserSocials
 
 from .events import (
     CyberValleyEventManager,
@@ -523,34 +523,44 @@ def _sync_role_granted(
     if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE", "ADMIN_ROLE"):
         return
 
-    user_role = ROLE_MAPPING.get(event_data.role)
-    if user_role is None:
+    user_role_name = ROLE_MAPPING.get(event_data.role)
+    if user_role_name is None:
         msg = f"Unknown role {event_data.role} in RoleGranted event"
         raise ValueError(msg)
 
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
-    user.role = user_role
-    user.save()
+
+    # Get or create the Role object
+    role, _ = Role.objects.get_or_create(name=user_role_name)
+
+    # Add role to user's roles (M2M relationship handles duplicates)
+    user.roles.add(role)
+
+    # Also update the legacy role field for backward compatibility
+    user.role = user_role_name
+    user.save(update_fields=["role"])
+
     send_notification(
         user=user,
         title="Role granted",
-        body=f"{user.role} granted to you",
+        body=f"{user_role_name} granted to you",
     )
 
+    # Notify admins with the new role
     admins = CyberValleyUser.objects.filter(
-        role__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
-    )
+        roles__name__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
+    ).distinct()
     for admin in admins:
         if user.address == admin.address:
             continue
         send_notification(
             user=admin,
             title="Role granted",
-            body=f"{user.role} granted to {user.address}",
+            body=f"{user_role_name} granted to {user.address}",
         )
 
     # Send all pending verification requests to newly created LOCAL_PROVIDER
-    if user_role == CyberValleyUser.LOCAL_PROVIDER:
+    if user_role_name == CyberValleyUser.LOCAL_PROVIDER:
         _send_pending_verifications_to_new_provider(user)
 
 
@@ -563,8 +573,8 @@ def _sync_role_revoked(
     if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE", "ADMIN_ROLE"):
         return
 
-    revoked_role = ROLE_MAPPING.get(event_data.role)
-    if revoked_role is None:
+    revoked_role_name = ROLE_MAPPING.get(event_data.role)
+    if revoked_role_name is None:
         msg = f"Unknown role {event_data.role} in RoleRevoked event"
         raise ValueError(msg)
 
@@ -573,30 +583,45 @@ def _sync_role_revoked(
         _transfer_event_places_to_master(event_data.account)
 
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
-    user.role = CyberValleyUser.CUSTOMER
-    user.save()
+
+    # Remove the role from user's roles (M2M)
+    role_to_remove = Role.objects.filter(name=revoked_role_name).first()
+    if role_to_remove:
+        user.roles.remove(role_to_remove)
+
+    # Update legacy role field - set to highest remaining role or CUSTOMER
+    remaining_roles = list(user.roles.values_list("name", flat=True))
+    if remaining_roles:
+        # Set to the highest priority remaining role
+        user.role = remaining_roles[0]  # Simple approach - could use priority ordering
+    else:
+        user.role = CyberValleyUser.CUSTOMER
+    user.save(update_fields=["role"])
+
     send_notification(
         user=user,
         title="Role revoked",
-        body=f"{revoked_role} role was revoked",
+        body=f"{revoked_role_name} role was revoked",
     )
     admins = CyberValleyUser.objects.filter(
-        role__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
-    )
+        roles__name__in=[CyberValleyUser.LOCAL_PROVIDER, CyberValleyUser.MASTER]
+    ).distinct()
     for admin in admins:
         if user.address == admin.address:
             continue
         send_notification(
             user=admin,
             title="Role revoked",
-            body=f"{revoked_role} role was revoked from {user.address}",
+            body=f"{revoked_role_name} role was revoked from {user.address}",
         )
 
 
 def _transfer_event_places_to_master(local_provider_address: str) -> None:
     """Transfer all EventPlaces from a LocalProvider to the Master."""
-    # Get the Master user
-    master_user = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER).first()
+    # Get the Master user using M2M roles
+    master_user = CyberValleyUser.objects.filter(
+        roles__name=CyberValleyUser.MASTER
+    ).first()
 
     if not master_user:
         log.warning(
@@ -605,10 +630,10 @@ def _transfer_event_places_to_master(local_provider_address: str) -> None:
         )
         return
 
-    # Get the LocalProvider user
+    # Get the LocalProvider user using M2M roles
     try:
         local_provider = CyberValleyUser.objects.get(
-            address=local_provider_address, role=CyberValleyUser.LOCAL_PROVIDER
+            address=local_provider_address, roles__name=CyberValleyUser.LOCAL_PROVIDER
         )
     except CyberValleyUser.DoesNotExist:
         log.warning(
