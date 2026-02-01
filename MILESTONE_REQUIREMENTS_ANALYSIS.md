@@ -41,10 +41,11 @@
 - [x] @naqerl Create API endpoints for listing categories
 
 #### Frontend UI (2h)
-- [ ] @redmoor Category selection dropdown on ticket purchase page
-- [ ] @redmoor Category management interface for event creators
-- [ ] @redmoor Display discount percentage on UI
-- [ ] @redmoor Show quota remaining for each category
+- [x] @redmoor Category selection dropdown on ticket purchase page
+- [x] @redmoor Category management interface for event creators
+- [x] @redmoor Display discount percentage on UI
+- [x] @redmoor Show quota remaining for each category
+- [x] @redmoor Multi-ticket purchase with per-category allocation
 
 ---
 
