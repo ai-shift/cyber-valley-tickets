@@ -36,6 +36,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bool available;
         EventPlaceStatus status;
         CyberValley.Multihash meta;
+        uint256 eventDepositSize;
     }
 
     enum EventStatus {
@@ -94,7 +95,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         EventPlaceStatus status,
         bytes32 digest,
         uint8 hashFunction,
-        uint8 size
+        uint8 size,
+        uint256 eventDepositSize
     );
     event NewEventRequest(
         uint256 id,
@@ -217,7 +219,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 digest: digest,
                 hashFunction: hashFunction,
                 size: size
-            })
+            }),
+            eventDepositSize: 0
         }));
 
         uint256 eventPlaceId = eventPlaces.length - 1;
@@ -236,7 +239,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 EventPlaceStatus.Approved,
                 digest,
                 hashFunction,
-                size
+                size,
+                0
             );
         } else {
             emit NewEventPlaceRequest(
@@ -256,9 +260,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     }
 
     function approveEventPlace(
-        uint256 eventPlaceId
+        uint256 eventPlaceId,
+        uint256 _eventDepositSize
     ) external onlyRole(LOCAL_PROVIDER_ROLE) {
         require(eventPlaceId < eventPlaces.length, "EventPlace does not exist");
+        require(_eventDepositSize > 0, "Deposit must be greater than zero");
         EventPlace storage place = eventPlaces[eventPlaceId];
         require(
             place.status == EventPlaceStatus.Submitted,
@@ -266,6 +272,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
         place.status = EventPlaceStatus.Approved;
         place.provider = msg.sender;
+        place.eventDepositSize = _eventDepositSize;
         emit EventPlaceUpdated(
             msg.sender,
             eventPlaceId,
@@ -278,7 +285,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             place.status,
             place.meta.digest,
             place.meta.hashFunction,
-            place.meta.size
+            place.meta.size,
+            place.eventDepositSize
         );
     }
 
@@ -343,7 +351,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             place.status,
             digest,
             hashFunction,
-            size
+            size,
+            place.eventDepositSize
         );
     }
 
@@ -371,20 +380,26 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 hashFunction,
         uint8 size
     ) external {
+        require(eventPlaceId < eventPlaces.length, "EventPlace does not exist");
+        EventPlace storage place = eventPlaces[eventPlaceId];
         require(
-            usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice,
+            place.eventDepositSize > 0,
+            "EventPlace deposit must be set"
+        );
+        require(
+            usdtTokenContract.balanceOf(msg.sender) >= place.eventDepositSize,
             "Not enough tokens"
         );
         require(
             usdtTokenContract.allowance(msg.sender, address(this)) >=
-                eventRequestPrice,
+                place.eventDepositSize,
             "Required amount was not allowed"
         );
         require(
             usdtTokenContract.transferFrom(
                 msg.sender,
                 address(this),
-                eventRequestPrice
+                place.eventDepositSize
             ),
             "Event request payment failed"
         );
@@ -402,7 +417,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                     hashFunction: hashFunction,
                     size: size
                 }),
-                networth: eventRequestPrice,
+                networth: 0,
                 totalCategoryQuota: 0
             })
         );
@@ -451,8 +466,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             evt.status == EventStatus.Submitted,
             "Event status differs from submitted"
         );
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
         require(
-            usdtTokenContract.transfer(evt.creator, eventRequestPrice),
+            usdtTokenContract.transfer(evt.creator, place.eventDepositSize),
             "Failed to refund event request"
         );
         evt.status = EventStatus.Declined;
@@ -635,7 +651,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             block.timestamp > eventEndDate,
             "Event has not been finished yet"
         );
-        distributeEventFunds(eventId, evt.networth);
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
+        // Return deposit to creator
+        require(
+            usdtTokenContract.transfer(evt.creator, place.eventDepositSize),
+            "Failed to return deposit to creator"
+        );
+        // Distribute ticket revenue only if there is revenue
+        if (evt.networth > 0) {
+            distributeEventFunds(eventId, evt.networth);
+        }
         evt.status = EventStatus.Closed;
         emit EventStatusChanged(eventId, evt.status);
     }
@@ -662,8 +687,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             );
         }
 
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
         require(
-            usdtTokenContract.transfer(msg.sender, eventRequestPrice),
+            usdtTokenContract.transfer(msg.sender, place.eventDepositSize),
             "Failed to transfer provider payment"
         );
 
