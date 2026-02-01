@@ -42,7 +42,7 @@ const theme = darkTheme({
 });
 
 export const useLogin = () => {
-  const { login: authLogin } = useAuthSlice();
+  const { login: authLogin, setSignature } = useAuthSlice();
   const { connect, isConnecting } = useConnectModal();
 
   const installedWallets = useMemo(
@@ -135,6 +135,13 @@ export const useLogin = () => {
               if (data != null) {
                 console.log("[useLogin] User data received, logging in");
                 authLogin(data as User);
+                const expirationRaw =
+                  params.payload.expiration_time ??
+                  (params.payload as Record<string, string>).expiration_time;
+                const expiresAt = expirationRaw ? Number(expirationRaw) : null;
+                if (expiresAt && !Number.isNaN(expiresAt)) {
+                  setSignature(params.signature, expiresAt);
+                }
                 console.log("[useLogin] Auth login completed");
                 return;
               }
@@ -214,7 +221,7 @@ export const useLogin = () => {
 
       throw error;
     }
-  }, [connect, authLogin]);
+  }, [connect, authLogin, setSignature]);
 
   const buttonProps = useMemo(
     () => ({

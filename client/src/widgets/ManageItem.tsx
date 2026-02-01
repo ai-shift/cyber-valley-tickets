@@ -1,5 +1,5 @@
 type ManageItemProps = {
-  title: string;
+  title: React.ReactNode;
   isRequested?: boolean;
   render: () => React.ReactNode[];
 };

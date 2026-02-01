@@ -136,10 +136,10 @@ def verify(_request: Request) -> Response:
 @api_view(["GET"])
 def nonce(request: Request, address: str) -> Response:
     nonce_value = secrets.token_hex(16)
-    expire_after_seconds = 30
+    nonce_expire_after_seconds = 30
     now = datetime.now(UTC)
-    cache.set(nonce_value, "nonce", timeout=expire_after_seconds)
-    expiration_time = now + timedelta(seconds=expire_after_seconds)
+    cache.set(nonce_value, "nonce", timeout=nonce_expire_after_seconds)
+    signature_expiration = now + timedelta(days=60)
     message = (
         f"Sign this message to authenticate with our service."
         f"\n\nAddress: {address}"
@@ -151,7 +151,7 @@ def nonce(request: Request, address: str) -> Response:
             "address": address,
             "chain_id": settings.DEFAULT_CHAIN_ID,
             "domain": settings.ALLOWED_HOSTS[0],
-            "expiration_time": str(int(expiration_time.timestamp())),
+            "expiration_time": str(int(signature_expiration.timestamp())),
             "invalid_before": str(int(now.timestamp())),
             "issued_at": str(int(now.timestamp())),
             "nonce": nonce_value,

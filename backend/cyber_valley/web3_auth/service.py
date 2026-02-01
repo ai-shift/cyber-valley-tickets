@@ -1,4 +1,5 @@
 import logging
+from datetime import UTC, datetime
 
 from eth_account import Account
 from eth_account.messages import encode_defunct
@@ -10,6 +11,8 @@ log = logging.getLogger(__name__)
 
 
 def verify_signature(data: SIWEModel) -> bool:
+    if not validate_siwe_timestamps(data):
+        return False
     message = create_login_message(data)
     log.info("Recreated message %s", message)
     message_hash = encode_defunct(text=message)
@@ -24,6 +27,41 @@ def verify_signature(data: SIWEModel) -> bool:
     except Exception:
         log.exception("Signature verification error")
     return False
+
+
+def parse_siwe_timestamp(value: str) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromtimestamp(int(value), tz=UTC)
+    except ValueError:
+        pass
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=UTC)
+    return parsed
+
+
+def validate_siwe_timestamps(data: SIWEModel) -> bool:
+    now = datetime.now(tz=UTC)
+    expiration_time = parse_siwe_timestamp(data.expiration_time)
+    invalid_before = parse_siwe_timestamp(data.invalid_before)
+    issued_at = parse_siwe_timestamp(data.issued_at)
+
+    if expiration_time and now > expiration_time:
+        log.warning("Signature expired at %s", expiration_time)
+        return False
+    if invalid_before and now < invalid_before:
+        log.warning("Signature not valid before %s", invalid_before)
+        return False
+    if issued_at and now < issued_at:
+        log.warning("Signature issued in the future at %s", issued_at)
+        return False
+
+    return True
 
 
 def create_login_message(data: SIWEModel) -> str:

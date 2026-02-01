@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     "cyber_valley.events",
     "cyber_valley.web3_auth",
     "cyber_valley.users",
-    "cyber_valley.notifications",
+    "cyber_valley.notifications.apps.NotificationsConfig",
     "cyber_valley.scripts",
     "cyber_valley.indexer",
     "cyber_valley.event_reaper",
@@ -204,8 +204,8 @@ class SimpleJWTSettingsDict(TypedDict):
 
 SIMPLE_JWT: Final[SimpleJWTSettingsDict] = {
     "USER_ID_FIELD": "address",
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=60),
     "AUTH_COOKIE": "access_token",
     "REFRESH_COOKIE": "refresh_token",
     "AUTH_COOKIE_DOMAIN": None,

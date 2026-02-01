@@ -4,9 +4,11 @@ import { checkPermission } from "@/shared/lib/RBAC";
 import { getUnixTime } from "date-fns";
 
 export const uniteFilter = (event: Event, user: User) => {
-  if (checkPermission(user.role, "event:edit", "event:accept/decline"))
-    if (event.creator.address === user.address) return true;
-  return event.status === "approved";
+  const isStaff = checkPermission(user.role, "event:edit", "event:accept/decline");
+  if (isStaff && event.creator.address === user.address) return true;
+  if (event.status !== "approved") return false;
+  if (!isStaff) return !isEventPast(event);
+  return true;
 };
 
 export type Chronology = "past" | "current" | "upcoming";
@@ -16,7 +18,7 @@ export const myEventsFilter = (
   option: Chronology,
 ) => {
   const mapper: { [key in Chronology]: (event: Event) => boolean } = {
-    past: isPast,
+    past: isEventPast,
     current: isCurrent,
     upcoming: isUpcoming(user),
   };
@@ -32,12 +34,16 @@ export const myEventsFilter = (
   );
 };
 
-const isPast = (event: Event) => {
-  return event.status !== "submitted" && event.status !== "approved";
+const getEventEndTimestamp = (event: Event) => {
+  return event.startDateTimestamp + event.daysAmount * 24 * 60 * 60;
+};
+
+export const isEventPast = (event: Event) => {
+  return getUnixTime(new Date()) > getEventEndTimestamp(event);
 };
 
 const isUpcoming = (user: User) => (event: Event) => {
-  if (isCurrent(event)) {
+  if (isCurrent(event) || isEventPast(event)) {
     return false;
   }
   if (event.status === "approved") {
@@ -54,7 +60,10 @@ const isUpcoming = (user: User) => (event: Event) => {
 };
 
 const isCurrent = (event: Event) => {
-  return !isPast(event) && getUnixTime(new Date()) >= event.startDateTimestamp;
+  const now = getUnixTime(new Date());
+  return (
+    now >= event.startDateTimestamp && now <= getEventEndTimestamp(event)
+  );
 };
 
 export const upcomingFilter = (event: Event) => {

@@ -1,13 +1,14 @@
 import { useAuthSlice } from "@/app/providers";
 import type { Order } from "@/entities/order";
 import type { Socials } from "@/entities/user";
+import { eventQueries } from "@/entities/event";
 import { useSendTx } from "@/shared/hooks/sendTx";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { purchase } from "../api/purchase";
@@ -26,6 +27,26 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
   const { user } = useAuthSlice();
   const { sendTx, data: txHash, error } = useSendTx();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [redirectEventId, setRedirectEventId] = useState<number | null>(null);
+  const queryClient = useQueryClient();
+
+  const resolveCreatedEventId = useCallback(async () => {
+    if (!user || order.type !== "create_event") return null;
+    const events = await queryClient.fetchQuery(eventQueries.list());
+    if (!events) return null;
+    const targetPlaceId = Number(order.event.place);
+    const matchedEvent = events.find((event) => {
+      return (
+        event.creator.address === user.address &&
+        event.title === order.event.title &&
+        event.startDateTimestamp === order.event.startTimeTimeStamp &&
+        event.place.id === targetPlaceId &&
+        event.ticketPrice === order.event.ticketPrice &&
+        event.daysAmount === order.event.daysAmount
+      );
+    });
+    return matchedEvent?.id ?? null;
+  }, [order, queryClient, user]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: (order: Order) => {
@@ -40,8 +61,22 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         referralAddress,
       );
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       setIsSuccess(true);
+      if (order.type === "buy_ticket") {
+        setRedirectEventId(order.ticket.eventId);
+        return;
+      }
+      if (order.type === "update_event") {
+        setRedirectEventId(order.event.id);
+        return;
+      }
+      if (order.type === "create_event") {
+        const createdId = await resolveCreatedEventId();
+        if (createdId != null) {
+          setRedirectEventId(createdId);
+        }
+      }
     },
     onError: console.error,
   });
@@ -54,6 +89,30 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         <Button onClick={() => navigate("/socials")}>Set socials</Button>
       </div>
     );
+
+  const handleConfirm = async () => {
+    let nextRedirectId = redirectEventId;
+    if (order.type === "create_event" && nextRedirectId == null) {
+      const createdId = await resolveCreatedEventId();
+      if (createdId != null) {
+        setRedirectEventId(createdId);
+        nextRedirectId = createdId;
+      }
+    }
+
+    if (nextRedirectId != null) {
+      queryClient.invalidateQueries({
+        queryKey: ["events", "lists", nextRedirectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["events", nextRedirectId, "attendees"],
+      });
+      navigate(`/events/${nextRedirectId}`, { replace: true });
+      return;
+    }
+
+    navigate("/", { replace: true });
+  };
 
   const successMessage =
     order.type === "buy_ticket"
@@ -102,7 +161,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         setOpen={setIsSuccess}
         title="Payment successful!"
         body={successMessage}
-        onConfirm={() => navigate("/", { replace: true })}
+        onConfirm={handleConfirm}
         txHash={txHash as string}
       />
     </article>
