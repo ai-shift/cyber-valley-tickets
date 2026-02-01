@@ -19,6 +19,9 @@ deploy-dev:
 grant-backend-role:
 	pnpm exec hardhat run scripts/grant-backend-role.js --network cvlandDev
 
+mint-tickets:
+	pnpm exec hardhat run scripts/mint-tickets.js --network cvlandDev
+
 check:
 	pnpm exec biome check --write test/
 	pnpm exec biome check --write scripts/

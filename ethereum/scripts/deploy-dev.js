@@ -153,7 +153,9 @@ async function main() {
 
     // Approve event place as local provider with deposit
     const depositSize = 100;
-    await eventManager.connect(localProvider).approveEventPlace(eventPlaceId, depositSize);
+    await eventManager
+      .connect(localProvider)
+      .approveEventPlace(eventPlaceId, depositSize);
 
     console.log(
       "place created",
@@ -352,98 +354,6 @@ async function main() {
     console.log("event", events[eventId].title, "approved");
   }
 
-  // Mint tickets
-  const tickets = [
-    // Event 0 - Multiple tickets for multi-ticket listing test
-    {
-      owner: completeSlave,
-      eventId: 0,
-      categoryId: 0, // Women category for event 0
-      socials: {
-        network: "instagram",
-        value: "@buyer1_event0",
-      },
-    },
-    {
-      owner: completeSlave,
-      eventId: 0,
-      categoryId: 1, // Locals category for event 0
-      socials: {
-        network: "telegram",
-        value: "@buyer2_event0",
-      },
-    },
-    {
-      owner: completeSlave,
-      eventId: 0,
-      categoryId: 2, // Families category for event 0
-      socials: {
-        network: "discord",
-        value: "@buyer3_event0",
-      },
-    },
-    // Event 1 - Single ticket
-    {
-      owner: completeSlave,
-      eventId: 1,
-      categoryId: 3, // Early Bird category for event 1
-      socials: {
-        network: "discord",
-        value: "@buyer_event1",
-      },
-    },
-  ];
-  for (const cfg of tickets) {
-    // Upload socials
-    const socialsResponse = await fetch(
-      `${BACKEND_HOST}/api/ipfs/tickets/meta`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          eventid: cfg.eventId,
-          socials: cfg.socials,
-          // NOTE: Ugly AF, but pausing this script and running indexer is  even worse
-          eventcover: `${IPFS_HOST}/ipfs/${events[cfg.eventId].coverCID}`,
-          eventtitle: events[cfg.eventId].title,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${cfg.owner.address}`,
-        },
-      },
-    );
-    if (!socialsResponse.ok) {
-      const body = await socialsResponse.text();
-      throw new Error(
-        `failed to upload socials with ${body} for config ${JSON.stringify(cfg)}`,
-      );
-    }
-    const socials = await socialsResponse.json();
-    const mh = getBytes32FromMultiash(socials.cid);
-
-    // Mint ERC20
-    const price = events[cfg.eventId].price;
-    await erc20.connect(cfg.owner).mint(price);
-    await erc20
-      .connect(cfg.owner)
-      .approve(await eventManager.getAddress(), price);
-
-    // Mint ticket with correct category for the event
-    await eventManager
-      .connect(cfg.owner)
-      .mintTicket(cfg.eventId, cfg.categoryId, mh.digest, mh.hashFunction, mh.size, "");
-
-    console.log(
-      "ticket minted",
-      "owner",
-      cfg.owner.address,
-      "event",
-      events[cfg.eventId].title,
-      "ticket CID",
-      socials.cid,
-    );
-  }
-
   // Print deployed addresses
   console.log(`export PUBLIC_ERC20_ADDRESS=${await erc20.getAddress()}`);
   console.log(
@@ -464,4 +374,7 @@ function getBytes32FromMultiash(multihash) {
   };
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

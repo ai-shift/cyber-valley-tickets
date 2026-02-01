@@ -415,6 +415,27 @@ fi
 log_info "Waiting for indexer to process events" "waiting"
 sleep 5
 
+# Wait for events to be indexed before minting tickets
+log_info "Waiting for events to be indexed" "waiting"
+for i in {1..30}; do
+    events_count=$(curl -s http://127.0.0.1:${BACKEND_PORT}/api/events/ | grep -o '"id":' | wc -l)
+    if [ "$events_count" -ge 3 ]; then
+        log_success "Events indexed successfully" "done"
+        break
+    fi
+    sleep 1
+done
+
+# Mint tickets after events are indexed
+log_info "Minting tickets" "starting"
+if ! run_buf_command "make -C ethereum/ mint-tickets"; then
+    log_error "Ticket minting failed" "failed"
+    echo -e "${RED}Check the buf window for error details:${NC}"
+    echo -e "  ${CYAN}tmux attach -t $SESSION_NAME:buf${NC}"
+    exit 1
+fi
+log_success "Tickets minted successfully" "done"
+
 log_info "Waiting for services to restart" "waiting"
 wait_for_service "/tmp/backend.log" "Starting development server at" "Backend"
 log_success "Django backend server ready" "restarted"
