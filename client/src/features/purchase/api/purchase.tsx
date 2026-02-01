@@ -50,28 +50,50 @@ const purchaseTicket = async (
   if (order.type !== "buy_ticket")
     throw new Error("There is no ticket in the order");
 
-  const { data } = await getTicketCid(socials, order.ticket);
+  // Validate allocations
+  if (!order.ticket.allocations || order.ticket.allocations.length === 0) {
+    throw new Error("Please select at least one ticket category");
+  }
 
-  if (!data || !data.cid) throw new Error("Can't fetch CID");
+  const totalAllocated = order.ticket.allocations.reduce(
+    (sum, a) => sum + a.count,
+    0,
+  );
+  if (totalAllocated !== order.ticket.totalTickets) {
+    throw new Error(
+      `Please allocate all ${order.ticket.totalTickets} tickets across categories`,
+    );
+  }
 
-  const finalPrice = order.ticket.finalPrice ?? order.ticket.ticketPrice;
-  const approve = approveMintTicket(account, BigInt(finalPrice));
+  // Calculate total price from allocations
+  const totalPrice = order.ticket.allocations.reduce(
+    (sum, a) => sum + a.count * a.finalPricePerTicket,
+    0,
+  );
+
+  // Approve total price once
+  const approve = approveMintTicket(account, BigInt(totalPrice));
   sendTx(approve);
   await approve;
   await new Promise((r) => setTimeout(r, 1000));
-  // Category is required - every ticket must have a category
-  if (order.ticket.categoryId === undefined) {
-    throw new Error("Category is required to purchase a ticket");
+
+  // Mint tickets for each allocation
+  for (const allocation of order.ticket.allocations) {
+    for (let i = 0; i < allocation.count; i++) {
+      const { data } = await getTicketCid(socials, order.ticket);
+      if (!data || !data.cid) throw new Error("Can't fetch CID");
+
+      const tx = mintTicket(
+        account,
+        BigInt(order.ticket.eventId),
+        BigInt(allocation.categoryId),
+        data.cid,
+        referralAddress,
+      );
+      sendTx(tx);
+      await tx;
+    }
   }
-  const tx = mintTicket(
-    account,
-    BigInt(order.ticket.eventId),
-    BigInt(order.ticket.categoryId),
-    data.cid,
-    referralAddress,
-  );
-  sendTx(tx);
-  await tx;
 
   // Clear referral after successful purchase
   if (referralAddress) {

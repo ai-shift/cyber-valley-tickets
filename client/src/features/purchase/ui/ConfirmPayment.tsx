@@ -60,11 +60,17 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
       ? "Your will recieve your ticket within several minutes."
       : "Your order will be published within several minutes.";
 
-  // Calculate final price for display on button
-  const finalPrice =
+  // Calculate total price and ticket count for display
+  const { totalPrice, totalTickets } =
     order.type === "buy_ticket"
-      ? (order.ticket.finalPrice ?? order.ticket.ticketPrice)
-      : null;
+      ? {
+          totalPrice: order.ticket.allocations.reduce(
+            (sum, a) => sum + a.count * a.finalPricePerTicket,
+            0,
+          ),
+          totalTickets: order.ticket.totalTickets,
+        }
+      : { totalPrice: null, totalTickets: null };
 
   return (
     <article className="card border-primary/30">
@@ -77,10 +83,10 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
             <Button onClick={() => mutate(order)} className="mx-auto">
               {error
                 ? "Try again"
-                : finalPrice
-                  ? `Pay ${finalPrice}`
+                : totalPrice !== null
+                  ? `Pay ${totalPrice} (${totalTickets} tickets)`
                   : "Confirm"}
-              {finalPrice && (
+              {totalPrice !== null && (
                 <img
                   src={getCurrencySymbol()}
                   className="h-4 aspect-square inline ml-1"
