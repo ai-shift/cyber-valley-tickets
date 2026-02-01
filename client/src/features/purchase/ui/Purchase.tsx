@@ -1,37 +1,25 @@
 import { useOrderStore } from "@/entities/order";
+import type { TicketAllocation } from "@/entities/order";
 import { useReferralStorage } from "@/features/referral";
 import { ReferralManager } from "@/features/referral/ui/ReferralManager";
-import { CategorySelect } from "@/features/ticket/ui/CategorySelect";
+import { CategoryAllocation } from "@/features/ticket/ui/CategoryAllocation";
 import { useHideFormNav } from "@/shared/widgets/navigation/hooks/useHideFormNav";
 import { ConfirmPayment } from "./ConfirmPayment";
 import { PurchaseEvent } from "./PurchaseEvent";
 import { PurchaseTicket } from "./PurchaseTicket";
 
-import type { CategoryOption } from "@/features/ticket/ui/CategorySelect";
-
 export const Purchase: React.FC = () => {
   useHideFormNav();
-  const { order, setTicketOrder } = useOrderStore();
+  const { order, updateTicketAllocations, updateTotalTickets } =
+    useOrderStore();
   const { address: referralAddress } = useReferralStorage();
 
-  // Handle category selection and update the order
-  const handleCategorySelect = (category: CategoryOption | null) => {
-    if (order?.type === "buy_ticket") {
-      const ticket = order.ticket;
-      const finalPrice = category
-        ? ticket.ticketPrice - (ticket.ticketPrice * category.discount) / 10000
-        : ticket.ticketPrice;
+  const handleAllocationsChange = (allocations: TicketAllocation[]) => {
+    updateTicketAllocations(allocations);
+  };
 
-      setTicketOrder({
-        eventId: ticket.eventId,
-        eventTitle: ticket.eventTitle,
-        ticketPrice: ticket.ticketPrice,
-        categoryId: category?.categoryId,
-        categoryName: category?.name,
-        discount: category?.discount,
-        finalPrice: finalPrice,
-      });
-    }
+  const handleTotalChange = (total: number) => {
+    updateTotalTickets(total);
   };
 
   return (
@@ -39,14 +27,16 @@ export const Purchase: React.FC = () => {
       {order?.type === "buy_ticket" && (
         <>
           <PurchaseTicket ticket={order.ticket} />
-          {/* Category selection - only show if event has categories */}
+          {/* Category allocation - multi-ticket support */}
           <div className="card border-primary/30">
-            <h3 className="text-lg font-semibold mb-3">Ticket Category</h3>
-            <CategorySelect
+            <h3 className="text-lg font-semibold mb-3">Ticket Categories</h3>
+            <CategoryAllocation
               eventId={order.ticket.eventId}
               ticketPrice={order.ticket.ticketPrice}
-              selectedCategoryId={order.ticket.categoryId ?? null}
-              onCategorySelect={handleCategorySelect}
+              totalTickets={order.ticket.totalTickets}
+              allocations={order.ticket.allocations}
+              onTotalChange={handleTotalChange}
+              onAllocationsChange={handleAllocationsChange}
             />
           </div>
           <ReferralManager />

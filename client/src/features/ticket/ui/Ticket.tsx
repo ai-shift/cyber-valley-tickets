@@ -37,11 +37,13 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
       return;
     }
 
-    // Set the order without category (will be selected on purchase page)
+    // Set the order with multi-ticket support
     setTicketOrder({
       eventId: event.id,
       eventTitle: event.title,
       ticketPrice: event.ticketPrice,
+      totalTickets: 1,
+      allocations: [],
     });
 
     // Navigate directly to purchase page
