@@ -3,8 +3,8 @@ import type { User } from "@/entities/user";
 import { EventsList, myEventsFilter } from "@/features/events-list";
 import { apiClient } from "@/shared/api";
 import { useTokenBalance } from "@/shared/hooks";
-import { formatAddress } from "@/shared/lib/formatAddress";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
+import { AddressDisplay } from "@/shared/ui/AddressDisplay";
 import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
@@ -84,7 +84,7 @@ export const AccountPage: React.FC = () => {
             />
             <div className="flex flex-col items-center md:items-start gap-1">
               <p className="text-lg">
-                {formatAddress(address as `0x${string}`)}
+                <AddressDisplay address={address} socials={user?.socials} />
               </p>
               {getRoleDisplayName(user) && (
                 <p className="text-sm font-semibold text-primary">

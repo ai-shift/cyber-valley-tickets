@@ -1,6 +1,8 @@
-export const isEventPassed = (start: number, days: number) => {
-  const daysToMs = days * 1000 * 60 * 60 * 24;
-  const now = new Date().getMilliseconds();
+import { getUnixTime } from "date-fns";
 
-  return now > start + daysToMs;
+export const isEventPassed = (start: number, days: number) => {
+  const daysToSeconds = days * 24 * 60 * 60;
+  const now = getUnixTime(new Date());
+
+  return now > start + daysToSeconds;
 };

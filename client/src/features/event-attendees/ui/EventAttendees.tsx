@@ -1,5 +1,5 @@
 import { eventQueries } from "@/entities/event";
-import { formatAddress } from "@/shared/lib/formatAddress";
+import { AddressDisplay } from "@/shared/ui/AddressDisplay";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ExternalLink } from "lucide-react";
@@ -48,7 +48,7 @@ export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
                   className="inline-flex items-center space-x-1 gap-1"
                   href={`https://etherscan.io/address/${a.address}`}
                 >
-                  {formatAddress(a.address as `0x${string}`)}
+                  <AddressDisplay address={a.address} socials={a.socials} />
                   <ExternalLink className="size-4" />
                 </a>
               </td>

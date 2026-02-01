@@ -1,6 +1,7 @@
 import { eventQueries } from "@/entities/event";
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
+import { isEventPast } from "@/features/events-list";
 import { EbaliMap, useMapState } from "@/features/map";
 import { useQuery } from "@tanstack/react-query";
 import { useMap } from "@vis.gl/react-google-maps";
@@ -22,7 +23,7 @@ export const HomeMap: React.FC = () => {
   const approvedEvents = useMemo(
     () =>
       (events ?? ([] as Event[])).filter(
-        (event) => event.status === "approved",
+        (event) => event.status === "approved" && !isEventPast(event),
       ),
     [events],
   );

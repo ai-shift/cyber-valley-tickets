@@ -30,36 +30,39 @@ def send_notification(
             defaults={"body": body},
         )
 
-        telegram_social = UserSocials.objects.filter(
-            user=user, network=UserSocials.Network.TELEGRAM
-        ).first()
-
-        if telegram_social:
-            try:
-                bot = telebot.TeleBot(os.environ["TELEGRAM_BOT_TOKEN"])
-                chat_id = telegram_social.value
-
-                message = f"<b>{title}</b>\n\n{body}"
-
-                bot.send_message(
-                    chat_id,
-                    message,
-                    parse_mode="HTML",
-                )
-                logger.info(
-                    "Sent Telegram notification to user %s (chat_id: %s)",
-                    user.address,
-                    chat_id,
-                )
-            except Exception:
-                logger.exception(
-                    "Failed to send Telegram notification to user %s",
-                    user.address,
-                )
-        else:
-            return notification
+        return notification
     except Exception:
         logger.exception("Failed to create notification for user %s", user.address)
         return None
     else:
         return notification
+
+
+def send_notification_to_telegram(notification: Notification) -> None:
+    telegram_social = UserSocials.objects.filter(
+        user=notification.user, network=UserSocials.Network.TELEGRAM
+    ).first()
+
+    if not telegram_social:
+        return
+
+    try:
+        bot = telebot.TeleBot(os.environ["TELEGRAM_BOT_TOKEN"])
+        chat_id = telegram_social.value
+        message = f"<b>{notification.title}</b>\n\n{notification.body}"
+
+        bot.send_message(
+            chat_id,
+            message,
+            parse_mode="HTML",
+        )
+        logger.info(
+            "Sent Telegram notification to user %s (chat_id: %s)",
+            notification.user.address,
+            chat_id,
+        )
+    except Exception:
+        logger.exception(
+            "Failed to send Telegram notification to user %s",
+            notification.user.address,
+        )

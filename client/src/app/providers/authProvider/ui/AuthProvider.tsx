@@ -15,13 +15,19 @@ import { useAuthSlice } from "../model/authSlice";
 
 export const AuthProvider: React.FC = () => {
   const navigate = useNavigate();
-  const { login, logout, hasJWT } = useAuthSlice();
+  const {
+    login,
+    logout,
+    hasJWT,
+    signatureExpiresAt,
+    signatureRefreshAt,
+  } = useAuthSlice();
   const [walletChanged, setWalletChanged] = useState(false);
-  const { isError, isLoading } = useQuery({
+  const { isError, isFetching, refetch } = useQuery({
     queryFn: refresh,
     queryKey: ["refresh"],
     enabled: hasJWT,
-    refetchInterval: 1000 * 60 * 3,
+    refetchInterval: 1000 * 60 * 60 * 12,
     refetchOnWindowFocus: true,
   });
 
@@ -36,7 +42,7 @@ export const AuthProvider: React.FC = () => {
     });
   }, [wallet]);
 
-  const hasError = !isLoading && isError;
+  const hasError = !isFetching && isError;
   useAutoConnect({
     client,
     wallets,
@@ -45,18 +51,43 @@ export const AuthProvider: React.FC = () => {
   });
 
   useEffect(() => {
+    if (!hasJWT) return;
+    const now = Math.floor(Date.now() / 1000);
+    if (signatureExpiresAt && now > signatureExpiresAt) {
+      apiClient.GET("/api/auth/logout").finally(() => {
+        logout();
+        navigate("/login");
+      });
+      return;
+    }
+  }, [hasJWT, logout, navigate, signatureExpiresAt]);
+
+  useEffect(() => {
+    if (!hasJWT) return;
+    const maybeRefresh = () => {
+      const now = Math.floor(Date.now() / 1000);
+      if (signatureRefreshAt && now >= signatureRefreshAt) {
+        refetch();
+      }
+    };
+    maybeRefresh();
+    const interval = setInterval(maybeRefresh, 1000 * 60 * 60);
+    return () => clearInterval(interval);
+  }, [hasJWT, refetch, signatureRefreshAt]);
+
+  useEffect(() => {
     if (hasError || walletChanged) {
       apiClient.GET("/api/auth/logout").finally(() => {
         logout();
         navigate("/login");
       });
-    } else {
+    } else if (hasJWT) {
       apiClient.GET("/api/users/current/").then((resp) => {
         login(resp.data as User);
         setWalletChanged(false);
       });
     }
-  }, [hasError, navigate, hasJWT, logout, walletChanged]);
+  }, [hasError, navigate, hasJWT, login, logout, walletChanged]);
 
   return <Outlet />;
 };

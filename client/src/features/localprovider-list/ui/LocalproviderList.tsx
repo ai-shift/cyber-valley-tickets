@@ -1,6 +1,6 @@
 import { useLocalproviderState } from "@/entities/localprovider";
 import { userQueries } from "@/entities/user";
-import { formatAddress } from "@/shared/lib/formatAddress";
+import { AddressDisplay } from "@/shared/ui/AddressDisplay";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
@@ -43,10 +43,18 @@ export const LocalproviderList: React.FC<LocalproviderListProps> = ({
 
   return (
     <ul className="divide-y divide-secondary/60 py-2">
-      {uniqueAddresses.map((address) => (
+      {uniqueAddresses.map((address) => {
+        const user = users.find((entry) => entry.address === address);
+        return (
         <ManageItem
           key={address}
-          title={formatAddress(address as `0x${string}`)}
+          title={
+            <AddressDisplay
+              address={address}
+              socials={user?.socials}
+              showFullAddressInTooltip
+            />
+          }
           render={() => [
             <RemoveLocalproviderBtn
               key={address}
@@ -54,7 +62,8 @@ export const LocalproviderList: React.FC<LocalproviderListProps> = ({
             />,
           ]}
         />
-      ))}
+        );
+      })}
     </ul>
   );
 };

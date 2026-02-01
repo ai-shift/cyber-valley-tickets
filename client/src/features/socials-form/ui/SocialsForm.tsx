@@ -3,8 +3,11 @@ import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/shared/ui/button";
+import { userQueries } from "@/entities/user";
+import { useQuery } from "@tanstack/react-query";
 import {
   Form,
   FormControl,
@@ -28,6 +31,8 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
   existingSocials,
   userAddress,
 }) => {
+  const [isTelegramAwaiting, setIsTelegramAwaiting] = useState(false);
+  const [isTelegramLinked, setIsTelegramLinked] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingSocials
@@ -36,6 +41,31 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
   });
 
   const selectedNetwork = form.watch("network");
+
+  const { data: currentUser } = useQuery({
+    ...userQueries.current(),
+    enabled: selectedNetwork === "telegram" && isTelegramAwaiting,
+    refetchInterval: isTelegramAwaiting ? 3000 : false,
+  });
+
+  useEffect(() => {
+    if (selectedNetwork !== "telegram") {
+      setIsTelegramAwaiting(false);
+      setIsTelegramLinked(false);
+      return;
+    }
+    if (existingSocials?.network === "telegram") {
+      setIsTelegramLinked(true);
+      return;
+    }
+    const hasTelegram = currentUser?.socials?.some(
+      (social) => social.network === "telegram",
+    );
+    if (hasTelegram) {
+      setIsTelegramLinked(true);
+      setIsTelegramAwaiting(false);
+    }
+  }, [currentUser?.socials, existingSocials?.network, selectedNetwork]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     submitHandler({ network: values.network, value: values.value || "" });
@@ -46,6 +76,7 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
       `https://t.me/cyberia_tickets_bot?start=${userAddress}`,
       "_blank",
     );
+    setIsTelegramAwaiting(true);
   }
 
   return (
@@ -73,9 +104,20 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
               type="button"
               onClick={handleTelegramConnect}
               className="w-full"
+              disabled={isTelegramLinked}
             >
-              Verify via Telegram bot
+              {isTelegramLinked ? "Telegram connected" : "Verify via Telegram bot"}
             </Button>
+            {isTelegramAwaiting && !isTelegramLinked && (
+              <p className="text-sm text-muted text-center">
+                Waiting for Telegram verification...
+              </p>
+            )}
+            {isTelegramLinked && (
+              <p className="text-sm text-green-500 text-center">
+                Telegram connected successfully.
+              </p>
+            )}
           </div>
         ) : (
           <>

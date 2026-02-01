@@ -151,8 +151,9 @@ async function main() {
     }
     const eventPlaceId = newEventPlaceRequestEvent.args.id;
 
-    // Approve event place as local provider
-    await eventManager.connect(localProvider).approveEventPlace(eventPlaceId);
+    // Approve event place as local provider with deposit
+    const depositSize = 100;
+    await eventManager.connect(localProvider).approveEventPlace(eventPlaceId, depositSize);
 
     console.log(
       "place created",
@@ -357,6 +358,7 @@ async function main() {
     {
       owner: completeSlave,
       eventId: 0,
+      categoryId: 0, // Women category for event 0
       socials: {
         network: "instagram",
         value: "@buyer1_event0",
@@ -365,6 +367,7 @@ async function main() {
     {
       owner: completeSlave,
       eventId: 0,
+      categoryId: 1, // Locals category for event 0
       socials: {
         network: "telegram",
         value: "@buyer2_event0",
@@ -373,6 +376,7 @@ async function main() {
     {
       owner: completeSlave,
       eventId: 0,
+      categoryId: 2, // Families category for event 0
       socials: {
         network: "discord",
         value: "@buyer3_event0",
@@ -382,6 +386,7 @@ async function main() {
     {
       owner: completeSlave,
       eventId: 1,
+      categoryId: 3, // Early Bird category for event 1
       socials: {
         network: "discord",
         value: "@buyer_event1",
@@ -423,10 +428,10 @@ async function main() {
       .connect(cfg.owner)
       .approve(await eventManager.getAddress(), price);
 
-    // Mint ticket
+    // Mint ticket with correct category for the event
     await eventManager
       .connect(cfg.owner)
-      .mintTicket(cfg.eventId, mh.digest, mh.hashFunction, mh.size);
+      .mintTicket(cfg.eventId, cfg.categoryId, mh.digest, mh.hashFunction, mh.size, "");
 
     console.log(
       "ticket minted",
