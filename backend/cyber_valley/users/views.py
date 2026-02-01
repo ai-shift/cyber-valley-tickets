@@ -54,12 +54,12 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     @action(detail=False, methods=["get"], name="Current user")
     def staff(self, request: Request) -> Response:
         assert request.user.is_authenticated
-        if request.user.role not in (
+        if not request.user.has_role(
             CyberValleyUser.LOCAL_PROVIDER,
             CyberValleyUser.MASTER,
         ):
             return Response("Available only to local provider or master", status=401)
-        staff = User.objects.filter(role=CyberValleyUser.STAFF)
+        staff = User.objects.filter(roles__name=CyberValleyUser.STAFF)
         search_query = request.query_params.get("search", "")
         if search_query:
             staff = staff.filter(
@@ -84,9 +84,11 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     @action(detail=False, methods=["get"], name="Local Providers")
     def local_providers(self, request: Request) -> Response:
         assert request.user.is_authenticated
-        if request.user.role != CyberValleyUser.MASTER:
+        if not request.user.has_role(CyberValleyUser.MASTER):
             return Response("Available only to master", status=401)
-        local_providers = User.objects.filter(role=CyberValleyUser.LOCAL_PROVIDER)
+        local_providers = User.objects.filter(
+            roles__name=CyberValleyUser.LOCAL_PROVIDER
+        )
         search_query = request.query_params.get("search", "")
         if search_query:
             local_providers = local_providers.filter(
@@ -111,9 +113,14 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     @action(detail=False, methods=["get"], name="Verified Shamans")
     def verified_shamans(self, request: Request) -> Response:
         assert request.user.is_authenticated
-        if request.user.role != CyberValleyUser.LOCAL_PROVIDER:
-            return Response("Available only to local provider", status=401)
-        verified_shamans = User.objects.filter(role=CyberValleyUser.VERIFIED_SHAMAN)
+        if request.user.role not in (
+            CyberValleyUser.LOCAL_PROVIDER,
+            CyberValleyUser.MASTER,
+        ):
+            return Response("Available only to local provider or master", status=401)
+        verified_shamans = User.objects.filter(
+            roles__name=CyberValleyUser.VERIFIED_SHAMAN
+        )
         search_query = request.query_params.get("search", "")
         if search_query:
             verified_shamans = verified_shamans.filter(
