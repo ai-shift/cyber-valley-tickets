@@ -144,7 +144,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         <SheetContent side="left" aria-describedby={undefined}>
           <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
           <div className="h-full overflow-y-auto px-4">
-            <EventsLayerControl />
+            <EventsLayerControl closeGroups={() => {setShowGroups(false)}} />
             {layersTitles.map((title) => {
               return (
                 <LayerControl
