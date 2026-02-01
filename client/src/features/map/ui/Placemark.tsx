@@ -13,11 +13,7 @@ type PlacemarkProps = {
 
 export const Placemark: React.FC<PlacemarkProps> = memo(
   ({ placemark, onClick, opacity = 1 }) => {
-    const clickHandler = (e?: google.maps.MapMouseEvent) => {
-      // Stop event propagation to prevent map click from closing the popup
-      if (e) {
-        e.stop();
-      }
+    const clickHandler = () => {
       onClick(placemark);
     };
     switch (placemark.type) {
@@ -44,7 +40,6 @@ export const Placemark: React.FC<PlacemarkProps> = memo(
             strokeColor={truncateColorString(placemark.line_color)}
             fillOpacity={opacity}
             strokeOpacity={opacity}
-            clickable={true}
           />
         );
       case "line":
@@ -54,7 +49,6 @@ export const Placemark: React.FC<PlacemarkProps> = memo(
             path={placemark.coordinates}
             strokeColor={truncateColorString(placemark.line_color)}
             strokeOpacity={1}
-            clickable={true}
           />
         );
       default:
