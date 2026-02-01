@@ -1,7 +1,7 @@
 import { useAuthSlice } from "@/app/providers";
+import { eventQueries } from "@/entities/event";
 import type { Order } from "@/entities/order";
 import type { Socials } from "@/entities/user";
-import { eventQueries } from "@/entities/event";
 import { useSendTx } from "@/shared/hooks/sendTx";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
@@ -127,7 +127,10 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
             (sum, a) => sum + a.count * a.finalPricePerTicket,
             0,
           ),
-          totalTickets: order.ticket.totalTickets,
+          totalTickets: order.ticket.allocations.reduce(
+            (sum, a) => sum + a.count,
+            0,
+          ),
         }
       : { totalPrice: null, totalTickets: null };
 
@@ -143,7 +146,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
               {error
                 ? "Try again"
                 : totalPrice !== null
-                  ? `Pay ${totalPrice} (${totalTickets} tickets)`
+                  ? `Pay ${totalPrice} (${totalTickets} ${totalTickets === 1 ? "ticket" : "tickets"})`
                   : "Confirm"}
               {totalPrice !== null && (
                 <img

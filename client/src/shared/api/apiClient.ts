@@ -1,5 +1,5 @@
-import createClient, { type Middleware } from "openapi-fetch";
 import { useAuthSlice } from "@/app/providers/authProvider/model/authSlice";
+import createClient, { type Middleware } from "openapi-fetch";
 import type { components, paths } from "./apiTypes";
 
 export type ApiError = components["schemas"][

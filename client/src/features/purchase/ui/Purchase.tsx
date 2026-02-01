@@ -10,16 +10,11 @@ import { PurchaseTicket } from "./PurchaseTicket";
 
 export const Purchase: React.FC = () => {
   useHideFormNav();
-  const { order, updateTicketAllocations, updateTotalTickets } =
-    useOrderStore();
+  const { order, updateTicketAllocations } = useOrderStore();
   const { address: referralAddress } = useReferralStorage();
 
   const handleAllocationsChange = (allocations: TicketAllocation[]) => {
     updateTicketAllocations(allocations);
-  };
-
-  const handleTotalChange = (total: number) => {
-    updateTotalTickets(total);
   };
 
   return (
@@ -28,14 +23,12 @@ export const Purchase: React.FC = () => {
         <>
           <PurchaseTicket ticket={order.ticket} />
           {/* Category allocation - multi-ticket support */}
-          <div className="card border-primary/30">
+          <div className="border border-primary/30 p-4">
             <h3 className="text-lg font-semibold mb-3">Ticket Categories</h3>
             <CategoryAllocation
               eventId={order.ticket.eventId}
               ticketPrice={order.ticket.ticketPrice}
-              totalTickets={order.ticket.totalTickets}
               allocations={order.ticket.allocations}
-              onTotalChange={handleTotalChange}
               onAllocationsChange={handleAllocationsChange}
             />
           </div>

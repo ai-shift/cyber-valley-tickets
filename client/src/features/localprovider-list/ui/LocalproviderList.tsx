@@ -46,22 +46,22 @@ export const LocalproviderList: React.FC<LocalproviderListProps> = ({
       {uniqueAddresses.map((address) => {
         const user = users.find((entry) => entry.address === address);
         return (
-        <ManageItem
-          key={address}
-          title={
-            <AddressDisplay
-              address={address}
-              socials={user?.socials}
-              showFullAddressInTooltip
-            />
-          }
-          render={() => [
-            <RemoveLocalproviderBtn
-              key={address}
-              localproviderAddress={address}
-            />,
-          ]}
-        />
+          <ManageItem
+            key={address}
+            title={
+              <AddressDisplay
+                address={address}
+                socials={user?.socials}
+                showFullAddressInTooltip
+              />
+            }
+            render={() => [
+              <RemoveLocalproviderBtn
+                key={address}
+                localproviderAddress={address}
+              />,
+            ]}
+          />
         );
       })}
     </ul>

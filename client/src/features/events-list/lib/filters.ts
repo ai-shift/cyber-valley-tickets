@@ -4,7 +4,11 @@ import { checkPermission } from "@/shared/lib/RBAC";
 import { getUnixTime } from "date-fns";
 
 export const uniteFilter = (event: Event, user: User) => {
-  const isStaff = checkPermission(user.role, "event:edit", "event:accept/decline");
+  const isStaff = checkPermission(
+    user.role,
+    "event:edit",
+    "event:accept/decline",
+  );
   if (isStaff && event.creator.address === user.address) return true;
   if (event.status !== "approved") return false;
   if (!isStaff) return !isEventPast(event);
@@ -61,9 +65,7 @@ const isUpcoming = (user: User) => (event: Event) => {
 
 const isCurrent = (event: Event) => {
   const now = getUnixTime(new Date());
-  return (
-    now >= event.startDateTimestamp && now <= getEventEndTimestamp(event)
-  );
+  return now >= event.startDateTimestamp && now <= getEventEndTimestamp(event);
 };
 
 export const upcomingFilter = (event: Event) => {

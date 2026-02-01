@@ -15,13 +15,8 @@ import { useAuthSlice } from "../model/authSlice";
 
 export const AuthProvider: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    login,
-    logout,
-    hasJWT,
-    signatureExpiresAt,
-    signatureRefreshAt,
-  } = useAuthSlice();
+  const { login, logout, hasJWT, signatureExpiresAt, signatureRefreshAt } =
+    useAuthSlice();
   const [walletChanged, setWalletChanged] = useState(false);
   const { isError, isFetching, refetch } = useQuery({
     queryFn: refresh,
