@@ -5,6 +5,7 @@ import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
 import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
+import { deployENS } from "./deploy-ens";
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const DEV_TEAM_EOA = MASTER_EOA;
@@ -21,6 +22,10 @@ async function main() {
   if (IPFS_HOST == null || IPFS_HOST === "") {
     throw new Error(`IPFS_PUBLIC_HOST env var is missing: ${IPFS_HOST}`);
   }
+
+  // Deploy ENS contracts first
+  const { ensRegistry, publicResolver, reverseRegistrar } =
+    await deployENS(hre);
 
   // Deploy contracts
   const { erc20 } = await hre.ignition.deploy(ERC20Module, {});
@@ -361,6 +366,9 @@ async function main() {
   );
   console.log(
     `export PUBLIC_EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`,
+  );
+  console.log(
+    `export PUBLIC_ENS_RESOLVER_ADDRESS=${await publicResolver.getAddress()}`,
   );
 }
 

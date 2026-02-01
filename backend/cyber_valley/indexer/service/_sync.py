@@ -2,7 +2,7 @@ import logging
 from contextlib import suppress
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Protocol
+from typing import Any, Protocol
 
 import base58
 import ipfshttpclient
@@ -296,7 +296,7 @@ def _sync_event_place_updated(
     retry=retry_if_exception_type(ipfshttpclient.exceptions.ProtocolError),
     before_sleep=before_sleep_log(log, logging.WARNING),
 )
-def _fetch_ticket_metadata(cid: str) -> tuple[dict, dict]:
+def _fetch_ticket_metadata(cid: str) -> tuple[dict[str, Any], dict[str, Any]]:
     """Fetch ticket metadata from IPFS with retry logic.
 
     Supports both old ticket metadata format and new order metadata format.
@@ -328,6 +328,11 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.owner)
 
     cid = _multihash2cid(event_data)
+    if cid is None:
+        log.error(
+            "Failed to extract CID from event data for event %s", event_data.event_id
+        )
+        return
     ticket_meta, socials = _fetch_ticket_metadata(cid)
 
     with suppress(IntegrityError), transaction.atomic():

@@ -23,19 +23,17 @@ def send_notification(
     Returns:
         The created/retrieved Notification object, or None if creation failed
     """
+    notification = None
     try:
         notification, created = Notification.objects.get_or_create(
             user=user,
             title=title,
             defaults={"body": body},
         )
-
-        return notification
     except Exception:
         logger.exception("Failed to create notification for user %s", user.address)
-        return None
-    else:
-        return notification
+
+    return notification
 
 
 def send_notification_to_telegram(notification: Notification) -> None:
