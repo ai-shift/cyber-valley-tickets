@@ -80,6 +80,7 @@ class TicketMinted(BaseModel):
     )
     event_id: int = Field(..., alias="eventId")
     ticket_id: int = Field(..., alias="ticketId")
+    category_id: int = Field(..., alias="categoryId")
     owner: str
     digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")

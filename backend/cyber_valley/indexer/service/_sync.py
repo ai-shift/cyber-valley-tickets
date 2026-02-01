@@ -325,11 +325,26 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     log.info(
         "Saving ticket for event %s, owner %s from event %s", event, owner, event_data
     )
+
+    # Category is required - every ticket must have a category
+    try:
+        category = TicketCategory.objects.get(
+            event=event, category_id=event_data.category_id
+        )
+    except TicketCategory.DoesNotExist:
+        log.exception(
+            "Category %s not found for event %s - skipping ticket",
+            event_data.category_id,
+            event_data.event_id,
+        )
+        return
+
     ticket, created = Ticket.objects.get_or_create(
         id=str(event_data.ticket_id),
         defaults={
             "event": event,
             "owner": owner,
+            "category": category,
         },
     )
 
@@ -337,6 +352,10 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
         event.tickets_bought += 1
         event.total_revenue += event.ticket_price
         event.save(update_fields=["tickets_bought", "total_revenue"])
+
+        # Update category counter
+        category.tickets_bought += 1
+        category.save(update_fields=["tickets_bought"])
 
         send_notification(
             user=owner,
