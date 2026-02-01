@@ -38,6 +38,7 @@ from .serializers import (
     StaffEventSerializer,
     TicketCategorySerializer,
     UploadEventMetaToIpfsSerializer,
+    UploadOrderMetaToIpfsSerializer,
     UploadPlaceMetaToIpfsSerializer,
     UploadTicketMetaToIpfsSerializer,
 )
@@ -304,6 +305,64 @@ def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     log.info(
         "saving metadata for the new ticket: %s with cid %s", event_meta, meta_hash
     )
+    return Response({"cid": meta_hash}, status=201)
+
+
+@extend_schema(
+    request=UploadOrderMetaToIpfsSerializer,
+    responses={
+        201: {
+            "type": "object",
+            "properties": {"cid": {"type": "string"}},
+            "description": "IPFS CID of order metadata",
+        }
+    },
+)
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def upload_order_meta_to_ipfs(request: Request) -> Response:
+    serializer = UploadOrderMetaToIpfsSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    order_data = serializer.save()
+    user = request.user
+    assert not isinstance(user, AnonymousUser)
+
+    try:
+        event = Event.objects.get(id=order_data.event_id)
+        event_image = event.image_url
+        event_title = event.title
+    except Event.DoesNotExist:
+        return Response("event not found", status=404)
+
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_hash = client.add_json(order_data.socials)
+        tickets_data = [
+            {
+                "category_id": t.category_id,
+                "category_name": t.category_name,
+                "price": t.price,
+                "quantity": t.quantity,
+            }
+            for t in order_data.tickets
+        ]
+        order_meta = {
+            "order_type": "ticket_purchase",
+            "event_id": order_data.event_id,
+            "event_title": event_title,
+            "event_image": event_image,
+            "buyer": {
+                "address": order_data.buyer_address,
+                "socials": socials_hash,
+            },
+            "tickets": tickets_data,
+            "total_tickets": order_data.total_tickets,
+            "total_price": order_data.total_price,
+            "currency": order_data.currency,
+            "referral_data": order_data.referral_data,
+        }
+        meta_hash = client.add_json(order_meta)
+
+    log.info("saving metadata for the new order: %s with cid %s", order_meta, meta_hash)
     return Response({"cid": meta_hash}, status=201)
 
 

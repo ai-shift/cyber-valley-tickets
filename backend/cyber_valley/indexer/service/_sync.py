@@ -297,10 +297,21 @@ def _sync_event_place_updated(
     before_sleep=before_sleep_log(log, logging.WARNING),
 )
 def _fetch_ticket_metadata(cid: str) -> tuple[dict, dict]:
-    """Fetch ticket metadata from IPFS with retry logic."""
+    """Fetch ticket metadata from IPFS with retry logic.
+
+    Supports both old ticket metadata format and new order metadata format.
+    """
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         ticket_meta = client.get_json(cid)
-        socials = client.get_json(ticket_meta["socials"])
+
+        # Check if this is new order metadata format (has order_type field)
+        if ticket_meta.get("order_type") == "ticket_purchase":
+            # New format: socials is under buyer.socials
+            socials_cid = ticket_meta["buyer"]["socials"]
+            socials = client.get_json(socials_cid)
+        else:
+            # Old format: socials is at top level
+            socials = client.get_json(ticket_meta["socials"])
     return ticket_meta, socials
 
 
