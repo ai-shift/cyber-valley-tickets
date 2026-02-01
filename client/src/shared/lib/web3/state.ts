@@ -1037,6 +1037,49 @@ export const eventManager = getContract({
           type: "uint256",
         },
         {
+          internalType: "uint256",
+          name: "categoryId",
+          type: "uint256",
+        },
+        {
+          internalType: "uint256",
+          name: "amount",
+          type: "uint256",
+        },
+        {
+          internalType: "bytes32",
+          name: "digest",
+          type: "bytes32",
+        },
+        {
+          internalType: "uint8",
+          name: "hashFunction",
+          type: "uint8",
+        },
+        {
+          internalType: "uint8",
+          name: "size",
+          type: "uint8",
+        },
+        {
+          internalType: "string",
+          name: "referralData",
+          type: "string",
+        },
+      ],
+      name: "mintTickets",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "eventId",
+          type: "uint256",
+        },
+        {
           internalType: "string",
           name: "name",
           type: "string",

@@ -1,7 +1,7 @@
 import {
   approveMintTicket,
   approveSubmitEventRequest,
-  mintTicket,
+  mintTickets,
   submitEventRequest,
   updateEvent as updateEventContract,
 } from "@/shared/lib/web3";
@@ -75,22 +75,22 @@ const purchaseTicket = async (
   await approve;
   await new Promise((r) => setTimeout(r, 1000));
 
-  // Mint tickets for each allocation
-  for (const allocation of order.ticket.allocations) {
-    for (let i = 0; i < allocation.count; i++) {
-      const { data } = await getTicketCid(socials, order.ticket);
-      if (!data || !data.cid) throw new Error("Can't fetch CID");
+  // Get order CID once for all tickets
+  const { data } = await getOrderCid(socials, order.ticket, account.address);
+  if (!data || !data.cid) throw new Error("Can't fetch CID");
 
-      const tx = mintTicket(
-        account,
-        BigInt(order.ticket.eventId),
-        BigInt(allocation.categoryId),
-        data.cid,
-        referralAddress,
-      );
-      sendTx(tx);
-      await tx;
-    }
+  // Mint tickets for each allocation in batch
+  for (const allocation of order.ticket.allocations) {
+    const tx = mintTickets(
+      account,
+      BigInt(order.ticket.eventId),
+      BigInt(allocation.categoryId),
+      BigInt(allocation.count),
+      data.cid,
+      referralAddress,
+    );
+    sendTx(tx);
+    await tx;
   }
 
   // Clear referral after successful purchase
@@ -200,20 +200,42 @@ const getSocialsCid = async (socials: Socials) => {
   });
 };
 
-const getTicketCid = async (socials: Socials, ticket: OrderTicket) => {
+const getOrderCid = async (
+  socials: Socials,
+  ticket: OrderTicket,
+  buyerAddress: string,
+) => {
   if (!socials) throw new Error("There is no socials in the order");
   if (!ticket)
     throw new Error(
       `Unexpected order type in a ticket flow: ${JSON.stringify(ticket)}`,
     );
-  return await apiClient.PUT("/api/ipfs/tickets/meta", {
+
+  const totalTickets = ticket.allocations.reduce((sum, a) => sum + a.count, 0);
+  const totalPrice = ticket.allocations.reduce(
+    (sum, a) => sum + a.count * a.finalPricePerTicket,
+    0,
+  );
+
+  return await apiClient.PUT("/api/ipfs/orders/meta", {
     body: {
+      event_id: ticket.eventId,
+      buyer_address: buyerAddress,
       socials: {
         //@ts-ignore
         network: socials.network.toLocaleLowerCase(),
         value: socials.value,
       },
-      eventid: ticket.eventId,
+      tickets: ticket.allocations.map((a) => ({
+        categoryId: a.categoryId,
+        categoryName: a.categoryName,
+        price: a.finalPricePerTicket,
+        quantity: a.count,
+      })),
+      total_tickets: totalTickets,
+      total_price: totalPrice,
+      currency: "USDC",
+      referral_data: "",
     },
   });
 };
