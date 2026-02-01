@@ -364,25 +364,6 @@ export async function approveMintTicket(account: Account, ticketPrice: bigint) {
   await sendTransaction({ account, transaction });
 }
 
-export async function mintTicket(
-  account: Account,
-  eventId: bigint,
-  socialsCID: string,
-  referralData?: string,
-): Promise<TxHash> {
-  const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
-  const mintTransaction = prepareContractCall({
-    contract: eventManager,
-    method: "mintTicket",
-    params: [eventId, digest, hashFunction, size, referralData || ""],
-  });
-  const { transactionHash } = await sendTransaction({
-    account,
-    transaction: mintTransaction,
-  });
-  return transactionHash;
-}
-
 export async function mintTicketWithCategory(
   account: Account,
   eventId: bigint,
