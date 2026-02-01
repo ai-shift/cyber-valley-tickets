@@ -5,6 +5,7 @@
         "available": true,
         "daysBeforeCancel": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
         "eventPlaceId": 0,
         "hashFunction": 18,
         "maxTickets": 100,
@@ -19,6 +20,7 @@
         "available": true,
         "daysBeforeCancel": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
         "eventPlaceId": 0,
         "hashFunction": 18,
         "maxTickets": 100,
@@ -33,6 +35,7 @@
         "available": true,
         "daysBeforeCancel": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
         "eventPlaceId": 0,
         "hashFunction": 18,
         "maxTickets": 100,
@@ -47,6 +50,7 @@
         "available": true,
         "daysBeforeCancel": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
         "eventPlaceId": 0,
         "hashFunction": 18,
         "maxTickets": 100,
@@ -61,6 +65,7 @@
         "available": true,
         "daysBeforeCancel": 1,
         "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
         "eventPlaceId": 0,
         "hashFunction": 18,
         "maxTickets": 100,
@@ -79,6 +84,19 @@
       }
     ],
     "CyberValleyEventManager.NewEventPlaceRequest": [
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
       {
         "available": true,
         "daysBeforeCancel": 1,
@@ -181,6 +199,11 @@
       }
     ],
     "CyberValleyEventManager.RoleAdminChanged": [
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
       {
         "newAdminRole": "BACKEND_ROLE",
         "previousAdminRole": "DEFAULT_ADMIN_ROLE",
@@ -534,7 +557,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x4A679253410272dd5232B3Ff7cF5dbB88f295319",
+        "account": "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -662,6 +685,61 @@
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xf5059a5D33d5853360D16C683c16e67980206f36",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       }
     ],
     "CyberValleyEventManager.TicketCategoryCreated": [
@@ -683,6 +761,9 @@
       }
     ],
     "DynamicRevenueSplitter.DefaultProfileSet": [
+      {
+        "profileId": 1
+      },
       {
         "profileId": 1
       },
@@ -780,14 +861,18 @@
         "shares": [
           10000
         ]
+      },
+      {
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
       }
     ],
     "SimpleERC20Xylose.Approval": [
-      {
-        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x4A679253410272dd5232B3Ff7cF5dbB88f295319",
-        "value": 100
-      },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
@@ -797,19 +882,14 @@
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
         "value": 100
+      },
+      {
+        "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "spender": "0xf5059a5D33d5853360D16C683c16e67980206f36",
+        "value": 100
       }
     ],
     "SimpleERC20Xylose.Transfer": [
-      {
-        "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "value": 100
-      },
-      {
-        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "to": "0x4A679253410272dd5232B3Ff7cF5dbB88f295319",
-        "value": 100
-      },
       {
         "from": "0x0000000000000000000000000000000000000000",
         "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
@@ -829,9 +909,19 @@
         "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "to": "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
         "value": 100
+      },
+      {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "value": 100
+      },
+      {
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "to": "0xf5059a5D33d5853360D16C683c16e67980206f36",
+        "value": 100
       }
     ]
   },
-  "events_count": 137,
+  "events_count": 152,
   "test_name": "approveEvent"
 }
