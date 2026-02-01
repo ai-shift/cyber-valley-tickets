@@ -284,14 +284,14 @@ uint256 public defaultProfileId;
 ### Implementation Tasks
 
 #### Backend Implementation (2h)
-- [ ] @naqerl Add `total_revenue` field to Event model (DecimalField)
-- [ ] @naqerl Update indexer to increment revenue on `TicketMinted` events
-- [ ] @naqerl Create `lifetime_revenue` API endpoint
+- [x] @naqerl Add `total_revenue` field to Event model (DecimalField)
+- [x] @naqerl Update indexer to increment revenue on `TicketMinted` events
+- [x] @naqerl Create `lifetime_revenue` API endpoint
 
 #### Frontend UI (2h)
-- [ ] @redmoor Design UI
-- [ ] @redmoor Create LifetimeRevenueButton component
-- [ ] @redmoor Add React Query hook for fetching revenue
+- [x] @redmoor Design UI
+- [x] @redmoor Create LifetimeRevenueButton component
+- [x] @redmoor Add React Query hook for fetching revenue
 
 ### Implementation
 
