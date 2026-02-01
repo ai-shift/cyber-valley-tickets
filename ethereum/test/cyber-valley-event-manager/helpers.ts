@@ -200,13 +200,14 @@ export async function createEventPlace(
   verifiedShaman: Signer,
   localProvider: Signer,
   patch?: Partial<SubmitEventPlaceRequestArgs>,
+  deposit?: BigNumberish,
 ): Promise<{ eventPlaceId: BigNumberish; tx: ContractTransactionResponse }> {
   const { eventPlaceId, tx } = await submitEventPlaceRequest(
     eventManager,
     verifiedShaman,
     patch,
   );
-  await approveEventPlace(eventManager, localProvider, { eventPlaceId });
+  await approveEventPlace(eventManager, localProvider, { eventPlaceId, eventDepositSize: deposit ?? 100 });
   return { tx, eventPlaceId };
 }
 

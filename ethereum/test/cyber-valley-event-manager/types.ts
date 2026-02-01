@@ -66,6 +66,7 @@ export type EventPlace = {
   daysBeforeCancel: BigNumberish;
   minDays: BigNumberish;
   meta: Multihash;
+  eventDepositSize: BigNumberish;
 };
 
 export type Event = {
@@ -93,6 +94,7 @@ export type SubmitEventPlaceRequestArgs = {
 
 export type ApproveEventPlaceArgs = {
   eventPlaceId: BigNumberish;
+  eventDepositSize: BigNumberish;
 };
 
 export type DeclineEventPlaceArgs = {
@@ -182,7 +184,7 @@ export const submitEventPlaceRequestArgsToArray = (
 export const approveEventPlaceArgsToArray = (
   args: ApproveEventPlaceArgs,
 ): Parameters<CyberValleyEventManager["approveEventPlace"]> => {
-  return [args.eventPlaceId];
+  return [args.eventPlaceId, args.eventDepositSize];
 };
 
 export const declineEventPlaceArgsToArray = (
