@@ -135,21 +135,22 @@
 ### Implementation Tasks
 
 #### Smart Contract (2h)
-- [ ] @naqerl Add `customEventDeposit` field to EventPlace struct
-- [ ] @naqerl Add `minEventDeposit` global variable
-- [ ] @naqerl Update `submitEventPlaceRequest` to accept custom deposit
-- [ ] @naqerl Modify `submitEventRequest` to use custom deposit if set, else global price
-- [ ] @naqerl Add validation: custom deposit >= minEventDeposit
+- [x] @naqerl Add `eventDepositSize` field to EventPlace struct
+- [x] @naqerl Update `approveEventPlace` to accept and store deposit
+- [x] @naqerl Update `EventPlaceUpdated` event to include deposit
+- [x] @naqerl Modify `submitEventRequest` to use place deposit
+- [x] @naqerl Update `declineEvent`, `cancelEvent`, `closeEvent` to handle deposits
 
 #### Backend API (1h)
-- [ ] @naqerl Update EventPlace model schema with deposit field
-- [ ] @naqerl Index deposit field from blockchain events
-- [ ] @naqerl Update API serializers to include deposit
+- [x] @naqerl Update EventPlace model with `event_deposit_size` field
+- [x] @naqerl Index deposit field from blockchain events
+- [x] @naqerl Update API serializers to include deposit
+- [x] @naqerl Create migration to rename field
 
 #### Frontend UI (1h)
-- [ ] @naqerl Add deposit input field to event place creation form
-- [ ] @naqerl Display deposit amount on event place details
-- [ ] @naqerl Show deposit amount when creating event at a place
+- [x] @naqerl Add deposit input field to event place approval dialog
+- [x] @naqerl Display deposit amount on event place details
+- [x] @naqerl Fetch and use deposit when creating event at a place
 
 ---
 
