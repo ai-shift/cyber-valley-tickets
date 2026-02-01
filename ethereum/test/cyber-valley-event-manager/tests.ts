@@ -221,14 +221,20 @@ describe("CyberValleyEventManager", () => {
         verifiedShaman,
       );
       await expect(
-        approveEventPlace(eventManager, localProvider, { eventPlaceId, eventDepositSize: 100 }),
+        approveEventPlace(eventManager, localProvider, {
+          eventPlaceId,
+          eventDepositSize: 100,
+        }),
       ).to.emit(eventManager, "EventPlaceUpdated");
     });
 
     it("reverts on non-existing event place", async () => {
       const { eventManager, localProvider } = await loadFixture(deployContract);
       await expect(
-        approveEventPlace(eventManager, localProvider, { eventPlaceId: 999, eventDepositSize: 100 }),
+        approveEventPlace(eventManager, localProvider, {
+          eventPlaceId: 999,
+          eventDepositSize: 100,
+        }),
       ).to.be.revertedWith("EventPlace does not exist");
     });
 
@@ -239,9 +245,15 @@ describe("CyberValleyEventManager", () => {
         eventManager,
         verifiedShaman,
       );
-      await approveEventPlace(eventManager, localProvider, { eventPlaceId, eventDepositSize: 100 });
+      await approveEventPlace(eventManager, localProvider, {
+        eventPlaceId,
+        eventDepositSize: 100,
+      });
       await expect(
-        approveEventPlace(eventManager, localProvider, { eventPlaceId, eventDepositSize: 100 }),
+        approveEventPlace(eventManager, localProvider, {
+          eventPlaceId,
+          eventDepositSize: 100,
+        }),
       ).to.be.revertedWith("EventPlace status differs from submitted");
     });
 
@@ -253,7 +265,10 @@ describe("CyberValleyEventManager", () => {
         verifiedShaman,
       );
       await expect(
-        approveEventPlace(eventManager, localProvider, { eventPlaceId, eventDepositSize: 0 }),
+        approveEventPlace(eventManager, localProvider, {
+          eventPlaceId,
+          eventDepositSize: 0,
+        }),
       ).to.be.revertedWith("Deposit must be greater than zero");
     });
   });
@@ -703,9 +718,10 @@ describe("CyberValleyEventManager", () => {
         ticketPrice,
       );
       // Use category 0 (the default category created by createEvent)
-      const tx = await eventManager.connect(owner).mintTicket(
+      const tx = await eventManager.connect(owner).mintTickets(
         eventId,
         0, // categoryId
+        1, // amount
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
@@ -752,9 +768,10 @@ describe("CyberValleyEventManager", () => {
         ticketPrice * 2,
       );
       // Mint first ticket with category 0 (the limited category)
-      await eventManager.connect(owner).mintTicket(
+      await eventManager.connect(owner).mintTickets(
         eventId,
         0, // categoryId for "Limited"
+        1, // amount
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
@@ -762,9 +779,10 @@ describe("CyberValleyEventManager", () => {
       );
       // Second mint should revert due to category quota
       await expect(
-        eventManager.connect(owner).mintTicket(
+        eventManager.connect(owner).mintTickets(
           eventId,
           0, // categoryId for "Limited"
+          1, // amount
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
@@ -805,9 +823,10 @@ describe("CyberValleyEventManager", () => {
         ticketPrice,
       );
       // Use category 0 (the default category created by createEvent)
-      const tx = await eventManager.connect(owner).mintTicket(
+      const tx = await eventManager.connect(owner).mintTickets(
         eventId,
         0, // categoryId
+        1, // amount
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
@@ -854,9 +873,10 @@ describe("CyberValleyEventManager", () => {
         ticketPrice,
       );
       // Use category 0 (the default category created by createEvent)
-      const tx = eventManager.connect(owner).mintTicket(
+      const tx = eventManager.connect(owner).mintTickets(
         eventId,
         0, // categoryId
+        1, // amount
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
@@ -980,16 +1000,15 @@ describe("CyberValleyEventManager", () => {
       await ERC20.connect(owner).mint(90);
       await ERC20.connect(owner).approve(await eventManager.getAddress(), 90);
       await expect(
-        eventManager
-          .connect(owner)
-          .mintTicket(
-            eventId,
-            0,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-            "",
-          ),
+        eventManager.connect(owner).mintTickets(
+          eventId,
+          0,
+          1, // amount
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+          18,
+          32,
+          "",
+        ),
       ).to.changeTokenBalances(
         ERC20,
         [await eventManager.getAddress(), await owner.getAddress()],
@@ -1030,27 +1049,25 @@ describe("CyberValleyEventManager", () => {
 
       await ERC20.connect(owner).mint(200);
       await ERC20.connect(owner).approve(await eventManager.getAddress(), 200);
-      await eventManager
-        .connect(owner)
-        .mintTicket(
+      await eventManager.connect(owner).mintTickets(
+        eventId,
+        0,
+        1, // amount
+        "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        18,
+        32,
+        "",
+      );
+      await expect(
+        eventManager.connect(owner).mintTickets(
           eventId,
           0,
+          1, // amount
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
           18,
           32,
           "",
-        );
-      await expect(
-        eventManager
-          .connect(owner)
-          .mintTicket(
-            eventId,
-            0,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-            "",
-          ),
+        ),
       ).to.be.revertedWith("Category quota exceeded");
     });
 
@@ -1195,18 +1212,15 @@ describe("CyberValleyEventManager", () => {
       // Buy 10 tickets from category
       await ERC20.connect(owner).mint(1000);
       await ERC20.connect(owner).approve(await eventManager.getAddress(), 1000);
-      for (let i = 0; i < 10; i++) {
-        await eventManager
-          .connect(owner)
-          .mintTicket(
-            eventId,
-            0,
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            18,
-            32,
-            "",
-          );
-      }
+      await eventManager.connect(owner).mintTickets(
+        eventId,
+        0,
+        10, // amount
+        "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        18,
+        32,
+        "",
+      );
 
       // Try to update quota to 5 (less than 10 sold) - should fail because event is approved
       await expect(
@@ -1479,7 +1493,7 @@ describe("CyberValleyEventManager", () => {
         staff,
         owner,
       } = await loadFixture(deployContract);
-      
+
       // Create event with ticket sales
       await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
       await ERC20.connect(creator).approve(
@@ -1498,32 +1512,31 @@ describe("CyberValleyEventManager", () => {
       );
       await submitTx;
       const eventId = await getEventId();
-      
+
       // Create category and approve
       await eventManager
         .connect(verifiedShaman)
         .createCategory(eventId, "Standard", 0, 0, false);
       await eventManager.connect(localProvider).approveEvent(eventId);
-      
+
       // Buy 5 tickets @ 20 USDT = 100 USDT revenue
       await ERC20.connect(owner).mint(100);
       await ERC20.connect(owner).approve(await eventManager.getAddress(), 100);
-      for (let i = 0; i < 5; i++) {
-        await eventManager.connect(owner).mintTicket(
-          eventId,
-          0,
-          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-          18,
-          32,
-          "",
-        );
-      }
-      
+      await eventManager.connect(owner).mintTickets(
+        eventId,
+        0,
+        5, // amount
+        "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        18,
+        32,
+        "",
+      );
+
       // Move time to allow closing
       await time.increase(100_000_000);
-      
+
       const { tx } = await closeEvent(eventManager, localProvider, { eventId });
-      
+
       // Deposit (100) returned to creator
       // Ticket revenue (100) distributed: 10% (10) to master, 5% (5) to staff, 85% (85) to provider
       await expect(tx).to.changeTokenBalances(
@@ -1595,16 +1608,15 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
         discountedPrice,
       );
-      await eventManager
-        .connect(owner)
-        .mintTicket(
-          eventId,
-          0,
-          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-          18,
-          32,
-          "",
-        );
+      await eventManager.connect(owner).mintTickets(
+        eventId,
+        0,
+        1, // amount
+        "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        18,
+        32,
+        "",
+      );
 
       const tx = await eventManager.connect(localProvider).cancelEvent(eventId);
       await expect(tx).to.changeTokenBalances(
@@ -1799,16 +1811,15 @@ describe("CyberValleyEventManager", () => {
           totalCost,
         );
 
-        for (let j = 0; j < ticketCount; j++) {
-          await eventManager.connect(customer).mintTicket(
-            eventId,
-            0, // categoryId
-            multihash.digest,
-            multihash.hashFunction,
-            multihash.size,
-        "",
-          );
-        }
+        await eventManager.connect(customer).mintTickets(
+          eventId,
+          0, // categoryId
+          ticketCount, // amount
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+          "",
+        );
       }
 
       const { tx: cancelTx } = await cancelEvent(eventManager, localProvider, {
@@ -1900,16 +1911,15 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
         totalTicketCost,
       );
-      for (let i = 0; i < ticketCount; i++) {
-        await eventManager.connect(owner).mintTicket(
-          eventId,
-          0, // categoryId
-          multihash.digest,
-          multihash.hashFunction,
-          multihash.size,
+      await eventManager.connect(owner).mintTickets(
+        eventId,
+        0, // categoryId
+        ticketCount, // amount
+        multihash.digest,
+        multihash.hashFunction,
+        multihash.size,
         "",
-        );
-      }
+      );
 
       // Total ticket revenue = 100 (distributed via splitter)
       // Deposit = 100 (returned to creator)

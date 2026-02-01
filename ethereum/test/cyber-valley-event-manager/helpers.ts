@@ -207,7 +207,10 @@ export async function createEventPlace(
     verifiedShaman,
     patch,
   );
-  await approveEventPlace(eventManager, localProvider, { eventPlaceId, eventDepositSize: deposit ?? 100 });
+  await approveEventPlace(eventManager, localProvider, {
+    eventPlaceId,
+    eventDepositSize: deposit ?? 100,
+  });
   return { tx, eventPlaceId };
 }
 
