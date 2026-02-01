@@ -171,6 +171,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
+        _grantRole(LOCAL_PROVIDER_ROLE, _master);
         _setRoleAdmin(VERIFIED_SHAMAN_ROLE, BACKEND_ROLE);
     }
 
