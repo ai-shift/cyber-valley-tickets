@@ -101,10 +101,6 @@ export const useMapState = create<MapState & MapAction>()(
       },
 
       fetchLayer: async (layerName: string) => {
-        const { fetchedLayers } = get();
-        if (fetchedLayers[layerName]) {
-          return;
-        }
         set((state) => ({
           loadingLayers: [...state.loadingLayers, layerName],
           error: "",
