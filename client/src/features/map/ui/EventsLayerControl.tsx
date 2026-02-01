@@ -5,7 +5,11 @@ import { memo } from "react";
 import { twMerge } from "tailwind-merge";
 import { useMapState } from "../model/slice";
 
-export const EventsLayerControl = memo(() => {
+type EventsLayerControlProps = {
+  closeGroups: () => void;
+}
+
+export const EventsLayerControl: React.FC<EventsLayerControlProps> = memo(({closeGroups}) => {
   const { events, selectEventPlace } = useMapState();
 
   return (
@@ -33,7 +37,11 @@ export const EventsLayerControl = memo(() => {
               type="button"
               className="flex gap-1 items-center justify-center"
               key={event.id}
-              onClick={() => selectEventPlace(event.placeId)}
+              onClick={() => {
+                selectEventPlace(event.placeId)
+                closeGroups()
+                }
+              }
             >
               <img
                 className="aspect-square h-6"
