@@ -2,7 +2,6 @@ import {
   approveMintTicket,
   approveSubmitEventRequest,
   mintTicket,
-  mintTicketWithCategory,
   submitEventRequest,
   updateEvent as updateEventContract,
 } from "@/shared/lib/web3";
@@ -10,6 +9,7 @@ import type { Account } from "thirdweb/wallets";
 
 import type { EventDto } from "@/entities/event";
 import type { Order, OrderTicket } from "@/entities/order";
+import { getPlaceById } from "@/entities/place";
 import type { Socials } from "@/entities/user";
 import { cleanEventLocal } from "@/features/event-form";
 import { clearReferral } from "@/features/referral";
@@ -63,7 +63,7 @@ const purchaseTicket = async (
   if (order.ticket.categoryId === undefined) {
     throw new Error("Category is required to purchase a ticket");
   }
-  const tx = mintTicketWithCategory(
+  const tx = mintTicket(
     account,
     BigInt(order.ticket.eventId),
     BigInt(order.ticket.categoryId),
@@ -135,7 +135,21 @@ const createEvent = async (
   if (!eventData || !eventData.cid)
     throw new Error("Can't fetch event meta CID");
 
-  const approve = approveSubmitEventRequest(account);
+  // Fetch place data to get the deposit size
+  const { data: placeData } = await getPlaceById(Number(place));
+  if (!placeData) throw new Error("Can't fetch place data");
+
+  if (
+    placeData.eventDepositSize === undefined ||
+    placeData.eventDepositSize === null
+  ) {
+    throw new Error("Event place deposit size is not set");
+  }
+  if (placeData.eventDepositSize <= 0) {
+    throw new Error("Event place deposit size must be greater than 0");
+  }
+  const depositSize = BigInt(placeData.eventDepositSize);
+  const approve = approveSubmitEventRequest(account, depositSize);
   sendTx(approve);
   await approve;
   console.log("Submit event request ERC20 transfer approved");
