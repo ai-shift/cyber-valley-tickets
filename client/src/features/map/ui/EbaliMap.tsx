@@ -135,12 +135,8 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         <RotateCcw className="stroke-primary" />
       </button>
 
-      <Sheet open={showGroups} onOpenChange={setShowGroups} modal={false}>
-        <SheetTrigger
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
+      <Sheet open={showGroups} onOpenChange={setShowGroups}>
+        <SheetTrigger>
           <div className="absolute top-3 left-3 aspect-square h-14 rounded-full bg-black flex items-center justify-center">
             <Layers className="w-6 h-6 text-primary" />
           </div>
@@ -195,6 +191,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
         <InfoWindow
           pixelOffset={selectedPlacemark.type === "point" ? [0, -25] : [0, 0]}
           headerDisabled
+          disableAutoPan
           position={getPlacemarkPosition(selectedPlacemark)}
           onCloseClick={() => setSelectedPlacemark(null)}
           className="text-lg"
