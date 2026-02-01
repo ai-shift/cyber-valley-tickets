@@ -99,6 +99,28 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         emit TicketMinted(eventId, lastTokenId, categoryId, to, digest, hashFunction, size, referralData);
     }
 
+    function mintBatch(
+        address to,
+        uint256 eventId,
+        uint256 categoryId,
+        uint256 amount,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size,
+        string memory referralData
+    ) external onlyEventManager {
+        for (uint256 i = 0; i < amount; i++) {
+            lastTokenId += 1;
+            _mint(to, lastTokenId);
+            ticketsMeta[lastTokenId] = CyberValley.Multihash(
+                digest,
+                hashFunction,
+                size
+            );
+            emit TicketMinted(eventId, lastTokenId, categoryId, to, digest, hashFunction, size, referralData);
+        }
+    }
+
     function ticketMeta(
         uint256 tokenId
     ) external view returns (bytes32 digest, uint8 hashFunction, uint8 size) {

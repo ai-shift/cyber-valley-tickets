@@ -581,17 +581,32 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint8 size,
         string memory referralData
     ) external onlyExistingEvent(eventId) {
-        _mintTicketInternal(eventId, categoryId, digest, hashFunction, size, referralData);
+        _mintTicketInternal(eventId, categoryId, 1, digest, hashFunction, size, referralData);
+    }
+
+    function mintTickets(
+        uint256 eventId,
+        uint256 categoryId,
+        uint256 amount,
+        bytes32 digest,
+        uint8 hashFunction,
+        uint8 size,
+        string memory referralData
+    ) external onlyExistingEvent(eventId) {
+        _mintTicketInternal(eventId, categoryId, amount, digest, hashFunction, size, referralData);
     }
 
     function _mintTicketInternal(
         uint256 eventId,
         uint256 categoryId,
+        uint256 amount,
         bytes32 digest,
         uint8 hashFunction,
         uint8 size,
         string memory referralData
     ) internal onlyExistingEvent(eventId) {
+        require(amount > 0, "Amount must be greater than 0");
+
         Event storage evt = events[eventId];
         require(evt.status == EventStatus.Approved, "Event is not approved");
 
@@ -601,31 +616,35 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         require(category.eventId == eventId, "Category does not belong to this event");
 
         if (category.hasQuota) {
-            require(category.sold < category.quota, "Category quota exceeded");
-            category.sold++;
+            require(category.sold + uint16(amount) <= category.quota, "Category quota exceeded");
+            category.sold += uint16(amount);
         }
         uint16 price = applyDiscount(evt.ticketPrice, category.discountPercentage);
+        uint256 totalPrice = uint256(price) * amount;
 
         require(
             usdtTokenContract.transferFrom(
                 msg.sender,
                 address(this),
-                price
+                totalPrice
             ),
             "Failed to transfer tokens"
         );
-        eventTicketContract.mint(
+        eventTicketContract.mintBatch(
             msg.sender,
             eventId,
             categoryId,
+            amount,
             digest,
             hashFunction,
             size,
             referralData
         );
         evt.customers.push(msg.sender);
-        ticketPrices[eventId].push(price);
-        evt.networth += price;
+        for (uint256 i = 0; i < amount; i++) {
+            ticketPrices[eventId].push(price);
+        }
+        evt.networth += totalPrice;
     }
 
     function applyDiscount(uint16 originalPrice, uint16 discountPercentage) internal pure returns (uint16) {
