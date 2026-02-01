@@ -357,6 +357,9 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
         category.tickets_bought += 1
         category.save(update_fields=["tickets_bought"])
 
+        # Create referral record if valid referral data provided
+        _create_referral_record(event, ticket, owner, event_data.referral_data)
+
         send_notification(
             user=owner,
             title="Your ticket minted",
@@ -370,6 +373,57 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
         )
     else:
         log.info("Ticket %s already exists, skipping", event_data.ticket_id)
+
+
+def _create_referral_record(
+    event: Event,
+    ticket: Ticket,
+    referee: CyberValleyUser,
+    referral_data: str,
+) -> None:
+    """Create a referral record if referral_data contains a valid referrer address."""
+    from cyber_valley.events.models import Referral
+
+    # Skip if referral_data is empty
+    if not referral_data or referral_data.strip() == "":
+        return
+
+    # Validate that referral_data is a valid Ethereum address (0x prefix + 40 hex chars)
+    referral_data = referral_data.strip().lower()
+    if not referral_data.startswith("0x") or len(referral_data) != 42:
+        log.warning("Invalid referral address format: %s", referral_data)
+        return
+
+    try:
+        # Check if it's a valid hex address
+        int(referral_data[2:], 16)
+    except ValueError:
+        log.warning("Invalid referral address (not hex): %s", referral_data)
+        return
+
+    # Skip self-referrals
+    if referral_data == referee.address.lower():
+        log.info("Self-referral detected, skipping for ticket %s", ticket.id)
+        return
+
+    # Get or create referrer user
+    referrer, _ = CyberValleyUser.objects.get_or_create(address=referral_data)
+
+    # Create referral record (idempotent - uses get_or_create)
+    Referral.objects.get_or_create(
+        ticket=ticket,
+        defaults={
+            "event": event,
+            "referrer": referrer,
+            "referee": referee,
+        },
+    )
+    log.info(
+        "Referral created: %s referred %s for event %s",
+        referrer.address,
+        referee.address,
+        event.id,
+    )
 
 
 def _sync_event_status_changed(

@@ -562,9 +562,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 categoryId,
         bytes32 digest,
         uint8 hashFunction,
-        uint8 size
+        uint8 size,
+        string memory referralData
     ) external onlyExistingEvent(eventId) {
-        _mintTicketInternal(eventId, categoryId, digest, hashFunction, size);
+        _mintTicketInternal(eventId, categoryId, digest, hashFunction, size, referralData);
     }
 
     function _mintTicketInternal(
@@ -572,7 +573,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 categoryId,
         bytes32 digest,
         uint8 hashFunction,
-        uint8 size
+        uint8 size,
+        string memory referralData
     ) internal onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         require(evt.status == EventStatus.Approved, "Event is not approved");
@@ -602,7 +604,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             categoryId,
             digest,
             hashFunction,
-            size
+            size,
+            referralData
         );
         evt.customers.push(msg.sender);
         ticketPrices[eventId].push(price);

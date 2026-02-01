@@ -306,6 +306,7 @@ def test_sync_ticket_minted(
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
+            "referralData": "",
         }
     )
 
@@ -344,6 +345,7 @@ def test_sync_ticket_minted_event_not_found(user: UserType) -> None:
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
+            "referralData": "",
         }
     )
     with pytest.raises(Event.DoesNotExist):
@@ -416,6 +418,165 @@ def test_role_mapping_covers_all_user_roles() -> None:
     assert not unmapped_roles, (
         f"The following user roles are not covered by ROLE_MAPPING: {unmapped_roles}"
     )
+
+
+@pytest.mark.django_db
+def test_sync_ticket_minted_with_referral(
+    event: Event, user: UserType, ticket_category: TicketCategory
+) -> None:
+    """Test that a referral record is created when valid referralData is provided."""
+    from cyber_valley.events.models import Referral
+
+    # Create a referrer user
+    referrer_address = "0x1234567890123456789012345678901234567890"
+    referrer, _ = User.objects.get_or_create(address=referrer_address)
+
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+        ticket_meta_cid = client.add_json(
+            {
+                "description": "Your way to attend the event",
+                "image": event.image_url,
+                "name": f"Ticket to {event.title}",
+                "socials": socials_cid,
+            }
+        )
+    multihash = cid2multihash(ticket_meta_cid)
+    event_data = CyberValleyEventTicket.TicketMinted.model_validate(
+        {
+            "eventId": event.id,
+            "ticketId": 124,
+            "categoryId": ticket_category.category_id,
+            "owner": user.address,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
+            "referralData": referrer_address,
+        }
+    )
+
+    _sync_ticket_minted(event_data)
+
+    # Verify referral was created
+    ticket = Ticket.objects.get(id="124")
+    referral = Referral.objects.get(ticket=ticket)
+    assert referral.event == event
+    assert referral.referrer == referrer
+    assert referral.referee == user
+
+
+@pytest.mark.django_db
+def test_sync_ticket_minted_self_referral_skipped(
+    event: Event, user: UserType, ticket_category: TicketCategory
+) -> None:
+    """Test that self-referrals are skipped."""
+    from cyber_valley.events.models import Referral
+
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+        ticket_meta_cid = client.add_json(
+            {
+                "description": "Your way to attend the event",
+                "image": event.image_url,
+                "name": f"Ticket to {event.title}",
+                "socials": socials_cid,
+            }
+        )
+    multihash = cid2multihash(ticket_meta_cid)
+    event_data = CyberValleyEventTicket.TicketMinted.model_validate(
+        {
+            "eventId": event.id,
+            "ticketId": 125,
+            "categoryId": ticket_category.category_id,
+            "owner": user.address,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
+            "referralData": user.address,  # Self-referral
+        }
+    )
+
+    _sync_ticket_minted(event_data)
+
+    # Verify no referral was created
+    ticket = Ticket.objects.get(id="125")
+    assert not Referral.objects.filter(ticket=ticket).exists()
+
+
+@pytest.mark.django_db
+def test_sync_ticket_minted_invalid_referral_skipped(
+    event: Event, user: UserType, ticket_category: TicketCategory
+) -> None:
+    """Test that invalid referral addresses are skipped."""
+    from cyber_valley.events.models import Referral
+
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+        ticket_meta_cid = client.add_json(
+            {
+                "description": "Your way to attend the event",
+                "image": event.image_url,
+                "name": f"Ticket to {event.title}",
+                "socials": socials_cid,
+            }
+        )
+    multihash = cid2multihash(ticket_meta_cid)
+    event_data = CyberValleyEventTicket.TicketMinted.model_validate(
+        {
+            "eventId": event.id,
+            "ticketId": 126,
+            "categoryId": ticket_category.category_id,
+            "owner": user.address,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
+            "referralData": "invalid-address",
+        }
+    )
+
+    _sync_ticket_minted(event_data)
+
+    # Verify no referral was created
+    ticket = Ticket.objects.get(id="126")
+    assert not Referral.objects.filter(ticket=ticket).exists()
+
+
+@pytest.mark.django_db
+def test_sync_ticket_minted_empty_referral_skipped(
+    event: Event, user: UserType, ticket_category: TicketCategory
+) -> None:
+    """Test that empty referralData is handled gracefully."""
+    from cyber_valley.events.models import Referral
+
+    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+        socials_cid = client.add_json({"network": "x", "value": "@kekius_maximus"})
+        ticket_meta_cid = client.add_json(
+            {
+                "description": "Your way to attend the event",
+                "image": event.image_url,
+                "name": f"Ticket to {event.title}",
+                "socials": socials_cid,
+            }
+        )
+    multihash = cid2multihash(ticket_meta_cid)
+    event_data = CyberValleyEventTicket.TicketMinted.model_validate(
+        {
+            "eventId": event.id,
+            "ticketId": 127,
+            "categoryId": ticket_category.category_id,
+            "owner": user.address,
+            "digest": multihash.digest,
+            "hashFunction": multihash.hash_function,
+            "size": multihash.size,
+            "referralData": "",
+        }
+    )
+
+    _sync_ticket_minted(event_data)
+
+    # Verify no referral was created
+    ticket = Ticket.objects.get(id="127")
+    assert not Referral.objects.filter(ticket=ticket).exists()
 
 
 @dataclass
