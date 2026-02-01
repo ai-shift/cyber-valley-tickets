@@ -16,7 +16,7 @@ describe("CyberValleyEventTicket", () => {
       const mh = getBytes32FromMultiash(cid);
       await undertest
         .connect(eventManager)
-        .mint(master, 1, mh.digest, mh.hashFunction, mh.size);
+        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size);
       const tx = await undertest.connect(master).tokenURI(1);
       await expect(tx).to.equal(`${IPFS_HOST}/${cid}`);
     });
