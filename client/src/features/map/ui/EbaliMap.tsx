@@ -99,37 +99,41 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
 
   return (
     <div className={twMerge("w-full h-[50dvh] flex relative", className)}>
-        <button
-          className="top-3 right-3 z-10 absolute h-14 rounded-full aspect-square bg-black flex items-center justify-center"
-          type="button"
-          onClick={resetState}
-        >
-          <RotateCcw className="stroke-primary" />
-        </button>
+      <button
+        className="top-3 right-3 z-10 absolute h-14 rounded-full aspect-square bg-black flex items-center justify-center"
+        type="button"
+        onClick={resetState}
+      >
+        <RotateCcw className="stroke-primary" />
+      </button>
 
-        <Sheet open={showGroups} onOpenChange={setShowGroups}>
-          <SheetTrigger>
-            <div className="absolute z-10 top-3 left-3 aspect-square h-14 rounded-full bg-black flex items-center justify-center">
-              <Layers className="w-6 h-6 text-primary" />
-            </div>
-          </SheetTrigger>
-          <SheetContent side="left" aria-describedby={undefined}>
-            <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
-            <div className="h-full overflow-y-auto px-4">
-              <EventsLayerControl closeGroups={() => {setShowGroups(false)}} />
-              {layersTitles.map((title) => {
-                return (
-                  <LayerControl
-                    key={title}
-                    layerName={title}
-                    showInfo={setSelectedPlacemark}
-                    closeGroups={() => setShowGroups(false)}
-                  />
-                );
-              })}
-            </div>
-          </SheetContent>
-        </Sheet>
+      <Sheet open={showGroups} onOpenChange={setShowGroups}>
+        <SheetTrigger>
+          <div className="absolute z-10 top-3 left-3 aspect-square h-14 rounded-full bg-black flex items-center justify-center">
+            <Layers className="w-6 h-6 text-primary" />
+          </div>
+        </SheetTrigger>
+        <SheetContent side="left" aria-describedby={undefined}>
+          <SheetTitle className="p-3 text-lg">Layers</SheetTitle>
+          <div className="h-full overflow-y-auto px-4">
+            <EventsLayerControl
+              closeGroups={() => {
+                setShowGroups(false);
+              }}
+            />
+            {layersTitles.map((title) => {
+              return (
+                <LayerControl
+                  key={title}
+                  layerName={title}
+                  showInfo={setSelectedPlacemark}
+                  closeGroups={() => setShowGroups(false)}
+                />
+              );
+            })}
+          </div>
+        </SheetContent>
+      </Sheet>
       <GMap
         className="flex-1"
         mapId="fb99876bf33e90419a932304"
@@ -159,7 +163,6 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
           debSetCenter(ev.detail.center as LatLng);
         }}
       >
-        
         {Object.values(displayedLayers).map((layer) => {
           return layer.map((placemark, idx) => (
             <Placemark
@@ -238,7 +241,10 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
             <PlacemarkEventList events={selectedPlace.events} />
           </InfoWindow>
         )}
-        <MapLongPressHandler onLongPressMs={700} onLongPress={longPressHandler} />
+        <MapLongPressHandler
+          onLongPressMs={700}
+          onLongPress={longPressHandler}
+        />
         {children}
       </GMap>
     </div>
