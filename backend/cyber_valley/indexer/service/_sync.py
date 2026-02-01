@@ -568,6 +568,10 @@ def _sync_role_revoked(
         msg = f"Unknown role {event_data.role} in RoleRevoked event"
         raise ValueError(msg)
 
+    # If LOCAL_PROVIDER is revoked, transfer all their EventPlaces to Master
+    if event_data.role == "LOCAL_PROVIDER_ROLE":
+        _transfer_event_places_to_master(event_data.account)
+
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
     user.role = CyberValleyUser.CUSTOMER
     user.save()
@@ -586,6 +590,49 @@ def _sync_role_revoked(
             user=admin,
             title="Role revoked",
             body=f"{revoked_role} role was revoked from {user.address}",
+        )
+
+
+def _transfer_event_places_to_master(local_provider_address: str) -> None:
+    """Transfer all EventPlaces from a LocalProvider to the Master."""
+    # Get the Master user
+    master_user = CyberValleyUser.objects.filter(role=CyberValleyUser.MASTER).first()
+
+    if not master_user:
+        log.warning(
+            "No Master user found in database, cannot transfer EventPlaces from %s",
+            local_provider_address,
+        )
+        return
+
+    # Get the LocalProvider user
+    try:
+        local_provider = CyberValleyUser.objects.get(
+            address=local_provider_address, role=CyberValleyUser.LOCAL_PROVIDER
+        )
+    except CyberValleyUser.DoesNotExist:
+        log.warning(
+            "LocalProvider %s not found in database, cannot transfer EventPlaces",
+            local_provider_address,
+        )
+        return
+
+    # Transfer all EventPlaces
+    event_places = EventPlace.objects.filter(provider=local_provider)
+    transferred_count = event_places.update(provider=master_user)
+
+    if transferred_count > 0:
+        log.info(
+            "Transferred %d EventPlaces from LocalProvider %s to Master %s",
+            transferred_count,
+            local_provider_address,
+            master_user.address,
+        )
+        send_notification(
+            user=master_user,
+            title="Event Places Transferred",
+            body=f"{transferred_count} event places were transferred to you from "
+            f"revoked LocalProvider {local_provider_address}",
         )
 
 
