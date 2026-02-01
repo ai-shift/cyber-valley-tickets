@@ -2,12 +2,11 @@ import type { Socials } from "@/entities/user";
 import type { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { Button } from "@/shared/ui/button";
 import { userQueries } from "@/entities/user";
-import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/shared/ui/button";
 import {
   Form,
   FormControl,
@@ -17,6 +16,7 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
+import { useQuery } from "@tanstack/react-query";
 import { formSchema } from "../model/formSchema";
 import { SelectNetwork } from "./SelectNetwork";
 
@@ -106,7 +106,9 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
               className="w-full"
               disabled={isTelegramLinked}
             >
-              {isTelegramLinked ? "Telegram connected" : "Verify via Telegram bot"}
+              {isTelegramLinked
+                ? "Telegram connected"
+                : "Verify via Telegram bot"}
             </Button>
             {isTelegramAwaiting && !isTelegramLinked && (
               <p className="text-sm text-muted text-center">

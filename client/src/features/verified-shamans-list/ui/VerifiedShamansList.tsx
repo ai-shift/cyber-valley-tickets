@@ -50,19 +50,19 @@ export const VerifiedShamansList: React.FC<VerifiedShamansListProps> = ({
       {uniqueAddresses.map((address) => {
         const user = users.find((entry) => entry.address === address);
         return (
-        <ManageItem
-          key={address}
-          title={
-            <AddressDisplay
-              address={address}
-              socials={user?.socials}
-              showFullAddressInTooltip
-            />
-          }
-          render={() => [
-            <RemoveVerifiedShamanBtn key={address} shamanAddress={address} />,
-          ]}
-        />
+          <ManageItem
+            key={address}
+            title={
+              <AddressDisplay
+                address={address}
+                socials={user?.socials}
+                showFullAddressInTooltip
+              />
+            }
+            render={() => [
+              <RemoveVerifiedShamanBtn key={address} shamanAddress={address} />,
+            ]}
+          />
         );
       })}
     </ul>

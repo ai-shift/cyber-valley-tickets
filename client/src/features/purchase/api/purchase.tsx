@@ -59,10 +59,8 @@ const purchaseTicket = async (
     (sum, a) => sum + a.count,
     0,
   );
-  if (totalAllocated !== order.ticket.totalTickets) {
-    throw new Error(
-      `Please allocate all ${order.ticket.totalTickets} tickets across categories`,
-    );
+  if (totalAllocated === 0) {
+    throw new Error("Please select at least one ticket");
   }
 
   // Calculate total price from allocations

@@ -46,19 +46,19 @@ export const StaffList: React.FC<StaffListProps> = ({
       {uniqueAddresses.map((address) => {
         const user = users.find((entry) => entry.address === address);
         return (
-        <ManageItem
-          key={address}
-          title={
-            <AddressDisplay
-              address={address}
-              socials={user?.socials}
-              showFullAddressInTooltip
-            />
-          }
-          render={() => [
-            <RemoveStaffBtn key={address} staffAddress={address} />,
-          ]}
-        />
+          <ManageItem
+            key={address}
+            title={
+              <AddressDisplay
+                address={address}
+                socials={user?.socials}
+                showFullAddressInTooltip
+              />
+            }
+            render={() => [
+              <RemoveStaffBtn key={address} staffAddress={address} />,
+            ]}
+          />
         );
       })}
     </ul>
