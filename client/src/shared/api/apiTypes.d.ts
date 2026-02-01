@@ -1650,6 +1650,8 @@ export interface components {
       geometry: components["schemas"]["GeoFeature"];
       /** Format: int64 */
       daysBeforeCancel: number;
+      /** Format: int64 */
+      eventDepositSize?: number;
       available?: boolean;
       status?: components["schemas"]["EventPlaceStatusEnum"];
       readonly isUsed: boolean;
