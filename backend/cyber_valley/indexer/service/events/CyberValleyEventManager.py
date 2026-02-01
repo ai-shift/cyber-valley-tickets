@@ -41,6 +41,7 @@ class EventPlaceUpdated(BaseModel):
     digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
+    event_deposit_size: int = Field(..., alias="eventDepositSize")
 
 
 class EventStatusChanged(BaseModel):

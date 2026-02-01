@@ -36,6 +36,7 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
             "min_days",
             "geometry",
             "days_before_cancel",
+            "event_deposit_size",
             "available",
             "status",
             "is_used",
