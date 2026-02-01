@@ -24,6 +24,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
     event TicketMinted(
         uint256 eventId,
         uint256 ticketId,
+        uint256 categoryId,
         address owner,
         bytes32 digest,
         uint8 hashFunction,
@@ -81,6 +82,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
     function mint(
         address to,
         uint256 eventId,
+        uint256 categoryId,
         bytes32 digest,
         uint8 hashFunction,
         uint8 size
@@ -92,7 +94,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
             hashFunction,
             size
         );
-        emit TicketMinted(eventId, lastTokenId, to, digest, hashFunction, size);
+        emit TicketMinted(eventId, lastTokenId, categoryId, to, digest, hashFunction, size);
     }
 
     function ticketMeta(

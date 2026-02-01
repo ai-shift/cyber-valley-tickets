@@ -19,8 +19,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     bytes32 public constant VERIFIED_SHAMAN_ROLE = keccak256("VERIFIED_SHAMAN_ROLE");
     bytes32 public constant BACKEND_ROLE = keccak256("BACKEND_ROLE");
 
-    uint256 public constant NO_CATEGORY = type(uint256).max;
-
     enum EventPlaceStatus {
         Submitted,
         Approved,
@@ -69,7 +67,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         CyberValley.Multihash meta;
         uint256 networth;
         uint256 totalCategoryQuota; // Gas-efficient tracking of category quotas
-        uint256 noCategorySold; // Track NO_CATEGORY tickets sold
     }
 
     event NewEventPlaceRequest(
@@ -406,8 +403,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                     size: size
                 }),
                 networth: eventRequestPrice,
-                totalCategoryQuota: 0,
-                noCategorySold: 0
+                totalCategoryQuota: 0
             })
         );
         validateEvent(events[events.length - 1]);
@@ -432,6 +428,10 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         require(
             evt.status == EventStatus.Submitted,
             "Event status differs from submitted"
+        );
+        require(
+            categoryCounters[eventId].length > 0,
+            "Event must have at least one category"
         );
         allocateDateRange(
             evt.eventPlaceId,
@@ -559,15 +559,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function mintTicket(
         uint256 eventId,
-        bytes32 digest,
-        uint8 hashFunction,
-        uint8 size
-    ) external onlyExistingEvent(eventId) {
-        _mintTicketInternal(eventId, NO_CATEGORY, digest, hashFunction, size);
-    }
-
-    function mintTicket(
-        uint256 eventId,
         uint256 categoryId,
         bytes32 digest,
         uint8 hashFunction,
@@ -586,26 +577,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         Event storage evt = events[eventId];
         require(evt.status == EventStatus.Approved, "Event is not approved");
 
-        EventPlace storage place = eventPlaces[evt.eventPlaceId];
-        uint16 price = evt.ticketPrice;
+        // Category is required
+        require(categoryId < categories.length, "Category does not exist");
+        TicketCategory storage category = categories[categoryId];
+        require(category.eventId == eventId, "Category does not belong to this event");
 
-        if (categoryId != NO_CATEGORY) {
-            require(categoryId < categories.length, "Category does not exist");
-            TicketCategory storage category = categories[categoryId];
-            require(category.eventId == eventId, "Category does not belong to this event");
-
-            if (category.hasQuota) {
-                require(category.sold < category.quota, "Category quota exceeded");
-                category.sold++;
-            }
-            price = applyDiscount(evt.ticketPrice, category.discountPercentage);
-        } else {
-            // Gas-efficient NO_CATEGORY validation
-            // NO_CATEGORY tickets available = maxTickets - totalCategoryQuota - noCategorySold
-            require(evt.noCategorySold < place.maxTickets - evt.totalCategoryQuota,
-                "No tickets available without category");
-            evt.noCategorySold++;
+        if (category.hasQuota) {
+            require(category.sold < category.quota, "Category quota exceeded");
+            category.sold++;
         }
+        uint16 price = applyDiscount(evt.ticketPrice, category.discountPercentage);
 
         require(
             usdtTokenContract.transferFrom(
@@ -618,6 +599,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         eventTicketContract.mint(
             msg.sender,
             eventId,
+            categoryId,
             digest,
             hashFunction,
             size
