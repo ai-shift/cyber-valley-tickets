@@ -10099,6 +10099,11 @@
                     "lineColor": {
                         "type": "string",
                         "description": "RGBA hex color for the polygon border (e.g., ff589d0f)"
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Additional feature attributes from KML ExtendedData"
                     }
                 },
                 "required": [

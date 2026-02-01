@@ -1842,6 +1842,10 @@ export interface components {
       polygonColor?: string;
       /** @description RGBA hex color for the polygon border (e.g., ff589d0f) */
       lineColor?: string;
+      /** @description Additional feature attributes from KML ExtendedData */
+      attributes?: {
+        [key: string]: unknown;
+      };
     };
     /**
      * @description * `telegram` - Telegram

@@ -20,6 +20,7 @@ import {
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { useMapState } from "../model/slice.ts";
 import { EventsLayerControl } from "./EventsLayerControl.tsx";
+import { FeatureAttributes } from "./FeatureAttributes.tsx";
 import { LayerControl } from "./LayerControl.tsx";
 import { MapLongPressHandler } from "./MapLongPressHandler.tsx";
 import { Placemark } from "./Placemark.tsx";
@@ -194,15 +195,23 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
           onCloseClick={() => setSelectedPlacemark(null)}
           className="text-lg"
         >
-          <div className="flex justify-between items-center gap-12">
-            <h2 className="text-2xl">{selectedPlacemark.name}</h2>
-            <button
-              className="h-8 aspect-square flex items-center justify-center ml-auto mr-0"
-              type="button"
-              onClick={() => setSelectedPlacemark(null)}
-            >
-              <X className="w-full h-full stroke-secondary/70" />
-            </button>
+          <div className="min-w-[200px]">
+            <div className="flex justify-between items-center gap-12">
+              <h2 className="text-2xl">{selectedPlacemark.name}</h2>
+              <button
+                className="h-8 aspect-square flex items-center justify-center ml-auto mr-0"
+                type="button"
+                onClick={() => setSelectedPlacemark(null)}
+              >
+                <X className="w-full h-full stroke-secondary/70" />
+              </button>
+            </div>
+            {selectedPlacemark.attributes && (
+              <FeatureAttributes attributes={selectedPlacemark.attributes} />
+            )}
+            <div className="mt-2 text-xs text-muted-foreground capitalize">
+              Type: {selectedPlacemark.type}
+            </div>
           </div>
         </InfoWindow>
       )}
