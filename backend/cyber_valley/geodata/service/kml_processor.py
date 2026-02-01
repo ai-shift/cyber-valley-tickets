@@ -185,6 +185,16 @@ def placemark_to_json(
     else:
         placemark_name = "Unnamed Placemark"
 
+    # Extract ExtendedData attributes
+    attributes: dict[str, str] = {}
+    extended_data_tag = placemark.find(f"./{{{KML_NAMESPACE}}}ExtendedData")
+    if extended_data_tag is not None:
+        for data_tag in extended_data_tag.findall(f"./{{{KML_NAMESPACE}}}Data"):
+            key = data_tag.get("name", "")
+            value_tag = data_tag.find(f"./{{{KML_NAMESPACE}}}value")
+            if key and value_tag is not None and value_tag.text is not None:
+                attributes[key] = value_tag.text.strip()
+
     style_url_tag = placemark.find(f"./{{{KML_NAMESPACE}}}styleUrl")
     initial_style_element = None
     if style_url_tag is not None and style_url_tag.text:
@@ -220,13 +230,16 @@ def placemark_to_json(
                     else poly_color
                 )
 
-        return {
+        result: dict[str, Any] = {
             "name": placemark_name,
             "type": "polygon",
             "coordinates": parse_coordinates(coordinates),
             "polygon_color": poly_color,
             "line_color": line_color,
         }
+        if attributes:
+            result["attributes"] = attributes
+        return result
 
     # Case 2: LineString
     line_string_tag = placemark.find(f"./{{{KML_NAMESPACE}}}LineString")
@@ -244,12 +257,15 @@ def placemark_to_json(
                     else line_color
                 )
 
-        return {
+        line_result: dict[str, Any] = {
             "name": placemark_name,
             "type": "line",
             "coordinates": parse_coordinates(coordinates),
             "line_color": line_color,
         }
+        if attributes:
+            line_result["attributes"] = attributes
+        return line_result
 
     # Case 3: Point
     point_tag = placemark.find(f"./{{{KML_NAMESPACE}}}Point")
@@ -273,12 +289,15 @@ def placemark_to_json(
                     else:
                         icon_url = raw_icon_url
 
-        return {
+        point_result: dict[str, Any] = {
             "name": placemark_name,
             "type": "point",
             "coordinates": parse_coordinates(coordinates),
             "iconUrl": icon_url,
         }
+        if attributes:
+            point_result["attributes"] = attributes
+        return point_result
 
     return None
 
