@@ -67,11 +67,12 @@ export async function submitEventPlaceRequest(
 export async function approveEventPlace(
   account: Account,
   placeId: bigint,
+  deposit: bigint,
 ): Promise<TxHash> {
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "approveEventPlace",
-    params: [placeId],
+    params: [placeId, deposit],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;
@@ -122,11 +123,14 @@ export async function updatePlace(
   return transactionHash;
 }
 
-export async function approveSubmitEventRequest(account: Account) {
+export async function approveSubmitEventRequest(
+  account: Account,
+  deposit: bigint,
+) {
   const approveTransaction = prepareContractCall({
     contract: erc20,
     method: "approve",
-    params: [eventManager.address, getEventSubmitionPrice()],
+    params: [eventManager.address, deposit],
   });
   await sendTransaction({ account, transaction: approveTransaction });
 }
@@ -364,7 +368,7 @@ export async function approveMintTicket(account: Account, ticketPrice: bigint) {
   await sendTransaction({ account, transaction });
 }
 
-export async function mintTicketWithCategory(
+export async function mintTicket(
   account: Account,
   eventId: bigint,
   categoryId: bigint,

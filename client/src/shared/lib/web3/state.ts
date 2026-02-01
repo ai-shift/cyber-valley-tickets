@@ -608,6 +608,11 @@ export const eventManager = getContract({
           name: "eventPlaceId",
           type: "uint256",
         },
+        {
+          internalType: "uint256",
+          name: "eventDepositSize",
+          type: "uint256",
+        },
       ],
       name: "approveEventPlace",
       outputs: [],
