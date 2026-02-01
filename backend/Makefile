@@ -80,3 +80,6 @@ podman-build:
 gen-types:
 	uv run manage.py generate_types
 	$(MAKE) lint
+
+test-indexer:
+	uv run pytest cyber_valley/indexer/service/test_indexer.py -vvv -s
