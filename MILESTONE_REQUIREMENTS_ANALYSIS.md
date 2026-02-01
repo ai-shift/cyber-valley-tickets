@@ -311,39 +311,53 @@ uint256 public defaultProfileId;
 
 ## 9. UX Improvements (15 hours total)
 
-### 9.1 Event Created → Show Event Page (1 hour)
+### 9.1 Event Created → Show Event Page (1 hour) ✅
 
 **Current:** Form closes, unclear what happened
 **Required:** Navigate to newly created event details
 
-### 9.2 Ticket Bought → Stay on Event Page (2 hours)
+**Implementation:** Updated ConfirmPayment component to redirect to `/events/${eventId}` after successful event creation, with automatic event ID resolution from the created event.
+
+### 9.2 Ticket Bought → Stay on Event Page (2 hours) ✅
 
 **Current:** Unclear navigation after purchase
 **Required:** Stay on event page, update state to show ticket
 
-### 9.3 Hide Past Events (2 hours)
+**Implementation:** Updated ConfirmPayment to redirect back to event detail page after ticket purchase, with React Query invalidation to refresh ticket state.
+
+### 9.3 Hide Past Events (2 hours) ✅
 
 **Required:** Don't show events past their end date to regular users
 
-### 9.4 ENS/Instagram Display (3 hours)
+**Implementation:** Updated `uniteFilter` to hide past events for non-staff users based on `startDateTimestamp + daysAmount`. Applied same filter to HomeMap layer. Exported `isEventPast` helper for reuse.
+
+### 9.4 ENS/Instagram Display (3 hours) ✅
 
 **Required:** Show Instagram or ENS instead of Ethereum address
 
+**Implementation:**
+- Updated `useEnsLookup` hook to accept any address parameter
+- Created `AddressDisplay` component with priority: Instagram handle → ENS name → formatted address
+- Integrated into account page, event attendees, staff list, local providers list, and verified shamans list
+- Added tooltip showing full address on hover
+
 #### ENS Resolution Integration (2h)
-- [ ] @naqerl Check this commit 99034f5 in dev. The hook should work. Maybe the issue in something else.
-- [ ] @redmoor Implement ENS lookup service (using ethers.js)
-- [ ] @redmoor Add caching layer for ENS lookups
-- [ ] @redmoor Handle reverse resolution (address → ENS name)
-- [ ] @redmoor Add fallback to address if no ENS found
+- [x] @naqerl Check this commit 99034f5 in dev. The hook should work. Maybe the issue in something else.
+- [x] @redmoor Implement ENS lookup service (using ethers.js)
+- [x] @redmoor Add caching layer for ENS lookups
+- [x] @redmoor Handle reverse resolution (address → ENS name)
+- [x] @redmoor Add fallback to address if no ENS found
 
 #### UI Integration (1h)
-- [ ] @redmoor Create AddressDisplay component (ENS > address)
-- [ ] @redmoor Update all address displays across components
-- [ ] @redmoor Add tooltip showing full address on hover
+- [x] @redmoor Create AddressDisplay component (ENS > address)
+- [x] @redmoor Update all address displays across components
+- [x] @redmoor Add tooltip showing full address on hover
 
-### 9.5 Telegram Verification Success (1 hour)
+### 9.5 Telegram Verification Success (1 hour) ✅
 
 **Required:** Show success message after Telegram account connected
+
+**Implementation:** Added polling mechanism in SocialsForm to detect when Telegram social is linked. Shows "Waiting for Telegram verification..." state after opening bot link, and displays success message when detected. Also handles existing Telegram connections on form load.
 
 ### 9.6 Login on Event Creation Form (2 hours)
 
@@ -362,25 +376,36 @@ uint256 public defaultProfileId;
 - [x] @redmoor Add "New Event" and "New Event Space" options
 - [x] @redmoor Position popover correctly (below button)
 
-### 9.8 Signing with Expiration (3 hours)
+### 9.8 Signing with Expiration (3 hours) ✅
 
 **Required:** Reduce re-signing frequency by extending token lifetime
 
+**Implementation:**
+- Extended JWT lifetimes: access token 24h, refresh token 60d
+- Signature expiration set to 60 days with auto-refresh at 3 days before expiry
+- Backend validates SIWE expiration_time, issued_at, and invalid_before timestamps
+- Frontend stores signature expiration in auth slice with auto-refresh logic
+- API client middleware checks expiration before requests
+
 #### Backend (2h)
-- [ ] @naqerl Extend JWT token lifetime configuration
-- [ ] @naqerl Add expiration timestamp to signature payload
-- [ ] @naqerl Implement expiration validation in auth middleware
-- [ ] @naqerl Add token refresh endpoint
+- [x] @naqerl Extend JWT token lifetime configuration
+- [x] @naqerl Add expiration timestamp to signature payload
+- [x] @naqerl Implement expiration validation in auth middleware
+- [x] @naqerl Add token refresh endpoint
 
 #### Frontend (1)
-- [ ] @redmoor Store signature and expiration in local storage
-- [ ] @redmoor Check expiration before API calls
-- [ ] @redmoor Auto-refresh token when near expiration
-- [ ] @redmoor Clear stored signature on logout
+- [x] @redmoor Store signature and expiration in local storage
+- [x] @redmoor Check expiration before API calls
+- [x] @redmoor Auto-refresh token when near expiration
+- [x] @redmoor Clear stored signature on logout
 
-### 9.9 Notification Duplication (1h)
+### 9.9 Notification Duplication (1h) ✅
 
-- [ ] @naqerl Mirror all notifications on the platform to telegram
+**Required:** Mirror all platform notifications to Telegram
+
+**Implementation:** Created Django post_save signal on Notification model that calls `send_notification_to_telegram()` for all newly created notifications. This ensures all notifications created anywhere in the system are automatically mirrored to Telegram if the user has a linked Telegram account.
+
+- [x] @naqerl Mirror all notifications on the platform to telegram
 
 ---
 
