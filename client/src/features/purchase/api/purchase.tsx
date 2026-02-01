@@ -59,21 +59,17 @@ const purchaseTicket = async (
   sendTx(approve);
   await approve;
   await new Promise((r) => setTimeout(r, 1000));
-  const hasCategory = order.ticket.categoryId !== undefined;
-  const tx = hasCategory
-    ? mintTicketWithCategory(
-        account,
-        BigInt(order.ticket.eventId),
-        BigInt(order.ticket.categoryId!),
-        data.cid,
-        referralAddress,
-      )
-    : mintTicket(
-        account,
-        BigInt(order.ticket.eventId),
-        data.cid,
-        referralAddress,
-      );
+  // Category is required - every ticket must have a category
+  if (order.ticket.categoryId === undefined) {
+    throw new Error("Category is required to purchase a ticket");
+  }
+  const tx = mintTicketWithCategory(
+    account,
+    BigInt(order.ticket.eventId),
+    BigInt(order.ticket.categoryId),
+    data.cid,
+    referralAddress,
+  );
   sendTx(tx);
   await tx;
 

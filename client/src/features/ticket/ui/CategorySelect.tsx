@@ -66,10 +66,6 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
   };
 
   const handleSelect = (value: string) => {
-    if (value === "no-category") {
-      onCategorySelect(null);
-      return;
-    }
     const category = categories.find((c) => c.categoryId === Number(value));
     if (category) {
       onCategorySelect(category);
@@ -95,26 +91,13 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
         </label>
         <Select
           name="category-select"
-          value={selectedCategoryId?.toString() ?? "no-category"}
+          value={selectedCategoryId?.toString() ?? ""}
           onValueChange={handleSelect}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Choose a category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="no-category">
-              <div className="flex items-center justify-between w-full gap-4">
-                <span>Standard Ticket</span>
-                <span className="text-muted-foreground">
-                  {ticketPrice}{" "}
-                  <img
-                    src={getCurrencySymbol()}
-                    className="h-4 aspect-square inline"
-                    alt="currency"
-                  />
-                </span>
-              </div>
-            </SelectItem>
             {categories.map((category) => {
               const remaining = getRemainingQuota(category);
               const soldOut = isSoldOut(category);
