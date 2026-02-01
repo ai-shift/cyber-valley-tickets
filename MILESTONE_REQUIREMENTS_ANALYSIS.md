@@ -36,9 +36,9 @@
 - [x] @naqerl Test permission checks (VERIFIED_SHAMAN, LOCAL_PROVIDER)
 
 #### Backend Indexer (2h)
-- [ ] @naqerl Index `TicketCategoryCreated` events
-- [ ] @naqerl Index `TicketCategoryUpdated` events
-- [ ] @naqerl Create API endpoints for listing categories
+- [x] @naqerl Index `TicketCategoryCreated` events
+- [x] @naqerl Index `TicketCategoryUpdated` events
+- [x] @naqerl Create API endpoints for listing categories
 
 #### Frontend UI (2h)
 - [ ] @redmoor Category selection dropdown on ticket purchase page
@@ -82,21 +82,21 @@
 ### Implementation Tasks
 
 #### Smart Contract (1h)
-- [ ] @naqerl Add `referralData` parameter to `mintTicket` function
-- [ ] @naqerl Emit `TicketMintedWithReferral` event
-- [ ] @naqerl Write integration tests for referral tracking
-- [ ] @naqerl Test edge cases (empty referral data, malformed data)
+- [x] @naqerl Add `referralData` parameter to `mintTicket` function
+- [x] @naqerl Emit `referralData` in `TicketMinted` event
+- [x] @naqerl Write integration tests for referral tracking
+- [x] @naqerl Test edge cases (empty referral data, malformed data)
 
 #### Backend Tracking (1h)
-- [ ] @naqerl Create event listener for `TicketMintedWithReferral`
-- [ ] @naqerl Add referral database schema (referrer, referee, event, timestamp)
+- [x] @naqerl Create event listener for `TicketMinted` with referralData
+- [x] @naqerl Use existing referral database schema (referrer, referee, event, timestamp)
 
 #### Frontend Integration (3h)
-- [ ] @redmoor Parse referral code from URL parameter (`?ref=address`)
-- [ ] @redmoor Store referral code in local storage
-- [ ] @redmoor Pass referral data to `mintTicket` transaction
-- [ ] @redmoor Design UI to accept referral code in the field
-- [ ] @redmoor Program UI to accept referral code
+- [x] @redmoor Parse referral code from URL parameter (`?ref=address`)
+- [x] @redmoor Store referral code in local storage
+- [x] @redmoor Pass referral data to `mintTicket` transaction
+- [x] @redmoor Design UI to accept referral code in the field
+- [x] @redmoor Program UI to accept referral code
 
 #### Select 3rd party provider for referrals and setup it (4h)
 - [ ] @naqerl Select 3rd party provider for referrals and setup it
