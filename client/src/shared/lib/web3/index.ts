@@ -388,6 +388,35 @@ export async function mintTicket(
   return transactionHash;
 }
 
+export async function mintTickets(
+  account: Account,
+  eventId: bigint,
+  categoryId: bigint,
+  amount: bigint,
+  socialsCID: string,
+  referralData?: string,
+): Promise<TxHash> {
+  const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
+  const mintTransaction = prepareContractCall({
+    contract: eventManager,
+    method: "mintTickets",
+    params: [
+      eventId,
+      categoryId,
+      amount,
+      digest,
+      hashFunction,
+      size,
+      referralData ?? "",
+    ],
+  });
+  const { transactionHash } = await sendTransaction({
+    account,
+    transaction: mintTransaction,
+  });
+  return transactionHash;
+}
+
 export async function redeemTicket(
   account: Account,
   ticketId: bigint,
