@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Test Features with Attributes</name>
+    <Folder>
+      <name>Test Locations</name>
+      <Placemark>
+        <name>Conference Hall A</name>
+        <ExtendedData>
+          <Data name="capacity">
+            <value>500 people</value>
+          </Data>
+          <Data name="wifi">
+            <value>Yes - Free</value>
+          </Data>
+          <Data name="accessibility">
+            <value>Wheelchair accessible</value>
+          </Data>
+          <Data name="parking">
+            <value>200 spots</value>
+          </Data>
+        </ExtendedData>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates>
+                115.0893669,-8.3006452,0
+                115.0895493,-8.3007647,0
+                115.0897464,-8.3009399,0
+                115.0893669,-8.3006452,0
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+      
+      <Placemark>
+        <name>Main Stage</name>
+        <ExtendedData>
+          <Data name="capacity">
+            <value>1000 people</value>
+          </Data>
+          <Data name="sound_system">
+            <value>Professional PA</value>
+          </Data>
+          <Data name="lighting">
+            <value>LED array + spots</value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>115.0900000,-8.3010000,0</coordinates>
+        </Point>
+      </Placemark>
+      
+      <Placemark>
+        <name>VIP Area</name>
+        <ExtendedData>
+          <Data name="capacity">
+            <value>50 people</value>
+          </Data>
+          <Data name="access">
+            <value>Restricted - VIP Pass</value>
+          </Data>
+          <Data name="catering">
+            <value>Premium bar service</value>
+          </Data>
+        </ExtendedData>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <coordinates>
+                115.0910000,-8.3020000,0
+                115.0912000,-8.3020000,0
+                115.0912000,-8.3022000,0
+                115.0910000,-8.3022000,0
+                115.0910000,-8.3020000,0
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>
