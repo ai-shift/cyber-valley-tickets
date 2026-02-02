@@ -57,6 +57,14 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 sold;
     }
 
+    // Input struct for creating categories during event submission
+    struct CategoryInput {
+        string name;
+        uint16 discountPercentage;
+        uint16 quota;
+        bool hasQuota;
+    }
+
     struct Event {
         address creator;
         uint256 eventPlaceId;
@@ -406,7 +414,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 daysAmount,
         bytes32 digest,
         uint8 hashFunction,
-        uint8 size
+        uint8 size,
+        CategoryInput[] calldata categoriesInput
     ) external {
         require(eventPlaceId < eventPlaces.length, "EventPlace does not exist");
         EventPlace storage place = eventPlaces[eventPlaceId];
@@ -449,9 +458,39 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 totalCategoryQuota: 0
             })
         );
-        validateEvent(events[events.length - 1]);
+        uint256 eventId = events.length - 1;
+        validateEvent(events[eventId]);
+
+        // Create categories atomically with the event
+        require(categoriesInput.length > 0, "At least one category is required");
+        for (uint256 i = 0; i < categoriesInput.length; i++) {
+            CategoryInput memory cat = categoriesInput[i];
+            _createCategoryForEvent(
+                eventId,
+                cat.name,
+                cat.discountPercentage,
+                cat.quota,
+                cat.hasQuota
+            );
+        }
+
+        // Validate that categories are within boundaries
+        Event storage newEvent = events[eventId];
+        EventPlace storage eventPlace = eventPlaces[newEvent.eventPlaceId];
+        bool hasUnlimited = _eventHasUnlimitedCategory(eventId);
+        if (!hasUnlimited) {
+            require(
+                newEvent.totalCategoryQuota >= eventPlace.minTickets,
+                "Total tickets must be at least minTickets"
+            );
+            require(
+                newEvent.totalCategoryQuota <= eventPlace.maxTickets,
+                "Total tickets cannot exceed maxTickets"
+            );
+        }
+
         emit NewEventRequest(
-            events.length - 1,
+            eventId,
             msg.sender,
             eventPlaceId,
             ticketPrice,
@@ -809,14 +848,14 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         );
     }
 
-    function createCategory(
+    // Internal helper to create a category for an event
+    function _createCategoryForEvent(
         uint256 eventId,
         string memory name,
         uint16 discountPercentage,
         uint16 quota,
         bool hasQuota
-    ) external onlyRole(VERIFIED_SHAMAN_ROLE) {
-        require(eventId < events.length, "Event does not exist");
+    ) internal {
         Event storage evt = events[eventId];
         require(evt.status == EventStatus.Submitted, "Event must be in submitted state");
         require(discountPercentage <= 10000, "Discount too high");
@@ -857,6 +896,17 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             quota,
             hasQuota
         );
+    }
+
+    function createCategory(
+        uint256 eventId,
+        string memory name,
+        uint16 discountPercentage,
+        uint16 quota,
+        bool hasQuota
+    ) external onlyRole(VERIFIED_SHAMAN_ROLE) {
+        require(eventId < events.length, "Event does not exist");
+        _createCategoryForEvent(eventId, name, discountPercentage, quota, hasQuota);
     }
 
     function updateCategory(
@@ -929,5 +979,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function getCategoriesForEvent(uint256 eventId) external view returns (uint256[] memory) {
         return categoryCounters[eventId];
+    }
+
+    function getEventsCount() external view returns (uint256) {
+        return events.length;
     }
 }
