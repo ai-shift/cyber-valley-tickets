@@ -119,10 +119,15 @@ async function deployContracts() {
     .connect(master)
     .setRevenueSplitter(await splitter.getAddress());
 
+  // Set EventManager on splitter and grant LOCAL_PROVIDER_ROLE
+  await splitter.connect(master).setEventManager(await eventManager.getAddress());
+  const LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
+  await splitter.connect(master).grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
+
   // Setup default profile
   await splitter
     .connect(master)
-    .createDistributionProfile([localProvider.address], [10000]);
+    .createDistributionProfile(localProvider.address, [localProvider.address], [10000]);
   await splitter.connect(master).setDefaultProfile(1);
 
   await eventManager.connect(master).grantLocalProvider(localProvider.address);
@@ -437,7 +442,7 @@ async function createSingleEvent(eventManager, erc20, places, cfg, eventId, veri
 
   // Approve event (unless skipApproval is set)
   if (!cfg.skipApproval) {
-    await eventManager.connect(localProvider).approveEvent(eventId);
+    await eventManager.connect(localProvider).approveEvent(eventId, 1);
   }
 
   console.log(`Created event: ${cfg.title} (ID: ${eventId}, Place: ${placeId})`);

@@ -96,10 +96,15 @@ async function main() {
     .connect(master)
     .setRevenueSplitter(await splitter.getAddress());
 
+  // Set EventManager on splitter and grant LOCAL_PROVIDER_ROLE
+  await splitter.connect(master).setEventManager(await eventManager.getAddress());
+  const LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
+  await splitter.connect(master).grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
+
   // Setup default profile
   await splitter
     .connect(master)
-    .createDistributionProfile([localProvider.address], [10000]);
+    .createDistributionProfile(localProvider.address, [localProvider.address], [10000]);
   await splitter.connect(master).setDefaultProfile(1);
 
   await eventManager.connect(master).grantLocalProvider(localProvider.address);
@@ -329,7 +334,7 @@ async function main() {
 
   // Approve previous week events
   for (let eventId = 0; eventId < prevWeekEvents.length; eventId++) {
-    await eventManager.connect(localProvider).approveEvent(eventId);
+    await eventManager.connect(localProvider).approveEvent(eventId, 1);
     console.log("previous week event", prevWeekEvents[eventId].title, "approved");
   }
 
@@ -599,7 +604,7 @@ async function main() {
   // Current week events start at ID 2 (0-1 are previous week)
   for (let i = 0; i < events.length - 1; i++) {
     const eventId = i + 2; // Offset by 2 for previous week events
-    await eventManager.connect(localProvider).approveEvent(eventId);
+    await eventManager.connect(localProvider).approveEvent(eventId, 1);
     console.log("event", events[i].title, "approved");
   }
 
