@@ -2,10 +2,10 @@ import { create } from "zustand";
 
 interface NavState {
   isFormNavVisible: boolean;
-  toggleFormNav: (visible: boolean) => void;
+  setFormNavVisible: (visible: boolean) => void;
 }
 
 export const useNavStore = create<NavState>((set) => ({
-  isFormNavVisible: true,
-  toggleFormNav: (visible) => set({ isFormNavVisible: visible }),
+  isFormNavVisible: false,
+  setFormNavVisible: (visible) => set({ isFormNavVisible: visible }),
 }));
