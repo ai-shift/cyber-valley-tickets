@@ -173,3 +173,22 @@ def logout(_request: Request) -> Response:
     response.delete_cookie(settings.SIMPLE_JWT["AUTH_COOKIE"])
     response.delete_cookie(settings.SIMPLE_JWT["REFRESH_COOKIE"])
     return response
+
+
+# Dev-only endpoint for getting DRF tokens (used by deploy-dev.js)
+@api_view(["POST"])
+def get_token(request: Request) -> Response:
+    """Get or create DRF token for a user (dev only)."""
+    from rest_framework.authtoken.models import Token
+
+    address = request.data.get("address")
+    if not address:
+        return Response({"error": "address is required"}, status=400)
+
+    try:
+        user = User.objects.get(address=address)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response({"token": token.key})
