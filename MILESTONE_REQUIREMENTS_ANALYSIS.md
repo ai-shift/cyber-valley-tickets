@@ -431,14 +431,14 @@ uint256 public defaultProfileId;
 ### Implementation Tasks
 
 #### Backend API (1h)
-- [ ] @naqerl Add share percentage to local provider list endpoint
-- [ ] @naqerl Include social media fields in API response
-- [ ] @naqerl Add filtering/sorting by share percentage
+- [x] @naqerl Add share percentage to local provider list endpoint
+- [x] @naqerl Include social media fields in API response
+- [x] @naqerl Add filtering/sorting by share percentage
 
 #### Frontend UI (1h)
-- [ ] @redmoor Update provider list table to show share percentage column
-- [ ] @redmoor Display social media links (Instagram, Telegram, Discord)
-- [ ] @redmoor Add visual indicators for verified accounts
+- [x] @redmoor Update provider list table to show share percentage column
+- [x] @redmoor Display social media links (Instagram, Telegram, Discord)
+- [x] @redmoor Add visual indicators for verified accounts
 
 ---
 
@@ -458,11 +458,11 @@ uint256 public defaultProfileId;
 **Required:** Show all attributes when clicking on map features
 
 #### Tasks
-- [ ] @naqerl Implement backend to sync attributes
-- [ ] @redmoor Implement popup component for feature details ( additional information on places popups )
-- [ ] @redmoor Display all feature properties from GeoJSON ( additional information on places popups )
-- [ ] @redmoor Format attributes for readability
-- [ ] @redmoor Add close button to popup
+- [x] @naqerl Implement backend to sync attributes
+- [x] @redmoor Implement popup component for feature details ( additional information on places popups )
+- [x] @redmoor Display all feature properties from GeoJSON ( additional information on places popups )
+- [x] @redmoor Format attributes for readability
+- [x] @redmoor Add close button to popup
 
 ### 11.3 Yandex-Style Map Pin (1 hour)
 
