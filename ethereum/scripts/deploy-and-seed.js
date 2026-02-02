@@ -277,14 +277,13 @@ async function createEvents(eventManager, erc20, places, signers) {
   const prevWeekStart = getWeekDates(2);
   const currentWeekStart = getWeekDates(0);
 
-  // Event configs with references to places by index (not hardcoded ID)
-  const eventConfigs = [
-    // Previous week events
+  // Previous week events - created while time is at prevWeekStart
+  const prevWeekEventConfigs = [
     {
       title: "Summer Festival - Prev Week",
       description: "Previous week festival",
       website: "https://example.com/festival",
-      placeIndex: 0, // References places[0]
+      placeIndex: 0,
       price: 100,
       startDate: new Date(prevWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000),
       daysAmount: 3,
@@ -297,7 +296,7 @@ async function createEvents(eventManager, erc20, places, signers) {
       title: "Tech Conference - Prev Week",
       description: "Previous week conference",
       website: "https://example.com/conference",
-      placeIndex: 1, // References places[1]
+      placeIndex: 1,
       price: 50,
       startDate: new Date(prevWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
@@ -308,18 +307,15 @@ async function createEvents(eventManager, erc20, places, signers) {
     },
   ];
 
-  // Set time to current week for creating current events
-  await setBlockchainTime(currentWeekStart);
-
-  // Add current week events
-  eventConfigs.push(
+  // Current week events - created after moving time to current week
+  const currentWeekEventConfigs = [
     {
       title: "ThE fIrSt eVeNt",
       description: "GuR sVeFg rIrAg",
       website: "https://example.com/first",
       placeIndex: 0,
       price: 100,
-      startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      startDate: new Date(currentWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000),
       daysAmount: 3,
       cover: "seed-data/event-covers/event-1-onepiece.jpg",
       creator: creatorSlave,
@@ -336,7 +332,7 @@ async function createEvents(eventManager, erc20, places, signers) {
       website: "https://example.com/other",
       placeIndex: 1,
       price: 50,
-      startDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      startDate: new Date(currentWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
       cover: "seed-data/event-covers/event-2-game.jpg",
       creator: creatorSlave,
@@ -352,110 +348,126 @@ async function createEvents(eventManager, erc20, places, signers) {
       website: "https://example.com/pending",
       placeIndex: 1,
       price: 69,
-      startDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+      startDate: new Date(currentWeekStart.getTime() + 10 * 24 * 60 * 60 * 1000),
       daysAmount: 5,
       cover: "seed-data/event-covers/event-3-sample.png",
       creator: creatorSlave,
       socials: { network: "telegram", value: "@michael-doe" },
       categories: [{ name: "General", discount: 0, quota: 0, unlimited: true }],
-      skipApproval: true, // Keep this event pending
-    }
-  );
+      skipApproval: true,
+    },
+  ];
 
   const events = [];
 
-  for (const cfg of eventConfigs) {
-    // Get actual place ID from the places array
-    const placeId = places[cfg.placeIndex].id;
+  // Create previous week events (time is already at prevWeekStart from createPlaces)
+  console.log("Creating previous week events...");
+  for (const cfg of prevWeekEventConfigs) {
+    const event = await createSingleEvent(eventManager, erc20, places, cfg, events.length, verifiedShaman, localProvider);
+    events.push(event);
+  }
 
-    // Upload socials
-    const socialsResponse = await fetch(
-      `${BACKEND_HOST}/api/ipfs/users/socials`,
-      {
-        method: "PUT",
-        body: JSON.stringify(cfg.socials),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${cfg.creator.address}`,
-        },
-      }
-    );
-    if (!socialsResponse.ok) {
-      throw new Error(`Failed to upload socials: ${await socialsResponse.text()}`);
-    }
-    const socials = await socialsResponse.json();
+  // Move time to current week
+  await setBlockchainTime(currentWeekStart);
 
-    // Upload event metadata
-    const imgBuffer = fs.readFileSync(path.join(__dirname, cfg.cover));
-    const imgBlob = new Blob([imgBuffer]);
-
-    const body = new FormData();
-    body.set("title", cfg.title);
-    body.set("description", cfg.description);
-    body.set("website", cfg.website || "");  // Website is required field
-    body.set("cover", imgBlob, "image.jpg");
-    body.set("socials_cid", socials.cid);
-
-    const eventMetaResponse = await fetch(
-      `${BACKEND_HOST}/api/ipfs/events/meta`,
-      {
-        body,
-        method: "PUT",
-        headers: { Authorization: `Token ${cfg.creator.address}` },
-      }
-    );
-    if (!eventMetaResponse.ok) {
-      throw new Error(`Failed to upload event metadata: ${await eventMetaResponse.text()}`);
-    }
-    const eventMeta = await eventMetaResponse.json();
-    const mh = getBytes32FromMultiash(eventMeta.cid);
-
-    // Mint tokens and approve
-    await erc20.connect(cfg.creator).mint(100);
-    await erc20.connect(cfg.creator).approve(await eventManager.getAddress(), 100);
-
-    // Submit event request
-    await eventManager.connect(cfg.creator).submitEventRequest(
-      placeId,
-      cfg.price,
-      Math.floor(cfg.startDate / 1000),
-      cfg.daysAmount,
-      mh.digest,
-      mh.hashFunction,
-      mh.size
-    );
-
-    const eventId = events.length; // Sequential ID starting from 0
-
-    // Create categories
-    for (const cat of cfg.categories) {
-      await eventManager
-        .connect(verifiedShaman)
-        .createCategory(
-          eventId,
-          cat.name,
-          cat.discount,
-          cat.quota,
-          cat.unlimited
-        );
-    }
-
-    // Approve event (unless skipApproval is set)
-    if (!cfg.skipApproval) {
-      await eventManager.connect(localProvider).approveEvent(eventId);
-    }
-
-    events.push({
-      id: eventId,
-      ...cfg,
-      placeId,
-      cid: eventMeta.cid,
-    });
-
-    console.log(`Created event: ${cfg.title} (ID: ${eventId}, Place: ${placeId})`);
+  // Create current week events
+  console.log("Creating current week events...");
+  for (const cfg of currentWeekEventConfigs) {
+    const event = await createSingleEvent(eventManager, erc20, places, cfg, events.length, verifiedShaman, localProvider);
+    events.push(event);
   }
 
   return events;
+}
+
+// Helper function to create a single event
+async function createSingleEvent(eventManager, erc20, places, cfg, eventId, verifiedShaman, localProvider) {
+  // Get actual place ID from the places array
+  const placeId = places[cfg.placeIndex].id;
+
+  // Upload socials
+  const socialsResponse = await fetch(
+    `${BACKEND_HOST}/api/ipfs/users/socials`,
+    {
+      method: "PUT",
+      body: JSON.stringify(cfg.socials),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${cfg.creator.address}`,
+      },
+    }
+  );
+  if (!socialsResponse.ok) {
+    throw new Error(`Failed to upload socials: ${await socialsResponse.text()}`);
+  }
+  const socials = await socialsResponse.json();
+
+  // Upload event metadata
+  const imgBuffer = fs.readFileSync(path.join(__dirname, cfg.cover));
+  const imgBlob = new Blob([imgBuffer]);
+
+  const body = new FormData();
+  body.set("title", cfg.title);
+  body.set("description", cfg.description);
+  body.set("website", cfg.website || "");
+  body.set("cover", imgBlob, "image.jpg");
+  body.set("socials_cid", socials.cid);
+
+  const eventMetaResponse = await fetch(
+    `${BACKEND_HOST}/api/ipfs/events/meta`,
+    {
+      body,
+      method: "PUT",
+      headers: { Authorization: `Token ${cfg.creator.address}` },
+    }
+  );
+  if (!eventMetaResponse.ok) {
+    throw new Error(`Failed to upload event metadata: ${await eventMetaResponse.text()}`);
+  }
+  const eventMeta = await eventMetaResponse.json();
+  const mh = getBytes32FromMultiash(eventMeta.cid);
+
+  // Mint tokens and approve
+  await erc20.connect(cfg.creator).mint(100);
+  await erc20.connect(cfg.creator).approve(await eventManager.getAddress(), 100);
+
+  // Submit event request
+  await eventManager.connect(cfg.creator).submitEventRequest(
+    placeId,
+    cfg.price,
+    Math.floor(cfg.startDate / 1000),
+    cfg.daysAmount,
+    mh.digest,
+    mh.hashFunction,
+    mh.size
+  );
+
+  // Create categories
+  for (const cat of cfg.categories) {
+    await eventManager
+      .connect(verifiedShaman)
+      .createCategory(
+        eventId,
+        cat.name,
+        cat.discount,
+        cat.quota,
+        cat.unlimited
+      );
+  }
+
+  // Approve event (unless skipApproval is set)
+  if (!cfg.skipApproval) {
+    await eventManager.connect(localProvider).approveEvent(eventId);
+  }
+
+  console.log(`Created event: ${cfg.title} (ID: ${eventId}, Place: ${placeId})`);
+
+  return {
+    id: eventId,
+    ...cfg,
+    placeId,
+    cid: eventMeta.cid,
+  };
 }
 
 // ============================================================================
