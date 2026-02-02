@@ -455,10 +455,18 @@ async function createSingleEvent(eventManager, erc20, places, cfg, eventId, veri
 // ============================================================================
 
 // Helper to upload JSON to IPFS directly via IPFS API
+// Uses IPFS API port (5001) not gateway port (8080)
+const IPFS_API_HOST = process.env.IPFS_API_HOST || "http://127.0.0.1:5001";
+
 async function uploadToIpfsDirect(data) {
-  const response = await fetch(`${IPFS_HOST}/api/v0/add`, {
+  // Create a Blob from the JSON data and upload as a file
+  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+  const formData = new FormData();
+  formData.append("file", blob, "data.json");
+
+  const response = await fetch(`${IPFS_API_HOST}/api/v0/add`, {
     method: "POST",
-    body: new URLSearchParams({ data: JSON.stringify(data) }),
+    body: formData,
   });
   if (!response.ok) {
     throw new Error(`IPFS upload failed: ${await response.text()}`);
@@ -473,13 +481,14 @@ async function mintTickets(eventManager, erc20, events, signers) {
   const { completeSlave } = signers;
 
   // Ticket configs reference events by INDEX in the events array
+  // NOTE: categoryId is GLOBAL (not per-event). Event 0 = category 0, Event 1 = category 1, etc.
   const ticketConfigs = [
-    // Event 0 (prev week) - Multiple tickets
+    // Event 0 (prev week) - Multiple tickets using category 0
     { eventIndex: 0, categoryId: 0, socials: { network: "instagram", value: "@buyer1_event0" } },
     { eventIndex: 0, categoryId: 0, socials: { network: "telegram", value: "@buyer2_event0" } },
     { eventIndex: 0, categoryId: 0, socials: { network: "discord", value: "@buyer3_event0" } },
-    // Event 1 (prev week) - Single ticket
-    { eventIndex: 1, categoryId: 0, socials: { network: "discord", value: "@buyer_event1" } },
+    // Event 1 (prev week) - Single ticket using category 1
+    { eventIndex: 1, categoryId: 1, socials: { network: "discord", value: "@buyer_event1" } },
   ];
 
   for (const cfg of ticketConfigs) {
