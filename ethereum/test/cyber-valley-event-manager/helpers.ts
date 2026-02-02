@@ -43,6 +43,7 @@ import type {
 import {
   approveEventArgsToArray,
   approveEventPlaceArgsToArray,
+  baseEventArgsToArray,
   cancelEventArgsToArray,
   closeEventArgsToArray,
   declineEventPlaceArgsToArray,
@@ -50,6 +51,7 @@ import {
   submitEventRequestArgsToArray,
   updateEventPlaceArgsToArray,
 } from "./types";
+export { baseEventArgsToArray };
 
 export type ContractsFixture = {
   ERC20: SimpleERC20Xylose & BaseContract;
@@ -124,7 +126,9 @@ export async function deployContract(): Promise<ContractsFixture> {
     .setRevenueSplitter(await splitter.getAddress());
 
   // Set the EventManager in the splitter
-  await splitter.connect(master).setEventManager(await eventManager.getAddress());
+  await splitter
+    .connect(master)
+    .setEventManager(await eventManager.getAddress());
 
   // Setup a default profile: 100% of flexible share goes to localProvider
   await splitter
@@ -298,7 +302,7 @@ export async function createEvent(
     eventPlacePatch,
   );
 
-  // Submit request
+  // Submit request (categories are created atomically during submission)
   const {
     tx: submitEventRequestTx,
     request,
@@ -306,11 +310,6 @@ export async function createEvent(
   } = await submitEventRequest(eventManager, creator, submitEventPatch);
 
   const eventId = await getEventId();
-
-  // Create a default category (required before approval)
-  await eventManager
-    .connect(verifiedShaman)
-    .createCategory(eventId, "Standard", 0, 0, false);
 
   // Create or use existing distribution profile
   let distributionProfileId = approveEventPatch.distributionProfileId;
@@ -324,7 +323,9 @@ export async function createEvent(
         [localProviderAddress],
         [10000],
       );
-    distributionProfileId = await splitter.nextProfileId().then((id) => id - 1n);
+    distributionProfileId = await splitter
+      .nextProfileId()
+      .then((id) => id - 1n);
   }
 
   // Approve
@@ -345,7 +346,7 @@ export async function createEventForCategories(
   localProvider: Signer,
   creator: Signer,
   eventPlacePatch: Partial<CreateEventPlaceArgs>,
-  submitEventPatch: Partial<Event>,
+  submitEventPatch: Partial<SubmitEventRequestArgs>,
 ): Promise<{
   request: SubmitEventRequestArgs;
   eventId: BigNumberish;
