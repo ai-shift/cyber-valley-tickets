@@ -204,6 +204,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             }
         }
 
+        // Transfer all profile ownership from revoked provider to master
+        IDynamicRevenueSplitter(revenueSplitter).transferAllProfiles(eoa, master);
+
         _revokeRole(LOCAL_PROVIDER_ROLE, eoa);
     }
 
@@ -461,7 +464,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     }
 
     function approveEvent(
-        uint256 eventId
+        uint256 eventId,
+        uint256 distributionProfileId
     ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProvider(evt.eventPlaceId);
@@ -473,6 +477,22 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             categoryCounters[eventId].length > 0,
             "Event must have at least one category"
         );
+
+        // Validate profile ownership - caller must own the profile
+        require(
+            IDynamicRevenueSplitter(revenueSplitter).isProfileOwner(
+                distributionProfileId,
+                msg.sender
+            ),
+            "Caller must own the distribution profile"
+        );
+
+        // Set event profile in revenue splitter
+        IDynamicRevenueSplitter(revenueSplitter).setEventProfile(
+            eventId,
+            distributionProfileId
+        );
+
         allocateDateRange(
             evt.eventPlaceId,
             evt.startDate,
@@ -719,23 +739,23 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             "Only event in approved state can be cancelled"
         );
 
-        uint16[] storage prices = ticketPrices[eventId];
-        for (uint256 i = 0; i < evt.customers.length; i++) {
-            uint256 refundAmount = evt.ticketPrice;
-            if (i < prices.length) {
-                refundAmount = prices[i];
-            }
+        EventPlace storage place = eventPlaces[evt.eventPlaceId];
+        
+        // Deposit goes to shaman (event creator)
+        if (place.eventDepositSize > 0) {
             require(
-                usdtTokenContract.transfer(evt.customers[i], refundAmount),
-                "Failed to refund customer"
+                usdtTokenContract.transfer(evt.creator, place.eventDepositSize),
+                "Failed to refund deposit to creator"
             );
         }
-
-        EventPlace storage place = eventPlaces[evt.eventPlaceId];
-        require(
-            usdtTokenContract.transfer(msg.sender, place.eventDepositSize),
-            "Failed to transfer provider payment"
-        );
+        
+        // Ticket revenue goes to local provider
+        if (evt.networth > 0) {
+            require(
+                usdtTokenContract.transfer(msg.sender, evt.networth),
+                "Failed to transfer ticket revenue to provider"
+            );
+        }
 
         evt.networth = 0;
         evt.status = EventStatus.Cancelled;

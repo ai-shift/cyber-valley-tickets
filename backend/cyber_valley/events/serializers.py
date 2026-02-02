@@ -16,7 +16,7 @@ from cyber_valley.users.models import CyberValleyUser as UserType
 from cyber_valley.users.models import UserSocials
 from cyber_valley.users.serializers import UploadSocialsSerializer
 
-from .models import Event, EventPlace, TicketCategory
+from .models import DistributionProfile, Event, EventPlace, TicketCategory
 
 User = get_user_model()
 
@@ -308,3 +308,34 @@ class UploadOrderMetaToIpfsSerializer(serializers.Serializer[OrderMetaData]):
         tickets_data = validated_data.pop("tickets", [])
         tickets = [OrderTicketItem(**t) for t in tickets_data]
         return OrderMetaData(tickets=tickets, **validated_data)
+
+
+class DistributionProfileSerializer(serializers.ModelSerializer[DistributionProfile]):
+    """Serializer for DistributionProfile model."""
+
+    owner_address = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DistributionProfile
+        fields = (
+            "id",
+            "owner",
+            "owner_address",
+            "recipients",
+            "is_active",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = (
+            "id",
+            "owner",
+            "owner_address",
+            "recipients",
+            "is_active",
+            "created_at",
+            "updated_at",
+        )
+
+    @extend_schema_field(serializers.CharField())
+    def get_owner_address(self, obj: DistributionProfile) -> str:
+        return obj.owner.address

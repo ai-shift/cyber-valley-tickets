@@ -123,11 +123,24 @@ export async function deployContract(): Promise<ContractsFixture> {
     .connect(master)
     .setRevenueSplitter(await splitter.getAddress());
 
+  // Set the EventManager in the splitter
+  await splitter.connect(master).setEventManager(await eventManager.getAddress());
+
   // Setup a default profile: 100% of flexible share goes to localProvider
   await splitter
     .connect(master)
-    .createDistributionProfile([await localProvider.getAddress()], [10000]);
+    .createDistributionProfile(
+      await localProvider.getAddress(),
+      [await localProvider.getAddress()],
+      [10000],
+    );
   await splitter.connect(master).setDefaultProfile(1);
+
+  // Grant LOCAL_PROVIDER_ROLE on splitter to localProvider
+  const SPLITTER_LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
+  await splitter
+    .connect(master)
+    .grantRole(SPLITTER_LOCAL_PROVIDER_ROLE, await localProvider.getAddress());
 
   await eventManager
     .connect(master)
@@ -264,6 +277,7 @@ export async function createEvent(
   eventPlacePatch: Partial<CreateEventPlaceArgs>,
   submitEventPatch: Partial<Event>,
   approveEventPatch: Partial<ApproveEventArgs>,
+  splitter?: DynamicRevenueSplitter,
 ): Promise<{
   request: SubmitEventRequestArgs;
   tx: Promise<ContractTransactionResponse>;
@@ -298,10 +312,26 @@ export async function createEvent(
     .connect(verifiedShaman)
     .createCategory(eventId, "Standard", 0, 0, false);
 
+  // Create or use existing distribution profile
+  let distributionProfileId = approveEventPatch.distributionProfileId;
+  if (distributionProfileId == null && splitter != null) {
+    // Create a profile for the localProvider
+    const localProviderAddress = await localProvider.getAddress();
+    await splitter
+      .connect(localProvider)
+      .createDistributionProfile(
+        localProviderAddress,
+        [localProviderAddress],
+        [10000],
+      );
+    distributionProfileId = await splitter.nextProfileId().then((id) => id - 1n);
+  }
+
   // Approve
   const tx = eventManager.connect(localProvider).approveEvent(
     ...approveEventArgsToArray({
       eventId,
+      distributionProfileId: distributionProfileId ?? 1n,
       ...approveEventPatch,
     }),
   );
@@ -406,6 +436,7 @@ export async function createAndCloseEvent(
   localProvider: Signer,
   creator: Signer,
   patch: Partial<CloseEventArgs>,
+  splitter?: DynamicRevenueSplitter,
 ): ReturnType<typeof closeEvent> {
   const { tx: createEventTx, eventId } = await createEvent(
     eventManager,
@@ -416,6 +447,7 @@ export async function createAndCloseEvent(
     {},
     {},
     {},
+    splitter,
   );
   await createEventTx;
   await time.increase(100_000_000);
@@ -447,6 +479,7 @@ export async function createAndCancelEvent(
   localProvider: Signer,
   creator: Signer,
   patch: Partial<CancelEventArgs>,
+  splitter?: DynamicRevenueSplitter,
 ): ReturnType<typeof cancelEvent> {
   const { tx: createEventTx, eventId } = await createEvent(
     eventManager,
@@ -457,6 +490,7 @@ export async function createAndCancelEvent(
     {},
     {},
     {},
+    splitter,
   );
   await createEventTx;
   await time.increase(100_000_000);

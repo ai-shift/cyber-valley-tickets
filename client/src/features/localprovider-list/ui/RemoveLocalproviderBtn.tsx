@@ -40,7 +40,7 @@ export const RemoveLocalproviderBtn: React.FC<RemoveLocalproviderBtnProps> = ({
           <Loader />
         ) : (
           <img
-            className="h-full"
+            className="h-8 w-8"
             src="/icons/staff bin_2.svg"
             alt="edit_button"
           />

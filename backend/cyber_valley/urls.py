@@ -20,6 +20,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework import routers
 
 from .events.views import (
+    DistributionProfileViewSet,
     EventPlaceViewSet,
     EventViewSet,
     event_categories,
@@ -48,6 +49,11 @@ from .web3_auth.views import login, logout, nonce, refresh, verify
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
 router.register(r"events", EventViewSet)
+router.register(
+    r"distribution-profiles",
+    DistributionProfileViewSet,
+    basename="distribution-profile",
+)
 router.register(r"notifications", NotificationViewSet, basename="Notification")
 router.register(r"users", CurrentUserViewSet, basename="users")
 router.register(r"geodata", GeodataViewSet, basename="geodata")

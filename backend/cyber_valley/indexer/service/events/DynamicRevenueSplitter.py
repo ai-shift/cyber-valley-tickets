@@ -25,6 +25,14 @@ from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 from .patches import validate_role
 
 
+class AllProfilesTransferred(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    from_addr: str = Field(..., alias="from")
+    to: str
+
+
 class DefaultProfileSet(BaseModel):
     model_config = ConfigDict(
         frozen=True,
@@ -37,6 +45,7 @@ class DistributionProfileCreated(BaseModel):
         frozen=True,
     )
     profile_id: int = Field(..., alias="profileId")
+    owner: str
     recipients: list[str]
     shares: list[int]
 
@@ -56,6 +65,22 @@ class EventProfileSet(BaseModel):
     )
     event_id: int = Field(..., alias="eventId")
     profile_id: int = Field(..., alias="profileId")
+
+
+class ProfileDeactivated(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    profile_id: int = Field(..., alias="profileId")
+
+
+class ProfileOwnershipTransferred(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    profile_id: int = Field(..., alias="profileId")
+    previous_owner: str = Field(..., alias="previousOwner")
+    new_owner: str = Field(..., alias="newOwner")
 
 
 class RevenueDistributed(BaseModel):
@@ -101,6 +126,9 @@ class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
+    all_profiles_transferred: AllProfilesTransferred | None = Field(
+        None, alias="AllProfilesTransferred"
+    )
     default_profile_set: DefaultProfileSet | None = Field(
         None, alias="DefaultProfileSet"
     )
@@ -111,6 +139,12 @@ class CyberValleyEvents(BaseModel):
         None, alias="DistributionProfileUpdated"
     )
     event_profile_set: EventProfileSet | None = Field(None, alias="EventProfileSet")
+    profile_deactivated: ProfileDeactivated | None = Field(
+        None, alias="ProfileDeactivated"
+    )
+    profile_ownership_transferred: ProfileOwnershipTransferred | None = Field(
+        None, alias="ProfileOwnershipTransferred"
+    )
     revenue_distributed: RevenueDistributed | None = Field(
         None, alias="RevenueDistributed"
     )

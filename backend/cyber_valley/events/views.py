@@ -30,10 +30,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Event, EventPlace, Ticket
+from .models import DistributionProfile, Event, EventPlace, Ticket
 from .serializers import (
     AttendeeSerializer,
     CreatorEventSerializer,
+    DistributionProfileSerializer,
     EventPlaceSerializer,
     EventSerializer,
     StaffEventSerializer,
@@ -831,3 +832,37 @@ def verification_stats(_request: Request) -> Response:
             },
         }
     )
+
+
+# ... (all the existing content from views.py) ...
+
+# ============================================================================
+# Distribution Profile Views
+# ============================================================================
+
+
+@extend_schema_view(
+    list=extend_schema(
+        description="Get distribution profiles owned by the current user",
+    ),
+    retrieve=extend_schema(
+        description="Get a specific distribution profile",
+    ),
+)
+class DistributionProfileViewSet(viewsets.ReadOnlyModelViewSet[DistributionProfile]):
+    """Read-only viewset for distribution profiles.
+
+    Returns profiles owned by the authenticated user.
+    Master users can see all profiles.
+    """
+
+    serializer_class = DistributionProfileSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self) -> QuerySet[DistributionProfile]:
+        user = self.request.user
+        # Master can see all profiles
+        if user.is_staff or (hasattr(user, "is_master") and user.is_master):
+            return DistributionProfile.objects.all()
+        # Regular users see only their own profiles
+        return DistributionProfile.objects.filter(owner=user)
