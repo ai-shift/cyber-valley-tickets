@@ -35,6 +35,7 @@ from .events.views import (
     verify_ticket,
 )
 from .geodata.views import GeodataViewSet
+from .health.views import health_check
 from .notifications.views import NotificationViewSet
 from .users.views import (
     CurrentUserViewSet,
@@ -97,5 +98,6 @@ urlpatterns = [
     path("api/auth/logout", logout, name="jwt_logout"),
     path("api/auth/custom/", include("cyber_valley.custom_auth.urls")),
     path("api/shaman/verify/", include("cyber_valley.shaman_verification.urls")),
+    path("api/health/", health_check, name="health_check"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]
