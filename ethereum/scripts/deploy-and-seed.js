@@ -31,9 +31,6 @@ const BACKEND_PORT = process.env.BACKEND_PORT || "8000";
 const BACKEND_HOST = `http://127.0.0.1:${BACKEND_PORT}`;
 const IPFS_HOST = process.env.IPFS_PUBLIC_HOST;
 
-// Cache for auth tokens
-const tokenCache = new Map();
-
 // ============================================================================
 // Helpers
 // ============================================================================
@@ -65,23 +62,6 @@ function getBytes32FromMultiash(multihash) {
     hashFunction: decoded[0],
     size: decoded[1],
   };
-}
-
-async function getAuthToken(address) {
-  if (tokenCache.has(address)) {
-    return tokenCache.get(address);
-  }
-  const resp = await fetch(`${BACKEND_HOST}/api/auth/token/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ address }),
-  });
-  if (resp.ok) {
-    const data = await resp.json();
-    tokenCache.set(address, data.token);
-    return data.token;
-  }
-  throw new Error(`Failed to get token for ${address}: ${await resp.text()}`);
 }
 
 // ============================================================================
@@ -474,13 +454,25 @@ async function createSingleEvent(eventManager, erc20, places, cfg, eventId, veri
 // Phase 4: Mint Tickets
 // ============================================================================
 
+// Helper to upload JSON to IPFS directly via IPFS API
+async function uploadToIpfsDirect(data) {
+  const response = await fetch(`${IPFS_HOST}/api/v0/add`, {
+    method: "POST",
+    body: new URLSearchParams({ data: JSON.stringify(data) }),
+  });
+  if (!response.ok) {
+    throw new Error(`IPFS upload failed: ${await response.text()}`);
+  }
+  const result = await response.json();
+  return result.Hash;
+}
+
 async function mintTickets(eventManager, erc20, events, signers) {
   console.log("\n=== PHASE 4: Minting Tickets ===\n");
 
   const { completeSlave } = signers;
 
   // Ticket configs reference events by INDEX in the events array
-  // NOT by hardcoded on-chain ID
   const ticketConfigs = [
     // Event 0 (prev week) - Multiple tickets
     { eventIndex: 0, categoryId: 0, socials: { network: "instagram", value: "@buyer1_event0" } },
@@ -491,50 +483,40 @@ async function mintTickets(eventManager, erc20, events, signers) {
   ];
 
   for (const cfg of ticketConfigs) {
-    // Get the actual event from the array using the index
     const event = events[cfg.eventIndex];
     const price = event.price;
 
-    // Upload order metadata
-    const orderResponse = await fetch(`${BACKEND_HOST}/api/ipfs/orders/meta`, {
-      method: "PUT",
-      body: JSON.stringify({
-        event_id: event.id, // Use actual event ID from the event object
-        buyer_address: completeSlave.address,
-        socials: cfg.socials,
-        tickets: [{
-          categoryId: cfg.categoryId,
-          categoryName: "Standard",
-          price: price,
-          quantity: 1,
-        }],
-        total_tickets: 1,
-        total_price: price,
-        currency: "USDC",
-        referral_data: "",
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${await getAuthToken(completeSlave.address)}`,
-      },
-    });
+    // Create and upload order metadata directly to IPFS (bypassing backend auth)
+    const orderData = {
+      event_id: event.id,
+      buyer_address: completeSlave.address,
+      socials: cfg.socials,
+      tickets: [{
+        categoryId: cfg.categoryId,
+        categoryName: "Standard",
+        price: price,
+        quantity: 1,
+      }],
+      total_tickets: 1,
+      total_price: price,
+      currency: "USDC",
+      referral_data: "",
+    };
 
-    if (!orderResponse.ok) {
-      throw new Error(`Failed to upload order meta: ${await orderResponse.text()}`);
-    }
-
-    const order = await orderResponse.json();
-    const mh = getBytes32FromMultiash(order.cid);
+    // Upload directly to IPFS
+    const cid = await uploadToIpfsDirect(orderData);
+    console.log(`  Order metadata uploaded: ${cid}`);
+    const mh = getBytes32FromMultiash(cid);
 
     // Mint ERC20 and approve
     await (await erc20.connect(completeSlave).mint(price)).wait();
     await (await erc20.connect(completeSlave).approve(await eventManager.getAddress(), price)).wait();
 
-    // Mint ticket using ACTUAL event ID (not hardcoded)
+    // Mint ticket
     await (await eventManager
       .connect(completeSlave)
       .mintTickets(
-        event.id, // ← Dynamic: from events array, not hardcoded
+        event.id,
         cfg.categoryId,
         1,
         mh.digest,
