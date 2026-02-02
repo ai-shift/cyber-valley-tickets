@@ -69,7 +69,8 @@ export type View =
   | "manage-places"
   | "manage-staff"
   | "manage-localproviders"
-  | "manage-verifiedshamans";
+  | "manage-verifiedshamans"
+  | "manage-verification-stats";
 
 export const RBAC_VIEWS: Record<Role, View[]> = {
   customer: [],
@@ -82,6 +83,7 @@ export const RBAC_VIEWS: Record<Role, View[]> = {
     "manage-staff",
     "manage-localproviders",
     "manage-verifiedshamans",
+    "manage-verification-stats",
   ],
 };
 

@@ -1,10 +1,10 @@
 import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
+import { DisplayUser } from "@/features/display-user";
 import { EventsList, myEventsFilter } from "@/features/events-list";
 import { apiClient } from "@/shared/api";
 import { useTokenBalance } from "@/shared/hooks";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
-import { AddressDisplay } from "@/shared/ui/AddressDisplay";
 import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
@@ -84,7 +84,7 @@ export const AccountPage: React.FC = () => {
             />
             <div className="flex flex-col items-center md:items-start gap-1">
               <p className="text-lg">
-                <AddressDisplay address={address} socials={user?.socials} />
+                <DisplayUser address={address} className="text-lg" />
               </p>
               {getRoleDisplayName(user) && (
                 <p className="text-sm font-semibold text-primary">
@@ -333,6 +333,12 @@ const MasterView = (): React.ReactNode => (
         to="/manage/verifiedshamans"
       >
         Manage verified shamans
+      </Link>
+      <Link
+        className="card border-primary/30 text-center text-xl py-5"
+        to="/manage/verification-stats"
+      >
+        Verification Statistics
       </Link>
     </div>
   </div>

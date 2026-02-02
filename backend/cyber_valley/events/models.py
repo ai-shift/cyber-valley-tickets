@@ -2,6 +2,7 @@ from typing import ClassVar
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -29,6 +30,8 @@ class EventPlace(models.Model):
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default="submitted", null=False
     )
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return (

@@ -343,10 +343,23 @@ uint256 public defaultProfileId;
 
 #### ENS Resolution Integration (2h)
 - [x] @naqerl Check this commit 99034f5 in dev. The hook should work. Maybe the issue in something else.
+- [x] @naqerl Deploy ENS contracts (ENSRegistry, PublicResolver, ReverseRegistrar) to local network
+- [x] @naqerl Create ENS deployment script integrated with deploy-dev.js
+- [x] @naqerl Create Makefile target `register-ens-names` for all test addresses
 - [x] @redmoor Implement ENS lookup service (using ethers.js)
 - [x] @redmoor Add caching layer for ENS lookups
 - [x] @redmoor Handle reverse resolution (address → ENS name)
 - [x] @redmoor Add fallback to address if no ENS found
+- [x] @redmoor Update useEnsLookup hook to support local ENS resolver with pre-computed reverse nodes
+
+**ENS Names Registered:**
+- master.eth → 0x2789023F36933E208675889869c7d3914A422921
+- creator.eth → 0x96e37a0cD915c38dE8B5aAC0db61eB7eB839CeeB
+- customer1.eth → 0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e
+- verifiedshaman.eth → 0x7617b92b06c4ce513c53Df1c818ed25f95475f69
+- localprovider.eth → 0x9772d9a6A104c162b97767e6a654Be54370A042F
+- backend.eth → 0xEd7f6CA6e91AaA3Ff2C3918B5cAF02FF449Ab3A4
+- alice.eth, bob.eth, charlie.eth, deployer.eth
 
 #### UI Integration (1h)
 - [x] @redmoor Create AddressDisplay component (ENS > address)

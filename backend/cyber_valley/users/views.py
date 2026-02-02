@@ -179,3 +179,30 @@ def save_user_socials(request: Request) -> Response:
     status_code = 201 if created else 200
 
     return Response(response_serializer.data, status=status_code)
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "network": {"type": "string"},
+                    "value": {"type": "string"},
+                },
+            },
+        }
+    },
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_user_socials(_request: Request, address: str) -> Response:
+    """Get social media handles for a user by address."""
+    try:
+        user = CyberValleyUser.objects.get(address=address.lower())
+        socials = user.socials.all()
+        data = [{"network": s.network, "value": s.value} for s in socials]
+        return Response(data)
+    except CyberValleyUser.DoesNotExist:
+        return Response([], status=200)

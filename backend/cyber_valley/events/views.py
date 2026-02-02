@@ -2,6 +2,7 @@ import logging
 import secrets
 import time
 from pathlib import Path
+from typing import Any
 
 import ipfshttpclient
 from django.conf import settings
@@ -509,3 +510,324 @@ def total_revenue(_: Request) -> Response:
     )["total"]
 
     return Response({"totalRevenue": total or 0})
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {
+                "places": {
+                    "type": "object",
+                    "properties": {
+                        "providers": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "address": {"type": "string"},
+                                    "currentWeek": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                            "averageVerificationTime": {
+                                                "type": "integer"
+                                            },
+                                        },
+                                    },
+                                    "previousWeek": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                            "averageVerificationTime": {
+                                                "type": "integer"
+                                            },
+                                        },
+                                    },
+                                    "diff": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                "events": {
+                    "type": "object",
+                    "properties": {
+                        "providers": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "address": {"type": "string"},
+                                    "currentWeek": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                            "averageVerificationTime": {
+                                                "type": "integer"
+                                            },
+                                        },
+                                    },
+                                    "previousWeek": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                            "averageVerificationTime": {
+                                                "type": "integer"
+                                            },
+                                        },
+                                    },
+                                    "diff": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                "shamans": {
+                    "type": "object",
+                    "properties": {
+                        "providers": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "address": {"type": "string"},
+                                    "currentWeek": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                            "averageVerificationTime": {
+                                                "type": "integer"
+                                            },
+                                        },
+                                    },
+                                    "previousWeek": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                            "averageVerificationTime": {
+                                                "type": "integer"
+                                            },
+                                        },
+                                    },
+                                    "diff": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {"type": "integer"},
+                                            "verified": {"type": "integer"},
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        }
+    }
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def verification_stats(_request: Request) -> Response:
+    """Get verification statistics per local provider."""
+    from datetime import timedelta
+
+    from django.utils import timezone
+
+    from cyber_valley.shaman_verification.models import VerificationRequest
+    from cyber_valley.users.models import CyberValleyUser
+
+    # Calculate week boundaries
+    today = timezone.now()
+    days_since_monday = today.weekday()
+    current_monday = today - timedelta(days=days_since_monday)
+    current_monday = current_monday.replace(hour=0, minute=0, second=0, microsecond=0)
+    previous_monday = current_monday - timedelta(weeks=1)
+    current_sunday = current_monday + timedelta(
+        days=6, hours=23, minutes=59, seconds=59
+    )
+    previous_sunday = previous_monday + timedelta(
+        days=6, hours=23, minutes=59, seconds=59
+    )
+
+    def calculate_provider_stats(
+        queryset: QuerySet[Any],
+        provider_field: str = "provider",
+    ) -> list[dict[str, Any]]:
+        """Calculate verification stats per provider."""
+        pending_statuses = ["submitted", "pending"]
+        verified_statuses = ["approved"]
+
+        provider_stats = []
+
+        # Get all local providers
+        providers = CyberValleyUser.objects.filter(role=CyberValleyUser.LOCAL_PROVIDER)
+
+        for provider in providers:
+            provider_queryset = queryset.filter(**{f"{provider_field}": provider})
+
+            pending = provider_queryset.filter(status__in=pending_statuses).count()
+            verified = provider_queryset.filter(status__in=verified_statuses).count()
+
+            # Calculate average verification time for approved items
+            approved_items = provider_queryset.filter(status__in=verified_statuses)
+            total_verification_time = 0
+            count = 0
+
+            for item in approved_items:
+                created = item.created_at
+                updated = item.updated_at
+                if updated and created:
+                    verification_time = (updated - created).total_seconds()
+                    total_verification_time += verification_time
+                    count += 1
+
+            avg_verification_time = (
+                int(total_verification_time / count) if count > 0 else 0
+            )
+
+            if pending > 0 or verified > 0:
+                provider_stats.append(
+                    {
+                        "address": provider.address,
+                        "pending": pending,
+                        "verified": verified,
+                        "averageVerificationTime": avg_verification_time,
+                    }
+                )
+
+        return provider_stats
+
+    # Current week stats
+    current_week_events = Event.objects.filter(
+        created_at__gte=current_monday, created_at__lte=current_sunday
+    )
+    current_week_places = EventPlace.objects.filter(
+        created_at__gte=current_monday, created_at__lte=current_sunday
+    )
+    current_week_shamans = VerificationRequest.objects.filter(
+        created_at__gte=current_monday, created_at__lte=current_sunday
+    )
+
+    # Previous week stats
+    previous_week_events = Event.objects.filter(
+        created_at__gte=previous_monday, created_at__lte=previous_sunday
+    )
+    previous_week_places = EventPlace.objects.filter(
+        created_at__gte=previous_monday, created_at__lte=previous_sunday
+    )
+    previous_week_shamans = VerificationRequest.objects.filter(
+        created_at__gte=previous_monday, created_at__lte=previous_sunday
+    )
+
+    def build_provider_response(
+        provider_data: list[dict[str, Any]],
+        prev_provider_data: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        """Build provider response with diff calculations."""
+        # Create lookup for previous week data
+        prev_lookup = {p["address"]: p for p in prev_provider_data}
+
+        result = []
+        for curr in provider_data:
+            address = curr["address"]
+            prev = prev_lookup.get(
+                address,
+                {
+                    "pending": 0,
+                    "verified": 0,
+                    "averageVerificationTime": 0,
+                },
+            )
+
+            result.append(
+                {
+                    "address": address,
+                    "currentWeek": {
+                        "pending": curr["pending"],
+                        "verified": curr["verified"],
+                        "averageVerificationTime": curr["averageVerificationTime"],
+                    },
+                    "previousWeek": {
+                        "pending": prev.get("pending", 0),
+                        "verified": prev.get("verified", 0),
+                        "averageVerificationTime": prev.get(
+                            "averageVerificationTime", 0
+                        ),
+                    },
+                    "diff": {
+                        "pending": curr["pending"] - prev.get("pending", 0),
+                        "verified": curr["verified"] - prev.get("verified", 0),
+                    },
+                }
+            )
+
+        # Add providers that only exist in previous week
+        curr_addresses = {p["address"] for p in provider_data}
+        result.extend(
+            [
+                {
+                    "address": prev["address"],
+                    "currentWeek": {
+                        "pending": 0,
+                        "verified": 0,
+                        "averageVerificationTime": 0,
+                    },
+                    "previousWeek": {
+                        "pending": prev["pending"],
+                        "verified": prev["verified"],
+                        "averageVerificationTime": prev["averageVerificationTime"],
+                    },
+                    "diff": {
+                        "pending": -prev["pending"],
+                        "verified": -prev["verified"],
+                    },
+                }
+                for prev in prev_provider_data
+                if prev["address"] not in curr_addresses
+            ]
+        )
+
+        return result
+
+    # Calculate provider stats
+    places_current = calculate_provider_stats(current_week_places, "provider")
+    places_previous = calculate_provider_stats(previous_week_places, "provider")
+    events_current = calculate_provider_stats(current_week_events, "place__provider")
+    events_previous = calculate_provider_stats(previous_week_events, "place__provider")
+
+    # For shamans, we group by requester
+    shamans_current = calculate_provider_stats(current_week_shamans, "requester")
+    shamans_previous = calculate_provider_stats(previous_week_shamans, "requester")
+
+    return Response(
+        {
+            "places": {
+                "providers": build_provider_response(places_current, places_previous)
+            },
+            "events": {
+                "providers": build_provider_response(events_current, events_previous)
+            },
+            "shamans": {
+                "providers": build_provider_response(shamans_current, shamans_previous)
+            },
+        }
+    )

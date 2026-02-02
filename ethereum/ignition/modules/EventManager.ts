@@ -6,7 +6,7 @@ const EventManagerModule = buildModule("EventManager", (m) => {
   const masterAddress = m.getParameter("masterAddress");
   const eventTicket = m.getParameter("eventTicket");
   const erc20 = m.getParameter("erc20");
-  const initialOffset = Math.floor(Date.now() / 1000);
+  const initialOffset = m.getParameter("initialOffset", Math.floor(Date.now() / 1000));
 
   const eventManager = m.contract("CyberValleyEventManager", [
     erc20,
