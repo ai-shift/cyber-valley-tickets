@@ -850,6 +850,19 @@ export const eventManager = getContract({
       type: "function",
     },
     {
+      inputs: [],
+      name: "getEventsCount",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
       inputs: [
         {
           internalType: "bytes32",
@@ -1307,6 +1320,33 @@ export const eventManager = getContract({
           internalType: "uint8",
           name: "size",
           type: "uint8",
+        },
+        {
+          components: [
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "uint16",
+              name: "discountPercentage",
+              type: "uint16",
+            },
+            {
+              internalType: "uint16",
+              name: "quota",
+              type: "uint16",
+            },
+            {
+              internalType: "bool",
+              name: "hasQuota",
+              type: "bool",
+            },
+          ],
+          internalType: "struct CyberValleyEventManager.CategoryInput[]",
+          name: "categoriesInput",
+          type: "tuple[]",
         },
       ],
       name: "submitEventRequest",

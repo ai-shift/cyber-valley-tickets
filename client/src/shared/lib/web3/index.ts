@@ -1,4 +1,9 @@
-import { prepareContractCall, readContract, sendTransaction } from "thirdweb";
+import {
+  prepareContractCall,
+  readContract,
+  sendTransaction,
+  waitForReceipt,
+} from "thirdweb";
 import { balanceOf } from "thirdweb/extensions/erc20";
 import type { Account } from "thirdweb/wallets";
 import { getBytes32FromMultiash } from "./multihash";
@@ -136,6 +141,18 @@ export async function approveSubmitEventRequest(
   await sendTransaction({ account, transaction: approveTransaction });
 }
 
+export interface CategoryInput {
+  name: string;
+  discountPercentage: number;
+  quota: number;
+  hasQuota: boolean;
+}
+
+export interface SubmitEventResult {
+  txHash: TxHash;
+  eventId: bigint;
+}
+
 export async function submitEventRequest(
   account: Account,
   eventPlaceId: bigint,
@@ -143,7 +160,8 @@ export async function submitEventRequest(
   startDate: bigint,
   daysAmount: number,
   metaCID: string,
-): Promise<TxHash> {
+  categories: CategoryInput[],
+): Promise<SubmitEventResult> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(metaCID);
   const transaction = prepareContractCall({
     contract: eventManager,
@@ -156,10 +174,30 @@ export async function submitEventRequest(
       digest,
       hashFunction,
       size,
+      categories,
     ],
   });
-  const { transactionHash } = await sendTransaction({ account, transaction });
-  return transactionHash;
+  const result = await sendTransaction({ account, transaction });
+
+  // Wait for receipt and then get the events count to determine the new event ID
+  await waitForReceipt({
+    client: eventManager.client,
+    chain: eventManager.chain,
+    transactionHash: result.transactionHash,
+  });
+
+  // Get the total events count - the new event ID is events.length - 1
+  const eventsCount = await readContract({
+    contract: eventManager,
+    method: "getEventsCount",
+    params: [],
+  });
+  const eventId = eventsCount - 1n;
+
+  return {
+    txHash: result.transactionHash,
+    eventId,
+  };
 }
 
 export async function updateEvent(
