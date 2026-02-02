@@ -1,3 +1,19 @@
+"""
+Seed database with development data.
+
+ARCHITECTURAL NOTES:
+-------------------
+This script seeds OFF-CHAIN entities only. Contract entities (Events, Places,
+Tickets) are created on-chain via ethereum/scripts/deploy-dev.js and indexed
+by the indexer service. NEVER create Event/EventPlace/Ticket directly here.
+
+Entity Ownership:
+- User, UserSocials, VerificationRequest: Created here (off-chain)
+- Event, EventPlace, Ticket: Created on-chain, indexed by indexer
+
+See AGENTS.md for full entity ownership table.
+"""
+
 from argparse import ArgumentParser
 from datetime import timedelta
 from typing import Any
@@ -7,7 +23,9 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
-from cyber_valley.events.models import Event, EventPlace, Ticket
+# NOTE: Event, EventPlace, Ticket are imported for type hints only.
+# DO NOT create these entities here - they are created on-chain and indexed.
+# from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.indexer.models import LastProcessedBlock, LogProcessingError
 from cyber_valley.notifications.models import Notification
 from cyber_valley.shaman_verification.models import VerificationRequest
@@ -15,7 +33,7 @@ from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 
 class Command(BaseCommand):
-    help = "Seeds the database with mock data for development."
+    help = "Seeds the database with mock data for development. OFF-CHAIN entities only."
 
     def add_arguments(self, parser: ArgumentParser) -> None:
         parser.add_argument(
@@ -35,6 +53,9 @@ class Command(BaseCommand):
         if options["flush"] or options["flush_only"]:
             self.stdout.write("Flushing existing data...")
             # Order matters due to foreign keys
+            # NOTE: Event/Ticket/EventPlace are indexed entities. Deleting them here
+            # is OK because this runs BEFORE contract deployment. The indexer will
+            # recreate them when it processes contract events.
             Notification.objects.all().delete()
             Ticket.objects.all().delete()
             Event.objects.all().delete()
@@ -47,6 +68,13 @@ class Command(BaseCommand):
 
         if options["flush_only"]:
             return
+
+        # ============================================================================
+        # SECTION 1: Users and Authentication
+        # ============================================================================
+        # Creates: CyberValleyUser, UserSocials, Token
+        # Source: Database (off-chain)
+        # ============================================================================
 
         users = [
             ("0x2789023F36933E208675889869c7d3914A422921", CyberValleyUser.MASTER),
@@ -70,11 +98,20 @@ class Command(BaseCommand):
 
                 # Add socials for master (2 socials), local provider,
                 # and first customer (1 social)
+                #
+                # NOTE on TELEGRAM format:
+                # Production stores numeric chat_id in 'value' field:
+                #   value="123456789", metadata={"username": "@handle"}
+                # This is required because _sync.py parses value as int() for
+                # sending notifications to local providers.
+                # See: backend/cyber_valley/indexer/service/_sync.py:542
                 if role == CyberValleyUser.MASTER:
+                    # Using numeric format with username in metadata
                     UserSocials.objects.create(
                         user=u,
                         network=UserSocials.Network.TELEGRAM,
-                        value="@cybervalley_master",
+                        value="1234567890",  # Test chat ID format
+                        metadata={"username": "cybervalley_master"},
                     )
                     UserSocials.objects.create(
                         user=u,
@@ -83,21 +120,32 @@ class Command(BaseCommand):
                     )
                     self.stdout.write("  Added 2 socials for master user")
                 elif role == CyberValleyUser.LOCAL_PROVIDER:
-                    UserSocials.objects.create(
-                        user=u,
-                        network=UserSocials.Network.TELEGRAM,
-                        value="@local_provider_bali",
-                    )
-                    self.stdout.write("  Added 1 social for local provider")
+                    # NOT creating TELEGRAM social for LOCAL_PROVIDER to avoid
+                    # ValueError in _sync.py:_send_pending_verifications_to_new_provider
+                    # which expects numeric chat_id but seed data had username.
+                    # The code path at _sync.py:601 only triggers for LOCAL_PROVIDER.
+                    # If needed, use format: value="<numeric_chat_id>", metadata={"username": "..."}
+                    self.stdout.write("  Skipped TELEGRAM social for local provider (see comment)")
                 elif role == CyberValleyUser.CUSTOMER and idx == 1:
+                    # Using numeric format with username in metadata
+                    # NOTE: verification_helpers.py and telegram_bot.py also parse
+                    # telegram_social.value as int(), so must use numeric format
                     UserSocials.objects.create(
                         user=u,
                         network=UserSocials.Network.TELEGRAM,
-                        value="@first_customer",
+                        value="9876543210",  # Test chat ID format
+                        metadata={"username": "first_customer"},
                     )
                     self.stdout.write("  Added 1 social for first customer")
 
-        # Create shaman verification requests
+        # ============================================================================
+        # SECTION 2: Shaman Verification Requests
+        # ============================================================================
+        # Creates: VerificationRequest (off-chain entity)
+        # NOTE: VerificationRequest is created via API, not indexed from contracts.
+        # The VERIFIED_SHAMAN role is granted on-chain when approved.
+        # ============================================================================
+
         self.stdout.write("Creating shaman verification requests...")
 
         # Get week dates

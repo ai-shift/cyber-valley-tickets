@@ -19,6 +19,24 @@
 - Package managers: pnpm (client/ethereum), uv (backend/ansible)
 - API types auto-generated from backend schema to `client/src/shared/api/apiTypes.d.ts`
 
+## Entity Ownership (Source of Truth)
+
+| Entity | Created By | Populated By | Source of Truth |
+|--------|------------|--------------|-----------------|
+| Event | `ethereum/scripts/deploy-dev.js` → `submitEventRequest()` | Indexer (from `EventCreated` event) | Contract |
+| EventPlace | `ethereum/scripts/deploy-dev.js` → `submitEventPlaceRequest()` | Indexer (from `NewEventPlaceRequest` event) | Contract |
+| Ticket | `ethereum/scripts/mint-tickets.js` → `mintTickets()` | Indexer (from `TicketMinted` event) | Contract |
+| CyberValleyUser | `seed_db.py` or API auth | `seed_db.py` / API | Database |
+| UserSocials | `seed_db.py` or Telegram bot | `seed_db.py` / Bot | Database |
+| VerificationRequest | API (`shaman_verification/views.py`) | API (off-chain) | Database |
+| Role (on-chain) | Contract `grantRole()` | Indexer (from `RoleGranted` event) | Contract |
+
+**Important Rules:**
+1. **Contract entities** (Event, EventPlace, Ticket, Role) are created ON-CHAIN only, never directly in DB
+2. **Database entities** (User, UserSocials, VerificationRequest) are created via API/seed scripts
+3. **Indexer** syncs contract state to DB - it's the ONLY writer of contract entities to DB
+4. **NEVER** create Event/EventPlace/Ticket directly in Django admin or seed scripts
+
 ## Testing
 - **Single test:** `cd backend && uv run pytest path/to/test.py::test_name -vvv -s`
 - **Ethereum:** `cd ethereum && pnpm exec hardhat test --typecheck path/to/test.ts`

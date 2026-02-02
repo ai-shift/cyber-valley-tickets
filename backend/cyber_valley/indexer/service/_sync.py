@@ -539,7 +539,19 @@ def _send_pending_verifications_to_new_provider(user: CyberValleyUser) -> None:
         )
         return
 
-    chat_id = int(telegram_social.value)
+    # Defensive: telegram_social.value should be numeric chat_id
+    # Production stores: value="<chat_id>", metadata={"username": "@handle"}
+    try:
+        chat_id = int(telegram_social.value)
+    except ValueError:
+        log.warning(
+            "Invalid telegram chat_id format for local provider %s: %s "
+            "(expected numeric, got username?)",
+            user.address,
+            telegram_social.value,
+        )
+        return
+
     username = (
         telegram_social.metadata.get("username") if telegram_social.metadata else None
     )
