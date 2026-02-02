@@ -137,7 +137,8 @@ export const useLogin = () => {
                 authLogin(data as User);
                 const expirationRaw =
                   params.payload.expiration_time ??
-                  (params.payload as Record<string, string>).expiration_time;
+                  (params.payload as unknown as Record<string, string>)
+                    .expiration_time;
                 const expiresAt = expirationRaw ? Number(expirationRaw) : null;
                 if (expiresAt && !Number.isNaN(expiresAt)) {
                   setSignature(params.signature, expiresAt);

@@ -13,11 +13,11 @@ class SIWEModel:
     invalid_before: str
     issued_at: str
     nonce: str
+    resources: list[str]
     statement: str
     uri: str
     version: str
     signature: str
-    resources: list[str] = field(default_factory=list)
 
 
 class SIWEModelSerializer(serializers.Serializer[SIWEModel]):

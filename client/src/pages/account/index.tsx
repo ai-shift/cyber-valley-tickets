@@ -160,6 +160,11 @@ export const AccountPage: React.FC = () => {
                   return;
                 }
 
+                if (!account) {
+                  alert("No active account found");
+                  return;
+                }
+
                 setIsMinting(true);
                 try {
                   await mintERC20(account, amount);
