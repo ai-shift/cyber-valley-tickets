@@ -283,6 +283,7 @@ async function createEvents(eventManager, erc20, places, signers) {
     {
       title: "Summer Festival - Prev Week",
       description: "Previous week festival",
+      website: "https://example.com/festival",
       placeIndex: 0, // References places[0]
       price: 100,
       startDate: new Date(prevWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000),
@@ -295,6 +296,7 @@ async function createEvents(eventManager, erc20, places, signers) {
     {
       title: "Tech Conference - Prev Week",
       description: "Previous week conference",
+      website: "https://example.com/conference",
       placeIndex: 1, // References places[1]
       price: 50,
       startDate: new Date(prevWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000),
@@ -314,6 +316,7 @@ async function createEvents(eventManager, erc20, places, signers) {
     {
       title: "ThE fIrSt eVeNt",
       description: "GuR sVeFg rIrAg",
+      website: "https://example.com/first",
       placeIndex: 0,
       price: 100,
       startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -330,6 +333,7 @@ async function createEvents(eventManager, erc20, places, signers) {
     {
       title: "let it be the other one",
       description: "yrg vg or gur bgure bar",
+      website: "https://example.com/other",
       placeIndex: 1,
       price: 50,
       startDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
@@ -345,6 +349,7 @@ async function createEvents(eventManager, erc20, places, signers) {
     {
       title: "pending pending pending",
       description: "la lala lalalala",
+      website: "https://example.com/pending",
       placeIndex: 1,
       price: 69,
       startDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
