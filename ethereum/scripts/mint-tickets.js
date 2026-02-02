@@ -4,6 +4,28 @@ import hre from "hardhat";
 const BACKEND_PORT = process.env.BACKEND_PORT || "8000";
 const BACKEND_HOST = `http://127.0.0.1:${BACKEND_PORT}`;
 
+// Cache for auth tokens
+const tokenCache = new Map();
+
+// Helper to get or create auth token for a user
+async function getAuthToken(address) {
+  if (tokenCache.has(address)) {
+    return tokenCache.get(address);
+  }
+  // Try to get existing token
+  const resp = await fetch(`${BACKEND_HOST}/api/auth/token/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ address }),
+  });
+  if (resp.ok) {
+    const data = await resp.json();
+    tokenCache.set(address, data.token);
+    return data.token;
+  }
+  throw new Error(`Failed to get token for ${address}: ${await resp.text()}`);
+}
+
 async function main() {
   // Get deployed contracts
   const eventManager = await hre.ethers.getContractAt(
@@ -95,7 +117,7 @@ async function main() {
       }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Token ${cfg.owner.address}`,
+        Authorization: `Token ${await getAuthToken(cfg.owner.address)}`,
       },
     });
 
