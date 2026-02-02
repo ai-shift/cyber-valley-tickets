@@ -3,13 +3,11 @@ import type { TicketAllocation } from "@/entities/order";
 import { useReferralStorage } from "@/features/referral";
 import { ReferralManager } from "@/features/referral/ui/ReferralManager";
 import { CategoryAllocation } from "@/features/ticket/ui/CategoryAllocation";
-import { useHideFormNav } from "@/shared/widgets/navigation/hooks/useHideFormNav";
 import { ConfirmPayment } from "./ConfirmPayment";
 import { PurchaseEvent } from "./PurchaseEvent";
 import { PurchaseTicket } from "./PurchaseTicket";
 
 export const Purchase: React.FC = () => {
-  useHideFormNav();
   const { order, updateTicketAllocations } = useOrderStore();
   const { address: referralAddress } = useReferralStorage();
 
