@@ -2,6 +2,7 @@ import type { Event } from "@/entities/event";
 
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { getTimeString } from "@/shared/lib/getTimeString";
+import { pluralTickets } from "@/shared/lib/pluralDays";
 import { Link } from "react-router";
 import { StatusBage } from "./StatusBage";
 
@@ -25,7 +26,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <div className="absolute top-3 right-2 ">
         {status === "approved" ? (
           <p className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black">
-            Tickets available: {place.maxTickets - (ticketsBought || 0)}
+            {pluralTickets(place.maxTickets - (ticketsBought || 0))} available
           </p>
         ) : (
           <StatusBage status={status} />

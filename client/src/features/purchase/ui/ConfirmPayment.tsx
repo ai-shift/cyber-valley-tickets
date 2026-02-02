@@ -3,6 +3,7 @@ import { eventQueries } from "@/entities/event";
 import type { Order } from "@/entities/order";
 import type { Socials } from "@/entities/user";
 import { useSendTx } from "@/shared/hooks/sendTx";
+import { pluralTickets } from "@/shared/lib/pluralDays";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
@@ -172,7 +173,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
               {error
                 ? "Try again"
                 : totalPrice !== null
-                  ? `Pay ${totalPrice} (${totalTickets} ${totalTickets === 1 ? "ticket" : "tickets"})`
+                  ? `Pay ${totalPrice} (${pluralTickets(totalTickets)})`
                   : "Confirm"}
               {totalPrice !== null && (
                 <img

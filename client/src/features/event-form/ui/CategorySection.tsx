@@ -1,4 +1,5 @@
 import type { EventPlace } from "@/entities/place";
+import { pluralTickets } from "@/shared/lib/pluralDays";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { useState } from "react";
@@ -69,11 +70,11 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         return "Quota must be at least 1 ticket";
       }
       if (quotaValue > maxTickets) {
-        return `Quota cannot exceed maximum event capacity (${maxTickets} tickets)`;
+        return `Quota cannot exceed maximum event capacity (${pluralTickets(maxTickets)})`;
       }
       // Check if adding this category would exceed maxTickets
       if (quotaValue > remainingTickets) {
-        return `Cannot add ${quotaValue} tickets. Only ${remainingTickets} tickets remaining for categories (max: ${maxTickets})`;
+        return `Cannot add ${pluralTickets(quotaValue)}. Only ${pluralTickets(remainingTickets)} remaining for categories (max: ${maxTickets})`;
       }
     }
 
@@ -84,7 +85,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
     // Check if any quota is available when not unlimited
     if (quotaValue > 0 && remainingTickets <= 0) {
-      return `No tickets available for categories. All ${maxTickets} tickets are already allocated.`;
+      return `No tickets available for categories. All ${pluralTickets(maxTickets)} are already allocated.`;
     }
 
     return null;
@@ -148,7 +149,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
                   ({field.discount}% off)
                 </span>
                 <span className="text-sm text-muted-foreground ml-2">
-                  {field.quota !== 0 ? `${field.quota} tickets` : "Unlimited"}
+                  {field.quota !== 0 ? pluralTickets(field.quota) : "Unlimited"}
                 </span>
               </div>
               <button
@@ -169,14 +170,14 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
       {isBelowMinTickets && (
         <div className="text-sm text-amber-500 bg-amber-500/10 p-3 rounded">
-          Total tickets ({totalQuotaUsed}) must be at least {minTickets}.
-          Increase quota or use an unlimited category.
+          Total quota must be at least {minTickets}.
+          Increase it or use an unlimited category.
         </div>
       )}
 
       {remainingTickets <= 0 && !hasUnlimitedCategory && (
         <p className="text-sm text-amber-500">
-          All {maxTickets} tickets are allocated to categories. No more
+          All {pluralTickets(maxTickets)} are allocated to categories. No more
           categories can be added.
         </p>
       )}
@@ -191,7 +192,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
           Add Category
           {remainingTickets > 0 && (
             <span className="ml-2 text-xs text-muted-foreground">
-              ({remainingTickets} tickets available)
+              ({pluralTickets(remainingTickets)} available)
             </span>
           )}
         </Button>

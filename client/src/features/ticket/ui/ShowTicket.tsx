@@ -1,5 +1,6 @@
 import { useOrderStore } from "@/entities/order";
 import { apiClient } from "@/shared/api";
+import { pluralTickets } from "@/shared/lib/pluralDays";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import {
@@ -105,7 +106,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
           <Button className="w-full" disabled={hasPassed}>
             {ticketCount === 1
               ? "Show ticket"
-              : `Show tickets (${ticketCount})`}
+              : `Show ${pluralTickets(ticketCount)}`}
           </Button>
         )}
       </DialogTrigger>
