@@ -261,17 +261,19 @@ log_success "Ganache blockchain ready" "started"
 
 # Update .env to use local Ganache for this session
 log_info "Updating blockchain connection to local Ganache" "updating"
+# Get the actual Ganache port (default to 8545 if not set)
+GANACHE_PORT=${GANACHE_PORT:-8545}
 # Set environment variables for current session
-export WS_ETH_NODE_HOST=ws://127.0.0.1:8545
-export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:8545
+export WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}
+export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}
 # Update .env file for child processes
-sed -i 's|^export WS_ETH_NODE_HOST=.*|export WS_ETH_NODE_HOST=ws://127.0.0.1:8545|' .env
-sed -i 's|^export PUBLIC_WS_ETH_NODE_HOST=.*|export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:8545|' .env 2>/dev/null || echo 'export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:8545' >> .env
+sed -i "s|^export WS_ETH_NODE_HOST=.*|export WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" .env
+sed -i "s|^export PUBLIC_WS_ETH_NODE_HOST=.*|export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" .env 2>/dev/null || echo "export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}" >> .env
 # Also update HTTP endpoint for local Ganache
-sed -i 's|^export PUBLIC_HTTP_ETH_NODE_HOST=.*|export PUBLIC_HTTP_ETH_NODE_HOST=http://127.0.0.1:8545|' .env
+sed -i "s|^export PUBLIC_HTTP_ETH_NODE_HOST=.*|export PUBLIC_HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" .env
 # For backwards compatibility
-sed -i 's|^export HTTP_ETH_NODE_HOST=.*|export HTTP_ETH_NODE_HOST=http://127.0.0.1:8545|' .env 2>/dev/null || true
-log_success "Blockchain connection updated to local Ganache" "done"
+sed -i "s|^export HTTP_ETH_NODE_HOST=.*|export HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" .env 2>/dev/null || true
+log_success "Blockchain connection updated to local Ganache (port ${GANACHE_PORT})" "done"
 
 log_info "Starting Django backend server" "starting"
 create_tmux_window "backend" "/tmp/backend.log"
