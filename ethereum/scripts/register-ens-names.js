@@ -92,9 +92,13 @@ async function registerAdditionalNames(hre) {
       // Set reverse record (address -> name) - always try to set this
       const addrHex = owner.slice(2).toLowerCase();
       const addrHash = ethers.keccak256(ethers.toUtf8Bytes(addrHex));
-      const addrReverseNode = "0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2";
+      const addrReverseNode =
+        "0x91d1777781884d03a6757a803996e38de2a42967fb37eeaca72729271025a9e2";
       const reverseNode = ethers.keccak256(
-        ethers.solidityPacked(["bytes32", "bytes32"], [addrReverseNode, addrHash])
+        ethers.solidityPacked(
+          ["bytes32", "bytes32"],
+          [addrReverseNode, addrHash],
+        ),
       );
 
       // Check if reverse record already set
@@ -107,7 +111,10 @@ async function registerAdditionalNames(hre) {
       // Use ReverseRegistrar to claim the reverse node
       // Get the reverse registrar address from the registry
       const reverseRegistrarAddr = await ensRegistry.owner(addrReverseNode);
-      const reverseRegistrar = await ethers.getContractAt("ReverseRegistrar", reverseRegistrarAddr);
+      const reverseRegistrar = await ethers.getContractAt(
+        "ReverseRegistrar",
+        reverseRegistrarAddr,
+      );
 
       // Claim the reverse node (this sets the owner to the caller)
       await reverseRegistrar.connect(signer).setName(name);
