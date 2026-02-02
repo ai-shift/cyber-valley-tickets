@@ -26,4 +26,4 @@ pre-commit:
 
 dev:
 	./launch.sh --stop
-	./launch.sh
+	./launch.sh $(ARGS)

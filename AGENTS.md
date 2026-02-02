@@ -38,11 +38,14 @@ cd ~/tickets
 git stash  # if there are local changes (e.g., schema.json)
 git pull origin dev
 
-# 3. Run launch script with production frontend build
-./launch.sh --production-frontend
+# 3. Run with production frontend build using make
+make dev ARGS="--production-frontend"
 
 # 4. Attach to tmux session to monitor (optional)
 tmux attach -t cyber-valley-dev
 ```
 
-**Note:** The `--production-frontend` flag builds the frontend in production mode while keeping the backend in development mode (local Ganache, etc.).
+**Notes:**
+- The `--production-frontend` flag builds the frontend in production mode while keeping the backend in development mode (local Ganache, etc.)
+- Use `make dev` without ARGS for standard development mode
+- The `ARGS` variable passes arguments to launch.sh
