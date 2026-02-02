@@ -10,6 +10,7 @@ from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from pydantic import BaseModel
+from requests.exceptions import ConnectionError as RequestsConnectionError
 from returns.result import safe
 from tenacity import (
     before_sleep_log,
@@ -17,6 +18,7 @@ from tenacity import (
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
+    retry_if_exception,
 )
 
 from cyber_valley.events.models import Event, EventPlace, Ticket, TicketCategory
@@ -48,17 +50,38 @@ class UnknownEventError(Exception):
     event: BaseModel
 
 
-# Retry configuration for IPFS connections
+def _is_retryable_ipfs_error(exc: BaseException) -> bool:
+    """Check if an exception is a retryable IPFS connection error."""
+    error_message = str(exc).lower()
+    retryable_patterns = [
+        "connection reset by peer",
+        "connection refused",
+        "broken pipe",
+        "connection aborted",
+    ]
+    return (
+        isinstance(exc, (ConnectionError, ConnectionResetError, OSError, RequestsConnectionError))
+        or any(pattern in error_message for pattern in retryable_patterns)
+    )
+
+
+# Retry configuration for IPFS operations
 # Handles temporary connection issues with exponential backoff
 @retry(
     stop=stop_after_attempt(5),
     wait=wait_exponential(multiplier=1, min=1, max=30),
-    retry=retry_if_exception_type((ConnectionError, ConnectionResetError, OSError)),
+    retry=retry_if_exception(_is_retryable_ipfs_error),
     before_sleep=before_sleep_log(log, logging.WARNING),
     reraise=True,
 )
+def _get_ipfs_json_with_retry(cid: str) -> Any:
+    """Fetch JSON from IPFS with retry logic for connection resilience."""
+    with ipfshttpclient.connect() as client:
+        return client.get_json(cid)
+
+
 def get_ipfs_client() -> ipfshttpclient.Client:
-    """Get IPFS client with retry logic for connection resilience."""
+    """Get IPFS client - kept for backward compatibility."""
     return ipfshttpclient.connect()
 
 
@@ -126,10 +149,9 @@ def _sync_new_event_request(
     creator, _ = CyberValleyUser.objects.get_or_create(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
     cid = _multihash2cid(event_data)
-    with get_ipfs_client() as client:  # type: ignore[attr-defined]
-        data = client.get_json(cid)
-        log.info("data=%s", data)
-        socials = client.get_json(data["socialsCid"])
+    data = _get_ipfs_json_with_retry(cid)
+    log.info("data=%s", data)
+    socials = _get_ipfs_json_with_retry(data["socialsCid"])
     with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
             user=creator, network=socials["network"], value=socials["value"]
@@ -171,9 +193,8 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
     place = EventPlace.objects.get(id=event_data.event_place_id)
 
     cid = _multihash2cid(event_data)
-    with get_ipfs_client() as client:  # type: ignore[attr-defined]
-        data = client.get_json(cid)
-        socials = client.get_json(data["socialsCid"])
+    data = _get_ipfs_json_with_retry(cid)
+    socials = _get_ipfs_json_with_retry(data["socialsCid"])
 
     with suppress(IntegrityError), transaction.atomic():
         UserSocials.objects.create(
@@ -209,8 +230,7 @@ def _sync_new_event_place_request(
     requester, _ = CyberValleyUser.objects.get_or_create(address=event_data.requester)
 
     cid = _multihash2cid(event_data)
-    with get_ipfs_client() as client:  # type: ignore[attr-defined]
-        data = client.get_json(cid)
+    data = _get_ipfs_json_with_retry(cid)
 
     # Create event place in Submitted state (provider is not set yet)
     place, created = EventPlace.objects.get_or_create(
@@ -273,8 +293,7 @@ def _sync_event_place_updated(
     )
 
     cid = _multihash2cid(event_data)
-    with get_ipfs_client() as client:  # type: ignore[attr-defined]
-        data = client.get_json(cid)
+    data = _get_ipfs_json_with_retry(cid)
 
     place.provider = provider
     place.title = data["title"]
@@ -315,17 +334,16 @@ def _fetch_ticket_metadata(cid: str) -> tuple[dict[str, Any], dict[str, Any]]:
 
     Supports both old ticket metadata format and new order metadata format.
     """
-    with get_ipfs_client() as client:  # type: ignore[attr-defined]
-        ticket_meta = client.get_json(cid)
+    ticket_meta = _get_ipfs_json_with_retry(cid)
 
-        # Check if this is new order metadata format (has order_type field)
-        if ticket_meta.get("order_type") == "ticket_purchase":
-            # New format: socials is under buyer.socials
-            socials_cid = ticket_meta["buyer"]["socials"]
-            socials = client.get_json(socials_cid)
-        else:
-            # Old format: socials is at top level
-            socials = client.get_json(ticket_meta["socials"])
+    # Check if this is new order metadata format (has order_type field)
+    if ticket_meta.get("order_type") == "ticket_purchase":
+        # New format: socials is under buyer.socials
+        socials_cid = ticket_meta["buyer"]["socials"]
+        socials = _get_ipfs_json_with_retry(socials_cid)
+    else:
+        # Old format: socials is at top level
+        socials = _get_ipfs_json_with_retry(ticket_meta["socials"])
     return ticket_meta, socials
 
 
