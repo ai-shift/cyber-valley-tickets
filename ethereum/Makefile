@@ -24,9 +24,6 @@ deploy-and-seed:
 grant-backend-role:
 	pnpm exec hardhat run scripts/grant-backend-role.js --network cvlandDev
 
-mint-tickets:
-	pnpm exec hardhat run scripts/mint-tickets.js --network cvlandDev
-
 register-ens-names:
 	@echo "Registering ENS names for all addresses..."
 	@echo "  master.eth        -> 0x2789023F36933E208675889869c7d3914A422921"
