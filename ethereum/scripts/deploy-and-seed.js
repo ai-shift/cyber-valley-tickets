@@ -387,6 +387,7 @@ async function createEvents(eventManager, erc20, places, signers) {
     const body = new FormData();
     body.set("title", cfg.title);
     body.set("description", cfg.description);
+    body.set("website", cfg.website || "");  // Website is required field
     body.set("cover", imgBlob, "image.jpg");
     body.set("socials_cid", socials.cid);
 
