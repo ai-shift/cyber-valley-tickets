@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { useReferralFromUrl } from "@/features/referral";
 import {
   AccountPage,
+  CreateDistributionProfilePage,
   CreateEventPage,
   CreatePlaceUnifiedPage,
   EditEventPage,
@@ -112,6 +113,10 @@ export const Router = () => {
                   />
                   <Route path="/account">
                     <Route index element={<AccountPage />} />
+                    <Route
+                      path="/account/distribution-profiles/create"
+                      element={<CreateDistributionProfilePage />}
+                    />
                   </Route>
                 </Route>
                 <Route path="/purchase" element={<PurchasePage />} />

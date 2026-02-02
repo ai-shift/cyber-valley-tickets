@@ -129,7 +129,7 @@ async function deployContracts() {
     .connect(master)
     .grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
 
-  // Setup default profile
+  // Setup default profile for localProvider
   await splitter
     .connect(master)
     .createDistributionProfile(
@@ -137,6 +137,16 @@ async function deployContracts() {
       [localProvider.address],
       [10000],
     );
+  
+  // Create a distribution profile for master as well
+  await splitter
+    .connect(master)
+    .createDistributionProfile(
+      master.address,
+      [master.address],
+      [10000],
+    );
+  
   await splitter.connect(master).setDefaultProfile(1);
 
   await eventManager.connect(master).grantLocalProvider(localProvider.address);

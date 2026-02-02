@@ -141,6 +141,13 @@ export const AccountPage: React.FC = () => {
               {user?.socials[0] ? "Update" : "Set"} socials
             </Button>
             <Button
+              filling="outline"
+              type="button"
+              onClick={() => navigate("/account/distribution-profiles/create")}
+            >
+              Create distribution profile
+            </Button>
+            <Button
               className="mt-8"
               disabled={isMinting}
               onClick={async () => {

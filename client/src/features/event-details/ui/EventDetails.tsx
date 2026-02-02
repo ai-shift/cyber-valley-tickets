@@ -137,13 +137,15 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         />
       </div>
 
-      <Button
-        filling="outline"
-        className="m-5"
-        onClick={() => navigate("attendees")}
-      >
-        Event Attendees
-      </Button>
+      {status !== "submitted" && (
+        <Button
+          filling="outline"
+          className="m-5"
+          onClick={() => navigate("attendees")}
+        >
+          Event Attendees
+        </Button>
+      )}
       {user ? (
         <>
           <MaybeManageEvent
