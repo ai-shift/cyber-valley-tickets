@@ -34,14 +34,16 @@ export function createFormSchema(
       daysAmount: z
         .number()
         .refine((val) => val >= 1, "Duration must be at least 1 day"),
-      categories: z.array(
-        z.object({
-          id: z.string(),
-          name: z.string(),
-          discount: z.number(),
-          quota: z.number(),
-        }),
-      ),
+      categories: z
+        .array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            discount: z.number(),
+            quota: z.number(),
+          }),
+        )
+        .min(1, "At least one category is required"),
     })
     .superRefine((data, ctx) => {
       const place = places.find((p) => `${p.id}` === data.place);
@@ -79,6 +81,29 @@ export function createFormSchema(
           message: "Event overlaps with other event",
           code: z.ZodIssueCode.custom,
         });
+      }
+
+      // Validate categories quotas are within boundaries
+      const hasUnlimited = data.categories.some((cat) => cat.quota === 0);
+      const totalQuota = data.categories.reduce((sum, cat) => {
+        return cat.quota > 0 ? sum + cat.quota : sum;
+      }, 0);
+
+      if (!hasUnlimited) {
+        if (totalQuota < place.minTickets) {
+          ctx.addIssue({
+            path: ["categories"],
+            message: `Total tickets (${totalQuota}) must be at least ${place.minTickets} (minimum required for this place)`,
+            code: z.ZodIssueCode.custom,
+          });
+        }
+        if (totalQuota > place.maxTickets) {
+          ctx.addIssue({
+            path: ["categories"],
+            message: `Total tickets (${totalQuota}) cannot exceed ${place.maxTickets} (maximum capacity for this place)`,
+            code: z.ZodIssueCode.custom,
+          });
+        }
       }
     });
 }

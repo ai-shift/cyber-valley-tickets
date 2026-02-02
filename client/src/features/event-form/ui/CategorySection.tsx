@@ -35,6 +35,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   });
 
   const maxTickets = selectedPlace?.maxTickets ?? Number.MAX_SAFE_INTEGER;
+  const minTickets = selectedPlace?.minTickets ?? 1;
   const hasUnlimitedCategory = categories?.some((cat) => cat.quota === 0);
 
   // Calculate total quota used by all categories (excluding unlimited)
@@ -43,8 +44,12 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
       return cat.quota > 0 ? sum + cat.quota : sum;
     }, 0) ?? 0;
 
-  // Calculate remaining tickets for categories
-  const remainingTickets = maxTickets - totalQuotaUsed;
+  // Calculate remaining tickets for categories (respecting minTickets boundary)
+  const remainingTickets = Math.max(0, maxTickets - totalQuotaUsed);
+
+  // Check if we're below minTickets (when no unlimited category)
+  const isBelowMinTickets =
+    !hasUnlimitedCategory && totalQuotaUsed < minTickets && fields.length > 0;
 
   function validateCategory(): string | null {
     const discountValue = Number(newCategory.discount);
@@ -117,11 +122,18 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Ticket Categories (Optional)</h3>
+      <h3 className="text-lg font-semibold">Ticket Categories (Required)</h3>
       <p className="text-sm text-muted-foreground">
-        Set up discounted ticket categories for your event. Categories can be
-        added after event creation as well.
+        Set up ticket categories for your event. Categories must cover all
+        available tickets. Either have one unlimited category or quotas must sum
+        to the event capacity.
       </p>
+
+      {fields.length === 0 && (
+        <div className="text-sm text-red-500 bg-red-500/10 p-3 rounded">
+          At least one category is required. Please add a category to continue.
+        </div>
+      )}
 
       {fields.length > 0 && (
         <div className="space-y-2">
@@ -152,6 +164,13 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {isBelowMinTickets && (
+        <div className="text-sm text-amber-500 bg-amber-500/10 p-3 rounded">
+          Total tickets ({totalQuotaUsed}) must be at least {minTickets}.
+          Increase quota or use an unlimited category.
         </div>
       )}
 
