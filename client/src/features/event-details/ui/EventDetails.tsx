@@ -10,7 +10,7 @@ import { Ticket } from "@/features/ticket";
 import { getTicketPriceRangeDisplay } from "@/shared/lib/formatTicketPriceRange";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { getTimeString } from "@/shared/lib/getTimeString";
-import { pluralDays } from "@/shared/lib/pluralDays";
+import { pluralDays, pluralTickets } from "@/shared/lib/pluralDays";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
@@ -81,7 +81,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         <div className="absolute top-3 left-2">
           {status === "approved" ? (
             <div className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black">
-              Tickets available: {place.maxTickets - (ticketsBought || 0)}
+              {pluralTickets(place.maxTickets - (ticketsBought || 0))} available
             </div>
           ) : (
             <StatusBage status={status} />
@@ -125,7 +125,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           <DetailsBlock
             icon="/icons/Attendees_2.svg"
             title="Tickets available"
-            information={`${place.maxTickets - Number(ticketsBought)}`}
+            information={pluralTickets(
+              place.maxTickets - Number(ticketsBought),
+            )}
           />
         )}
         <DetailsBlock
