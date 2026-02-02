@@ -65,7 +65,7 @@ class Command(BaseCommand):
                     role=role,
                     is_active=True,
                 )
-                Token.objects.create(user=u)
+                Token.objects.create(user=u, key=address)
                 self.stdout.write(f"Created {role} user: {address}")
 
                 # Add socials for master (2 socials), local provider,
