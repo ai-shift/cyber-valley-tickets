@@ -126,7 +126,9 @@ class Command(BaseCommand):
                     # which expects numeric chat_id but seed data had username.
                     # The code path at _sync.py:601 only triggers for LOCAL_PROVIDER.
                     # If needed, use format: value="<numeric_chat_id>", metadata={"username": "..."}
-                    self.stdout.write("  Skipped TELEGRAM social for local provider (see comment)")
+                    self.stdout.write(
+                        "  Skipped TELEGRAM social for local provider (see comment)"
+                    )
                 elif role == CyberValleyUser.CUSTOMER and idx == 1:
                     # Using numeric format with username in metadata
                     # NOTE: verification_helpers.py and telegram_bot.py also parse
