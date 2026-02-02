@@ -43,7 +43,7 @@ from .users.views import (
     save_user_socials,
     upload_user_socials_to_ipfs,
 )
-from .web3_auth.views import login, logout, nonce, refresh, verify
+from .web3_auth.views import get_token, login, logout, nonce, refresh, verify
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
@@ -96,6 +96,7 @@ urlpatterns = [
     path("api/auth/verify", verify, name="jwt_verify"),
     path("api/auth/refresh", refresh, name="jwt_refresh"),
     path("api/auth/logout", logout, name="jwt_logout"),
+    path("api/auth/token/", get_token, name="get_token"),
     path("api/auth/custom/", include("cyber_valley.custom_auth.urls")),
     path("api/shaman/verify/", include("cyber_valley.shaman_verification.urls")),
     path("api/health/", health_check, name="health_check"),
