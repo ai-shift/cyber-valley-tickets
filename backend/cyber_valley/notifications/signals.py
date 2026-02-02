@@ -7,11 +7,12 @@ from cyber_valley.notifications.models import Notification
 
 @receiver(post_save, sender=Notification)
 def mirror_notification_to_telegram(
-    _sender: type[Notification],
+    sender: type[Notification],
     instance: Notification,
     created: bool,
-    **_kwargs: object,
+    **kwargs: object,
 ) -> None:
+    """Mirror newly created notifications to Telegram."""
     if not created:
         return
     send_notification_to_telegram(instance)

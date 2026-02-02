@@ -20,18 +20,22 @@ async function main() {
 
   // Event configurations with prices
   const events = [
-    { price: 100 }, // Event 0
-    { price: 50 }, // Event 1
+    { price: 100 }, // Event 0 (previous week event)
+    { price: 50 }, // Event 1 (previous week event)
     { price: 69 }, // Event 2 (not used for tickets)
   ];
 
   // Ticket configurations
+  // Categories are created in deploy-dev.js:
+  // - Previous week events (0-1) get "General" categories with IDs 0-1
+  // - Current week events (2-3) get categories with IDs 2-6
   const tickets = [
     // Event 0 - Multiple tickets for multi-ticket listing test
+    // Event 0 has category 0 ("General" created in deploy-dev.js line 316-328)
     {
       owner: completeSlave,
       eventId: 0,
-      categoryId: 0, // Women category for event 0
+      categoryId: 0, // General category for event 0
       socials: {
         network: "instagram",
         value: "@buyer1_event0",
@@ -40,7 +44,7 @@ async function main() {
     {
       owner: completeSlave,
       eventId: 0,
-      categoryId: 1, // Locals category for event 0
+      categoryId: 0, // General category for event 0 (same category, multiple tickets)
       socials: {
         network: "telegram",
         value: "@buyer2_event0",
@@ -49,17 +53,18 @@ async function main() {
     {
       owner: completeSlave,
       eventId: 0,
-      categoryId: 2, // Families category for event 0
+      categoryId: 0, // General category for event 0 (same category, multiple tickets)
       socials: {
         network: "discord",
         value: "@buyer3_event0",
       },
     },
     // Event 1 - Single ticket
+    // Event 1 has category 1 ("General" created in deploy-dev.js line 316-328)
     {
       owner: completeSlave,
       eventId: 1,
-      categoryId: 3, // Early Bird category for event 1
+      categoryId: 1, // General category for event 1
       socials: {
         network: "discord",
         value: "@buyer_event1",
@@ -134,6 +139,8 @@ async function main() {
       cfg.owner.address,
       "event",
       cfg.eventId,
+      "category",
+      cfg.categoryId,
       "order CID",
       order.cid,
     );

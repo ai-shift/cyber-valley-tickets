@@ -259,6 +259,20 @@ if ! run_buf_command "make -C ethereum/ ganache"; then
 fi
 log_success "Ganache blockchain ready" "started"
 
+# Update .env to use local Ganache for this session
+log_info "Updating blockchain connection to local Ganache" "updating"
+# Set environment variables for current session
+export WS_ETH_NODE_HOST=ws://127.0.0.1:8545
+export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:8545
+# Update .env file for child processes
+sed -i 's|^export WS_ETH_NODE_HOST=.*|export WS_ETH_NODE_HOST=ws://127.0.0.1:8545|' .env
+sed -i 's|^export PUBLIC_WS_ETH_NODE_HOST=.*|export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:8545|' .env 2>/dev/null || echo 'export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:8545' >> .env
+# Also update HTTP endpoint for local Ganache
+sed -i 's|^export PUBLIC_HTTP_ETH_NODE_HOST=.*|export PUBLIC_HTTP_ETH_NODE_HOST=http://127.0.0.1:8545|' .env
+# For backwards compatibility
+sed -i 's|^export HTTP_ETH_NODE_HOST=.*|export HTTP_ETH_NODE_HOST=http://127.0.0.1:8545|' .env 2>/dev/null || true
+log_success "Blockchain connection updated to local Ganache" "done"
+
 log_info "Starting Django backend server" "starting"
 create_tmux_window "backend" "/tmp/backend.log"
 tmux send-keys -t "$SESSION_NAME:backend" "make -C backend/ run" Enter
@@ -308,7 +322,9 @@ log_success "Contracts deployed successfully" "done"
 
 log_info "Updating contract addresses in .env" "starting"
 # Extract contract addresses from deployment output
-tmux capture-pane -pt "$SESSION_NAME:buf" | grep '^export' > /tmp/contract_vars.txt
+# Capture pane output and join wrapped lines (-J flag)
+# Lines may be wrapped due to terminal width, so we need to join them
+tmux capture-pane -J -pt "$SESSION_NAME:buf" | grep '^export' > /tmp/contract_vars.txt
 
 # Verify contract addresses were captured
 if [[ ! -s /tmp/contract_vars.txt ]]; then
@@ -334,10 +350,15 @@ try:
         if "=" in line:
             parts = line.rstrip().split("=", 1)
             if len(parts) == 2:
-                splitted.append(parts)
+                var_name, var_value = parts
+                # Validate that this looks like an Ethereum address
+                if var_value.startswith("0x") and len(var_value) >= 42:
+                    splitted.append(parts)
+                else:
+                    print(f"WARNING: Skipping invalid address: {var_name}={var_value}", file=sys.stderr)
     
     if not splitted:
-        print("ERROR: Could not parse contract addresses", file=sys.stderr)
+        print("ERROR: Could not parse valid contract addresses", file=sys.stderr)
         sys.exit(1)
     
     env_file = Path(".env")
@@ -413,17 +434,19 @@ fi
 
 # Give indexer time to process historical events
 log_info "Waiting for indexer to process events" "waiting"
-sleep 5
 
 # Wait for events to be indexed before minting tickets
 log_info "Waiting for events to be indexed" "waiting"
-for i in {1..30}; do
-    events_count=$(curl -s http://127.0.0.1:${BACKEND_PORT}/api/events/ | grep -o '"id":' | wc -l)
+for i in {1..60}; do
+    events_count=$(curl -s http://127.0.0.1:${BACKEND_PORT}/api/events/ 2>/dev/null | grep -o '"id":' | wc -l)
     if [ "$events_count" -ge 3 ]; then
         log_success "Events indexed successfully" "done"
         break
     fi
-    sleep 1
+    if [ "$i" -eq 60 ]; then
+        log_warning "Timeout waiting for events, but continuing..." "timeout"
+    fi
+    sleep 2
 done
 
 # Mint tickets after events are indexed
