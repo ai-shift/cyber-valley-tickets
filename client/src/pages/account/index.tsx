@@ -50,7 +50,9 @@ export const AccountPage: React.FC = () => {
     signOut();
   };
 
-  if (!account) {
+  // Check both thirdweb account and authSlice user to handle page refresh
+  // thirdweb account can be null briefly while reconnecting, but user persists
+  if (!account && !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
         <h2 className="text-2xl font-semibold text-primary">Account</h2>
@@ -62,7 +64,8 @@ export const AccountPage: React.FC = () => {
     );
   }
 
-  const address = account.address;
+  // Use account address if available, otherwise fallback to user address from auth
+  const address = account?.address ?? user?.address ?? "";
 
   return (
     <div>
