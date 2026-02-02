@@ -451,7 +451,7 @@ async function createSingleEvent(eventManager, erc20, places, cfg, eventId, veri
         cat.name,
         cat.discount,
         cat.quota,
-        cat.unlimited
+        !cat.unlimited  // hasQuota = true when NOT unlimited
       );
   }
 
