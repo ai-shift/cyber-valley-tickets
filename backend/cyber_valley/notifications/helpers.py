@@ -21,14 +21,16 @@ def send_notification(
         body: Notification body text
 
     Returns:
-        The created/retrieved Notification object, or None if creation failed
+        The created Notification object, or None if creation failed
     """
     notification = None
     try:
-        notification, created = Notification.objects.get_or_create(
+        # Always create a new notification rather than using get_or_create
+        # to avoid issues with the auto-generated notification_id
+        notification = Notification.objects.create(
             user=user,
             title=title,
-            defaults={"body": body},
+            body=body,
         )
     except Exception:
         logger.exception("Failed to create notification for user %s", user.address)
