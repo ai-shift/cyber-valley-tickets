@@ -13,13 +13,21 @@ from cyber_valley.indexer.service.indexer import index_events
 
 log = logging.getLogger(__name__)
 
-ETH_CONTRACT_ADDRESS_TO_ABI: Final = {
+# Load ABIs from artifact files
+_ETH_ABIS = {
     adr: json.loads(path.read_text())["abi"]
     for adr, path in {
         os.environ["PUBLIC_EVENT_TICKET_ADDRESS"]: settings.CONTRACTS_INFO[1],
         os.environ["PUBLIC_EVENT_MANAGER_ADDRESS"]: settings.CONTRACTS_INFO[2],
     }.items()
 }
+
+# Log the events found in each ABI for debugging
+for addr, abi in _ETH_ABIS.items():
+    events = [e["name"] for e in abi if e["type"] == "event"]
+    print(f"DEBUG: Loaded ABI for {addr}: {len(events)} events: {sorted(events)}", flush=True)
+
+ETH_CONTRACT_ADDRESS_TO_ABI: Final = _ETH_ABIS
 
 
 class Command(BaseCommand):

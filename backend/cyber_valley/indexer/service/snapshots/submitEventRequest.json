@@ -1174,7 +1174,7 @@
         "discountPercentage": 0,
         "eventId": 0,
         "hasQuota": false,
-        "name": "Standard",
+        "name": "General",
         "quota": 0
       },
       {
@@ -1182,7 +1182,7 @@
         "discountPercentage": 0,
         "eventId": 0,
         "hasQuota": false,
-        "name": "Standard",
+        "name": "General",
         "quota": 0
       },
       {
@@ -1190,7 +1190,31 @@
         "discountPercentage": 0,
         "eventId": 0,
         "hasQuota": false,
-        "name": "Standard",
+        "name": "General",
+        "quota": 0
+      },
+      {
+        "categoryId": 0,
+        "discountPercentage": 0,
+        "eventId": 0,
+        "hasQuota": false,
+        "name": "General",
+        "quota": 0
+      },
+      {
+        "categoryId": 0,
+        "discountPercentage": 0,
+        "eventId": 0,
+        "hasQuota": false,
+        "name": "General",
+        "quota": 0
+      },
+      {
+        "categoryId": 0,
+        "discountPercentage": 0,
+        "eventId": 0,
+        "hasQuota": false,
+        "name": "General",
         "quota": 0
       }
     ],
@@ -1550,6 +1574,6 @@
       }
     ]
   },
-  "events_count": 248,
+  "events_count": 251,
   "test_name": "submitEventRequest"
 }
