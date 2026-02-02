@@ -532,6 +532,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/{address}/socials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get social media handles for a user by address. */
+    get: operations["api_users_socials_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/current/": {
     parameters: {
       query?: never;
@@ -1676,6 +1693,7 @@ export interface components {
         | "surrogate_characters_not_allowed";
       detail: string;
     };
+    ApiUsersSocialsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersStaffListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersVerifiedShamansListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     Attendee: {
@@ -1732,7 +1750,7 @@ export interface components {
       readonly role: components["schemas"]["RoleEnum"];
       readonly roles: string[];
       readonly tickets: components["schemas"]["Ticket"][];
-      readonly socials: components["schemas"]["SaveSocials"][];
+      readonly socials: components["schemas"]["Social"][];
       readonly defaultShare: number;
     };
     Error401: {
@@ -1864,7 +1882,7 @@ export interface components {
       lineColor?: string;
       /** @description Additional feature attributes from KML ExtendedData */
       attributes?: {
-        [key: string]: unknown;
+        [key: string]: string;
       };
     };
     /**
@@ -1967,8 +1985,13 @@ export interface components {
      * @enum {string}
      */
     ServerErrorEnum: "server_error";
+    Social: {
+      network: components["schemas"]["NetworkEnum"];
+      value: string;
+    };
     Staff: {
       readonly address: string;
+      readonly socials: components["schemas"]["Social"][];
     };
     StaffEvent: {
       readonly id: number;
@@ -3510,11 +3533,7 @@ export interface operations {
           "application/json": {
             places?: {
               providers?: {
-                provider?: {
-                  displayName?: string;
-                  type?: string;
-                  address?: string;
-                };
+                address?: string;
                 currentWeek?: {
                   pending?: number;
                   verified?: number;
@@ -3533,11 +3552,7 @@ export interface operations {
             };
             events?: {
               providers?: {
-                provider?: {
-                  displayName?: string;
-                  type?: string;
-                  address?: string;
-                };
+                address?: string;
                 currentWeek?: {
                   pending?: number;
                   verified?: number;
@@ -3556,11 +3571,7 @@ export interface operations {
             };
             shamans?: {
               providers?: {
-                provider?: {
-                  displayName?: string;
-                  type?: string;
-                  address?: string;
-                };
+                address?: string;
                 currentWeek?: {
                   pending?: number;
                   verified?: number;
@@ -4536,6 +4547,86 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_users_socials_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        address: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            network?: string;
+            value?: string;
+          }[];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiUsersSocialsRetrieveErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse404"];
         };
       };
       405: {

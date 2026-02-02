@@ -35,16 +35,27 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
     const events = await queryClient.fetchQuery(eventQueries.list());
     if (!events) return null;
     const targetPlaceId = Number(order.event.place);
-    const matchedEvent = events.find((event) => {
-      return (
-        event.creator.address === user.address &&
-        event.title === order.event.title &&
-        event.startDateTimestamp === order.event.startTimeTimeStamp &&
-        event.place.id === targetPlaceId &&
-        event.ticketPrice === order.event.ticketPrice &&
-        event.daysAmount === order.event.daysAmount
-      );
-    });
+    const eventsArray = Array.isArray(events) ? events : [];
+    const matchedEvent = eventsArray.find(
+      (event: {
+        creator: { address: string };
+        title: string;
+        startDateTimestamp: number;
+        place: { id: number };
+        ticketPrice: number;
+        daysAmount: number;
+        id?: number;
+      }) => {
+        return (
+          event.creator.address === user.address &&
+          event.title === order.event.title &&
+          event.startDateTimestamp === order.event.startTimeTimeStamp &&
+          event.place.id === targetPlaceId &&
+          event.ticketPrice === order.event.ticketPrice &&
+          event.daysAmount === order.event.daysAmount
+        );
+      },
+    );
     return matchedEvent?.id ?? null;
   }, [order, queryClient, user]);
 

@@ -24,6 +24,7 @@ class GeoFeatureSerializer(serializers.Serializer[Any]):
         help_text="RGBA hex color for the polygon border (e.g., ff589d0f)",
     )
     attributes = serializers.DictField(
+        child=serializers.CharField(),
         required=False,
         default=dict,
         help_text="Additional feature attributes from KML ExtendedData",
