@@ -500,10 +500,10 @@ uint256 public defaultProfileId;
 
 **Required:** Monitor service availability, send alerts on failure
 
-#### Uptime Kuma Setup (2h)
-- [ ] @naqerl Install Uptime Kuma
-- [ ] @naqerl Add service endpoints (backend API, frontend, indexer)
-- [ ] @naqerl Configure monitoring intervals
+#### Tracer Setup (2h)
+- [x] @naqerl Install Tracer
+- [x] @naqerl Add service endpoints (backend API, frontend, indexer)
+- [x] @naqerl Configure monitoring intervals
 
 #### Alert Configuration (2h)
 - [ ] @naqerl Set up Telegram webhook for alerts
@@ -521,9 +521,9 @@ uint256 public defaultProfileId;
 - [ ] @naqerl Return structured health status JSON
 
 #### Monitoring Integration (0.5h)
-- [ ] @naqerl Configure Uptime Kuma to check `/api/health/` hourly
-- [ ] @naqerl Set alert threshold to status != "alive"
-- [ ] @naqerl Test automated alerts
+- [x] @naqerl Configure Tracer to check `/api/health/` hourly
+- [x] @naqerl Set alert threshold to status != "alive"
+- [x] @naqerl Test automated alerts
 
 ---
 
@@ -537,12 +537,12 @@ uint256 public defaultProfileId;
 ### Implementation Tasks
 
 #### Backend Analytics (3h)
-- [ ] @naqerl Create weekly stats calculation endpoint
-- [ ] @naqerl Calculate average verification time
+- [x] @naqerl Create weekly stats calculation endpoint
+- [x] @naqerl Calculate average verification time
 
 #### Frontend Dashboard (3h)
-- [ ] @redmoor Design UI
-- [ ] @redmoor Create verification stats table component
+- [x] @redmoor Design UI
+- [x] @redmoor Create verification stats table component
 
 ---
 
