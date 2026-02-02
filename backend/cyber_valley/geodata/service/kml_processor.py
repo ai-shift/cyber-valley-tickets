@@ -339,6 +339,33 @@ def process_kml_file(kml_path: Path | str) -> list[dict[str, Any]]:
     return all_placemarks_json
 
 
+def deduplicate_placemarks(
+    placemarks: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """
+    Deduplicate placemarks by name, keeping the one with attributes if duplicates exist.
+    If both have attributes, keep the first one encountered.
+    """
+    seen: dict[str, dict[str, Any]] = {}
+
+    for placemark in placemarks:
+        name = placemark.get("name", "")
+        has_attributes = bool(placemark.get("attributes"))
+
+        if name not in seen:
+            seen[name] = placemark
+        else:
+            existing = seen[name]
+            existing_has_attrs = bool(existing.get("attributes"))
+
+            # Keep the one with attributes if the other doesn't have them
+            if has_attributes and not existing_has_attrs:
+                seen[name] = placemark
+            # If both have or both don't have attributes, keep the existing one
+
+    return list(seen.values())
+
+
 def process_kml_by_folders(kml_path: Path | str) -> dict[str, list[dict[str, Any]]]:
     """
     Processes a KML file and returns a dict mapping folder names to geodata lists.
@@ -383,7 +410,8 @@ def process_kml_by_folders(kml_path: Path | str) -> dict[str, list[dict[str, Any
                 placemarks.append(result)
 
         if placemarks:
-            layers[folder_name] = placemarks
+            # Deduplicate placemarks by name, preferring ones with attributes
+            layers[folder_name] = deduplicate_placemarks(placemarks)
 
     return layers
 

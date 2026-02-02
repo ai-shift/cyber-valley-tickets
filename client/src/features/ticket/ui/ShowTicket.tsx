@@ -1,3 +1,4 @@
+import { useOrderStore } from "@/entities/order";
 import { apiClient } from "@/shared/api";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
@@ -9,18 +10,27 @@ import {
 } from "@/shared/ui/dialog";
 import { useQueries } from "@tanstack/react-query";
 import { Suspense, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import type { Ticket } from "../model/types";
 import { TicketCard } from "./TicketCard";
 
 type ShowTicketProps = {
   tickets: Ticket[];
   hasPassed: boolean;
+  event: {
+    id: number;
+    title: string;
+    ticketPrice: number;
+  };
 };
 
 export const ShowTicket: React.FC<ShowTicketProps> = ({
   tickets,
   hasPassed,
+  event,
 }) => {
+  const navigate = useNavigate();
+  const { setTicketOrder } = useOrderStore();
   const [open, setOpen] = useState(false);
   const wasClosed = useRef<boolean>(false);
 
@@ -62,6 +72,17 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   const anyPending = allData.some(
     (data) => data?.pendingIsRedeemed && !data?.isRedeemed,
   );
+
+  function handleBuyMoreClick() {
+    setTicketOrder({
+      eventId: event.id,
+      eventTitle: event.title,
+      ticketPrice: event.ticketPrice,
+      totalTickets: 1,
+      allocations: [],
+    });
+    navigate("/purchase");
+  }
 
   if (isLoading) return <Loader className="h-8" containerClassName="h-20" />;
   if (hasError || allData.some((data) => !data))
@@ -105,6 +126,15 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
             ))}
           </div>
         </Suspense>
+        <div className="p-4 border-t border-border">
+          <Button
+            className="w-full"
+            onClick={handleBuyMoreClick}
+            disabled={hasPassed}
+          >
+            Buy more tickets
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

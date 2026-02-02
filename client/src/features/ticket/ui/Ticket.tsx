@@ -57,7 +57,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
   return (
     <>
       {tickets.length > 0 ? (
-        <ShowTicket hasPassed={hasPassed} tickets={tickets} />
+        <ShowTicket hasPassed={hasPassed} tickets={tickets} event={event} />
       ) : (
         <Button
           className="w-full"
