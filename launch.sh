@@ -19,6 +19,11 @@ SESSION_NAME="cyber-valley-dev"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PRODUCTION_FRONTEND=false
 
+# Load environment variables from .env if it exists
+if [[ -f "$SCRIPT_DIR/.env" ]]; then
+    source "$SCRIPT_DIR/.env"
+fi
+
 # Parse command line arguments
 STOP_MODE=false
 while [[ $# -gt 0 ]]; do
