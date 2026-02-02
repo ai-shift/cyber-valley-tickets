@@ -48,14 +48,22 @@ class NodeListenerStoppedError(Exception):
     pass
 
 
-def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -> None:
-    provider = WebSocketProvider(settings.WS_ETH_NODE_HOST)
+def index_events(
+    contracts: dict[ChecksumAddress, type[Contract]], sync: bool, oneshot: bool = False
+) -> None:
     queue: Queue[LogReceipt] = Queue()
-    listener_loop = pyshen.aext.create_event_loop_thread()
-    listener_fut = pyshen.aext.run_coro_in_thread(
-        arun_listeners(provider, queue, list(contracts.keys())),
-        listener_loop,
-    )
+    listener_loop = None
+    listener_fut = None
+
+    # Only start WebSocket listener if not in oneshot mode
+    if not oneshot:
+        provider = WebSocketProvider(settings.WS_ETH_NODE_HOST)
+        listener_loop = pyshen.aext.create_event_loop_thread()
+        listener_fut = pyshen.aext.run_coro_in_thread(
+            arun_listeners(provider, queue, list(contracts.keys())),
+            listener_loop,
+        )
+
     w3 = Web3(Web3.HTTPProvider(settings.HTTP_ETH_NODE_HOST))
     if sync:
         run_sync(
@@ -64,6 +72,11 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
             list(contracts.keys()),
         )
     try_fix_errors(queue)
+
+    # In oneshot mode, exit after processing the initial queue
+    if oneshot:
+        log.info("Oneshot mode: processing queued events and exiting")
+
     deser_log = partial(parse_log, contracts=list(contracts.values()))
     while receipt := queue.get():
         tx_hash = "0x" + receipt["transactionHash"].hex()
@@ -99,7 +112,13 @@ def index_events(contracts: dict[ChecksumAddress, type[Contract]], sync: bool) -
             defaults={"id": 1, "block_number": receipt["blockNumber"]}
         )
 
-    listener_fut.result()
+        # In oneshot mode, exit when queue is empty
+        if oneshot and queue.empty():
+            log.info("Oneshot mode: queue empty, exiting")
+            break
+
+    if listener_fut is not None:
+        listener_fut.result()
 
 
 @retry(

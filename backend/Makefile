@@ -36,6 +36,9 @@ tests:
 run-indexer: migrate
 	$(python) manage.py indexer
 
+run-indexer-oneshot: migrate
+	$(python) manage.py indexer --oneshot
+
 run-reaper: migrate
 	$(python) manage.py reaper
 

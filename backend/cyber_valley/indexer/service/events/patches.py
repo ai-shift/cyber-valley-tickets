@@ -28,5 +28,7 @@ def validate_role(value: HexBytes) -> str:
         raise ValueError from e
 
 
-def validate_digest(value: HexBytes) -> str:
+def validate_digest(value: HexBytes | bytes | str) -> str:
+    if isinstance(value, str):
+        return value
     return value.hex()

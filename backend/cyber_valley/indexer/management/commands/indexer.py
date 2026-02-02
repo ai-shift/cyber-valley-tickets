@@ -35,7 +35,12 @@ class Command(BaseCommand):
         parser.add_argument(
             "--no-sync",
             action="store_true",
-            help="Sync blocks from last saved in db to the present one.",
+            help="Skip syncing blocks from last saved in db to the present one.",
+        )
+        parser.add_argument(
+            "--oneshot",
+            action="store_true",
+            help="Run sync once and exit without listening for new events.",
         )
 
     def handle(self, *_args: list[Any], **options: dict[str, Any]) -> None:
@@ -45,4 +50,4 @@ class Command(BaseCommand):
             ChecksumAddress(HexAddress(HexStr(address))): w3.eth.contract(abi=abi)
             for address, abi in ETH_CONTRACT_ADDRESS_TO_ABI.items()
         }
-        index_events(contracts, not bool(options["no_sync"]))
+        index_events(contracts, not bool(options["no_sync"]), bool(options["oneshot"]))

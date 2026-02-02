@@ -15,10 +15,10 @@ from returns.result import safe
 from tenacity import (
     before_sleep_log,
     retry,
+    retry_if_exception,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
-    retry_if_exception,
 )
 
 from cyber_valley.events.models import Event, EventPlace, Ticket, TicketCategory
@@ -59,10 +59,9 @@ def _is_retryable_ipfs_error(exc: BaseException) -> bool:
         "broken pipe",
         "connection aborted",
     ]
-    return (
-        isinstance(exc, (ConnectionError, ConnectionResetError, OSError, RequestsConnectionError))
-        or any(pattern in error_message for pattern in retryable_patterns)
-    )
+    return isinstance(
+        exc, ConnectionError | ConnectionResetError | OSError | RequestsConnectionError
+    ) or any(pattern in error_message for pattern in retryable_patterns)
 
 
 # Retry configuration for IPFS operations
@@ -338,12 +337,20 @@ def _fetch_ticket_metadata(cid: str) -> tuple[dict[str, Any], dict[str, Any]]:
 
     # Check if this is new order metadata format (has order_type field)
     if ticket_meta.get("order_type") == "ticket_purchase":
-        # New format: socials is under buyer.socials
+        # New format: socials is under buyer.socials (as CID)
         socials_cid = ticket_meta["buyer"]["socials"]
         socials = _get_ipfs_json_with_retry(socials_cid)
-    else:
-        # Old format: socials is at top level
+    elif isinstance(ticket_meta.get("socials"), dict):
+        # Old format: socials is stored directly as a dict
+        socials = ticket_meta["socials"]
+    elif isinstance(ticket_meta.get("socials"), str):
+        # Old format: socials is stored as a CID
         socials = _get_ipfs_json_with_retry(ticket_meta["socials"])
+    else:
+        log.warning(
+            "Unknown socials format in ticket metadata: %s", ticket_meta.get("socials")
+        )
+        socials = {}
     return ticket_meta, socials
 
 
