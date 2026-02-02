@@ -26,5 +26,6 @@ export function mapEventFormToEventDto(eventForm: EventFormOutput): EventDto {
     daysAmount: eventForm.daysAmount,
     startTimeTimeStamp: getUnixTime(eventForm.startDate),
     ticketPrice: eventForm.ticketPrice,
+    categories: eventForm.categories,
   };
 }

@@ -1,4 +1,5 @@
 export type {
+  CategoryInput,
   Event,
   EventDto,
   EventStatus,
