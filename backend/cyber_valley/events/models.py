@@ -78,8 +78,7 @@ class Ticket(models.Model):
         "TicketCategory",
         on_delete=models.CASCADE,
         related_name="tickets",
-        null=True,
-        blank=True,
+        null=False,
     )
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="tickets", null=False
