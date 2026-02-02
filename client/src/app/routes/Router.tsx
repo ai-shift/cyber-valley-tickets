@@ -22,6 +22,7 @@ import {
   PurchasePage,
   ShamanVerificationPage,
   SocialsPage,
+  TxHashPlaceholderPage,
   UpdatePlacePage,
 } from "@/pages";
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
@@ -114,6 +115,10 @@ export const Router = () => {
                   </Route>
                 </Route>
                 <Route path="/purchase" element={<PurchasePage />} />
+                <Route
+                  path="/txhash/:txHash"
+                  element={<TxHashPlaceholderPage />}
+                />
                 <Route path="/socials" element={<SocialsPage />} />
               </Route>
               <Route path="verify" element={<ShamanVerificationPage />} />

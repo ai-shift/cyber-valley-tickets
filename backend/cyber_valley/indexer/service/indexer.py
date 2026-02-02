@@ -82,10 +82,14 @@ def index_events(
         tx_hash = "0x" + receipt["transactionHash"].hex()
         extra = {"tx_hash": tx_hash}
         log.info("Starting processing", extra=extra)
+
+        # Create a partial function with tx_hash bound
+        sync_with_tx = partial(synchronize_event, tx_hash=tx_hash)
+
         result = flow(
             receipt,
             deser_log,
-            bind(synchronize_event),
+            bind(sync_with_tx),
         )
         match result:
             case Success(_):

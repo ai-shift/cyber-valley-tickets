@@ -91,11 +91,14 @@ def get_ipfs_client() -> ipfshttpclient.Client:
 
 
 @safe
-def synchronize_event(event_data: BaseModel) -> None:
+def synchronize_event(event_data: BaseModel, *, tx_hash: str | None = None) -> None:
     match event_data:
         case CyberValleyEventManager.NewEventPlaceRequest():
             _sync_new_event_place_request(event_data)
             log.info("New event place request")
+        case CyberValleyEventManager.NewEventRequest():
+            _sync_new_event_request(event_data, tx_hash)
+            log.info("New event request")
         case CyberValleyEventManager.EventPlaceUpdated():
             _sync_event_place_updated(event_data)
             log.info("Event place updated")
@@ -168,6 +171,7 @@ def synchronize_event(event_data: BaseModel) -> None:
 @transaction.atomic
 def _sync_new_event_request(
     event_data: CyberValleyEventManager.NewEventRequest,
+    tx_hash: str | None = None,
 ) -> None:
     creator, _ = CyberValleyUser.objects.get_or_create(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
@@ -195,6 +199,7 @@ def _sync_new_event_request(
         website=data["website"],
         created_at=timezone.now(),
         updated_at=timezone.now(),
+        creation_tx_hash=tx_hash,
     )
 
     send_notification(
