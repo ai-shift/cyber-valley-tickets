@@ -57,7 +57,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   }
 
   const isCreator = user?.address === event.creator.address;
-  const isPermitted = checkPermission(user?.role, "event:edit");
+  const isPermitted = checkPermission(user?.roles, "event:edit");
 
   return (
     <div className="flex flex-col">
@@ -144,7 +144,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           <MaybeManageEvent
             eventId={eventId}
             canEdit={isPermitted}
-            role={user.role}
+            roles={user.roles}
             status={event.status}
           />
 

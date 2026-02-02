@@ -592,10 +592,6 @@ def _sync_role_granted(
     # Add role to user's roles (M2M relationship handles duplicates)
     user.roles.add(role)
 
-    # Also update the legacy role field for backward compatibility
-    user.role = user_role_name
-    user.save(update_fields=["role"])
-
     send_notification(
         user=user,
         title="Role granted",
@@ -644,15 +640,6 @@ def _sync_role_revoked(
     role_to_remove = Role.objects.filter(name=revoked_role_name).first()
     if role_to_remove:
         user.roles.remove(role_to_remove)
-
-    # Update legacy role field - set to highest remaining role or CUSTOMER
-    remaining_roles = list(user.roles.values_list("name", flat=True))
-    if remaining_roles:
-        # Set to the highest priority remaining role
-        user.role = remaining_roles[0]  # Simple approach - could use priority ordering
-    else:
-        user.role = CyberValleyUser.CUSTOMER
-    user.save(update_fields=["role"])
 
     send_notification(
         user=user,

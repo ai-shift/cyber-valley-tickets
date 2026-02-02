@@ -1,5 +1,6 @@
 import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
+import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { Link } from "react-router";
 
@@ -18,9 +19,15 @@ export const ManagePage: React.FC = () => {
 };
 
 const manageView = (user: User): React.ReactNode => {
-  switch (user.role) {
-    case "master":
-      return <MasterView />;
+  // Show Master view if user has master role (highest priority)
+  if (hasRole(user.roles, "master")) {
+    return <MasterView />;
+  }
+
+  // Otherwise use primary role to determine view
+  const primaryRole = getPrimaryRole(user.roles);
+
+  switch (primaryRole) {
     case "localprovider":
       return <LocalProviderView />;
     case "verifiedshaman":

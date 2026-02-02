@@ -1747,7 +1747,6 @@ export interface components {
     };
     CurrentUser: {
       readonly address: string;
-      readonly role: components["schemas"]["RoleEnum"];
       readonly roles: string[];
       readonly tickets: components["schemas"]["Ticket"][];
       readonly socials: components["schemas"]["Social"][];

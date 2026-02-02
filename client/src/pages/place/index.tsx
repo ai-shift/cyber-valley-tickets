@@ -6,7 +6,7 @@ import { PageContainer } from "@/shared/ui/PageContainer";
 
 export const CreatePlaceUnifiedPage: React.FC = () => {
   const { user } = useAuthSlice();
-  const canCreatePlace = checkPermission(user?.role, "place:create");
+  const canCreatePlace = checkPermission(user?.roles, "place:create");
 
   return (
     <PageContainer

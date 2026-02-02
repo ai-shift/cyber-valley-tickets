@@ -24,7 +24,7 @@ export const Nav: React.FC<NavProps> = ({ className }) => {
         <NavLink
           key={route.path}
           route={route}
-          role={user?.role}
+          roles={user?.roles}
           badgeText={
             route.path === "/notifications" ? String(unreadCount) : undefined
           }

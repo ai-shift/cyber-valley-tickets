@@ -5,19 +5,23 @@ import type { Route } from "../model/routes";
 
 type NavLinkProps = {
   route: Route;
-  role?: Role;
+  roles?: Role[];
   badgeText?: string;
 };
 
-export const NavLink: React.FC<NavLinkProps> = ({ route, role, badgeText }) => {
+export const NavLink: React.FC<NavLinkProps> = ({
+  route,
+  roles,
+  badgeText,
+}) => {
   const { path, title, icon, view, requireLogin } = route;
   const { pathname } = useLocation();
 
   const isCurrent = path === "/" ? pathname === "/" : pathname.startsWith(path);
   const iconName = icon || title.toLowerCase();
 
-  const isLogged = !requireLogin || role != null;
-  const canDisplay = !view || checkView(role, view);
+  const isLogged = !requireLogin || (roles != null && roles.length > 0);
+  const canDisplay = !view || checkView(roles, view);
   const showBadge = badgeText && badgeText !== "0";
 
   return (

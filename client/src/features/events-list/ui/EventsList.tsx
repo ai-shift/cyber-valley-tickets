@@ -29,7 +29,7 @@ export const EventsList: React.FC<EventsListProps> = ({
   } = useQuery(eventQueries.list(searchQuery));
   const { user } = useAuthSlice();
 
-  const maybeUser = user ?? ({ role: "customer" } as User);
+  const maybeUser = user ?? ({ roles: ["customer"] } as User);
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
