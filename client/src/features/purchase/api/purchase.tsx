@@ -1,3 +1,4 @@
+import type { CategoryInput } from "@/entities/event";
 import {
   approveMintTicket,
   approveSubmitEventRequest,
@@ -191,16 +192,29 @@ const createEvent = async (
   console.log("Submit event request ERC20 transfer approved");
   await new Promise((r) => setTimeout(r, 1000));
   console.log("Starting submit transaction");
-  const tx = submitEventRequest(
+  // Convert categories to contract format
+  const contractCategories: CategoryInput[] = order.event.categories.map(
+    (cat) => ({
+      name: cat.name,
+      discountPercentage: cat.discount,
+      quota: cat.quota,
+      hasQuota: cat.quota > 0, // quota === 0 means unlimited
+    }),
+  );
+
+  console.log("Creating event with categories:", contractCategories);
+
+  const result = submitEventRequest(
     account,
     BigInt(place),
     ticketPrice,
     BigInt(startTimeTimeStamp),
     daysAmount,
     eventData.cid,
+    contractCategories,
   );
-  sendTx(tx);
-  const txHash = await tx;
+  sendTx(result);
+  const { txHash } = await result;
   cleanEventLocal();
   return txHash;
 };
