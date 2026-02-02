@@ -1,5 +1,6 @@
 import type {
   CancelEventArgs,
+  CategoryInput,
   CloseEventArgs,
   CreateEventPlaceArgs,
   SubmitEventRequestArgs,
@@ -34,12 +35,20 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   ...multihash,
 };
 
+export const defaultCategoryInput: CategoryInput = {
+  name: "General",
+  discountPercentage: 0,
+  quota: 0,
+  hasQuota: false,
+};
+
 export const defaultSubmitEventRequest: SubmitEventRequestArgs = {
   eventPlaceId: defaultUpdateEventPlaceRequest.eventPlaceId,
   ticketPrice: defaultCreateEventPlaceRequest.minPrice,
   startDate: 0,
   daysAmount: defaultCreateEventPlaceRequest.minDays,
   ...multihash,
+  categories: [defaultCategoryInput],
 };
 
 export const defaultCloseEventArgs: CloseEventArgs = {

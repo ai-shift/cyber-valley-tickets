@@ -122,7 +122,26 @@ export type CreateEventPlaceArgs = {
   size: BigNumberish;
 };
 
+export type CategoryInput = {
+  name: string;
+  discountPercentage: BigNumberish;
+  quota: BigNumberish;
+  hasQuota: boolean;
+};
+
 export type SubmitEventRequestArgs = {
+  eventPlaceId: BigNumberish;
+  ticketPrice: BigNumberish;
+  startDate: BigNumberish;
+  daysAmount: BigNumberish;
+  digest: string;
+  hashFunction: BigNumberish;
+  size: BigNumberish;
+  categories: CategoryInput[];
+};
+
+export type UpdateEventArgs = {
+  eventId: BigNumberish;
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
   startDate: BigNumberish;
@@ -132,8 +151,8 @@ export type SubmitEventRequestArgs = {
   size: BigNumberish;
 };
 
-export type UpdateEventArgs = {
-  eventId: BigNumberish;
+// Base event args without categories (for updateEvent)
+export type BaseEventArgs = {
   eventPlaceId: BigNumberish;
   ticketPrice: BigNumberish;
   startDate: BigNumberish;
@@ -209,6 +228,30 @@ export const declineEventArgsToArray = (
 export const submitEventRequestArgsToArray = (
   args: SubmitEventRequestArgs,
 ): Parameters<CyberValleyEventManager["submitEventRequest"]> => {
+  return [
+    args.eventPlaceId,
+    args.ticketPrice,
+    args.startDate,
+    args.daysAmount,
+    args.digest,
+    args.hashFunction,
+    args.size,
+    args.categories,
+  ];
+};
+
+// Helper for updateEvent (no categories)
+export const baseEventArgsToArray = (
+  args: BaseEventArgs,
+): [
+  BigNumberish,
+  BigNumberish,
+  BigNumberish,
+  BigNumberish,
+  string,
+  BigNumberish,
+  BigNumberish,
+] => {
   return [
     args.eventPlaceId,
     args.ticketPrice,
