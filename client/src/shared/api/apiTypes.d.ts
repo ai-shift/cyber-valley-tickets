@@ -295,6 +295,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/events/verification-stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get verification statistics per local provider. */
+    get: operations["api_events_verification_stats_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/geodata/": {
     parameters: {
       query?: never;
@@ -959,6 +976,7 @@ export interface components {
     ApiEventsTicketsNonceRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsTicketsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsTotalRevenueRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiEventsVerificationStatsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiGeodataListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiIpfsEventsMetaUpdateCoverErrorComponent: {
       /**
@@ -1712,6 +1730,7 @@ export interface components {
     CurrentUser: {
       readonly address: string;
       readonly role: components["schemas"]["RoleEnum"];
+      readonly roles: string[];
       readonly tickets: components["schemas"]["Ticket"][];
       readonly socials: components["schemas"]["SaveSocials"][];
       readonly defaultShare: number;
@@ -3430,6 +3449,143 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiEventsTotalRevenueRetrieveErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_events_verification_stats_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            places?: {
+              providers?: {
+                provider?: {
+                  displayName?: string;
+                  type?: string;
+                  address?: string;
+                };
+                currentWeek?: {
+                  pending?: number;
+                  verified?: number;
+                  averageVerificationTime?: number;
+                };
+                previousWeek?: {
+                  pending?: number;
+                  verified?: number;
+                  averageVerificationTime?: number;
+                };
+                diff?: {
+                  pending?: number;
+                  verified?: number;
+                };
+              }[];
+            };
+            events?: {
+              providers?: {
+                provider?: {
+                  displayName?: string;
+                  type?: string;
+                  address?: string;
+                };
+                currentWeek?: {
+                  pending?: number;
+                  verified?: number;
+                  averageVerificationTime?: number;
+                };
+                previousWeek?: {
+                  pending?: number;
+                  verified?: number;
+                  averageVerificationTime?: number;
+                };
+                diff?: {
+                  pending?: number;
+                  verified?: number;
+                };
+              }[];
+            };
+            shamans?: {
+              providers?: {
+                provider?: {
+                  displayName?: string;
+                  type?: string;
+                  address?: string;
+                };
+                currentWeek?: {
+                  pending?: number;
+                  verified?: number;
+                  averageVerificationTime?: number;
+                };
+                previousWeek?: {
+                  pending?: number;
+                  verified?: number;
+                  averageVerificationTime?: number;
+                };
+                diff?: {
+                  pending?: number;
+                  verified?: number;
+                };
+              }[];
+            };
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiEventsVerificationStatsRetrieveErrorResponse400"];
         };
       };
       401: {

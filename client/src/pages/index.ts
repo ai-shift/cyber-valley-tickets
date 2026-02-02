@@ -14,6 +14,7 @@ export { UpdatePlacePage } from "./manage/place/update";
 export { ManageStaffPage } from "./manage/staff";
 export { ManageLocalprovidersPage } from "./manage/localprovider";
 export { ManageVerifiedShamansPage } from "./manage/verifiedshamans";
+export { ManageVerificationStatsPage } from "./manage/verification-stats";
 export { AccountPage } from "./account";
 export { PurchasePage } from "./purchase";
 export { SocialsPage } from "./socials";

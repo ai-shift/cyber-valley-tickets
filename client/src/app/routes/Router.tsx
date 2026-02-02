@@ -14,6 +14,7 @@ import {
   ManageLocalprovidersPage,
   ManagePlacesPage,
   ManageStaffPage,
+  ManageVerificationStatsPage,
   ManageVerifiedShamansPage,
   MapPage,
   NotificationsPage,
@@ -97,6 +98,12 @@ export const Router = () => {
                     element={<RestrictedTo view="manage-verifiedshamans" />}
                   >
                     <Route index element={<ManageVerifiedShamansPage />} />
+                  </Route>
+                  <Route
+                    path="/manage/verification-stats"
+                    element={<RestrictedTo view="manage-verification-stats" />}
+                  >
+                    <Route index element={<ManageVerificationStatsPage />} />
                   </Route>
                   <Route
                     path="/notifications"
