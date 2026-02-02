@@ -318,14 +318,14 @@ log_success "Geodata synchronization completed" "done"
 # ============================================================================
 log_section "Smart Contract Deployment"
 
-log_info "Deploying contracts to local network" "starting"
-if ! run_buf_command "make -C ethereum/ deploy-dev"; then
-    log_error "Contract deployment failed" "failed"
+log_info "Deploying contracts and seeding on-chain entities" "starting"
+if ! run_buf_command "make -C ethereum/ deploy-and-seed"; then
+    log_error "Deployment and seeding failed" "failed"
     echo -e "${RED}Check the buf window for error details:${NC}"
     echo -e "  ${CYAN}tmux attach -t $SESSION_NAME:buf${NC}"
     exit 1
 fi
-log_success "Contracts deployed successfully" "done"
+log_success "Contracts deployed and entities created" "done"
 
 log_info "Updating contract addresses in .env" "starting"
 # Extract contract addresses from deployment output
@@ -439,32 +439,8 @@ else
     restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
 fi
 
-# Give indexer time to process historical events
-log_info "Waiting for indexer to process events" "waiting"
-
-# Wait for events to be indexed before minting tickets
-log_info "Waiting for events to be indexed" "waiting"
-for i in {1..60}; do
-    events_count=$(curl -s http://127.0.0.1:${BACKEND_PORT}/api/events/ 2>/dev/null | grep -o '"id":' | wc -l)
-    if [ "$events_count" -ge 3 ]; then
-        log_success "Events indexed successfully" "done"
-        break
-    fi
-    if [ "$i" -eq 60 ]; then
-        log_warning "Timeout waiting for events, but continuing..." "timeout"
-    fi
-    sleep 2
-done
-
-# Mint tickets after events are indexed
-log_info "Minting tickets" "starting"
-if ! run_buf_command "make -C ethereum/ mint-tickets"; then
-    log_error "Ticket minting failed" "failed"
-    echo -e "${RED}Check the buf window for error details:${NC}"
-    echo -e "  ${CYAN}tmux attach -t $SESSION_NAME:buf${NC}"
-    exit 1
-fi
-log_success "Tickets minted successfully" "done"
+# Note: Tickets are now minted during deploy-and-seed phase
+# No need to wait for indexing before minting - contract is source of truth
 
 log_info "Waiting for services to restart" "waiting"
 wait_for_service "/tmp/backend.log" "Starting development server at" "Backend"

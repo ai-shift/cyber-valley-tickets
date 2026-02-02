@@ -5,3 +5,4 @@
 /.dir-locals.el
 /ethereum/ignition/deployments
 /.opencode
+tasks/
