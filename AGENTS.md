@@ -22,3 +22,27 @@
 ## Testing
 - **Single test:** `cd backend && uv run pytest path/to/test.py::test_name -vvv -s`
 - **Ethereum:** `cd ethereum && pnpm exec hardhat test --typecheck path/to/test.ts`
+
+## Staging Deployment Flow
+Deploy changes to staging server (aishift.co):
+
+```bash
+# 1. Commit and push changes
+git add -A
+git commit -m "your commit message"
+git push origin dev
+
+# 2. SSH to server and pull updates
+ssh cvland@aishift.co
+cd ~/tickets
+git stash  # if there are local changes (e.g., schema.json)
+git pull origin dev
+
+# 3. Run launch script with production frontend build
+./launch.sh --production-frontend
+
+# 4. Attach to tmux session to monitor (optional)
+tmux attach -t cyber-valley-dev
+```
+
+**Note:** The `--production-frontend` flag builds the frontend in production mode while keeping the backend in development mode (local Ganache, etc.).
