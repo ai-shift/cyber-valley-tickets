@@ -1,16 +1,16 @@
 /**
  * Unified Deployment and Seeding Script
- * 
+ *
  * This script combines contract deployment, entity creation, and ticket minting
  * into a single pipeline. It eliminates the need for hardcoded event IDs and
  * removes the incorrect assumption that tickets must be minted after indexing.
- * 
+ *
  * Architecture:
  * 1. Deploy contracts (EventManager, EventTicket, ERC20, RevenueSplitter, ENS)
  * 2. Create places and events on-chain (returns actual IDs)
  * 3. Mint tickets using returned event IDs (no hardcoding)
  * 4. Indexer (started separately) will process all events
- * 
+ *
  * Key Principle: Contract is source of truth, indexer just syncs to DB.
  * Tickets can be minted immediately after events are created on-chain.
  */
@@ -50,7 +50,7 @@ function getWeekDates(weeksAgo = 0) {
   currentMonday.setHours(0, 0, 0, 0);
 
   const targetMonday = new Date(currentMonday);
-  targetMonday.setDate(currentMonday.getDate() - (weeksAgo * 7));
+  targetMonday.setDate(currentMonday.getDate() - weeksAgo * 7);
 
   return targetMonday;
 }
@@ -72,11 +72,12 @@ async function deployContracts() {
   console.log("\n=== PHASE 1: Deploying Contracts ===\n");
 
   // Deploy ENS contracts first
-  const { ensRegistry, publicResolver, reverseRegistrar } = await deployENS(hre);
+  const { ensRegistry, publicResolver, reverseRegistrar } =
+    await deployENS(hre);
 
   // Calculate week start dates for time travel
   const prevWeekStart = getWeekDates(2);
-  
+
   // Deploy contracts with initialOffset set to past date (2 weeks ago)
   const { erc20 } = await hre.ignition.deploy(ERC20Module, {});
   const { eventTicket } = await hre.ignition.deploy(EventTicketModule, {
@@ -120,14 +121,22 @@ async function deployContracts() {
     .setRevenueSplitter(await splitter.getAddress());
 
   // Set EventManager on splitter and grant LOCAL_PROVIDER_ROLE
-  await splitter.connect(master).setEventManager(await eventManager.getAddress());
+  await splitter
+    .connect(master)
+    .setEventManager(await eventManager.getAddress());
   const LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
-  await splitter.connect(master).grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
+  await splitter
+    .connect(master)
+    .grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
 
   // Setup default profile
   await splitter
     .connect(master)
-    .createDistributionProfile(localProvider.address, [localProvider.address], [10000]);
+    .createDistributionProfile(
+      localProvider.address,
+      [localProvider.address],
+      [10000],
+    );
   await splitter.connect(master).setDefaultProfile(1);
 
   await eventManager.connect(master).grantLocalProvider(localProvider.address);
@@ -155,7 +164,14 @@ async function deployContracts() {
     ensRegistry,
     publicResolver,
     reverseRegistrar,
-    signers: { master, creatorSlave, completeSlave, verifiedShaman, localProvider, backend },
+    signers: {
+      master,
+      creatorSlave,
+      completeSlave,
+      verifiedShaman,
+      localProvider,
+      backend,
+    },
   };
 }
 
@@ -163,7 +179,12 @@ async function deployContracts() {
 // Phase 2: Create Places
 // ============================================================================
 
-async function createPlaces(eventManager, master, verifiedShaman, localProvider) {
+async function createPlaces(
+  eventManager,
+  master,
+  verifiedShaman,
+  localProvider,
+) {
   console.log("\n=== PHASE 2: Creating Event Places ===\n");
 
   const prevWeekStart = getWeekDates(2);
@@ -208,17 +229,17 @@ async function createPlaces(eventManager, master, verifiedShaman, localProvider)
     body.append("title", cfg.title);
     body.append("description", "A beautiful venue for events");
     body.append("geometry", JSON.stringify(cfg.geometry));
-    
+
     const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
       method: "PUT",
       headers: { Authorization: `Token ${master.address}` },
     });
-    
+
     if (!resp.ok) {
       throw new Error(`Failed to upload place metadata: ${await resp.text()}`);
     }
-    
+
     const result = await resp.json();
     const mh = getBytes32FromMultiash(result.cid);
 
@@ -226,19 +247,26 @@ async function createPlaces(eventManager, master, verifiedShaman, localProvider)
     const submitTx = await eventManager
       .connect(verifiedShaman)
       .submitEventPlaceRequest(
-        100, 20, 5, 1, 1, true,
-        mh.digest, mh.hashFunction, mh.size
+        100,
+        20,
+        5,
+        1,
+        1,
+        true,
+        mh.digest,
+        mh.hashFunction,
+        mh.size,
       );
-    
+
     const submitReceipt = await submitTx.wait();
     const newEventPlaceRequestEvent = submitReceipt.logs
       .filter((e) => e.fragment?.name === "NewEventPlaceRequest")
       .find((e) => e);
-    
+
     if (!newEventPlaceRequestEvent) {
       throw new Error("NewEventPlaceRequest event not found");
     }
-    
+
     const placeId = newEventPlaceRequestEvent.args.id;
 
     // Approve event place as local provider
@@ -333,7 +361,9 @@ async function createEvents(eventManager, erc20, places, signers) {
       website: "https://example.com/pending",
       placeIndex: 1,
       price: 69,
-      startDate: new Date(currentWeekStart.getTime() + 10 * 24 * 60 * 60 * 1000),
+      startDate: new Date(
+        currentWeekStart.getTime() + 10 * 24 * 60 * 60 * 1000,
+      ),
       daysAmount: 5,
       cover: "seed-data/event-covers/event-3-sample.png",
       creator: creatorSlave,
@@ -348,7 +378,15 @@ async function createEvents(eventManager, erc20, places, signers) {
   // Create previous week events (time is already at prevWeekStart from createPlaces)
   console.log("Creating previous week events...");
   for (const cfg of prevWeekEventConfigs) {
-    const event = await createSingleEvent(eventManager, erc20, places, cfg, events.length, verifiedShaman, localProvider);
+    const event = await createSingleEvent(
+      eventManager,
+      erc20,
+      places,
+      cfg,
+      events.length,
+      verifiedShaman,
+      localProvider,
+    );
     events.push(event);
   }
 
@@ -358,7 +396,15 @@ async function createEvents(eventManager, erc20, places, signers) {
   // Create current week events
   console.log("Creating current week events...");
   for (const cfg of currentWeekEventConfigs) {
-    const event = await createSingleEvent(eventManager, erc20, places, cfg, events.length, verifiedShaman, localProvider);
+    const event = await createSingleEvent(
+      eventManager,
+      erc20,
+      places,
+      cfg,
+      events.length,
+      verifiedShaman,
+      localProvider,
+    );
     events.push(event);
   }
 
@@ -366,7 +412,15 @@ async function createEvents(eventManager, erc20, places, signers) {
 }
 
 // Helper function to create a single event
-async function createSingleEvent(eventManager, erc20, places, cfg, eventId, verifiedShaman, localProvider) {
+async function createSingleEvent(
+  eventManager,
+  erc20,
+  places,
+  cfg,
+  eventId,
+  verifiedShaman,
+  localProvider,
+) {
   // Get actual place ID from the places array
   const placeId = places[cfg.placeIndex].id;
 
@@ -380,10 +434,12 @@ async function createSingleEvent(eventManager, erc20, places, cfg, eventId, veri
         "Content-Type": "application/json",
         Authorization: `Token ${cfg.creator.address}`,
       },
-    }
+    },
   );
   if (!socialsResponse.ok) {
-    throw new Error(`Failed to upload socials: ${await socialsResponse.text()}`);
+    throw new Error(
+      `Failed to upload socials: ${await socialsResponse.text()}`,
+    );
   }
   const socials = await socialsResponse.json();
 
@@ -404,51 +460,62 @@ async function createSingleEvent(eventManager, erc20, places, cfg, eventId, veri
       body,
       method: "PUT",
       headers: { Authorization: `Token ${cfg.creator.address}` },
-    }
+    },
   );
   if (!eventMetaResponse.ok) {
-    throw new Error(`Failed to upload event metadata: ${await eventMetaResponse.text()}`);
+    throw new Error(
+      `Failed to upload event metadata: ${await eventMetaResponse.text()}`,
+    );
   }
   const eventMeta = await eventMetaResponse.json();
   const mh = getBytes32FromMultiash(eventMeta.cid);
 
   // Mint tokens and approve
   await erc20.connect(cfg.creator).mint(100);
-  await erc20.connect(cfg.creator).approve(await eventManager.getAddress(), 100);
+  await erc20
+    .connect(cfg.creator)
+    .approve(await eventManager.getAddress(), 100);
 
-  // Submit event request
-  await eventManager.connect(cfg.creator).submitEventRequest(
+  // Submit event request with categories
+  const tx = await eventManager.connect(cfg.creator).submitEventRequest(
     placeId,
     cfg.price,
     Math.floor(cfg.startDate / 1000),
     cfg.daysAmount,
     mh.digest,
     mh.hashFunction,
-    mh.size
+    mh.size,
+    cfg.categories.map((cat) => ({
+      name: cat.name,
+      discountPercentage: cat.discount,
+      quota: cat.quota,
+      hasQuota: !cat.unlimited,
+    })),
   );
+  const receipt = await tx.wait();
 
-  // Create categories
-  for (const cat of cfg.categories) {
-    await eventManager
-      .connect(verifiedShaman)
-      .createCategory(
-        eventId,
-        cat.name,
-        cat.discount,
-        cat.quota,
-        !cat.unlimited  // hasQuota = true when NOT unlimited
-      );
+  // Extract event ID from NewEventRequest event
+  const newEventRequestEvent = receipt.logs.find(
+    (log) => log.fragment?.name === "NewEventRequest",
+  );
+  const createdEventId = newEventRequestEvent
+    ? Number(newEventRequestEvent.args[0])
+    : null;
+  if (createdEventId === null) {
+    throw new Error("Failed to get event ID from transaction receipt");
   }
 
   // Approve event (unless skipApproval is set)
   if (!cfg.skipApproval) {
-    await eventManager.connect(localProvider).approveEvent(eventId, 1);
+    await eventManager.connect(localProvider).approveEvent(createdEventId, 1);
   }
 
-  console.log(`Created event: ${cfg.title} (ID: ${eventId}, Place: ${placeId})`);
+  console.log(
+    `Created event: ${cfg.title} (ID: ${createdEventId}, Place: ${placeId})`,
+  );
 
   return {
-    id: eventId,
+    id: createdEventId,
     ...cfg,
     placeId,
     cid: eventMeta.cid,
@@ -489,20 +556,56 @@ async function mintTickets(eventManager, erc20, events, signers) {
   // NOTE: categoryId is GLOBAL (not per-event). Event 0 = category 0, Event 1 = category 1, etc.
   const ticketConfigs = [
     // Event 0 (prev week) - Multiple tickets using category 0
-    { eventIndex: 0, categoryId: 0, socials: { network: "instagram", value: "@buyer1_event0" } },
-    { eventIndex: 0, categoryId: 0, socials: { network: "telegram", value: "@buyer2_event0" } },
-    { eventIndex: 0, categoryId: 0, socials: { network: "discord", value: "@buyer3_event0" } },
+    {
+      eventIndex: 0,
+      categoryId: 0,
+      socials: { network: "instagram", value: "@buyer1_event0" },
+    },
+    {
+      eventIndex: 0,
+      categoryId: 0,
+      socials: { network: "telegram", value: "@buyer2_event0" },
+    },
+    {
+      eventIndex: 0,
+      categoryId: 0,
+      socials: { network: "discord", value: "@buyer3_event0" },
+    },
     // Event 1 (prev week) - Single ticket using category 1
-    { eventIndex: 1, categoryId: 1, socials: { network: "discord", value: "@buyer_event1" } },
+    {
+      eventIndex: 1,
+      categoryId: 1,
+      socials: { network: "discord", value: "@buyer_event1" },
+    },
     // Event 2 (ThE fIrSt eVeNt) - Tickets across different categories
     // Categories: 2=Women, 3=Locals, 4=Families
-    { eventIndex: 2, categoryId: 2, socials: { network: "instagram", value: "@women_buyer1" } },
-    { eventIndex: 2, categoryId: 3, socials: { network: "telegram", value: "@locals_buyer1" } },
-    { eventIndex: 2, categoryId: 4, socials: { network: "discord", value: "@family_buyer1" } },
+    {
+      eventIndex: 2,
+      categoryId: 2,
+      socials: { network: "instagram", value: "@women_buyer1" },
+    },
+    {
+      eventIndex: 2,
+      categoryId: 3,
+      socials: { network: "telegram", value: "@locals_buyer1" },
+    },
+    {
+      eventIndex: 2,
+      categoryId: 4,
+      socials: { network: "discord", value: "@family_buyer1" },
+    },
     // Event 3 (let it be the other one) - Tickets for different categories
     // Categories: 5=Early Bird, 6=Students
-    { eventIndex: 3, categoryId: 5, socials: { network: "instagram", value: "@earlybird_buyer" } },
-    { eventIndex: 3, categoryId: 6, socials: { network: "telegram", value: "@student_buyer" } },
+    {
+      eventIndex: 3,
+      categoryId: 5,
+      socials: { network: "instagram", value: "@earlybird_buyer" },
+    },
+    {
+      eventIndex: 3,
+      categoryId: 6,
+      socials: { network: "telegram", value: "@student_buyer" },
+    },
   ];
 
   for (const cfg of ticketConfigs) {
@@ -514,12 +617,14 @@ async function mintTickets(eventManager, erc20, events, signers) {
       event_id: event.id,
       buyer_address: completeSlave.address,
       socials: cfg.socials,
-      tickets: [{
-        categoryId: cfg.categoryId,
-        categoryName: "Standard",
-        price: price,
-        quantity: 1,
-      }],
+      tickets: [
+        {
+          categoryId: cfg.categoryId,
+          categoryName: "Standard",
+          price: price,
+          quantity: 1,
+        },
+      ],
       total_tickets: 1,
       total_price: price,
       currency: "USDC",
@@ -533,22 +638,30 @@ async function mintTickets(eventManager, erc20, events, signers) {
 
     // Mint ERC20 and approve
     await (await erc20.connect(completeSlave).mint(price)).wait();
-    await (await erc20.connect(completeSlave).approve(await eventManager.getAddress(), price)).wait();
+    await (
+      await erc20
+        .connect(completeSlave)
+        .approve(await eventManager.getAddress(), price)
+    ).wait();
 
     // Mint ticket
-    await (await eventManager
-      .connect(completeSlave)
-      .mintTickets(
-        event.id,
-        cfg.categoryId,
-        1,
-        mh.digest,
-        mh.hashFunction,
-        mh.size,
-        ""
-      )).wait();
+    await (
+      await eventManager
+        .connect(completeSlave)
+        .mintTickets(
+          event.id,
+          cfg.categoryId,
+          1,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          "",
+        )
+    ).wait();
 
-    console.log(`Minted ticket for event: ${event.title} (Event ID: ${event.id})`);
+    console.log(
+      `Minted ticket for event: ${event.title} (Event ID: ${event.id})`,
+    );
   }
 
   console.log("\nAll tickets minted successfully");
@@ -576,14 +689,15 @@ async function main() {
   if (!IPFS_HOST) throw new Error("IPFS_PUBLIC_HOST env var is missing");
 
   // Phase 1: Deploy contracts
-  const { eventManager, eventTicket, erc20, splitter, signers } = await deployContracts();
+  const { eventManager, eventTicket, erc20, splitter, signers } =
+    await deployContracts();
 
   // Phase 2: Create places (returns places with IDs)
   const places = await createPlaces(
     eventManager,
     signers.master,
     signers.verifiedShaman,
-    signers.localProvider
+    signers.localProvider,
   );
 
   // Phase 3: Create events (returns events with IDs)
@@ -596,10 +710,18 @@ async function main() {
   console.log("\n=== Deployment Complete ===\n");
   console.log("Contract Addresses:");
   console.log(`export PUBLIC_ERC20_ADDRESS=${await erc20.getAddress()}`);
-  console.log(`export PUBLIC_EVENT_TICKET_ADDRESS=${await eventTicket.getAddress()}`);
-  console.log(`export PUBLIC_EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`);
-  console.log(`export PUBLIC_REVENUE_SPLITTER_ADDRESS=${await splitter.getAddress()}`);
-  console.log("\nNext step: Start the indexer to sync on-chain state to database");
+  console.log(
+    `export PUBLIC_EVENT_TICKET_ADDRESS=${await eventTicket.getAddress()}`,
+  );
+  console.log(
+    `export PUBLIC_EVENT_MANAGER_ADDRESS=${await eventManager.getAddress()}`,
+  );
+  console.log(
+    `export PUBLIC_REVENUE_SPLITTER_ADDRESS=${await splitter.getAddress()}`,
+  );
+  console.log(
+    "\nNext step: Start the indexer to sync on-chain state to database",
+  );
 }
 
 main().catch((error) => {

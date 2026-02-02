@@ -40,14 +40,22 @@ async function main() {
     .setRevenueSplitter(await splitter.getAddress());
 
   // Set EventManager on splitter and grant LOCAL_PROVIDER_ROLE
-  await splitter.connect(master).setEventManager(await eventManager.getAddress());
+  await splitter
+    .connect(master)
+    .setEventManager(await eventManager.getAddress());
   const LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
-  await splitter.connect(master).grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
+  await splitter
+    .connect(master)
+    .grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
 
   // Setup default profile
   await splitter
     .connect(master)
-    .createDistributionProfile(localProvider.address, [localProvider.address], [10000]);
+    .createDistributionProfile(
+      localProvider.address,
+      [localProvider.address],
+      [10000],
+    );
   await splitter.connect(master).setDefaultProfile(1);
 
   await eventManager.connect(master).grantLocalProvider(localProvider.address);

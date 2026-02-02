@@ -31,7 +31,7 @@ function getWeekDates(weeksAgo = 0) {
   currentMonday.setHours(0, 0, 0, 0);
 
   const targetMonday = new Date(currentMonday);
-  targetMonday.setDate(currentMonday.getDate() - (weeksAgo * 7));
+  targetMonday.setDate(currentMonday.getDate() - weeksAgo * 7);
 
   return targetMonday;
 }
@@ -97,14 +97,22 @@ async function main() {
     .setRevenueSplitter(await splitter.getAddress());
 
   // Set EventManager on splitter and grant LOCAL_PROVIDER_ROLE
-  await splitter.connect(master).setEventManager(await eventManager.getAddress());
+  await splitter
+    .connect(master)
+    .setEventManager(await eventManager.getAddress());
   const LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
-  await splitter.connect(master).grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
+  await splitter
+    .connect(master)
+    .grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
 
   // Setup default profile
   await splitter
     .connect(master)
-    .createDistributionProfile(localProvider.address, [localProvider.address], [10000]);
+    .createDistributionProfile(
+      localProvider.address,
+      [localProvider.address],
+      [10000],
+    );
   await splitter.connect(master).setDefaultProfile(1);
 
   await eventManager.connect(master).grantLocalProvider(localProvider.address);
@@ -131,7 +139,12 @@ async function main() {
   );
 
   console.log("Creating previous week data (2 weeks ago)...");
-  console.log("prevWeekStart:", prevWeekStart.toISOString(), "timestamp:", Math.floor(prevWeekStart.getTime() / 1000));
+  console.log(
+    "prevWeekStart:",
+    prevWeekStart.toISOString(),
+    "timestamp:",
+    Math.floor(prevWeekStart.getTime() / 1000),
+  );
   await setBlockchainTime(prevWeekStart);
 
   // Create previous week places
@@ -213,11 +226,25 @@ async function main() {
   }
 
   // Create previous week events
-  const prevWeekEventStart1 = new Date(prevWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const prevWeekEventStart2 = new Date(prevWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000);
-  console.log("Event 1 start date:", prevWeekEventStart1.toISOString(), "timestamp:", Math.floor(prevWeekEventStart1.getTime() / 1000));
-  console.log("Event 2 start date:", prevWeekEventStart2.toISOString(), "timestamp:", Math.floor(prevWeekEventStart2.getTime() / 1000));
-  
+  const prevWeekEventStart1 = new Date(
+    prevWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000,
+  );
+  const prevWeekEventStart2 = new Date(
+    prevWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000,
+  );
+  console.log(
+    "Event 1 start date:",
+    prevWeekEventStart1.toISOString(),
+    "timestamp:",
+    Math.floor(prevWeekEventStart1.getTime() / 1000),
+  );
+  console.log(
+    "Event 2 start date:",
+    prevWeekEventStart2.toISOString(),
+    "timestamp:",
+    Math.floor(prevWeekEventStart2.getTime() / 1000),
+  );
+
   const prevWeekEvents = [
     {
       title: "Summer Festival - Prev Week",
@@ -313,29 +340,25 @@ async function main() {
         mh.digest,
         mh.hashFunction,
         mh.size,
+        [{ name: "General", discountPercentage: 0, quota: 0, hasQuota: false }],
       );
-    console.log("previous week event created", "config", cfg, "multihash", mh);
-  }
-
-  // Create categories for previous week events before approving
-  console.log("Creating categories for previous week events...");
-  for (let eventId = 0; eventId < prevWeekEvents.length; eventId++) {
-    await eventManager
-      .connect(verifiedShaman)
-      .createCategory(
-        eventId,
-        "General",
-        0, // No discount
-        0, // No quota limit
-        false, // Unlimited
-      );
-    console.log("Category created for previous week event", prevWeekEvents[eventId].title);
+    console.log(
+      "previous week event created with category",
+      "config",
+      cfg,
+      "multihash",
+      mh,
+    );
   }
 
   // Approve previous week events
   for (let eventId = 0; eventId < prevWeekEvents.length; eventId++) {
     await eventManager.connect(localProvider).approveEvent(eventId, 1);
-    console.log("previous week event", prevWeekEvents[eventId].title, "approved");
+    console.log(
+      "previous week event",
+      prevWeekEvents[eventId].title,
+      "approved",
+    );
   }
 
   console.log("Creating current week data...");
@@ -586,9 +609,10 @@ async function main() {
         category.hasQuota,
       );
     await tx.wait();
-    const eventTitle = category.eventId < 2
-      ? prevWeekEvents[category.eventId]?.title || `Event ${category.eventId}`
-      : events[category.eventId - 2]?.title || `Event ${category.eventId}`;
+    const eventTitle =
+      category.eventId < 2
+        ? prevWeekEvents[category.eventId]?.title || `Event ${category.eventId}`
+        : events[category.eventId - 2]?.title || `Event ${category.eventId}`;
     console.log(
       "Category created:",
       category.name,
