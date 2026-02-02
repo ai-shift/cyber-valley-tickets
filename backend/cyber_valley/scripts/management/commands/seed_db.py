@@ -23,9 +23,10 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
-# NOTE: Event, EventPlace, Ticket are imported for type hints only.
-# DO NOT create these entities here - they are created on-chain and indexed.
-# from cyber_valley.events.models import Event, EventPlace, Ticket
+# NOTE: These imports are needed for the flush operation.
+# DO NOT create Event/EventPlace/Ticket entities here - they are created on-chain
+# and indexed. The flush just clears them before contract deployment.
+from cyber_valley.events.models import Event, EventPlace, Ticket
 from cyber_valley.indexer.models import LastProcessedBlock, LogProcessingError
 from cyber_valley.notifications.models import Notification
 from cyber_valley.shaman_verification.models import VerificationRequest
