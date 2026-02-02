@@ -26,10 +26,11 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { useManageEventState } from "../model/slice";
+import { DisplayUser } from "@/features/display-user";
 
 type MaybeManageEventProps = {
   roles: Role[];
@@ -42,11 +43,11 @@ type ManageAction = "decline" | "accept" | "close" | "cancel";
 
 type DistributionProfile = {
   id: number;
-  owner_address: string;
+  ownerAddress: string;
   recipients: { address: string; share: number }[];
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
@@ -77,6 +78,13 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     },
     enabled: !!account,
   });
+
+  // Preselect the first profile when profiles are loaded
+  useEffect(() => {
+    if (profiles && profiles.length > 0 && !selectedProfileId) {
+      setSelectedProfileId(String(profiles[0].id));
+    }
+  }, [profiles, selectedProfileId]);
 
   const { mutate } = useMutation({
     mutationFn: async (action: ManageAction) => {
@@ -299,41 +307,133 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
                 <Loader />
               </div>
             ) : profiles && profiles.length > 0 ? (
-              <Select
-                value={selectedProfileId}
-                onValueChange={setSelectedProfileId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a profile..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {profiles.map((profile) => (
-                    <SelectItem key={profile.id} value={String(profile.id)}>
-                      Profile #{profile.id} ({profile.recipients.length}{" "}
-                      recipients)
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <>
+                <Select
+                  value={selectedProfileId}
+                  onValueChange={setSelectedProfileId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a profile..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {profiles.map((profile) => (
+                      <SelectItem key={profile.id} value={String(profile.id)}>
+                        Profile #{profile.id} ({profile.recipients.length}{" "}
+                        recipients)
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Selected Profile Details */}
+                {selectedProfileId && (
+                  <div className="mt-4 p-4 space-y-3">
+                    {(() => {
+                      const profile = profiles.find(
+                        (p) => String(p.id) === selectedProfileId
+                      );
+                      if (!profile) return null;
+                      const totalShares = profile.recipients.reduce(
+                        (sum, r) => sum + r.share,
+                        0
+                      );
+                      return (
+                        <>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-semibold">
+                              Profile #{profile.id}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {profile.recipients.length} recipient(s)
+                            </span>
+                          </div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-1">
+                            Owner: <DisplayUser address={profile.ownerAddress || ""} className="text-xs" />
+                          </div>
+
+                          {/* Recipients Table */}
+                          <div className="mt-3">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr>
+                                  <th className="text-left py-1 text-xs text-muted-foreground">
+                                    Recipient
+                                  </th>
+                                  <th className="text-right py-1 text-xs text-muted-foreground">
+                                    Share
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {profile.recipients?.map((recipient, idx) => (
+                                  <tr key={idx}>
+                                    <td className="py-2 font-mono text-xs">
+                                      {recipient.address?.slice(0, 6)}...
+                                      {recipient.address?.slice(-4)}
+                                    </td>
+                                    <td className="py-2 text-right">
+                                      {(recipient.share / 100).toFixed(0)}%
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          {/* Platform Fees Info */}
+                          <div className="mt-3 pt-3">
+                            <div className="text-xs text-muted-foreground">
+                              <strong>Platform Fees (Fixed):</strong>
+                            </div>
+                            <div className="flex justify-between text-xs mt-1">
+                              <span>CyberiaDAO:</span>
+                              <span>10%</span>
+                            </div>
+                            <div className="flex justify-between text-xs mt-1">
+                              <span>CVE PT PMA:</span>
+                              <span>5%</span>
+                            </div>
+                            <div className="flex justify-between text-sm font-semibold mt-2 pt-1">
+                              <span>Your Share:</span>
+                              <span>{totalShares / 100}% of 85%</span>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
+              </>
             ) : (
               <p className="text-sm text-muted-foreground">
                 No distribution profiles found. Please create a profile first.
               </p>
             )}
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-3">
             <Button
               variant="ghost"
               onClick={() => setIsProfileDialogOpen(false)}
+              className="flex-1"
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleProfileConfirm}
-              disabled={!selectedProfileId || isProfilesLoading}
-            >
-              Confirm & Approve
-            </Button>
+            {profiles && profiles.length > 0 ? (
+              <Button
+                onClick={handleProfileConfirm}
+                disabled={!selectedProfileId || isProfilesLoading}
+                className="flex-1"
+              >
+                Approve
+              </Button>
+            ) : (
+              <Link
+                to="/account/distribution-profiles/create"
+                onClick={() => setIsProfileDialogOpen(false)}
+              >
+                <Button>Create One</Button>
+              </Link>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -839,6 +839,56 @@ def _sync_distribution_profile_created(
         owner.address,
     )
 
+    # Send notification to owner
+    _send_distribution_profile_notification(
+        owner, event_data.profile_id, recipients, is_owner=True
+    )
+
+    # Send notifications to all recipients (excluding owner if they're also a recipient)
+    owner_address_lower = owner.address.lower()
+    for recipient_data in recipients:
+        recipient_address = recipient_data["address"]
+        if recipient_address != owner_address_lower:
+            with suppress(CyberValleyUser.DoesNotExist):
+                recipient_user = CyberValleyUser.objects.get(
+                    address=recipient_address
+                )
+                _send_distribution_profile_notification(
+                    recipient_user,
+                    event_data.profile_id,
+                    recipients,
+                    is_owner=False,
+                )
+
+
+def _send_distribution_profile_notification(
+    user: CyberValleyUser,
+    profile_id: int,
+    recipients: list[dict[str, Any]],
+    is_owner: bool,
+) -> None:
+    """Send notification about distribution profile creation."""
+    title = "Distribution Profile Created"
+    if is_owner:
+        body = (
+            f"You have created distribution profile #{profile_id}. "
+            f"It contains {len(recipients)} recipient(s) and can now be used "
+            f"for event revenue sharing."
+        )
+    else:
+        body = (
+            f"You have been added as a recipient in distribution profile #{profile_id}. "
+            f"You will receive a share of revenue when this profile is used for events."
+        )
+
+    notification = send_notification(user, title, body)
+    if notification:
+        log.info(
+            "Sent distribution profile notification to user %s for profile %s",
+            user.address,
+            profile_id,
+        )
+
 
 @transaction.atomic
 def _sync_distribution_profile_updated(

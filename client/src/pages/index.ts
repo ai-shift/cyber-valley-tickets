@@ -16,6 +16,7 @@ export { ManageLocalprovidersPage } from "./manage/localprovider";
 export { ManageVerifiedShamansPage } from "./manage/verifiedshamans";
 export { ManageVerificationStatsPage } from "./manage/verification-stats";
 export { AccountPage } from "./account";
+export { CreateDistributionProfilePage } from "./account/distribution-profiles/create";
 export { PurchasePage } from "./purchase";
 export { SocialsPage } from "./socials";
 export { LoginPage } from "./login";
