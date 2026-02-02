@@ -1,3 +1,4 @@
+import type { CategoryDraft } from "@/features/event-form";
 import type { components } from "@/shared/api";
 
 export type Event = components["schemas"]["StaffEvent" | "CreatorEvent"];
@@ -10,8 +11,17 @@ export type EventDto = Pick<
   image: File;
   startTimeTimeStamp: number;
   place: string;
+  categories: CategoryDraft[];
 };
 
 export type EventDtoWithId = EventDto & {
   id: number;
 };
+
+// Category input for smart contract
+export interface CategoryInput {
+  name: string;
+  discountPercentage: number;
+  quota: number;
+  hasQuota: boolean;
+}
