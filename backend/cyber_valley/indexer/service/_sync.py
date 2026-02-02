@@ -48,6 +48,20 @@ class UnknownEventError(Exception):
     event: BaseModel
 
 
+# Retry configuration for IPFS connections
+# Handles temporary connection issues with exponential backoff
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_exponential(multiplier=1, min=1, max=30),
+    retry=retry_if_exception_type((ConnectionError, ConnectionResetError, OSError)),
+    before_sleep=before_sleep_log(log, logging.WARNING),
+    reraise=True,
+)
+def get_ipfs_client() -> ipfshttpclient.Client:
+    """Get IPFS client with retry logic for connection resilience."""
+    return ipfshttpclient.connect()
+
+
 @safe
 def synchronize_event(event_data: BaseModel) -> None:
     match event_data:
@@ -112,7 +126,7 @@ def _sync_new_event_request(
     creator, _ = CyberValleyUser.objects.get_or_create(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
     cid = _multihash2cid(event_data)
-    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+    with get_ipfs_client() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
         log.info("data=%s", data)
         socials = client.get_json(data["socialsCid"])
@@ -157,7 +171,7 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
     place = EventPlace.objects.get(id=event_data.event_place_id)
 
     cid = _multihash2cid(event_data)
-    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+    with get_ipfs_client() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
         socials = client.get_json(data["socialsCid"])
 
@@ -195,7 +209,7 @@ def _sync_new_event_place_request(
     requester, _ = CyberValleyUser.objects.get_or_create(address=event_data.requester)
 
     cid = _multihash2cid(event_data)
-    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+    with get_ipfs_client() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
 
     # Create event place in Submitted state (provider is not set yet)
@@ -259,7 +273,7 @@ def _sync_event_place_updated(
     )
 
     cid = _multihash2cid(event_data)
-    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+    with get_ipfs_client() as client:  # type: ignore[attr-defined]
         data = client.get_json(cid)
 
     place.provider = provider
@@ -301,7 +315,7 @@ def _fetch_ticket_metadata(cid: str) -> tuple[dict[str, Any], dict[str, Any]]:
 
     Supports both old ticket metadata format and new order metadata format.
     """
-    with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
+    with get_ipfs_client() as client:  # type: ignore[attr-defined]
         ticket_meta = client.get_json(cid)
 
         # Check if this is new order metadata format (has order_type field)
