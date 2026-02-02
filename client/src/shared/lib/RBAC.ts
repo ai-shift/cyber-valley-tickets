@@ -87,35 +87,98 @@ export const RBAC_VIEWS: Record<Role, View[]> = {
   ],
 };
 
-export function checkView(role: Role | undefined, view: View): boolean {
-  if (role == null) {
-    return false;
+// Role priority for determining the primary role (higher = more important)
+const ROLE_PRIORITY: Record<Role, number> = {
+  master: 100,
+  localprovider: 80,
+  verifiedshaman: 60,
+  staff: 40,
+  creator: 40,
+  customer: 0,
+};
+
+/**
+ * Get the highest priority role from a list of roles.
+ * Returns null if the list is empty.
+ */
+export function getPrimaryRole(roles: Role[] | undefined): Role | null {
+  if (!roles || roles.length === 0) {
+    return null;
   }
-  const views = RBAC_VIEWS[role];
-  if (!views) return false;
-  return views.includes(view);
+  return roles.reduce((highest, current) => {
+    if (ROLE_PRIORITY[current] > ROLE_PRIORITY[highest]) {
+      return current;
+    }
+    return highest;
+  });
 }
 
+/**
+ * Check if any of the user's roles grant access to the specified view.
+ */
+export function checkView(roles: Role[] | undefined, view: View): boolean {
+  if (!roles || roles.length === 0) {
+    return false;
+  }
+  return roles.some((role) => {
+    const views = RBAC_VIEWS[role];
+    if (!views) return false;
+    return views.includes(view);
+  });
+}
+
+/**
+ * Check if any of the user's roles have all the specified permissions.
+ * Uses OR logic across roles - if ANY role has the permission, access is granted.
+ */
 export function checkPermission(
-  role: Role | undefined,
+  roles: Role[] | undefined,
   ...permissions: Permissions[]
 ) {
-  if (role == null) {
+  if (!roles || roles.length === 0) {
     return false;
   }
 
   for (const permission of permissions) {
     const [source, action] = permission.split(":") as [Resource, Action];
 
-    const rolePermissions = RBAC_ROLES[role];
-    if (!rolePermissions) return false;
+    // Check if ANY role has this permission
+    const hasPermission = roles.some((role) => {
+      const rolePermissions = RBAC_ROLES[role];
+      if (!rolePermissions) return false;
 
-    const permittedActions = rolePermissions[source];
-    if (!permittedActions) return false;
+      const permittedActions = rolePermissions[source];
+      if (!permittedActions) return false;
 
-    if (!permittedActions.includes(action)) {
+      return permittedActions.includes(action);
+    });
+
+    if (!hasPermission) {
       return false;
     }
   }
   return true;
+}
+
+/**
+ * Check if user has a specific role.
+ */
+export function hasRole(roles: Role[] | undefined, role: Role): boolean {
+  if (!roles || roles.length === 0) {
+    return false;
+  }
+  return roles.includes(role);
+}
+
+/**
+ * Check if user has any of the specified roles.
+ */
+export function hasAnyRole(
+  roles: Role[] | undefined,
+  ...targetRoles: Role[]
+): boolean {
+  if (!roles || roles.length === 0) {
+    return false;
+  }
+  return targetRoles.some((targetRole) => roles.includes(targetRole));
 }

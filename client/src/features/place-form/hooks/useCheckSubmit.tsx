@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 
 export const useCheckSubmit = () => {
   const { user } = useAuthSlice();
-  const canCreatePlace = checkPermission(user?.role, "place:create");
+  const canCreatePlace = checkPermission(user?.roles, "place:create");
 
   const props: WithCheckProps = {
     user,

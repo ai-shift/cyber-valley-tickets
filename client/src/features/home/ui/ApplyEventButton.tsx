@@ -1,4 +1,5 @@
 import { useAuthSlice } from "@/app/providers";
+import { hasAnyRole } from "@/shared/lib/RBAC";
 import { Button } from "@/shared/ui/button";
 import { useNavigate } from "react-router";
 
@@ -19,8 +20,15 @@ export const ApplyEventButton = () => {
     }
   }
 
+  // Hide button for localproviders and masters
+  const hasProviderOrMasterRole = hasAnyRole(
+    user?.roles,
+    "localprovider",
+    "master",
+  );
+
   return (
-    !["localprovider", "master"].includes(user?.role ?? "") && (
+    !hasProviderOrMasterRole && (
       <div className="w-full absolute bottom-1 p-4">
         <Button
           onClick={handleApplyEventPlace}

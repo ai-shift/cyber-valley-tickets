@@ -4,6 +4,7 @@ import { DisplayUser } from "@/features/display-user";
 import { EventsList, myEventsFilter } from "@/features/events-list";
 import { apiClient } from "@/shared/api";
 import { useTokenBalance } from "@/shared/hooks";
+import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
 import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
@@ -20,7 +21,9 @@ import { useActiveAccount } from "thirdweb/react";
 const getRoleDisplayName = (user: User | null): string | null => {
   if (!user) return null;
 
-  switch (user.role) {
+  const primaryRole = getPrimaryRole(user.roles);
+
+  switch (primaryRole) {
     case "master":
       return "Master";
     case "localprovider":
@@ -264,9 +267,15 @@ export const AccountPage: React.FC = () => {
 };
 
 const manageView = (user: User): React.ReactNode => {
-  switch (user.role) {
-    case "master":
-      return <MasterView />;
+  // Show Master view if user has master role (highest priority)
+  if (hasRole(user.roles, "master")) {
+    return <MasterView />;
+  }
+
+  // Otherwise use primary role to determine view
+  const primaryRole = getPrimaryRole(user.roles);
+
+  switch (primaryRole) {
     case "localprovider":
       return <LocalProviderView />;
     case "verifiedshaman":

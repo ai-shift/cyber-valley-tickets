@@ -13,7 +13,7 @@ export const RestrictedTo: React.FC<RestrictedToProps> = ({ view }) => {
     return <Navigate to="/account" />;
   }
 
-  if (!checkView(user.role, view)) {
+  if (!checkView(user.roles, view)) {
     return <Navigate to="/" />;
   }
 

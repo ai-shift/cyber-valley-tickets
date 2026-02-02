@@ -50,7 +50,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
     navigate("/purchase");
   }
 
-  if (checkPermission(user.role, "ticket:redeem"))
+  if (checkPermission(user.roles, "ticket:redeem"))
     return <Redeem eventId={event.id} />;
   if (isCreator) return null;
 

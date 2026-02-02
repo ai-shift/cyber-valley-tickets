@@ -17,7 +17,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { useManageEventState } from "../model/slice";
 
 type MaybeManageEventProps = {
-  role: Role;
+  roles: Role[];
   status: EventStatus;
   eventId: number;
   canEdit: boolean;
@@ -26,7 +26,7 @@ type MaybeManageEventProps = {
 type ManageAction = "decline" | "accept" | "close" | "cancel";
 
 export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
-  role,
+  roles,
   status,
   eventId,
   canEdit,
@@ -151,7 +151,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   status = optimisticEventsStatuses[eventId] || status;
   const canFinalize = status === "approved";
   const canControl =
-    checkPermission(role, "event:accept/decline") && status === "submitted";
+    checkPermission(roles, "event:accept/decline") && status === "submitted";
 
   function onEdit() {
     navigate(`/events/${eventId}/edit`);
