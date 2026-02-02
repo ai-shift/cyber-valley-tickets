@@ -489,6 +489,15 @@ async function mintTickets(eventManager, erc20, events, signers) {
     { eventIndex: 0, categoryId: 0, socials: { network: "discord", value: "@buyer3_event0" } },
     // Event 1 (prev week) - Single ticket using category 1
     { eventIndex: 1, categoryId: 1, socials: { network: "discord", value: "@buyer_event1" } },
+    // Event 2 (ThE fIrSt eVeNt) - Tickets across different categories
+    // Categories: 2=Women, 3=Locals, 4=Families
+    { eventIndex: 2, categoryId: 2, socials: { network: "instagram", value: "@women_buyer1" } },
+    { eventIndex: 2, categoryId: 3, socials: { network: "telegram", value: "@locals_buyer1" } },
+    { eventIndex: 2, categoryId: 4, socials: { network: "discord", value: "@family_buyer1" } },
+    // Event 3 (let it be the other one) - Tickets for different categories
+    // Categories: 5=Early Bird, 6=Students
+    { eventIndex: 3, categoryId: 5, socials: { network: "instagram", value: "@earlybird_buyer" } },
+    { eventIndex: 3, categoryId: 6, socials: { network: "telegram", value: "@student_buyer" } },
   ];
 
   for (const cfg of ticketConfigs) {
