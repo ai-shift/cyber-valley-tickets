@@ -518,6 +518,24 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       }
     ],
+    "CyberValleyEventManager.TicketCategoryCreated": [
+      {
+        "categoryId": 0,
+        "discountPercentage": 0,
+        "eventId": 0,
+        "hasQuota": false,
+        "name": "General",
+        "quota": 0
+      },
+      {
+        "categoryId": 0,
+        "discountPercentage": 0,
+        "eventId": 0,
+        "hasQuota": false,
+        "name": "General",
+        "quota": 0
+      }
+    ],
     "DynamicRevenueSplitter.DefaultProfileSet": [
       {
         "profileId": 1
@@ -645,6 +663,6 @@
       }
     ]
   },
-  "events_count": 112,
+  "events_count": 114,
   "test_name": "declineEvent"
 }

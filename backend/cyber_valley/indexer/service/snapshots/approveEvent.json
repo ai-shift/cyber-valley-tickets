@@ -838,7 +838,7 @@
         "discountPercentage": 0,
         "eventId": 0,
         "hasQuota": false,
-        "name": "Standard",
+        "name": "General",
         "quota": 0
       },
       {
@@ -846,7 +846,7 @@
         "discountPercentage": 0,
         "eventId": 0,
         "hasQuota": false,
-        "name": "Standard",
+        "name": "General",
         "quota": 0
       }
     ],
