@@ -8,8 +8,9 @@ import {
   erc20,
   eventManager,
   eventTicket,
+  revenueSplitter,
 } from "./state";
-export { client, wallets, cvlandChain, erc20 } from "./state";
+export { client, wallets, cvlandChain, erc20, revenueSplitter } from "./state";
 
 export async function mintERC20(
   account: Account,
@@ -266,10 +267,12 @@ async function validateEventApproval(
 export async function approveEvent(
   account: Account,
   eventId: bigint,
+  distributionProfileId: bigint,
 ): Promise<TxHash> {
   console.log("approveEvent called with:", {
     account: account.address,
     eventId,
+    distributionProfileId,
   });
   console.log("eventManager contract:", {
     address: eventManager.address,
@@ -287,7 +290,7 @@ export async function approveEvent(
     const transaction = prepareContractCall({
       contract: eventManager,
       method: "approveEvent",
-      params: [eventId],
+      params: [eventId, distributionProfileId],
     });
     console.log("prepareContractCall result:", transaction);
     console.log("Sending transaction...");
@@ -552,4 +555,99 @@ export async function updateCategory(
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;
+}
+
+// ============================================================================
+// Distribution Profile Functions
+// ============================================================================
+
+export async function createDistributionProfile(
+  account: Account,
+  recipients: string[],
+  shares: number[],
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: revenueSplitter,
+    method: "createDistributionProfile",
+    params: [account.address, recipients, shares.map((s) => BigInt(s))],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function createDistributionProfileAsMaster(
+  account: Account,
+  ownerAddress: string,
+  recipients: string[],
+  shares: number[],
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: revenueSplitter,
+    method: "createDistributionProfile",
+    params: [ownerAddress, recipients, shares.map((s) => BigInt(s))],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function updateDistributionProfile(
+  account: Account,
+  profileId: bigint,
+  recipients: string[],
+  shares: number[],
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: revenueSplitter,
+    method: "updateDistributionProfile",
+    params: [profileId, recipients, shares.map((s) => BigInt(s))],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function deactivateProfile(
+  account: Account,
+  profileId: bigint,
+): Promise<TxHash> {
+  const transaction = prepareContractCall({
+    contract: revenueSplitter,
+    method: "deactivateProfile",
+    params: [profileId],
+  });
+  const { transactionHash } = await sendTransaction({ account, transaction });
+  return transactionHash;
+}
+
+export async function isProfileOwner(
+  profileId: bigint,
+  address: string,
+): Promise<boolean> {
+  return readContract({
+    contract: revenueSplitter,
+    method: "isProfileOwner",
+    params: [profileId, address],
+  });
+}
+
+export async function getProfilesByOwner(address: string): Promise<bigint[]> {
+  const profileIds = await readContract({
+    contract: revenueSplitter,
+    method: "getProfilesByOwner",
+    params: [address],
+  });
+  return profileIds.map((id: bigint) => BigInt(id));
+}
+
+export async function getProfile(profileId: bigint): Promise<{
+  recipients: readonly string[];
+  shares: readonly bigint[];
+  owner: string;
+  isActive: boolean;
+}> {
+  const [recipients, shares, owner, isActive] = await readContract({
+    contract: revenueSplitter,
+    method: "getProfile",
+    params: [profileId],
+  });
+  return { recipients, shares, owner, isActive };
 }

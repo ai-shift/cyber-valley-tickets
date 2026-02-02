@@ -63,7 +63,7 @@ export const DisplayUser: React.FC<DisplayUserProps> = ({
         href={`https://etherscan.io/address/${address}`}
         target="_blank"
         rel="noopener noreferrer"
-        className={twMerge("text-primary hover:underline", className)}
+        className={twMerge("text-secondary hover:underline", className)}
         title={address}
       >
         {displayValue}
@@ -73,7 +73,7 @@ export const DisplayUser: React.FC<DisplayUserProps> = ({
 
   return (
     <span
-      className={twMerge("text-primary font-medium", className)}
+      className={twMerge("text-secondary font-medium", className)}
       title={address}
     >
       {displayValue}

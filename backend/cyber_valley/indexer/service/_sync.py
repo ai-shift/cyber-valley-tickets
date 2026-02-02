@@ -21,7 +21,13 @@ from tenacity import (
     wait_exponential,
 )
 
-from cyber_valley.events.models import Event, EventPlace, Ticket, TicketCategory
+from cyber_valley.events.models import (
+    DistributionProfile,
+    Event,
+    EventPlace,
+    Ticket,
+    TicketCategory,
+)
 from cyber_valley.notifications.helpers import send_notification
 from cyber_valley.telegram_bot.verification_helpers import (
     send_all_pending_verifications_to_provider,
@@ -136,6 +142,24 @@ def synchronize_event(event_data: BaseModel) -> None:
             log.info("Ticket category updated")
         case CyberValleyEventTicket.Transfer():
             pass
+        case DynamicRevenueSplitter.DistributionProfileCreated():
+            _sync_distribution_profile_created(event_data)
+            log.info("Distribution profile created")
+        case DynamicRevenueSplitter.DistributionProfileUpdated():
+            _sync_distribution_profile_updated(event_data)
+            log.info("Distribution profile updated")
+        case DynamicRevenueSplitter.ProfileOwnershipTransferred():
+            _sync_profile_ownership_transferred(event_data)
+            log.info("Profile ownership transferred")
+        case DynamicRevenueSplitter.AllProfilesTransferred():
+            _sync_all_profiles_transferred(event_data)
+            log.info("All profiles transferred")
+        case DynamicRevenueSplitter.ProfileDeactivated():
+            _sync_profile_deactivated(event_data)
+            log.info("Profile deactivated")
+        case DynamicRevenueSplitter.EventProfileSet():
+            _sync_event_profile_set(event_data)
+            log.info("Event profile set")
         case _:
             log.error("Unknown event data %s", type(event_data))
             raise UnknownEventError(event_data)
@@ -775,3 +799,164 @@ def _sync_ticket_category_updated(
     category.quota = event_data.quota if event_data.has_quota else 0
     category.has_quota = event_data.has_quota
     category.save(update_fields=["name", "discount", "quota", "has_quota"])
+
+
+# ============================================================================
+# Distribution Profile Sync Functions
+# ============================================================================
+
+
+@transaction.atomic
+def _sync_distribution_profile_created(
+    event_data: DynamicRevenueSplitter.DistributionProfileCreated,
+) -> None:
+    """Handle DistributionProfileCreated event from contract."""
+    owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.owner.lower())
+
+    # Build recipients list with shares
+    recipients = [
+        {"address": addr.lower(), "share": share}
+        for addr, share in zip(event_data.recipients, event_data.shares, strict=False)
+    ]
+
+    DistributionProfile.objects.update_or_create(
+        id=event_data.profile_id,
+        defaults={
+            "owner": owner,
+            "recipients": recipients,
+            "is_active": True,
+        },
+    )
+
+    log.info(
+        "DistributionProfile %s created/updated for owner %s",
+        event_data.profile_id,
+        owner.address,
+    )
+
+
+@transaction.atomic
+def _sync_distribution_profile_updated(
+    event_data: DynamicRevenueSplitter.DistributionProfileUpdated,
+) -> None:
+    """Handle DistributionProfileUpdated event from contract."""
+    try:
+        profile = DistributionProfile.objects.get(id=event_data.profile_id)
+    except DistributionProfile.DoesNotExist:
+        log.warning(
+            "DistributionProfile %s not found for update, skipping",
+            event_data.profile_id,
+        )
+        return
+
+    # Build recipients list with shares
+    recipients = [
+        {"address": addr.lower(), "share": share}
+        for addr, share in zip(event_data.recipients, event_data.shares, strict=False)
+    ]
+
+    profile.recipients = recipients
+    profile.save(update_fields=["recipients", "updated_at"])
+
+    log.info("DistributionProfile %s updated", event_data.profile_id)
+
+
+@transaction.atomic
+def _sync_profile_ownership_transferred(
+    event_data: DynamicRevenueSplitter.ProfileOwnershipTransferred,
+) -> None:
+    """Handle ProfileOwnershipTransferred event from contract."""
+    try:
+        profile = DistributionProfile.objects.get(id=event_data.profile_id)
+    except DistributionProfile.DoesNotExist:
+        log.warning(
+            "DistributionProfile %s not found for ownership transfer, skipping",
+            event_data.profile_id,
+        )
+        return
+
+    new_owner, _ = CyberValleyUser.objects.get_or_create(
+        address=event_data.new_owner.lower()
+    )
+
+    profile.owner = new_owner
+    profile.save(update_fields=["owner", "updated_at"])
+
+    log.info(
+        "DistributionProfile %s ownership transferred to %s",
+        event_data.profile_id,
+        new_owner.address,
+    )
+
+
+@transaction.atomic
+def _sync_all_profiles_transferred(
+    event_data: DynamicRevenueSplitter.AllProfilesTransferred,
+) -> None:
+    """Handle bulk profile transfer when LocalProvider is revoked."""
+    new_owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.to.lower())
+
+    updated_count = DistributionProfile.objects.filter(
+        owner__address=event_data.from_addr.lower()
+    ).update(owner=new_owner)
+
+    log.info(
+        "Transferred %d distribution profiles from %s to %s",
+        updated_count,
+        event_data.from_addr,
+        event_data.to,
+    )
+
+
+@transaction.atomic
+def _sync_profile_deactivated(
+    event_data: DynamicRevenueSplitter.ProfileDeactivated,
+) -> None:
+    """Handle ProfileDeactivated event from contract."""
+    try:
+        profile = DistributionProfile.objects.get(id=event_data.profile_id)
+    except DistributionProfile.DoesNotExist:
+        log.warning(
+            "DistributionProfile %s not found for deactivation, skipping",
+            event_data.profile_id,
+        )
+        return
+
+    profile.is_active = False
+    profile.save(update_fields=["is_active", "updated_at"])
+
+    log.info("DistributionProfile %s deactivated", event_data.profile_id)
+
+
+@transaction.atomic
+def _sync_event_profile_set(
+    event_data: DynamicRevenueSplitter.EventProfileSet,
+) -> None:
+    """Handle EventProfileSet event from contract."""
+    try:
+        event = Event.objects.get(id=event_data.event_id)
+    except Event.DoesNotExist:
+        log.warning(
+            "Event %s not found for profile assignment, skipping",
+            event_data.event_id,
+        )
+        return
+
+    try:
+        profile = DistributionProfile.objects.get(id=event_data.profile_id)
+    except DistributionProfile.DoesNotExist:
+        log.warning(
+            "DistributionProfile %s not found for event %s assignment, skipping",
+            event_data.profile_id,
+            event_data.event_id,
+        )
+        return
+
+    event.distribution_profile = profile
+    event.save(update_fields=["distribution_profile"])
+
+    log.info(
+        "Event %s assigned distribution profile %s",
+        event_data.event_id,
+        event_data.profile_id,
+    )

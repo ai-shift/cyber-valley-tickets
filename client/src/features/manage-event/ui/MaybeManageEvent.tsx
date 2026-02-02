@@ -10,7 +10,22 @@ import { AcceptDialog } from "@/shared/ui/AcceptDialog";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
-import { useMutation } from "@tanstack/react-query";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
@@ -25,6 +40,15 @@ type MaybeManageEventProps = {
 
 type ManageAction = "decline" | "accept" | "close" | "cancel";
 
+type DistributionProfile = {
+  id: number;
+  owner_address: string;
+  recipients: { address: string; share: number }[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   roles,
   status,
@@ -32,6 +56,8 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   canEdit,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
+  const [selectedProfileId, setSelectedProfileId] = useState<string>("");
   const [modalInfo, setModalInfo] = useState({
     title: "",
     body: "",
@@ -40,6 +66,18 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   const account = useActiveAccount();
   const { optimisticSetEventStatus, optimisticEventsStatuses } =
     useManageEventState();
+
+  // Fetch distribution profiles owned by the current user
+  const { data: profiles, isLoading: isProfilesLoading } = useQuery({
+    queryKey: ["distribution-profiles"],
+    queryFn: async () => {
+      const response = await fetch("/api/distribution-profiles/");
+      if (!response.ok) throw new Error("Failed to fetch profiles");
+      return response.json() as Promise<DistributionProfile[]>;
+    },
+    enabled: !!account,
+  });
+
   const { mutate } = useMutation({
     mutationFn: async (action: ManageAction) => {
       console.log("got manage event action", action);
@@ -50,7 +88,11 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
         switch (action) {
           case "accept": {
             console.log("Calling approveEvent with eventId:", eventId);
-            const txHash = await approveEvent(account, BigInt(eventId));
+            const txHash = await approveEvent(
+              account,
+              BigInt(eventId),
+              BigInt(selectedProfileId),
+            );
             console.log("approveEvent tx hash:", txHash);
             setModalInfo({
               title: "Event accepting was initiated",
@@ -157,6 +199,25 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     navigate(`/events/${eventId}/edit`);
   }
 
+  const handleAcceptClick = () => {
+    // Open profile selector dialog
+    setIsProfileDialogOpen(true);
+  };
+
+  const handleProfileConfirm = () => {
+    if (!selectedProfileId) {
+      setModalInfo({
+        title: "Error",
+        body: "Please select a distribution profile",
+        error: true,
+      });
+      setIsOpen(true);
+      return;
+    }
+    setIsProfileDialogOpen(false);
+    mutate("accept");
+  };
+
   if (status !== "submitted" && !canEdit && !canControl) return;
   if (!account) return <Loader />;
 
@@ -170,15 +231,13 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
         )}
         {canControl && (
           <div className="flex justify-between gap-3">
-            <AcceptDialog
-              title="Are you sure you want to accept the event?"
-              option="accept"
-              confirmFn={() => mutate("accept")}
+            <Button
+              className="w-full"
+              variant="secondary"
+              onClick={handleAcceptClick}
             >
-              <Button className="w-full" variant="secondary">
-                Accept
-              </Button>
-            </AcceptDialog>
+              Accept
+            </Button>
             <AcceptDialog
               title="Are you sure you want to decline the event?"
               option="decline"
@@ -223,6 +282,61 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
           failure={modalInfo.error}
         />
       </div>
+
+      {/* Profile Selection Dialog */}
+      <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Select Distribution Profile</DialogTitle>
+            <DialogDescription>
+              Choose a distribution profile for revenue sharing when approving
+              this event.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            {isProfilesLoading ? (
+              <div className="flex justify-center py-4">
+                <Loader />
+              </div>
+            ) : profiles && profiles.length > 0 ? (
+              <Select
+                value={selectedProfileId}
+                onValueChange={setSelectedProfileId}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a profile..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {profiles.map((profile) => (
+                    <SelectItem key={profile.id} value={String(profile.id)}>
+                      Profile #{profile.id} ({profile.recipients.length}{" "}
+                      recipients)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No distribution profiles found. Please create a profile first.
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setIsProfileDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleProfileConfirm}
+              disabled={!selectedProfileId || isProfilesLoading}
+            >
+              Confirm & Approve
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

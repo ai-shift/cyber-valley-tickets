@@ -103,6 +103,7 @@ export type DeclineEventPlaceArgs = {
 
 export type ApproveEventArgs = {
   eventId: BigNumberish;
+  distributionProfileId: BigNumberish;
 };
 
 export type DeclineEventArgs = {
@@ -196,7 +197,7 @@ export const declineEventPlaceArgsToArray = (
 export const approveEventArgsToArray = (
   args: ApproveEventArgs,
 ): Parameters<CyberValleyEventManager["approveEvent"]> => {
-  return [args.eventId];
+  return [args.eventId, args.distributionProfileId];
 };
 
 export const declineEventArgsToArray = (

@@ -7,6 +7,25 @@ from django.utils import timezone
 User = get_user_model()
 
 
+class DistributionProfile(models.Model):
+    """Tracks distribution profiles from DynamicRevenueSplitter contract"""
+
+    id = models.PositiveIntegerField(primary_key=True)
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="owned_distribution_profiles"
+    )
+    recipients = models.JSONField(default=list)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"Distribution Profile {self.id} (Owner: {self.owner.address})"
+
+
 class EventPlace(models.Model):
     STATUS_CHOICES: ClassVar[dict[str, str]] = {
         "submitted": "submitted",
@@ -50,6 +69,13 @@ class Event(models.Model):
 
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
     place = models.ForeignKey(EventPlace, on_delete=models.CASCADE, null=False)
+    distribution_profile = models.ForeignKey(
+        DistributionProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="events",
+    )
     ticket_price = models.PositiveSmallIntegerField(null=False)
     tickets_bought = models.PositiveSmallIntegerField(null=False)
     start_date = models.DateTimeField(null=False)
