@@ -28,6 +28,9 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
   const { sendTx, data: txHash, error } = useSendTx();
   const [isSuccess, setIsSuccess] = useState(false);
   const [redirectEventId, setRedirectEventId] = useState<number | null>(null);
+  const [createEventTxHash, setCreateEventTxHash] = useState<string | null>(
+    null,
+  );
   const queryClient = useQueryClient();
 
   const resolveCreatedEventId = useCallback(async () => {
@@ -72,8 +75,10 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         referralAddress,
       );
     },
-    onSuccess: async () => {
+    onSuccess: async (returnedTxHash: string | undefined) => {
+      // Show success modal for all order types
       setIsSuccess(true);
+
       if (order.type === "buy_ticket") {
         setRedirectEventId(order.ticket.eventId);
         return;
@@ -83,10 +88,12 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         return;
       }
       if (order.type === "create_event") {
-        const createdId = await resolveCreatedEventId();
-        if (createdId != null) {
-          setRedirectEventId(createdId);
+        // Store the txHash for navigation to waiting page
+        const txHashToUse = returnedTxHash || (txHash as string | null);
+        if (txHashToUse) {
+          setCreateEventTxHash(txHashToUse);
         }
+        return;
       }
     },
     onError: console.error,
@@ -102,6 +109,12 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
     );
 
   const handleConfirm = async () => {
+    // For create_event, navigate to the waiting page first
+    if (order.type === "create_event" && createEventTxHash) {
+      navigate(`/txhash/${createEventTxHash}`, { replace: true });
+      return;
+    }
+
     let nextRedirectId = redirectEventId;
     if (order.type === "create_event" && nextRedirectId == null) {
       const createdId = await resolveCreatedEventId();
@@ -128,7 +141,9 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
   const successMessage =
     order.type === "buy_ticket"
       ? "Your will recieve your ticket within several minutes."
-      : "Your order will be published within several minutes.";
+      : order.type === "create_event"
+        ? "Your event request has been submitted. Click proceed to track the confirmation."
+        : "Your order will be published within several minutes.";
 
   // Calculate total price and ticket count for display
   const { totalPrice, totalTickets } =

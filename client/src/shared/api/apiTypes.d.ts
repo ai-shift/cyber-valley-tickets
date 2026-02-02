@@ -134,6 +134,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/distribution-profiles/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get distribution profiles owned by the current user */
+    get: operations["api_distribution_profiles_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/distribution-profiles/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get a specific distribution profile */
+    get: operations["api_distribution_profiles_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/events/": {
     parameters: {
       query?: never;
@@ -271,6 +305,23 @@ export interface paths {
       cookie?: never;
     };
     get: operations["api_events_attendees_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/events/by-tx-hash/{tx_hash}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get an event by its creation transaction hash */
+    get: operations["api_events_by_tx_hash_retrieve"];
     put?: never;
     post?: never;
     delete?: never;
@@ -984,7 +1035,10 @@ export interface components {
     };
     ApiAuthWeb3LoginRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiAuthWeb3NonceRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiDistributionProfilesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiDistributionProfilesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsAttendeesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiEventsByTxHashRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsCategoriesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsLifetimeRevenueRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
@@ -1733,6 +1787,12 @@ export interface components {
       readonly placeId: number;
       /** Format: int64 */
       ticketPrice: number;
+      /** @description Calculate the min and max available ticket prices from categories.
+       *     Excludes categories that are sold out (quota exceeded).
+       *     Returns None for min/max if no categories are available. */
+      readonly ticketPriceRange: {
+        [key: string]: number | null;
+      };
       /** Format: int64 */
       daysAmount: number;
       /** Format: uri */
@@ -1751,6 +1811,18 @@ export interface components {
       readonly tickets: components["schemas"]["Ticket"][];
       readonly socials: components["schemas"]["Social"][];
       readonly defaultShare: number;
+    };
+    /** @description Serializer for DistributionProfile model. */
+    DistributionProfile: {
+      readonly id: number;
+      readonly owner: string;
+      readonly ownerAddress: string;
+      readonly recipients: unknown;
+      readonly isActive: boolean;
+      /** Format: date-time */
+      readonly createdAt: string;
+      /** Format: date-time */
+      readonly updatedAt: string;
     };
     Error401: {
       code: components["schemas"]["ErrorCode401Enum"];
@@ -1927,22 +1999,6 @@ export interface components {
     RoleBasedEvent:
       | components["schemas"]["CreatorEvent"]
       | components["schemas"]["StaffEvent"];
-    /**
-     * @description * `customer` - Customer
-     *     * `staff` - Staff
-     *     * `creator` - Creator
-     *     * `localprovider` - Local Provider
-     *     * `verifiedshaman` - Verified Shaman
-     *     * `master` - Master
-     * @enum {string}
-     */
-    RoleEnum:
-      | "customer"
-      | "staff"
-      | "creator"
-      | "localprovider"
-      | "verifiedshaman"
-      | "master";
     SIWELogin: {
       address: string;
       chain_id: string;
@@ -2003,6 +2059,12 @@ export interface components {
       readonly placeId: number;
       /** Format: int64 */
       ticketPrice: number;
+      /** @description Calculate the min and max available ticket prices from categories.
+       *     Excludes categories that are sold out (quota exceeded).
+       *     Returns None for min/max if no categories are available. */
+      readonly ticketPriceRange: {
+        [key: string]: number | null;
+      };
       /** Format: int64 */
       daysAmount: number;
       /** Format: uri */
@@ -2735,6 +2797,151 @@ export interface operations {
       };
     };
   };
+  api_distribution_profiles_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DistributionProfile"][];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiDistributionProfilesListErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_distribution_profiles_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description A unique value identifying this distribution profile. */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DistributionProfile"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiDistributionProfilesRetrieveErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse404"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
   api_events_list: {
     parameters: {
       query?: {
@@ -3409,6 +3616,85 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ErrorResponse404"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_events_by_tx_hash_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        txHash: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffEvent"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiEventsByTxHashRetrieveErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            detail?: string;
+          };
         };
       };
       405: {

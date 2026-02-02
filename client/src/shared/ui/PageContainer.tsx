@@ -7,16 +7,22 @@ type PageContainerProps = {
   name: string;
   children: ReactNode;
   hasBackIcon?: boolean;
+  onBack?: () => void;
 };
 
 export const PageContainer: React.FC<PageContainerProps> = ({
   children,
   name,
   hasBackIcon = true,
+  onBack,
 }) => {
   const navigate = useNavigate();
   function goBack() {
-    navigate(-1);
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
   }
 
   return (

@@ -68,6 +68,9 @@ class Event(models.Model):
     }
 
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
+    creation_tx_hash = models.CharField(
+        max_length=66, null=True, blank=True, db_index=True
+    )
     place = models.ForeignKey(EventPlace, on_delete=models.CASCADE, null=False)
     distribution_profile = models.ForeignKey(
         DistributionProfile,

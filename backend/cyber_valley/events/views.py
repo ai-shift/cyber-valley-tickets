@@ -178,6 +178,24 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
         serializer = AttendeeSerializer(owners, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        responses={
+            200: StaffEventSerializer,
+            404: {"type": "object", "properties": {"detail": {"type": "string"}}},
+        },
+        description="Get an event by its creation transaction hash",
+    )
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="by-tx-hash/(?P<tx_hash>0x[a-fA-F0-9]+)",
+        url_name="by-tx-hash",
+    )
+    def by_tx_hash(self, _request: Request, tx_hash: str) -> Response:
+        event = get_object_or_404(Event, creation_tx_hash=tx_hash.lower())
+        serializer = self.get_serializer(event)
+        return Response(serializer.data)
+
 
 @extend_schema(
     responses=TicketCategorySerializer(many=True),

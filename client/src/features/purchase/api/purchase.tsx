@@ -22,7 +22,7 @@ export const purchase = async (
   order: Order,
   socials: Socials,
   referralAddress?: string,
-) => {
+): Promise<string | undefined> => {
   const pickFetch: {
     [K in typeof order.type]: (
       sendTx: SendTx<unknown>,
@@ -30,14 +30,20 @@ export const purchase = async (
       order: Order,
       socials: Socials,
       referralAddress?: string,
-    ) => Promise<void>;
+    ) => Promise<string | undefined>;
   } = {
     create_event: createEvent,
     buy_ticket: purchaseTicket,
     update_event: updateEvent,
   };
 
-  await pickFetch[order.type](sendTx, account, order, socials, referralAddress);
+  return await pickFetch[order.type](
+    sendTx,
+    account,
+    order,
+    socials,
+    referralAddress,
+  );
 };
 
 const purchaseTicket = async (
@@ -46,7 +52,7 @@ const purchaseTicket = async (
   order: Order,
   socials: Socials,
   referralAddress?: string,
-) => {
+): Promise<undefined> => {
   if (order.type !== "buy_ticket")
     throw new Error("There is no ticket in the order");
 
@@ -97,6 +103,7 @@ const purchaseTicket = async (
   if (referralAddress) {
     clearReferral();
   }
+  return undefined;
 };
 
 const updateEvent = async (
@@ -105,7 +112,7 @@ const updateEvent = async (
   order: Order,
   socials: Socials,
   _referralAddress?: string,
-) => {
+): Promise<undefined> => {
   if (order.type !== "update_event")
     throw new Error("There is no event in the order");
 
@@ -132,6 +139,7 @@ const updateEvent = async (
   sendTx(tx);
   await tx;
   cleanEventLocal();
+  return undefined;
 };
 
 const createEvent = async (
@@ -140,7 +148,7 @@ const createEvent = async (
   order: Order,
   socials: Socials,
   _referralAddress?: string,
-) => {
+): Promise<string | undefined> => {
   if (order.type !== "create_event")
     throw new Error("There is no event in the order");
   if (!socials) throw new Error("There is no socials in the order");
@@ -169,6 +177,14 @@ const createEvent = async (
     throw new Error("Event place deposit size must be greater than 0");
   }
   const depositSize = BigInt(placeData.eventDepositSize);
+  console.log("Event creation params:", {
+    place,
+    ticketPrice,
+    startTimeTimeStamp,
+    daysAmount,
+    depositSize: depositSize.toString(),
+    eventDepositSize: placeData.eventDepositSize,
+  });
   const approve = approveSubmitEventRequest(account, depositSize);
   sendTx(approve);
   await approve;
@@ -184,8 +200,9 @@ const createEvent = async (
     eventData.cid,
   );
   sendTx(tx);
-  await tx;
+  const txHash = await tx;
   cleanEventLocal();
+  return txHash;
 };
 
 const getSocialsCid = async (socials: Socials) => {
