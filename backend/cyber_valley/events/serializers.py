@@ -84,6 +84,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     start_date_timestamp = serializers.SerializerMethodField()
     total_revenue = serializers.IntegerField(read_only=True)
     paid_deposit = serializers.IntegerField(read_only=True)
+    ticket_price_range = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
@@ -96,6 +97,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             "place",
             "place_id",
             "ticket_price",
+            "ticket_price_range",
             "days_amount",
             "image_url",
             "website",
@@ -107,6 +109,40 @@ class EventSerializer(serializers.ModelSerializer[Event]):
 
     def get_start_date_timestamp(self, obj: Event) -> int:
         return int(obj.start_date.timestamp())
+
+    def get_ticket_price_range(self, obj: Event) -> dict[str, int | None]:
+        """
+        Calculate the min and max available ticket prices from categories.
+        Excludes categories that are sold out (quota exceeded).
+        Returns None for min/max if no categories are available.
+        """
+        categories = obj.categories.all()
+
+        if not categories:
+            # No categories defined, use base ticket price
+            return {"min": obj.ticket_price, "max": obj.ticket_price}
+
+        available_prices = []
+
+        for category in categories:
+            # Skip sold out categories
+            if category.has_quota and category.tickets_bought >= category.quota:
+                continue
+
+            # Calculate actual price after discount
+            if category.discount == 0:
+                actual_price = obj.ticket_price
+            else:
+                discount_amount = (obj.ticket_price * category.discount) // 10000
+                actual_price = obj.ticket_price - discount_amount
+
+            available_prices.append(actual_price)
+
+        if not available_prices:
+            # All categories sold out
+            return {"min": None, "max": None}
+
+        return {"min": min(available_prices), "max": max(available_prices)}
 
 
 class TicketCategorySerializer(serializers.ModelSerializer[TicketCategory]):
