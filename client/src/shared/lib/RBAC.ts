@@ -1,6 +1,14 @@
-import type { components } from "@/shared/api";
-
-export type Role = components["schemas"]["RoleEnum"];
+/**
+ * Role type - based on the backend's role system.
+ * These roles are returned from the API as strings.
+ */
+export type Role =
+  | "customer"
+  | "creator"
+  | "staff"
+  | "localprovider"
+  | "verifiedshaman"
+  | "master";
 
 export type Resource =
   | "event"
@@ -106,7 +114,9 @@ export function getPrimaryRole(roles: Role[] | undefined): Role | null {
     return null;
   }
   return roles.reduce((highest, current) => {
-    if (ROLE_PRIORITY[current] > ROLE_PRIORITY[highest]) {
+    const currentPriority = ROLE_PRIORITY[current] ?? -1;
+    const highestPriority = ROLE_PRIORITY[highest] ?? -1;
+    if (currentPriority > highestPriority) {
       return current;
     }
     return highest;
@@ -121,7 +131,7 @@ export function checkView(roles: Role[] | undefined, view: View): boolean {
     return false;
   }
   return roles.some((role) => {
-    const views = RBAC_VIEWS[role];
+    const views = RBAC_VIEWS[role as Role];
     if (!views) return false;
     return views.includes(view);
   });
@@ -144,7 +154,7 @@ export function checkPermission(
 
     // Check if ANY role has this permission
     const hasPermission = roles.some((role) => {
-      const rolePermissions = RBAC_ROLES[role];
+      const rolePermissions = RBAC_ROLES[role as Role];
       if (!rolePermissions) return false;
 
       const permittedActions = rolePermissions[source];

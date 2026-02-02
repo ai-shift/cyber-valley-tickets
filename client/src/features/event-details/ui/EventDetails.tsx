@@ -7,6 +7,7 @@ import type { LatLng } from "@/entities/geodata";
 import { StatusBage } from "@/features/events-list/ui/StatusBage";
 import { MaybeManageEvent } from "@/features/manage-event";
 import { Ticket } from "@/features/ticket";
+import { getTicketPriceRangeDisplay } from "@/shared/lib/formatTicketPriceRange";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { getTimeString } from "@/shared/lib/getTimeString";
 import { pluralDays } from "@/shared/lib/pluralDays";
@@ -42,13 +43,15 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     title,
     description,
     place,
-    ticketPrice,
+    ticketPriceRange,
     ticketsBought,
     startDateTimestamp,
     daysAmount,
     status,
     website,
   } = event;
+
+  const priceRangeDisplay = getTicketPriceRangeDisplay(ticketPriceRange);
 
   function placeClickHandler() {
     const location = place.geometry.coordinates[0] as LatLng;
@@ -128,7 +131,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         <DetailsBlock
           icon="/icons/price_2.svg"
           title="Price"
-          information={`${ticketPrice}`}
+          information={priceRangeDisplay ?? "Sold out"}
         />
       </div>
 
