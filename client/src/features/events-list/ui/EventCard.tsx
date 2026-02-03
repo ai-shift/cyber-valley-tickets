@@ -1,8 +1,9 @@
 import type { Event } from "@/entities/event";
-
+import { useAuthSlice } from "@/app/providers";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { getTimeString } from "@/shared/lib/getTimeString";
 import { pluralTickets } from "@/shared/lib/pluralDays";
+import { hasRole } from "@/shared/lib/RBAC";
 import { Link } from "react-router";
 import { StatusBage } from "./StatusBage";
 
@@ -10,7 +11,21 @@ type EventCardProps = {
   event: Event;
 };
 
+function isDecisionRequired(event: Event): boolean {
+  // Decision required for events that:
+  // 1. Are submitted (pending approval)
+  // 2. Or are approved but event date has passed and not closed
+  if (event.status === "submitted") return true;
+  if (event.status === "approved") {
+    const eventEndDate = new Date(event.startDateTimestamp * 1000);
+    eventEndDate.setDate(eventEndDate.getDate() + event.daysAmount);
+    return eventEndDate < new Date();
+  }
+  return false;
+}
+
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const { user } = useAuthSlice();
   const {
     place,
     startDateTimestamp,
@@ -21,10 +36,17 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     ticketsBought,
   } = event;
 
+  const isMaster = user ? hasRole(user.roles, "master") : false;
+  const needsDecision = isMaster && isDecisionRequired(event);
+
   return (
     <article className="relative">
-      <div className="absolute top-3 right-2 ">
-        {status === "approved" ? (
+      <div className="absolute top-3 right-2">
+        {needsDecision ? (
+          <p className="px-3 py-1 text-white text-md font-semibold rounded-full self-start bg-red-600">
+            Decision required
+          </p>
+        ) : status === "approved" ? (
           <p className="px-3 py-1 text-primary text-md font-semibold rounded-full self-start bg-black">
             {pluralTickets(place.maxTickets - (ticketsBought || 0))} available
           </p>
