@@ -160,7 +160,9 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           </div>
         </>
       ) : (
-        <LoginBtn {...buttonProps} title="Login to get the ticket" />
+        <div className="p-5">
+          <LoginBtn {...buttonProps} title="Login to get the ticket" />
+        </div>
       )}
     </div>
   );

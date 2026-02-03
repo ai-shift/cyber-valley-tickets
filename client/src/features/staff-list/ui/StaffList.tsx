@@ -1,6 +1,6 @@
 import { useStaffState } from "@/entities/staff";
 import { userQueries } from "@/entities/user";
-import { AddressDisplay } from "@/shared/ui/AddressDisplay";
+import { DisplayUser } from "@/features/display-user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
@@ -43,24 +43,15 @@ export const StaffList: React.FC<StaffListProps> = ({
 
   return (
     <ul className="divide-y divide-secondary/60 py-2">
-      {uniqueAddresses.map((address) => {
-        const user = users.find((entry) => entry.address === address);
-        return (
-          <ManageItem
-            key={address}
-            title={
-              <AddressDisplay
-                address={address}
-                socials={user?.socials}
-                showFullAddressInTooltip
-              />
-            }
-            render={() => [
-              <RemoveStaffBtn key={address} staffAddress={address} />,
-            ]}
-          />
-        );
-      })}
+      {uniqueAddresses.map((address) => (
+        <ManageItem
+          key={address}
+          title={<DisplayUser address={address} />}
+          render={() => [
+            <RemoveStaffBtn key={address} staffAddress={address} />,
+          ]}
+        />
+      ))}
     </ul>
   );
 };

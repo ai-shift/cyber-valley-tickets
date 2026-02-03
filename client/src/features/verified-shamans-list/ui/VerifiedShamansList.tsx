@@ -1,6 +1,6 @@
 import { userQueries } from "@/entities/user";
 import { useVerifiedShamanState } from "@/entities/verifiedshaman/model/slice";
-import { AddressDisplay } from "@/shared/ui/AddressDisplay";
+import { DisplayUser } from "@/features/display-user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 import { ManageItem } from "@/widgets/ManageItem";
@@ -47,24 +47,15 @@ export const VerifiedShamansList: React.FC<VerifiedShamansListProps> = ({
 
   return (
     <ul className="divide-y divide-secondary/60 py-2">
-      {uniqueAddresses.map((address) => {
-        const user = users.find((entry) => entry.address === address);
-        return (
-          <ManageItem
-            key={address}
-            title={
-              <AddressDisplay
-                address={address}
-                socials={user?.socials}
-                showFullAddressInTooltip
-              />
-            }
-            render={() => [
-              <RemoveVerifiedShamanBtn key={address} shamanAddress={address} />,
-            ]}
-          />
-        );
-      })}
+      {uniqueAddresses.map((address) => (
+        <ManageItem
+          key={address}
+          title={<DisplayUser address={address} />}
+          render={() => [
+            <RemoveVerifiedShamanBtn key={address} shamanAddress={address} />,
+          ]}
+        />
+      ))}
     </ul>
   );
 };

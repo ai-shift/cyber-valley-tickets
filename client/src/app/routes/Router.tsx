@@ -26,6 +26,7 @@ import {
   SocialsPage,
   TxHashPlaceholderPage,
   UpdatePlacePage,
+  UserPage,
 } from "@/pages";
 import { NavContainer } from "@/shared/widgets/layout/NavContainer";
 import { AuthProvider, GoogleMapsProvider, QueryProvider } from "../providers";
@@ -130,6 +131,7 @@ export const Router = () => {
                   element={<TxHashPlaceholderPage />}
                 />
                 <Route path="/socials" element={<SocialsPage />} />
+                <Route path="/user/:address" element={<UserPage />} />
               </Route>
               <Route path="verify" element={<ShamanVerificationPage />} />
             </Route>

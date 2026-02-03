@@ -82,7 +82,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   // Preselect the first profile when profiles are loaded
   useEffect(() => {
     if (profiles && profiles.length > 0 && !selectedProfileId) {
-      setSelectedProfileId(String(profiles[0].id));
+      setSelectedProfileId(String(profiles[0]?.id));
     }
   }, [profiles, selectedProfileId]);
 
