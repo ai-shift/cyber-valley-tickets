@@ -37,7 +37,7 @@ run-indexer: migrate
 	$(python) manage.py indexer
 
 run-indexer-oneshot: migrate
-	$(python) manage.py indexer --oneshot
+	$(python) manage.py indexer --oneshot --from-block 0
 
 run-reaper: migrate
 	$(python) manage.py reaper

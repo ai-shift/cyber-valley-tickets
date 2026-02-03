@@ -406,6 +406,28 @@ until curl -s http://127.0.0.1:5001/api/v0/version >/dev/null 2>&1; do
 done
 log_success "IPFS is ready" "ready"
 
+# Reset indexer state to ensure it processes all historical events
+# Events are created during deploy-and-seed at past blocks due to time manipulation
+log_info "Resetting indexer state for full re-index" "resetting"
+cd backend
+.venv/bin/python manage.py shell -c "
+from cyber_valley.indexer.models import LastProcessedBlock, LogProcessingError
+LastProcessedBlock.objects.all().delete()
+LogProcessingError.objects.all().delete()
+print('Indexer state cleared')
+"
+cd ..
+log_success "Indexer state reset" "done"
+
+# Run oneshot indexer first to properly index all historical events
+# This must be done BEFORE starting the daemon indexer to ensure proper ordering
+# Events can be processed out of order (e.g., TicketCategoryCreated before NewEventRequest)
+log_info "Running oneshot indexer to index all historical events" "indexing"
+if ! run_buf_command "make -C backend/ run-indexer-oneshot"; then
+    log_warning "Oneshot indexer had some errors (may be expected for duplicate events)" "warning"
+fi
+log_success "Oneshot indexer completed" "done"
+
 log_info "Starting blockchain indexer" "starting"
 create_tmux_window "indexer" "/tmp/indexer.log"
 tmux send-keys -t "$SESSION_NAME:indexer" "make -C backend/ run-indexer" Enter

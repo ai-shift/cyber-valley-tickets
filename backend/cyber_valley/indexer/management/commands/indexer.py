@@ -59,4 +59,9 @@ class Command(BaseCommand):
             ChecksumAddress(HexAddress(HexStr(address))): w3.eth.contract(abi=abi)
             for address, abi in ETH_CONTRACT_ADDRESS_TO_ABI.items()
         }
-        index_events(contracts, not bool(options["no_sync"]), bool(options["oneshot"]))
+        index_events(
+            contracts,
+            not bool(options["no_sync"]),
+            bool(options["oneshot"]),
+            options.get("from_block"),
+        )

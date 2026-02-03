@@ -779,7 +779,17 @@ def _multihash2cid(multihash: MultihashLike) -> None | str:
 def _sync_ticket_category_created(
     event_data: CyberValleyEventManager.TicketCategoryCreated,
 ) -> None:
-    event = Event.objects.get(id=event_data.event_id)
+    # Event might not exist yet (TicketCategoryCreated can be emitted before NewEventRequest)
+    # Skip and let error handling retry later
+    try:
+        event = Event.objects.get(id=event_data.event_id)
+    except Event.DoesNotExist:
+        log.warning(
+            "Event %s not found for category %s - will retry later",
+            event_data.event_id,
+            event_data.category_id,
+        )
+        raise
 
     TicketCategory.objects.update_or_create(
         event=event,
