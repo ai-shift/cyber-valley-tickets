@@ -49,7 +49,10 @@ class NodeListenerStoppedError(Exception):
 
 
 def index_events(
-    contracts: dict[ChecksumAddress, type[Contract]], sync: bool, oneshot: bool = False
+    contracts: dict[ChecksumAddress, type[Contract]],
+    sync: bool,
+    oneshot: bool = False,
+    from_block: int | None = None,
 ) -> None:
     queue: Queue[LogReceipt] = Queue()
     listener_loop = None
@@ -70,6 +73,7 @@ def index_events(
             w3,
             queue,
             list(contracts.keys()),
+            from_block,
         )
     try_fix_errors(queue)
 
@@ -143,12 +147,16 @@ async def arun_listeners(
 
 
 def run_sync(
-    w3: Web3, queue: Queue[LogReceipt], contract_addresses: list[ChecksumAddress]
+    w3: Web3,
+    queue: Queue[LogReceipt],
+    contract_addresses: list[ChecksumAddress],
+    from_block: int | None = None,
 ) -> None:
-    try:
-        from_block = LastProcessedBlock.objects.get(id=1).block_number
-    except LastProcessedBlock.DoesNotExist:
-        from_block = 0
+    if from_block is None:
+        try:
+            from_block = LastProcessedBlock.objects.get(id=1).block_number
+        except LastProcessedBlock.DoesNotExist:
+            from_block = 0
     for receipt in _get_logs(w3, from_block, contract_addresses):
         queue.put(receipt)
 
