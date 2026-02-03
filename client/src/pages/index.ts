@@ -9,6 +9,7 @@ export { NotificationsPage } from "./notifications";
 export { ManagePage } from "./manage";
 export { ShamanVerificationPage } from "./shaman-verification";
 export { ManagePlacesPage } from "./manage/place";
+export { CreatePlacePage } from "./manage/place/create";
 export { CreatePlaceUnifiedPage } from "./place";
 export { UpdatePlacePage } from "./manage/place/update";
 export { ManageStaffPage } from "./manage/staff";

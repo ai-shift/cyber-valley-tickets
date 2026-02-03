@@ -14,6 +14,7 @@ export const requestPlace = async (account: Account, place: EventPlaceForm) => {
     minTickets,
     maxTickets,
     available,
+    eventDepositSize,
   } = place;
 
   if (!geometry) {
@@ -31,6 +32,7 @@ export const requestPlace = async (account: Account, place: EventPlaceForm) => {
   placeForm.append("title", title);
   placeForm.append("description", "foo");
   placeForm.append("geometry", JSON.stringify(formatedGeodata));
+  placeForm.append("eventDepositSize", eventDepositSize.toString());
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
     // @ts-ignore
@@ -48,6 +50,7 @@ export const requestPlace = async (account: Account, place: EventPlaceForm) => {
     minDays,
     available,
     data.cid,
+    eventDepositSize,
   );
   return txHash;
 };

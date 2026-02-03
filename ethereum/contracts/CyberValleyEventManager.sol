@@ -165,6 +165,22 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _;
     }
 
+    /**
+     * @notice Check if a place has any active events (submitted or approved status)
+     * @param eventPlaceId The ID of the event place
+     * @return true if there are active events at this place
+     */
+    function _hasActiveEvents(uint256 eventPlaceId) internal view returns (bool) {
+        for (uint256 i = 0; i < events.length; i++) {
+            if (events[i].eventPlaceId == eventPlaceId) {
+                if (events[i].status == EventStatus.Submitted || events[i].status == EventStatus.Approved) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     constructor(
         address _usdtTokenContract,
         address _eventTicketContract,
@@ -236,10 +252,17 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bool _available,
         bytes32 digest,
         uint8 hashFunction,
-        uint8 size
+        uint8 size,
+        uint256 _eventDepositSize
     ) external {
         bool isLocalProvider = hasRole(LOCAL_PROVIDER_ROLE, msg.sender);
 	require(isLocalProvider || hasRole(VERIFIED_SHAMAN_ROLE, msg.sender), "access denied");
+
+        // If local provider is creating, deposit must be > 0
+        // If shaman is requesting, deposit can be 0 (will be set during approval)
+        if (isLocalProvider) {
+            require(_eventDepositSize > 0, "Deposit must be greater than zero");
+        }
 
         eventPlaces.push(EventPlace({
             requester: msg.sender,
@@ -256,7 +279,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 hashFunction: hashFunction,
                 size: size
             }),
-            eventDepositSize: 0
+            eventDepositSize: _eventDepositSize
         }));
 
         uint256 eventPlaceId = eventPlaces.length - 1;
@@ -276,7 +299,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
                 digest,
                 hashFunction,
                 size,
-                0
+                _eventDepositSize
             );
         } else {
             emit NewEventPlaceRequest(
@@ -349,7 +372,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bool _available,
         bytes32 digest,
         uint8 hashFunction,
-        uint8 size
+        uint8 size,
+        uint256 _eventDepositSize
     ) external onlyRole(LOCAL_PROVIDER_ROLE) {
         require(eventPlaceId < eventPlaces.length, "eventPlaceId should exist");
         EventPlace storage place = eventPlaces[eventPlaceId];
@@ -361,6 +385,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             place.status == EventPlaceStatus.Approved,
             "EventPlace must be approved to be updated"
         );
+
+        // Only allow deposit change if there are no active events
+        if (_eventDepositSize != place.eventDepositSize) {
+            require(
+                !_hasActiveEvents(eventPlaceId),
+                "Cannot change deposit while there are active events"
+            );
+            require(_eventDepositSize > 0, "Deposit must be greater than zero");
+            place.eventDepositSize = _eventDepositSize;
+        }
 
         place.maxTickets = _maxTickets;
         place.minTickets = _minTickets;

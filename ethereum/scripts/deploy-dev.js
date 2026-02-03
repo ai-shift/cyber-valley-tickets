@@ -151,6 +151,7 @@ async function main() {
   const prevWeekPlaces = [
     {
       title: "Beach Venue",
+      deposit: 10,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.291059, lng: 115.0841631 }],
@@ -158,6 +159,7 @@ async function main() {
     },
     {
       title: "Mountain Retreat",
+      deposit: 25,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.299827, lng: 115.098407 }],
@@ -171,6 +173,7 @@ async function main() {
     body.append("title", cfg.title);
     body.append("description", "foo");
     body.append("geometry", JSON.stringify(cfg.geometry));
+    body.append("eventDepositSize", cfg.deposit.toString());
     const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
       method: "PUT",
@@ -198,6 +201,7 @@ async function main() {
         mh.digest,
         mh.hashFunction,
         mh.size,
+        0, // Shaman can't set deposit, it will be set during approval
       );
     const submitReceipt = await submitTx.wait();
     const newEventPlaceRequestEvent = submitReceipt.logs
@@ -208,18 +212,17 @@ async function main() {
     }
     const eventPlaceId = newEventPlaceRequestEvent.args.id;
 
-    // Approve event place as local provider with deposit
-    const depositSize = 100;
+    // Approve event place as local provider with deposit from config
     await eventManager
       .connect(localProvider)
-      .approveEventPlace(eventPlaceId, depositSize);
+      .approveEventPlace(eventPlaceId, cfg.deposit);
 
     console.log(
       "previous week place created",
-      "config",
-      cfg,
-      "multihash",
-      mh,
+      "title",
+      cfg.title,
+      "deposit",
+      cfg.deposit,
       "id",
       eventPlaceId.toString(),
     );
@@ -368,6 +371,7 @@ async function main() {
   const places = [
     {
       title: "foo",
+      deposit: 7,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.291059, lng: 115.0841631 }],
@@ -375,6 +379,7 @@ async function main() {
     },
     {
       title: "bar",
+      deposit: 30,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.299827, lng: 115.098407 }],
@@ -386,6 +391,7 @@ async function main() {
     body.append("title", cfg.title);
     body.append("description", "foo");
     body.append("geometry", JSON.stringify(cfg.geometry));
+    body.append("eventDepositSize", cfg.deposit.toString());
     const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
       method: "PUT",
@@ -413,6 +419,7 @@ async function main() {
         mh.digest,
         mh.hashFunction,
         mh.size,
+        0, // Shaman can't set deposit, it will be set during approval
       );
     const submitReceipt = await submitTx.wait();
     const newEventPlaceRequestEvent = submitReceipt.logs
@@ -423,18 +430,17 @@ async function main() {
     }
     const eventPlaceId = newEventPlaceRequestEvent.args.id;
 
-    // Approve event place as local provider with deposit
-    const depositSize = 100;
+    // Approve event place as local provider with deposit from config
     await eventManager
       .connect(localProvider)
-      .approveEventPlace(eventPlaceId, depositSize);
+      .approveEventPlace(eventPlaceId, cfg.deposit);
 
     console.log(
       "place created",
-      "config",
-      cfg,
-      "multihash",
-      mh,
+      "title",
+      cfg.title,
+      "deposit",
+      cfg.deposit,
       "id",
       eventPlaceId.toString(),
     );

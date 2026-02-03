@@ -1278,6 +1278,11 @@ export const eventManager = getContract({
           name: "size",
           type: "uint8",
         },
+        {
+          internalType: "uint256",
+          name: "_eventDepositSize",
+          type: "uint256",
+        },
       ],
       name: "submitEventPlaceRequest",
       outputs: [],
@@ -1472,6 +1477,11 @@ export const eventManager = getContract({
           internalType: "uint8",
           name: "size",
           type: "uint8",
+        },
+        {
+          internalType: "uint256",
+          name: "_eventDepositSize",
+          type: "uint256",
         },
       ],
       name: "updateEventPlace",

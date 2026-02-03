@@ -203,6 +203,7 @@ async function createPlaces(
   const placeConfigs = [
     {
       title: "Beach Venue",
+      deposit: 10,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.291059, lng: 115.0841631 }],
@@ -210,6 +211,7 @@ async function createPlaces(
     },
     {
       title: "Mountain Retreat",
+      deposit: 25,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.299827, lng: 115.098407 }],
@@ -217,6 +219,7 @@ async function createPlaces(
     },
     {
       title: "City Center Hall",
+      deposit: 50,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.285, lng: 115.09 }],
@@ -224,6 +227,7 @@ async function createPlaces(
     },
     {
       title: "Riverside Garden",
+      deposit: 15,
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.295, lng: 115.08 }],
@@ -239,6 +243,7 @@ async function createPlaces(
     body.append("title", cfg.title);
     body.append("description", "A beautiful venue for events");
     body.append("geometry", JSON.stringify(cfg.geometry));
+    body.append("eventDepositSize", cfg.deposit.toString());
 
     const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
@@ -253,7 +258,7 @@ async function createPlaces(
     const result = await resp.json();
     const mh = getBytes32FromMultiash(result.cid);
 
-    // Submit event place request as verified shaman
+    // Submit event place request as verified shaman with suggested deposit
     const submitTx = await eventManager
       .connect(verifiedShaman)
       .submitEventPlaceRequest(
@@ -266,6 +271,7 @@ async function createPlaces(
         mh.digest,
         mh.hashFunction,
         mh.size,
+        0, // Shaman can't set deposit, it will be set during approval
       );
 
     const submitReceipt = await submitTx.wait();
@@ -279,11 +285,11 @@ async function createPlaces(
 
     const placeId = newEventPlaceRequestEvent.args.id;
 
-    // Approve event place as local provider
-    await eventManager.connect(localProvider).approveEventPlace(placeId, 100);
+    // Approve event place as local provider with the deposit from config
+    await eventManager.connect(localProvider).approveEventPlace(placeId, cfg.deposit);
 
     places.push({ id: placeId, ...cfg, cid: result.cid });
-    console.log(`Created place: ${cfg.title} (ID: ${placeId})`);
+    console.log(`Created place: ${cfg.title} (ID: ${placeId}, Deposit: ${cfg.deposit} USDT)`);
   }
 
   return places;
