@@ -163,6 +163,11 @@ def synchronize_event(event_data: BaseModel, *, tx_hash: str | None = None) -> N
         case DynamicRevenueSplitter.EventProfileSet():
             _sync_event_profile_set(event_data)
             log.info("Event profile set")
+        case DynamicRevenueSplitter.DefaultProfileSet():
+            # Default profile set - no action needed for now
+            # This event is informational; the default profile is used
+            # when creating new events without an explicit profile
+            log.info("Default profile set: %s", event_data.profile_id)
         case _:
             log.error("Unknown event data %s", type(event_data))
             raise UnknownEventError(event_data)
@@ -173,6 +178,11 @@ def _sync_new_event_request(
     event_data: CyberValleyEventManager.NewEventRequest,
     tx_hash: str | None = None,
 ) -> None:
+    # Check if event already exists - skip if it does
+    if Event.objects.filter(id=event_data.id).exists():
+        log.info("Event %s already exists, skipping", event_data.id)
+        return
+
     creator, _ = CyberValleyUser.objects.get_or_create(address=event_data.creator)
     place = EventPlace.objects.get(id=event_data.event_place_id)
     cid = _multihash2cid(event_data)
