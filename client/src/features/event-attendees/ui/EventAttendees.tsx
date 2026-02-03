@@ -1,8 +1,7 @@
 import { eventQueries } from "@/entities/event";
-import { AddressDisplay } from "@/shared/ui/AddressDisplay";
+import { DisplayUser } from "@/features/display-user";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
-import { ExternalLink } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -35,8 +34,7 @@ export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
       <table className="w-full text-left table-auto min-w-max">
         <thead>
           <tr>
-            <th>Address</th>
-            <th>Social</th>
+            <th>User</th>
             <th>Tickets</th>
           </tr>
         </thead>
@@ -44,16 +42,7 @@ export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
           {attendees.map((a) => (
             <tr key={a.address}>
               <td>
-                <a
-                  className="inline-flex items-center space-x-1 gap-1"
-                  href={`https://etherscan.io/address/${a.address}`}
-                >
-                  <AddressDisplay address={a.address} socials={a.socials} />
-                  <ExternalLink className="size-4" />
-                </a>
-              </td>
-              <td>
-                {a.socials?.network}: {a.socials?.value}
+                <DisplayUser address={a.address} />
               </td>
               <td>{a.ticketsCount}</td>
             </tr>

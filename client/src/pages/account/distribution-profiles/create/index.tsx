@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 import { createDistributionProfile } from "@/shared/lib/web3";
-import { Loader } from "@/shared/ui/Loader";
+
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
@@ -114,6 +114,7 @@ export const CreateDistributionProfilePage: React.FC = () => {
     return null;
   }
 
+  // @ts-ignore - used in JSX below, TS doesn't detect it through conditional return
   async function handleSubmit() {
     if (!account) {
       setSubmitError("Please connect your wallet");
@@ -189,7 +190,7 @@ export const CreateDistributionProfilePage: React.FC = () => {
             </span>
           </div>
 
-          {recipients.map((recipient, index) => {
+          {recipients.map((recipient) => {
             const isDuplicate =
               recipient.address &&
               duplicateAddresses.has(recipient.address.toLowerCase());

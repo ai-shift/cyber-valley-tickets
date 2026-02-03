@@ -2,11 +2,12 @@ import { useEnsLookup } from "@/shared/hooks/useEnsLookup";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import type React from "react";
 import { twMerge } from "tailwind-merge";
-import { useUserSocials } from "../hooks/useUserSocials";
+import { useNavigate } from "react-router";
 
 interface DisplayUserProps {
   address: string;
   className?: string;
+  navigateOnClick?: boolean;
 }
 
 /**
@@ -14,50 +15,50 @@ interface DisplayUserProps {
  *
  * Rendering priority:
  * 1. ENS name - Resolved using useEnsLookup hook
- * 2. Social handle - Fetched from backend, first available (Telegram > Instagram > Discord > WhatsApp)
- * 3. Shortened address - Link to Etherscan.io if no ENS or socials
+ * 2. Shortened address - Link to Etherscan.io if no ENS
+ *
+ * Clicking on the component navigates to the user's profile page (if navigateOnClick is true)
  */
 export const DisplayUser: React.FC<DisplayUserProps> = ({
   address,
   className,
+  navigateOnClick = true,
 }) => {
-  const { data: socials, isLoading: isLoadingSocials } =
-    useUserSocials(address);
+  const navigate = useNavigate();
   const ensName = useEnsLookup(address);
 
-  // Priority order for social networks
-  const socialPriority = ["telegram", "instagram", "discord", "whatsapp"];
-
-  // Get first available social handle based on priority
-  const getSocialDisplay = (): string | null => {
-    if (!socials || socials.length === 0) return null;
-
-    for (const network of socialPriority) {
-      const social = socials.find((s) => s.network === network);
-      if (social?.value) {
-        return social.value;
-      }
+  const handleClick = (e: React.MouseEvent) => {
+    if (navigateOnClick) {
+      e.stopPropagation();
+      navigate(`/user/${address}`);
     }
-    return null;
   };
 
-  const socialDisplay = getSocialDisplay();
   const shortenedAddress = formatAddress(address as `0x${string}`);
 
-  // Determine display value based on priority: ENS > Social > Address
-  const displayValue = ensName ?? socialDisplay ?? shortenedAddress;
+  // Determine display value: ENS > Address
+  const displayValue = ensName ?? shortenedAddress;
 
-  // Show loading skeleton while fetching socials (ENS is usually cached)
-  if (isLoadingSocials && !ensName) {
-    return (
-      <div className={twMerge("animate-pulse", className)}>
-        <div className="h-4 w-24 bg-secondary/30 rounded" />
-      </div>
-    );
-  }
+  const clickableClasses = navigateOnClick
+    ? "cursor-pointer hover:underline"
+    : "";
 
-  // If showing address (no ENS or social), make it a link to Etherscan
-  if (!ensName && !socialDisplay) {
+  // If no ENS, show shortened address with click handler
+  if (!ensName) {
+    if (navigateOnClick) {
+      return (
+        <span
+          onClick={handleClick}
+          className={twMerge(
+            "text-secondary hover:underline cursor-pointer",
+            className
+          )}
+          title={`${address} (click to view profile)`}
+        >
+          {displayValue}
+        </span>
+      );
+    }
     return (
       <a
         href={`https://etherscan.io/address/${address}`}
@@ -73,8 +74,13 @@ export const DisplayUser: React.FC<DisplayUserProps> = ({
 
   return (
     <span
-      className={twMerge("text-secondary font-medium", className)}
-      title={address}
+      onClick={handleClick}
+      className={twMerge(
+        "text-secondary font-medium",
+        clickableClasses,
+        className
+      )}
+      title={`${address} (click to view profile)`}
     >
       {displayValue}
     </span>

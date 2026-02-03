@@ -40,6 +40,7 @@ from .health.views import health_check
 from .notifications.views import NotificationViewSet
 from .users.views import (
     CurrentUserViewSet,
+    get_user_profile,
     get_user_socials,
     save_user_socials,
     upload_user_socials_to_ipfs,
@@ -97,6 +98,7 @@ urlpatterns = [
     path("api/ipfs/orders/meta", upload_order_meta_to_ipfs, name="ipfs-orders"),
     path("api/users/socials", save_user_socials, name="save-socials"),
     path("api/users/<str:address>/socials", get_user_socials, name="get-user-socials"),
+    path("api/users/<str:address>/profile", get_user_profile, name="get-user-profile"),
     path("api/auth/web3/login/", login, name="web3_login"),
     path("api/auth/web3/nonce/<str:address>", nonce, name="web3_nonce"),
     path("api/auth/verify", verify, name="jwt_verify"),

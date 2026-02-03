@@ -1,6 +1,7 @@
 import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { apiClient } from "@/shared/api";
+import { cn } from "@/shared/lib/utils";
 import { client } from "@/shared/lib/web3";
 import { injectedSupportedWalletIds } from "@/shared/lib/web3/wallets";
 import { Loader } from "@/shared/ui/Loader";
@@ -249,11 +250,11 @@ const LoginBtn: React.FC<LoginBtnProps> = ({
   title,
 }) => {
   return (
-    <div>
+    <div className="w-full">
       {isConnecting ? (
         <Loader className="h-60" />
       ) : (
-        <Button className={className} onClick={login}>
+        <Button className={cn("w-full", className)} onClick={login}>
           {title ?? "Login"}
         </Button>
       )}

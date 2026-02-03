@@ -1,3 +1,5 @@
+from typing import Any
+
 import ipfshttpclient
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -206,3 +208,64 @@ def get_user_socials(_request: Request, address: str) -> Response:
         return Response(data)
     except CyberValleyUser.DoesNotExist:
         return Response([], status=200)
+
+
+@extend_schema(
+    responses={
+        (200, "application/json"): {
+            "type": "object",
+            "properties": {
+                "address": {"type": "string"},
+                "ens": {"type": "string", "nullable": True},
+                "avatar_url": {"type": "string"},
+                "socials": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "network": {"type": "string"},
+                            "value": {"type": "string"},
+                        },
+                    },
+                },
+                "roles": {"type": "array", "items": {"type": "string"}},
+            },
+        }
+    },
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_user_profile(request: Request, address: str) -> Response:
+    """Get user profile info. Socials are only returned if requester is the user or has localprovider role."""
+    try:
+        target_user = CyberValleyUser.objects.get(address=address.lower())
+        current_user = request.user
+
+        # Determine if socials should be visible
+        # Socials visible if: requester is the user themselves OR has localprovider/master role
+        can_view_socials = (
+            current_user.address.lower() == address.lower()
+            or current_user.has_role(
+                CyberValleyUser.LOCAL_PROVIDER,
+                CyberValleyUser.MASTER,
+            )
+        )
+
+        # Build response data
+        data: dict[str, Any] = {
+            "address": target_user.address,
+            "ens": None,  # ENS lookup happens on frontend
+            "avatar_url": f"https://effigy.im/a/{target_user.address}.svg",
+            "roles": [role.name for role in target_user.roles.all()],
+        }
+
+        # Only include socials if authorized
+        if can_view_socials:
+            socials = target_user.socials.all()
+            data["socials"] = [{"network": s.network, "value": s.value} for s in socials]
+        else:
+            data["socials"] = []
+
+        return Response(data)
+    except CyberValleyUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
