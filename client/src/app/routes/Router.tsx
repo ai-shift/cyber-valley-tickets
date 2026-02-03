@@ -5,6 +5,7 @@ import {
   AccountPage,
   CreateDistributionProfilePage,
   CreateEventPage,
+  CreatePlacePage,
   CreatePlaceUnifiedPage,
   EditEventPage,
   EventAttendeesPage,
@@ -78,6 +79,10 @@ export const Router = () => {
                     element={<RestrictedTo view="manage-places" />}
                   >
                     <Route index element={<ManagePlacesPage />} />
+                    <Route
+                      path="/manage/place/create"
+                      element={<CreatePlacePage />}
+                    />
                     <Route
                       path="/manage/place/update"
                       element={<UpdatePlacePage />}

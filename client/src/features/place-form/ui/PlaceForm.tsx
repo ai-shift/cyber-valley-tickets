@@ -44,12 +44,20 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
   const { data: places } = useQuery(placesQueries.list());
   const { WithSubmitCheck, props } = useCheckSubmit();
 
+  const hasActiveEvents = existingPlace?.isUsed ?? false;
+  const isApproved = existingPlace?.status === "approved";
+  // Deposit can only be edited if:
+  // 1. Place is not yet approved (still submitted), AND
+  // 2. There are no active events
+  const canEditDeposit = !isApproved && !hasActiveEvents;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingPlace
       ? {
           ...existingPlace,
           geometry: existingPlace.geometry.coordinates[0] as LatLng,
+          eventDepositSize: existingPlace.eventDepositSize || 0,
         }
       : {
           title: "",
@@ -59,6 +67,7 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           daysBeforeCancel: 1,
           minDays: 1,
           minPrice: 1,
+          eventDepositSize: 0,
           available: true,
         },
   });
@@ -231,6 +240,38 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           fieldName="daysBeforeCancel"
           title="Days before cancel"
         />
+
+        <FormField
+          control={form.control}
+          name="eventDepositSize"
+          disabled={disableFields || !canEditDeposit}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event deposit (USDT)</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Deposit required for events"
+                  inputMode="numeric"
+                  {...field}
+                  value={field.value || ""}
+                  onChange={(e) =>
+                    field.onChange(handleNumericInput(e.target.value))
+                  }
+                  disabled={disableFields || !canEditDeposit}
+                />
+              </FormControl>
+              <FormMessage />
+              {!canEditDeposit && existingPlace && (
+                <p className="text-xs text-muted-foreground">
+                  {isApproved
+                    ? "Deposit is set during approval and cannot be changed after."
+                    : "Deposit cannot be changed while there are active events at this place."}
+                </p>
+              )}
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name={"available"}

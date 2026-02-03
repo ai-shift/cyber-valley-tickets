@@ -1,4 +1,5 @@
 import type { EventStatus } from "@/entities/event";
+import { DisplayUser } from "@/features/display-user";
 import { type Role, checkPermission } from "@/shared/lib/RBAC";
 import {
   approveEvent,
@@ -30,7 +31,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { useManageEventState } from "../model/slice";
-import { DisplayUser } from "@/features/display-user";
 
 type MaybeManageEventProps = {
   roles: Role[];
@@ -330,12 +330,12 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
                   <div className="mt-4 p-4 space-y-3">
                     {(() => {
                       const profile = profiles.find(
-                        (p) => String(p.id) === selectedProfileId
+                        (p) => String(p.id) === selectedProfileId,
                       );
                       if (!profile) return null;
                       const totalShares = profile.recipients.reduce(
                         (sum, r) => sum + r.share,
-                        0
+                        0,
                       );
                       return (
                         <>
@@ -348,7 +348,11 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
                             </span>
                           </div>
                           <div className="text-xs text-muted-foreground flex items-center gap-1">
-                            Owner: <DisplayUser address={profile.ownerAddress || ""} className="text-xs" />
+                            Owner:{" "}
+                            <DisplayUser
+                              address={profile.ownerAddress || ""}
+                              className="text-xs"
+                            />
                           </div>
 
                           {/* Recipients Table */}

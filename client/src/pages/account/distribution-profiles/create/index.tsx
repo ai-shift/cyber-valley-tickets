@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
+import { createDistributionProfile } from "@/shared/lib/web3";
+import { Loader } from "@/shared/ui/Loader";
 import { PageContainer } from "@/shared/ui/PageContainer";
+import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { Loader } from "@/shared/ui/Loader";
-import { ResultDialog } from "@/shared/ui/ResultDialog";
-import { createDistributionProfile } from "@/shared/lib/web3";
+import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import { useActiveAccount } from "thirdweb/react";
-import { Plus, Trash2, AlertCircle } from "lucide-react";
 import { isAddress } from "thirdweb/utils";
 
 const BASIS_POINTS = 10000;
@@ -50,7 +50,7 @@ export const CreateDistributionProfilePage: React.FC = () => {
 
   const totalShares = recipients.reduce(
     (sum, r) => sum + (Number.parseInt(r.share) || 0),
-    0
+    0,
   );
   const remainingShares = BASIS_POINTS - totalShares;
 
@@ -72,11 +72,13 @@ export const CreateDistributionProfilePage: React.FC = () => {
     setRecipients(recipients.filter((r) => r.id !== id));
   }
 
-  function updateRecipient(id: string, field: "address" | "share", value: string) {
+  function updateRecipient(
+    id: string,
+    field: "address" | "share",
+    value: string,
+  ) {
     setRecipients(
-      recipients.map((r) =>
-        r.id === id ? { ...r, [field]: value } : r
-      )
+      recipients.map((r) => (r.id === id ? { ...r, [field]: value } : r)),
     );
   }
 
@@ -193,55 +195,53 @@ export const CreateDistributionProfilePage: React.FC = () => {
               duplicateAddresses.has(recipient.address.toLowerCase());
 
             return (
-            <div
-              key={recipient.id}
-              className="flex items-start gap-3 pb-6"
-            >
-              <div className="flex-1 relative">
-                <Input
-                  type="text"
-                  placeholder="0x..."
-                  value={recipient.address}
-                  onChange={(e) =>
-                    updateRecipient(recipient.id, "address", e.target.value)
-                  }
-                  disabled={isSubmitting}
-                  className={`font-mono text-sm ${
-                    isDuplicate
-                      ? "border-destructive text-destructive focus-visible:border-destructive focus-visible:ring-destructive"
-                      : ""
-                  }`}
-                />
-                {isDuplicate && (
-                  <p className="absolute -bottom-5 left-0 text-xs text-destructive whitespace-nowrap">
-                    Duplicate address
-                  </p>
-                )}
+              <div key={recipient.id} className="flex items-start gap-3 pb-6">
+                <div className="flex-1 relative">
+                  <Input
+                    type="text"
+                    placeholder="0x..."
+                    value={recipient.address}
+                    onChange={(e) =>
+                      updateRecipient(recipient.id, "address", e.target.value)
+                    }
+                    disabled={isSubmitting}
+                    className={`font-mono text-sm ${
+                      isDuplicate
+                        ? "border-destructive text-destructive focus-visible:border-destructive focus-visible:ring-destructive"
+                        : ""
+                    }`}
+                  />
+                  {isDuplicate && (
+                    <p className="absolute -bottom-5 left-0 text-xs text-destructive whitespace-nowrap">
+                      Duplicate address
+                    </p>
+                  )}
+                </div>
+                <div className="w-28">
+                  <Input
+                    type="number"
+                    min="0"
+                    max={BASIS_POINTS}
+                    placeholder="0"
+                    value={recipient.share}
+                    onChange={(e) =>
+                      updateRecipient(recipient.id, "share", e.target.value)
+                    }
+                    disabled={isSubmitting}
+                  />
+                </div>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => removeRecipient(recipient.id)}
+                  disabled={recipients.length <= 1 || isSubmitting}
+                  className="h-12 w-12 shrink-0"
+                >
+                  <Trash2 size={18} />
+                </Button>
               </div>
-              <div className="w-28">
-                <Input
-                  type="number"
-                  min="0"
-                  max={BASIS_POINTS}
-                  placeholder="0"
-                  value={recipient.share}
-                  onChange={(e) =>
-                    updateRecipient(recipient.id, "share", e.target.value)
-                  }
-                  disabled={isSubmitting}
-                />
-              </div>
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => removeRecipient(recipient.id)}
-                disabled={recipients.length <= 1 || isSubmitting}
-                className="h-12 w-12 shrink-0"
-              >
-                <Trash2 size={18} />
-              </Button>
-            </div>
-          )})}
+            );
+          })}
         </div>
 
         {/* Add Recipient Button */}
@@ -277,7 +277,10 @@ export const CreateDistributionProfilePage: React.FC = () => {
         {/* Error Display */}
         {submitError && (
           <div className="mt-4 p-4 bg-destructive/10 border border-destructive/30 rounded-lg flex items-start gap-3">
-            <AlertCircle className="text-destructive shrink-0 mt-0.5" size={18} />
+            <AlertCircle
+              className="text-destructive shrink-0 mt-0.5"
+              size={18}
+            />
             <p className="text-sm text-destructive">{submitError}</p>
           </div>
         )}

@@ -170,8 +170,8 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
       {isBelowMinTickets && (
         <div className="text-sm text-amber-500 bg-amber-500/10 p-3 rounded">
-          Total quota must be at least {minTickets}.
-          Increase it or use an unlimited category.
+          Total quota must be at least {minTickets}. Increase it or use an
+          unlimited category.
         </div>
       )}
 

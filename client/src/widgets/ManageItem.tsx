@@ -1,12 +1,14 @@
 type ManageItemProps = {
   title: React.ReactNode;
   isRequested?: boolean;
+  eventDepositSize?: number;
   render: () => React.ReactNode[];
 };
 
 export const ManageItem: React.FC<ManageItemProps> = ({
   title,
   isRequested,
+  eventDepositSize,
   render,
 }) => {
   return (
@@ -16,6 +18,11 @@ export const ManageItem: React.FC<ManageItemProps> = ({
         {isRequested && (
           <p className="text-black text-md px-1 leading-5 bg-primary">
             requested
+          </p>
+        )}
+        {eventDepositSize !== undefined && eventDepositSize > 0 && (
+          <p className="text-sm text-muted-foreground">
+            Deposit: {eventDepositSize} USDT
           </p>
         )}
       </div>

@@ -245,6 +245,7 @@ class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
 class PlaceMetaData:
     title: str
     geometry: dict[str, Any]
+    event_deposit_size: int = 0
 
 
 @extend_schema_serializer(
@@ -280,6 +281,11 @@ class PlaceMetaData:
 class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
     title = serializers.CharField(help_text="Title of the event place")
     geometry = serializers.JSONField(help_text="Geometry with type and coordinates")
+    event_deposit_size = serializers.IntegerField(
+        default=0,
+        min_value=0,
+        help_text="Suggested deposit size for events at this place (in USDT)"
+    )
 
     def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:
         return PlaceMetaData(**validated_data)

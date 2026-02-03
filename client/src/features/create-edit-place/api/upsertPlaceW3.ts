@@ -21,6 +21,7 @@ export const upsertPlaceW3 = async (
     title,
     geometry,
     available,
+    eventDepositSize,
   } = place;
 
   if (!geometry) {
@@ -38,6 +39,7 @@ export const upsertPlaceW3 = async (
   placeForm.append("title", title);
   placeForm.append("description", "foo");
   placeForm.append("geometry", JSON.stringify(formatedGeodata));
+  placeForm.append("eventDepositSize", eventDepositSize.toString());
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
     // @ts-ignore
@@ -59,6 +61,7 @@ export const upsertPlaceW3 = async (
       minDays,
       available,
       data.cid,
+      eventDepositSize,
     );
   } else {
     promise = submitEventPlaceRequest(
@@ -70,6 +73,7 @@ export const upsertPlaceW3 = async (
       minDays,
       available,
       data.cid,
+      eventDepositSize,
     );
   }
   sendTx(promise);

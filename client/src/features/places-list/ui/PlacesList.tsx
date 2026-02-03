@@ -37,6 +37,7 @@ export const PlacesList: React.FC<PlacesListProps> = ({
           key={place.id}
           title={place.title}
           isRequested={place.status === "submitted"}
+          eventDepositSize={place.eventDepositSize}
           render={() => [
             <ManageRequestedPlace key="manrepla" place={place} />,
             <NavigateUpdatePlace key={place.id} place={place} />,
