@@ -236,13 +236,17 @@ def get_user_socials(_request: Request, address: str) -> Response:
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_user_profile(request: Request, address: str) -> Response:
-    """Get user profile info. Socials are only returned if requester is the user or has localprovider role."""
+    """Get user profile info.
+
+    Socials are only returned if requester is the user or has
+    localprovider/master role.
+    """
     try:
         target_user = CyberValleyUser.objects.get(address=address.lower())
         current_user = request.user
 
-        # Determine if socials should be visible
-        # Socials visible if: requester is the user themselves OR has localprovider/master role
+        # Determine if socials should be visible.
+        # Visible if: requester is the user OR has localprovider/master role.
         can_view_socials = (
             current_user.address.lower() == address.lower()
             or current_user.has_role(

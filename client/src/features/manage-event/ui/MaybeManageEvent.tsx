@@ -369,8 +369,8 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
                                 </tr>
                               </thead>
                               <tbody>
-                                {profile.recipients?.map((recipient, idx) => (
-                                  <tr key={idx}>
+                                {profile.recipients?.map((recipient) => (
+                                  <tr key={recipient.address}>
                                     <td className="py-2 font-mono text-xs">
                                       {recipient.address?.slice(0, 6)}...
                                       {recipient.address?.slice(-4)}
