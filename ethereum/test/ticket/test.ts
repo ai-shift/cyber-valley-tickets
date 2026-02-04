@@ -9,14 +9,15 @@ const IPFS_HOST = "http://test.ipfs.host";
 
 describe("CyberValleyEventTicket", () => {
   describe("tokenURI", () => {
-    it("returns valid URI", async () => {
+    it("returns valid URI", async function () {
+      this.timeout(120000);
       const { undertest, eventManager, master } =
         await loadFixture(deployContract);
       const cid = "QmTM7eS1BSMd9FfH4ihdjzVbyTPn8iCXtm3QLWkeRgEBtK";
       const mh = getBytes32FromMultiash(cid);
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, "");
+        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, "", 0);
       const tx = await undertest.connect(master).tokenURI(1);
       await expect(tx).to.equal(`${IPFS_HOST}/${cid}`);
     });

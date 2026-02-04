@@ -130,25 +130,20 @@ export async function deployContract(): Promise<ContractsFixture> {
     .connect(master)
     .setEventManager(await eventManager.getAddress());
 
-  // Setup a default profile: 100% of flexible share goes to localProvider
+  // Grant profile manager role with 5% bps to localProvider
   await splitter
     .connect(master)
-    .createDistributionProfile(
-      await localProvider.getAddress(),
-      [await localProvider.getAddress()],
-      [10000],
-    );
-  await splitter.connect(master).setDefaultProfile(1);
+    .grantProfileManager(await localProvider.getAddress(), 500);
 
-  // Grant LOCAL_PROVIDER_ROLE on splitter to localProvider
-  const SPLITTER_LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
+  // Create a default profile (ID 1) that tests can use
+  // Use creator address as recipient since localProvider can't add themselves
   await splitter
-    .connect(master)
-    .grantRole(SPLITTER_LOCAL_PROVIDER_ROLE, await localProvider.getAddress());
+    .connect(localProvider)
+    .createDistributionProfile([await creator.getAddress()], [10000]);
 
   await eventManager
     .connect(master)
-    .grantLocalProvider(await localProvider.getAddress());
+    .grantLocalProvider(await localProvider.getAddress(), 500);
   const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
   await eventManager
     .connect(master)
@@ -157,6 +152,9 @@ export async function deployContract(): Promise<ContractsFixture> {
   await eventManager
     .connect(master)
     .grantRole(VERIFIED_SHAMAN_ROLE, await verifiedShaman.getAddress());
+  await eventManager
+    .connect(master)
+    .grantRole(VERIFIED_SHAMAN_ROLE, await creator.getAddress());
   return {
     ERC20,
     eventManager,
@@ -314,18 +312,20 @@ export async function createEvent(
   // Create or use existing distribution profile
   let distributionProfileId = approveEventPatch.distributionProfileId;
   if (distributionProfileId == null && splitter != null) {
-    // Create a profile for the localProvider
+    // Create a profile for the localProvider - profile manager cannot add themselves
+    // so we use the creator address as recipient for this test profile
+    const creatorAddress = await creator.getAddress();
     const localProviderAddress = await localProvider.getAddress();
+
+    // Get current profile count for this owner to determine new profile ID
+    const existingProfiles =
+      await splitter.getProfilesByOwner(localProviderAddress);
+    const newProfileId = existingProfiles.length + 1;
+
     await splitter
       .connect(localProvider)
-      .createDistributionProfile(
-        localProviderAddress,
-        [localProviderAddress],
-        [10000],
-      );
-    distributionProfileId = await splitter
-      .nextProfileId()
-      .then((id) => id - 1n);
+      .createDistributionProfile([creatorAddress], [10000]);
+    distributionProfileId = newProfileId;
   }
 
   // Approve

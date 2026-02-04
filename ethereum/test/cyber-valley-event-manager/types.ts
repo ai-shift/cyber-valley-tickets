@@ -90,6 +90,7 @@ export type SubmitEventPlaceRequestArgs = {
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
+  eventDepositSize: BigNumberish;
 };
 
 export type ApproveEventPlaceArgs = {
@@ -120,6 +121,7 @@ export type CreateEventPlaceArgs = {
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
+  eventDepositSize: BigNumberish;
 };
 
 export type CategoryInput = {
@@ -173,6 +175,7 @@ export type UpdateEventPlaceArgs = {
   digest: string;
   hashFunction: BigNumberish;
   size: BigNumberish;
+  eventDepositSize: BigNumberish;
 };
 
 export type CloseEventArgs = {
@@ -198,6 +201,7 @@ export const submitEventPlaceRequestArgsToArray = (
     args.digest,
     args.hashFunction,
     args.size,
+    args.eventDepositSize,
   ];
 };
 
@@ -292,6 +296,7 @@ export const updateEventPlaceArgsToArray = (
     args.digest,
     args.hashFunction,
     args.size,
+    args.eventDepositSize,
   ];
 };
 
