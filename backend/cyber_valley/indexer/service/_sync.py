@@ -445,8 +445,20 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     )
 
     if created:
+        # Calculate price paid from category discount or use price from event
+        price_paid = getattr(event_data, "price_paid", 0)
+        if price_paid == 0:
+            # Fallback: calculate from category discount
+            price_paid = event.ticket_price
+            if category.discount > 0:
+                discount = (event.ticket_price * category.discount) // 10000
+                price_paid = event.ticket_price - discount
+        
+        ticket.price_paid = price_paid
+        ticket.save(update_fields=["price_paid"])
+        
         event.tickets_bought += 1
-        event.total_revenue += event.ticket_price
+        event.total_revenue += price_paid
         event.save(update_fields=["tickets_bought", "total_revenue"])
 
         # Update category counter
