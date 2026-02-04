@@ -906,9 +906,12 @@ class DistributionProfileViewSet(viewsets.ReadOnlyModelViewSet[DistributionProfi
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self) -> QuerySet[DistributionProfile]:
+        from cyber_valley.users.models import CyberValleyUser
+
         user = self.request.user
+        assert isinstance(user, CyberValleyUser)
         # Master can see all profiles
-        if user.is_staff or (hasattr(user, "is_master") and user.is_master):
+        if user.is_staff or user.has_role(CyberValleyUser.MASTER):
             return DistributionProfile.objects.all()
         # Regular users see only their own profiles
         return DistributionProfile.objects.filter(owner=user)

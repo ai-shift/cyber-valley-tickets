@@ -244,6 +244,7 @@ def get_user_profile(request: Request, address: str) -> Response:
     try:
         target_user = CyberValleyUser.objects.get(address=address.lower())
         current_user = request.user
+        assert isinstance(current_user, CyberValleyUser)
 
         # Determine if socials should be visible.
         # Visible if: requester is the user OR has localprovider/master role.
