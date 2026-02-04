@@ -21,6 +21,7 @@ export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   daysBeforeCancel: 1,
   minDays: 1,
   available: true,
+  eventDepositSize: 100,
   ...multihash,
 };
 
@@ -32,6 +33,7 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   daysBeforeCancel: 1,
   minDays: 2,
   available: true,
+  eventDepositSize: 100,
   ...multihash,
 };
 

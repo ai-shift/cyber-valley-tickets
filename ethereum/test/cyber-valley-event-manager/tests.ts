@@ -37,6 +37,13 @@ import {
   eventRequestSubmitionPrice,
 } from "./data";
 
+const limitedCategory = {
+  name: "Seed",
+  discountPercentage: 0,
+  quota: defaultCreateEventPlaceRequest.minTickets,
+  hasQuota: true,
+};
+
 import {
   createEventPlaceCornerCases,
   getSubmitEventCases,
@@ -87,11 +94,16 @@ describe("CyberValleyEventManager", () => {
     const {
       eventManager,
       ERC20,
+      master,
       verifiedShaman,
       localProvider,
       creator,
       splitter,
     } = await loadFixture(deployContract);
+    const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
+    await eventManager
+      .connect(master)
+      .grantRole(VERIFIED_SHAMAN_ROLE, await creator.getAddress());
     await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
     await ERC20.connect(creator).approve(
       await eventManager.getAddress(),
@@ -150,13 +162,12 @@ describe("CyberValleyEventManager", () => {
         eventManager,
         verifiedShaman,
       );
+      const args = submitEventPlaceRequestArgsToArray(
+        defaultCreateEventPlaceRequest,
+      );
       await expect(tx)
         .to.emit(eventManager, "NewEventPlaceRequest")
-        .withArgs(
-          0,
-          await verifiedShaman.getAddress(),
-          ...submitEventPlaceRequestArgsToArray(defaultCreateEventPlaceRequest),
-        );
+        .withArgs(0, await verifiedShaman.getAddress(), ...args.slice(0, 9));
     });
 
     it("auto-approves when requester is a local provider", async () => {
@@ -192,7 +203,7 @@ describe("CyberValleyEventManager", () => {
           args[6],
           args[7],
           args[8],
-          0,
+          args[9],
         );
 
       const eventPlace = await eventManager.eventPlaces(0);
@@ -549,20 +560,30 @@ describe("CyberValleyEventManager", () => {
     it("reverts when event has no categories", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      // Use createEventForCategories with empty categories to test validation
-      const { eventId } = await createEventForCategories(
+      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        eventRequestSubmitionPrice,
+      );
+      const { eventPlaceId } = await createEventPlace(
         eventManager,
-        ERC20,
         verifiedShaman,
         localProvider,
-        creator,
         {},
-        { categories: [] }, // Explicitly no categories
       );
-      // Try to approve without creating any categories
-      await expect(
-        eventManager.connect(localProvider).approveEvent(eventId, 1n),
-      ).to.be.revertedWith("Event must have at least one category");
+      const tx = eventManager
+        .connect(creator)
+        .submitEventRequest(
+          eventPlaceId,
+          defaultSubmitEventRequest.ticketPrice,
+          await timestamp(10),
+          defaultSubmitEventRequest.daysAmount,
+          defaultSubmitEventRequest.digest,
+          defaultSubmitEventRequest.hashFunction,
+          defaultSubmitEventRequest.size,
+          [],
+        );
+      await expect(tx).to.be.revertedWith("At least one category is required");
     });
   });
 
@@ -788,11 +809,11 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         creator,
         { maxTickets: 2, minTickets: 1 },
-        { categories: [] }, // No default categories
+        {},
       );
       // Create a category with quota of 1
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Limited", 0, 1, true);
       // Approve the event
       await eventManager.connect(localProvider).approveEvent(eventId, 1n);
@@ -809,10 +830,10 @@ describe("CyberValleyEventManager", () => {
         await eventManager.getAddress(),
         ticketPrice * 2,
       );
-      // Mint first ticket with category 0 (the limited category)
+      // Mint first ticket with category 1 (the limited category)
       await eventManager.connect(owner).mintTickets(
         eventId,
-        0, // categoryId for "Limited"
+        1, // categoryId for "Limited"
         1, // amount
         multihash.digest,
         multihash.hashFunction,
@@ -823,7 +844,7 @@ describe("CyberValleyEventManager", () => {
       await expect(
         eventManager.connect(owner).mintTickets(
           eventId,
-          0, // categoryId for "Limited"
+          1, // categoryId for "Limited"
           1, // amount
           multihash.digest,
           multihash.hashFunction,
@@ -939,6 +960,7 @@ describe("CyberValleyEventManager", () => {
           multihash.hashFunction,
           multihash.size,
           "",
+          ticketPrice,
         );
     });
   });
@@ -953,14 +975,14 @@ describe("CyberValleyEventManager", () => {
     ]);
 
     it("reverts creating category after event is approved", async () => {
-      const { eventManager, verifiedShaman, localProvider, eventId } =
+      const { eventManager, creator, localProvider, eventId } =
         await createSubmittedEvent();
       // Event is already created with default category, approve it
       await eventManager.connect(localProvider).approveEvent(eventId, 1n);
       // Try to create another category after approval
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "Families", 1000, 10, true),
       ).to.be.revertedWith("Event must be in submitted state");
     });
@@ -985,7 +1007,7 @@ describe("CyberValleyEventManager", () => {
         {
           eventPlaceId,
           startDate: await timestamp(10),
-          categories: [], // No default categories
+          categories: [limitedCategory],
         },
       );
       const { getEventId: getSecondEventId } = await submitEventRequest(
@@ -994,18 +1016,18 @@ describe("CyberValleyEventManager", () => {
         {
           eventPlaceId,
           startDate: await timestamp(20),
-          categories: [], // No default categories
+          categories: [limitedCategory],
         },
       );
       const firstEventId = await getFirstEventId();
       const secondEventId = await getSecondEventId();
 
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(firstEventId, "Regular", 0, 0, false);
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(secondEventId, "Regular", 0, 0, false),
       ).to.not.be.reverted;
     });
@@ -1034,11 +1056,11 @@ describe("CyberValleyEventManager", () => {
         eventPlaceId,
         startDate: await timestamp(10),
         ticketPrice: 100,
-        categories: [], // No default categories
+        categories: [limitedCategory],
       });
       const eventId = await getEventId();
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Regular", 1000, 0, false);
       await eventManager.connect(localProvider).approveEvent(eventId, 1n);
 
@@ -1047,7 +1069,7 @@ describe("CyberValleyEventManager", () => {
       await expect(
         eventManager.connect(owner).mintTickets(
           eventId,
-          0, // Regular category (with 10% discount)
+          1, // Regular category (with 10% discount)
           1, // amount
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
           18,
@@ -1085,11 +1107,11 @@ describe("CyberValleyEventManager", () => {
         eventPlaceId,
         startDate: await timestamp(10),
         ticketPrice: 100,
-        categories: [], // No default categories
+        categories: defaultSubmitEventRequest.categories,
       });
       const eventId = await getEventId();
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Families", 0, 1, true);
       await eventManager.connect(localProvider).approveEvent(eventId, 1n);
 
@@ -1097,7 +1119,7 @@ describe("CyberValleyEventManager", () => {
       await ERC20.connect(owner).approve(await eventManager.getAddress(), 200);
       await eventManager.connect(owner).mintTickets(
         eventId,
-        0, // Families category (only category)
+        1, // Families category (created after default)
         1, // amount
         "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         18,
@@ -1107,7 +1129,7 @@ describe("CyberValleyEventManager", () => {
       await expect(
         eventManager.connect(owner).mintTickets(
           eventId,
-          0, // Families category (only category)
+          1, // Families category (created after default)
           1, // amount
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
           18,
@@ -1131,7 +1153,7 @@ describe("CyberValleyEventManager", () => {
       );
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "BigCategory", 1000, 150, true),
       ).to.be.revertedWith("Quota exceeds event capacity");
     });
@@ -1150,12 +1172,12 @@ describe("CyberValleyEventManager", () => {
       );
       // Create first category with quota = 60
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category1", 1000, 60, true);
       // Try to create second category with quota = 50 (total would be 110 > 100)
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "Category2", 1000, 50, true),
       ).to.be.revertedWith("Total category quotas exceed event capacity");
     });
@@ -1174,7 +1196,7 @@ describe("CyberValleyEventManager", () => {
       );
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "ZeroQuota", 1000, 0, true),
       ).to.be.revertedWith("Quota must be greater than 0");
     });
@@ -1193,16 +1215,16 @@ describe("CyberValleyEventManager", () => {
       );
       // Create category1 with quota = 50
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category1", 1000, 50, true);
       // Create category2 with quota = 50 (total = 100)
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category2", 1000, 50, true);
       // Try to create category3 with quota = 1 (should fail, total would be 101)
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "Category3", 1000, 1, true),
       ).to.be.revertedWith("Total category quotas exceed event capacity");
     });
@@ -1217,16 +1239,16 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         creator,
         { maxTickets: 100 },
-        { categories: [] }, // No default categories
+        { categories: [limitedCategory] },
       );
-      // Create category1 with quota = 100 (fills all capacity)
+      // Create category1 with quota = 50 (fills all remaining capacity)
       await eventManager
-        .connect(verifiedShaman)
-        .createCategory(eventId, "FullCapacity", 1000, 100, true);
+        .connect(creator)
+        .createCategory(eventId, "FullCapacity", 1000, 50, true);
       // Create unlimited category (should succeed)
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "Unlimited", 500, 0, false),
       ).to.not.be.reverted;
     });
@@ -1251,7 +1273,7 @@ describe("CyberValleyEventManager", () => {
       );
       // Create category with quota = 50
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category", 0, 50, true);
       await eventManager.connect(localProvider).approveEvent(eventId, 1n);
 
@@ -1286,21 +1308,21 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         creator,
         { maxTickets: 100 },
-        { categories: [] }, // No default categories
+        { categories: defaultSubmitEventRequest.categories },
       );
       // Create category1 with quota = 60
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category1", 1000, 60, true);
       // Create category2 with quota = 30
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category2", 1000, 30, true);
-      // Try to update category2 (categoryId 1) quota to 50 (total would be 110 > 100)
+      // Try to update category2 (categoryId 2) quota to 50 (total would be 110 > 100)
       await expect(
         eventManager
           .connect(localProvider)
-          .updateCategory(1, "Category2", 1000, 50, true),
+          .updateCategory(2, "Category2", 1000, 50, true),
       ).to.be.revertedWith("Total category quotas exceed event capacity");
     });
 
@@ -1318,17 +1340,17 @@ describe("CyberValleyEventManager", () => {
       );
       // Create category1 with quota = 50
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category1", 1000, 50, true);
       // Create category2 with quota = 30
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category2", 1000, 30, true);
       // Update category2 quota to 40 (total = 90, should succeed)
       await expect(
         eventManager
           .connect(localProvider)
-          .updateCategory(1, "Category2", 1000, 40, true),
+          .updateCategory(2, "Category2", 1000, 40, true),
       ).to.not.be.reverted;
     });
 
@@ -1343,39 +1365,39 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         creator,
         { maxTickets: 100 },
-        { categories: [] },
+        { categories: defaultSubmitEventRequest.categories },
       );
       // Create category1 with quota = 30 (totalCategoryQuota = 30)
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category1", 1000, 30, true);
       // Create category2 with quota = 40 (totalCategoryQuota = 70)
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category2", 1000, 40, true);
 
       // Verify we can only add 30 more (100 - 70 = 30)
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "Category3", 1000, 31, true),
       ).to.be.revertedWith("Total category quotas exceed event capacity");
 
-      // Update category1 (categoryId 0) quota to 50 (totalCategoryQuota = 90)
+      // Update category1 (categoryId 1) quota to 50 (totalCategoryQuota = 90)
       await eventManager
         .connect(localProvider)
-        .updateCategory(0, "Category1", 1000, 50, true);
+        .updateCategory(1, "Category1", 1000, 50, true);
 
       // Now we can only add 10 more (100 - 90 = 10)
       await expect(
         eventManager
-          .connect(verifiedShaman)
+          .connect(creator)
           .createCategory(eventId, "Category3", 1000, 11, true),
       ).to.be.revertedWith("Total category quotas exceed event capacity");
 
       // But 10 should work
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Category3", 1000, 10, true);
     });
   });
@@ -1610,7 +1632,10 @@ describe("CyberValleyEventManager", () => {
       const { tx } = await closeEvent(eventManager, localProvider, { eventId });
 
       // Deposit (100) returned to creator
-      // Ticket revenue (100) distributed: 10% (10) to master, 5% (5) to staff, 85% (85) to provider
+      // Ticket revenue (100) distributed:
+      //   10% (10) to master (cyberiaDAO), 5% (5) to staff (cvePtPma)
+      //   5% (5) to localProvider (profile manager bps)
+      //   80% (80) to profile recipient (creator)
       await expect(tx).to.changeTokenBalances(
         ERC20,
         [
@@ -1620,7 +1645,7 @@ describe("CyberValleyEventManager", () => {
           await localProvider.getAddress(),
           await eventManager.getAddress(),
         ],
-        [100, 10, 5, 85, -200],
+        [180, 10, 5, 5, -200],
       );
     });
   });
@@ -1677,7 +1702,7 @@ describe("CyberValleyEventManager", () => {
       });
       const eventId = await getEventId();
       await eventManager
-        .connect(verifiedShaman)
+        .connect(creator)
         .createCategory(eventId, "Families", 1000, 10, true);
       await eventManager.connect(localProvider).approveEvent(eventId, 1n);
 
@@ -2025,7 +2050,8 @@ describe("CyberValleyEventManager", () => {
 
       // Close event and check distribution
       // Deposit: 100 returned to creator
-      // Ticket revenue: 10% (10) to master, 5% (5) to staff, 85% (85) to localProvider
+      // Ticket revenue: 10% (10) to master, 5% (5) to staff,
+      //   5% (5) to localProvider (profile manager bps), 80% (80) to profile recipient (creator)
 
       const tx = await eventManager.connect(localProvider).closeEvent(eventId);
 
@@ -2038,7 +2064,7 @@ describe("CyberValleyEventManager", () => {
           await localProvider.getAddress(),
           await eventManager.getAddress(),
         ],
-        [100, 10, 5, 85, -200],
+        [180, 10, 5, 5, -200],
       );
 
       await expect(tx)
@@ -2081,14 +2107,10 @@ describe("CyberValleyEventManager", () => {
       // Categories are created automatically during event submission
       await eventManager.connect(localProvider).approveEvent(eventId, 1n);
 
-      // Create and set event-specific profile
+      // Create and set event-specific profile (admin creates for themselves)
       await splitter
         .connect(master)
-        .createDistributionProfile(
-          await master.getAddress(),
-          [await customer.getAddress()],
-          [10000],
-        );
+        .createDistributionProfile([await customer.getAddress()], [10000]);
       await splitter.connect(master).setEventProfile(eventId, 2);
 
       await time.increase(100_000_000);
