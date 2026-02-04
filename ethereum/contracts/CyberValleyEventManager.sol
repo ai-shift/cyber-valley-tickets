@@ -199,8 +199,20 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _setRoleAdmin(VERIFIED_SHAMAN_ROLE, BACKEND_ROLE);
     }
 
-    function grantLocalProvider(address eoa) external onlyRole(MASTER_ROLE) {
+    /**
+     * @notice Grants local provider role and sets their bps share in RevenueSplitter
+     * @param eoa The address to grant LOCAL_PROVIDER_ROLE to
+     * @param bps The basis points (0-8500) this provider receives from each distribution.
+     *           Applied after fixed bps (CyberiaDAO 10% + CVE PT PMA 5%) and before 
+     *           profile recipients. Provider cannot add themselves to distribution profiles.
+     */
+    function grantLocalProvider(address eoa, uint256 bps) external onlyRole(MASTER_ROLE) {
+        require(eoa != address(0), "Local provider cannot be zero address");
+        require(revenueSplitter != address(0), "Revenue splitter not set");
         _grantRole(LOCAL_PROVIDER_ROLE, eoa);
+        // Bps validation happens in RevenueSplitter. Provider gets bps automatically
+        // and cannot add themselves to distribution profiles.
+        IDynamicRevenueSplitter(revenueSplitter).grantProfileManager(eoa, bps);
     }
 
     function revokeLocalProvider(address eoa) external onlyRole(MASTER_ROLE) {
