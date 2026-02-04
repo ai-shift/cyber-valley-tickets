@@ -284,7 +284,7 @@ class UploadPlaceMetaToIpfsSerializer(serializers.Serializer[PlaceMetaData]):
     event_deposit_size = serializers.IntegerField(
         default=0,
         min_value=0,
-        help_text="Suggested deposit size for events at this place (in USDT)"
+        help_text="Suggested deposit size for events at this place (in USDT)",
     )
 
     def create(self, validated_data: dict[str, Any]) -> PlaceMetaData:

@@ -180,6 +180,10 @@ contract DateOverlapChecker {
             endDate >= initialOffest,
             "End date should be after initial offset"
         );
+        require(
+            endDate - startDate < SECONDS_IN_DAY * BUCKET_SIZE,
+            "Date range cannot exceed 255 days"
+        );
         _;
     }
 }

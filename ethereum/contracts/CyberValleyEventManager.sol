@@ -610,9 +610,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProvider(evt.eventPlaceId);
-        bool realloc = evt.eventPlaceId != eventPlaceId ||
-            evt.startDate != startDate ||
-            evt.daysAmount != daysAmount;
+        
+        // Capture old values BEFORE any mutations
+        uint256 oldEventPlaceId = evt.eventPlaceId;
+        uint256 oldStartDate = evt.startDate;
+        uint256 oldDaysAmount = evt.daysAmount;
+        
+        bool realloc = oldEventPlaceId != eventPlaceId ||
+            oldStartDate != startDate ||
+            oldDaysAmount != daysAmount;
+        
         evt.eventPlaceId = eventPlaceId;
         evt.ticketPrice = ticketPrice;
         evt.startDate = floorTimestampToDate(startDate);
@@ -624,14 +631,16 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         });
         validateEvent(evt);
         if (realloc) {
+            // Free the OLD date range from the OLD place
             freeDateRange(
-                eventPlaceId,
-                startDate,
-                calcDaysAfter(evt.startDate, evt.daysAmount)
+                oldEventPlaceId,
+                oldStartDate,
+                calcDaysAfter(oldStartDate, oldDaysAmount)
             );
+            // Allocate the NEW date range to the NEW place
             allocateDateRange(
                 eventPlaceId,
-                startDate,
+                evt.startDate,
                 calcDaysAfter(evt.startDate, evt.daysAmount)
             );
         }
@@ -941,6 +950,12 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bool hasQuota
     ) external onlyRole(VERIFIED_SHAMAN_ROLE) {
         require(eventId < events.length, "Event does not exist");
+        Event storage evt = events[eventId];
+        // Only event creator can add categories (or local provider for any event)
+        require(
+            evt.creator == msg.sender || hasRole(LOCAL_PROVIDER_ROLE, msg.sender),
+            "Only event creator or local provider can add categories"
+        );
         _createCategoryForEvent(eventId, name, discountPercentage, quota, hasQuota);
     }
 

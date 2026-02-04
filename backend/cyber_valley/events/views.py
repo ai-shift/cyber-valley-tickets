@@ -408,11 +408,11 @@ def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
 
     # Get the ticket and verify ownership
     ticket = get_object_or_404(Ticket, id=ticket_id, event__id=event_id)
-    
+
     # Allow nonce generation for: ticket owner, staff, or master
     is_owner = ticket.owner.address.lower() == user.address.lower()
     is_staff_or_master = user.has_role(CyberValleyUser.STAFF, CyberValleyUser.MASTER)
-    
+
     if not (is_owner or is_staff_or_master):
         return Response("Only ticket owner or staff can generate nonce", status=403)
 

@@ -72,7 +72,9 @@ def link_user_telegram(
     return user, created
 
 
-def handle_no_username(bot: telebot.TeleBot, message: dict[str, Any], *start_params: str) -> None:
+def handle_no_username(
+    bot: telebot.TeleBot, message: dict[str, Any], *start_params: str
+) -> None:
     bot_username = bot.get_me().username
     start_param = "_".join(start_params)
     link_url = f"https://t.me/{bot_username}?start={start_param}"
@@ -100,8 +102,10 @@ class StartLinkHandler:
             return False
         text = _get_text(message)
         parts = _parse_start_parts(text)
-        return len(parts) == 2 and parts[0] == "/start" and bool(
-            ETH_ADDRESS_PATTERN.fullmatch(parts[1])
+        return (
+            len(parts) == 2
+            and parts[0] == "/start"
+            and bool(ETH_ADDRESS_PATTERN.fullmatch(parts[1]))
         )
 
     def handle(self, bot: telebot.TeleBot, update: dict[str, Any]) -> None:
@@ -304,7 +308,9 @@ class CallbackConfirmHandler:
 
         action_text = "approved" if action == "approve" else "declined"
 
-        shaman_address = Web3.to_checksum_address(verification_request.requester.address)
+        shaman_address = Web3.to_checksum_address(
+            verification_request.requester.address
+        )
         contract_service = ContractService()
 
         if action == "approve":
