@@ -368,3 +368,171 @@ podman rm cvland-ipfs
 - API Documentation: `http://localhost:8000/` (Swagger UI when backend running)
 - Hardhat Console: `cd ethereum && pnpm exec hardhat console --network cvlandDev`
 - Django Admin: `http://localhost:8000/admin/` (requires superuser)
+
+## API Schema Generation Best Practices
+
+We use **drf-spectacular** for OpenAPI schema generation and **openapi-typescript** for TypeScript types. Follow these patterns to maintain clean, complete API documentation.
+
+### Function-Based Views with @api_view
+
+Always add `@extend_schema` decorator with explicit request and response serializers:
+
+```python
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import api_view
+
+@extend_schema(
+    request=MyRequestSerializer,
+    responses={
+        200: MyResponseSerializer,
+        400: ErrorResponseSerializer,
+    },
+)
+@api_view(["POST"])
+def my_view(request: Request) -> Response:
+    ...
+```
+
+For views with no request body (e.g., GET, DELETE):
+
+```python
+@extend_schema(
+    responses={
+        204: None,  # No content
+        200: {"type": "string"},  # Simple response
+    },
+)
+@api_view(["GET"])
+def my_view(request: Request) -> Response:
+    ...
+```
+
+### ViewSet Path Parameters
+
+Always specify path parameter types using `lookup_field` or `@extend_schema_view`:
+
+```python
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter
+
+@extend_schema_view(
+    retrieve=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=int,  # or str
+                location=OpenApiParameter.PATH,
+                description="Resource ID",
+            ),
+        ],
+    ),
+)
+class MyViewSet(viewsets.ReadOnlyModelViewSet[MyModel]):
+    serializer_class = MySerializer
+    lookup_field = "id"  # Must match the URL parameter name
+```
+
+For custom `@action` endpoints:
+
+```python
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="custom_param",
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.PATH,
+        ),
+    ],
+    responses={204: OpenApiResponse()},
+)
+@action(detail=False, methods=["post"], url_path="path/(?P<custom_param>[^/.]+)")
+def custom_action(self, request: Request, custom_param: str) -> Response:
+    ...
+```
+
+### Avoiding OperationId Collisions
+
+When multiple endpoints would generate the same operationId, use explicit `operation_id`:
+
+```python
+@extend_schema(
+    operation_id="api_resources_action_unique",  # Unique name
+    responses={...},
+)
+```
+
+Common collision patterns to avoid:
+- `/api/items/{id}/status` and `/api/items/{id}/status/{status}` both default to `api_items_status_retrieve`
+- Fix by adding explicit `operation_id` like `api_items_status_get` and `api_items_status_update`
+
+### Enum Naming
+
+When multiple models have fields named the same (e.g., `status`), add `ENUM_NAME_OVERRIDES` to `SPECTACULAR_SETTINGS` in `settings.py`:
+
+```python
+SPECTACULAR_SETTINGS = {
+    "ENUM_NAME_OVERRIDES": {
+        "EventStatusEnum": "cyber_valley.events.models.Event.STATUS_CHOICES",
+        "TicketStatusEnum": "cyber_valley.events.models.Ticket.STATUS_CHOICES",
+    },
+}
+```
+
+### Regenerating Types
+
+After backend changes:
+
+```bash
+# Generate OpenAPI schema (must have backend env vars set)
+cd backend
+export DJANGO_SECRET_KEY=...  # and other required env vars
+make open-api-schema
+
+# Generate TypeScript types
+cd ../client
+make openapi-types
+```
+
+### Troubleshooting Schema Issues
+
+**"Unable to guess serializer" Error**
+- Cause: Function-based view without `@extend_schema` decorator
+- Fix: Add explicit `@extend_schema(request=..., responses=...)` decorator
+
+**"Could not derive type of path parameter" Warning**
+- Cause: ViewSet without `lookup_field` or path parameter annotation
+- Fix: Add `lookup_field = "id"` or use `@extend_schema_view` with `OpenApiParameter`
+
+**"OperationId collision" Warning**
+- Cause: Multiple endpoints with same operationId
+- Fix: Add explicit `operation_id` parameter to `@extend_schema`
+
+**"Enum naming collision" Warning**
+- Cause: Multiple fields with same name having choices
+- Fix: Add entries to `ENUM_NAME_OVERRIDES` in settings
+
+### Testing Schema Generation
+
+Run this to verify schema generation produces no errors:
+
+```bash
+cd backend
+export DJANGO_SECRET_KEY=test-key  # minimal env vars
+export PUBLIC_HTTP_ETH_NODE_HOST=http://localhost:8545
+export WS_ETH_NODE_HOST=ws://localhost:8545
+export VALKEY_HOST=redis://localhost:6379
+export IPFS_DATA=/tmp/ipfs
+export IPFS_PUBLIC_HOST=http://localhost:8080
+export DB_NAME=test_db
+export DB_USER=test_user
+export DB_PASSWORD=test_pass
+export PUBLIC_EVENT_MANAGER_ADDRESS=0x...
+export PUBLIC_EVENT_TICKET_ADDRESS=0x...
+export PUBLIC_ERC20_ADDRESS=0x...
+export BACKEND_EOA_PRIVATE_KEY=0x...
+export ALLOWED_HOSTS=localhost
+
+# Should produce 0 errors
+uv run manage.py spectacular --format openapi-json --validate 2>&1 | grep -E "^Errors"
+```
+
+Expected output: `Errors:   0 (0 unique)`
