@@ -1,6 +1,6 @@
 const EVENT_MANAGER_ADDRESS = process.env.PUBLIC_EVENT_MANAGER_ADDRESS;
 const LOCAL_PROVIDER_EOA = "0x9772d9a6A104c162b97767e6a654Be54370A042F";
-const SHARE = 50; // Default share percentage
+const SHARE = 5; // Default share percentage
 
 async function main() {
   if (!EVENT_MANAGER_ADDRESS) {
@@ -25,9 +25,10 @@ async function main() {
   }
 
   console.log(`Granting LOCAL_PROVIDER_ROLE to ${LOCAL_PROVIDER_EOA}...`);
+  const shareBps = SHARE * 100;
   const tx = await eventManager
     .connect(master)
-    .grantLocalProvider(LOCAL_PROVIDER_EOA);
+    .grantLocalProvider(LOCAL_PROVIDER_EOA, shareBps);
   await tx.wait();
   console.log(`LOCAL_PROVIDER_ROLE granted successfully. TX: ${tx.hash}`);
 }
