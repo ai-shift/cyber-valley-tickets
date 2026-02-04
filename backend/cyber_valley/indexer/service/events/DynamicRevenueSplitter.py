@@ -25,21 +25,6 @@ from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 from .patches import validate_role
 
 
-class AllProfilesTransferred(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    from_addr: str = Field(..., alias="from")
-    to: str
-
-
-class DefaultProfileSet(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    profile_id: int = Field(..., alias="profileId")
-
-
 class DistributionProfileCreated(BaseModel):
     model_config = ConfigDict(
         frozen=True,
@@ -72,6 +57,14 @@ class ProfileDeactivated(BaseModel):
         frozen=True,
     )
     profile_id: int = Field(..., alias="profileId")
+
+
+class ProfileManagerGranted(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    account: str
+    bps: int
 
 
 class ProfileOwnershipTransferred(BaseModel):
@@ -126,12 +119,6 @@ class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    all_profiles_transferred: AllProfilesTransferred | None = Field(
-        None, alias="AllProfilesTransferred"
-    )
-    default_profile_set: DefaultProfileSet | None = Field(
-        None, alias="DefaultProfileSet"
-    )
     distribution_profile_created: DistributionProfileCreated | None = Field(
         None, alias="DistributionProfileCreated"
     )
@@ -142,12 +129,17 @@ class CyberValleyEvents(BaseModel):
     profile_deactivated: ProfileDeactivated | None = Field(
         None, alias="ProfileDeactivated"
     )
+    profile_manager_granted: ProfileManagerGranted | None = Field(
+        None, alias="ProfileManagerGranted"
+    )
     profile_ownership_transferred: ProfileOwnershipTransferred | None = Field(
         None, alias="ProfileOwnershipTransferred"
     )
     revenue_distributed: RevenueDistributed | None = Field(
         None, alias="RevenueDistributed"
     )
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
+    role_admin_changed: RoleAdminChanged | None = Field(
+        None, alias="RoleAdminChanged"
+    )
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")

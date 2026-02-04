@@ -26,7 +26,7 @@ class CurrentUserSerializer(serializers.ModelSerializer[CyberValleyUser]):
 
     class Meta:
         model = CyberValleyUser
-        fields = ("address", "roles", "tickets", "socials", "default_share")
+        fields = ("address", "roles", "tickets", "socials", "profile_manager_bps")
         read_only_fields = fields
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))

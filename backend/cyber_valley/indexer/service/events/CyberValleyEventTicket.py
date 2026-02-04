@@ -85,7 +85,8 @@ class TicketMinted(BaseModel):
     digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
-    referral_data: str = Field(default="", alias="referralData")
+    referral_data: str = Field(..., alias="referralData")
+    price_paid: int = Field(..., alias="pricePaid")
 
 
 class TicketRedeemed(BaseModel):
@@ -110,7 +111,9 @@ class CyberValleyEvents(BaseModel):
     )
     approval: Approval | None = Field(None, alias="Approval")
     approval_for_all: ApprovalForAll | None = Field(None, alias="ApprovalForAll")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
+    role_admin_changed: RoleAdminChanged | None = Field(
+        None, alias="RoleAdminChanged"
+    )
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
     ticket_minted: TicketMinted | None = Field(None, alias="TicketMinted")

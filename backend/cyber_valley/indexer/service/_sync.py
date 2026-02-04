@@ -154,20 +154,15 @@ def synchronize_event(event_data: BaseModel, *, tx_hash: str | None = None) -> N
         case DynamicRevenueSplitter.ProfileOwnershipTransferred():
             _sync_profile_ownership_transferred(event_data)
             log.info("Profile ownership transferred")
-        case DynamicRevenueSplitter.AllProfilesTransferred():
-            _sync_all_profiles_transferred(event_data)
-            log.info("All profiles transferred")
         case DynamicRevenueSplitter.ProfileDeactivated():
             _sync_profile_deactivated(event_data)
             log.info("Profile deactivated")
         case DynamicRevenueSplitter.EventProfileSet():
             _sync_event_profile_set(event_data)
             log.info("Event profile set")
-        case DynamicRevenueSplitter.DefaultProfileSet():
-            # Default profile set - no action needed for now
-            # This event is informational; the default profile is used
-            # when creating new events without an explicit profile
-            log.info("Default profile set: %s", event_data.profile_id)
+        case DynamicRevenueSplitter.ProfileManagerGranted():
+            _sync_profile_manager_granted(event_data)
+            log.info("Profile manager granted")
         case _:
             log.error("Unknown event data %s", type(event_data))
             raise UnknownEventError(event_data)
@@ -785,6 +780,28 @@ def _sync_revenue_distributed(evt: DynamicRevenueSplitter.RevenueDistributed) ->
     )
 
 
+@transaction.atomic
+def _sync_profile_manager_granted(
+    event_data: DynamicRevenueSplitter.ProfileManagerGranted,
+) -> None:
+    """Sync ProfileManagerGranted event - stores bps for profile manager.
+
+    The bps is applied after fixed bps (CyberiaDAO 10% + CVE PT PMA 5%)
+    and before profile recipients.
+    """
+    account_address = event_data.account.lower()
+    user, _ = CyberValleyUser.objects.get_or_create(address=account_address)
+    if event_data.bps % 100 != 0:
+        log.error(
+            "Profile manager bps not divisible by 100: %s for %s",
+            event_data.bps,
+            account_address,
+        )
+    # Store bps directly (as percentage points for simplicity)
+    user.profile_manager_bps = event_data.bps // 100
+    user.save(update_fields=["profile_manager_bps"])
+
+
 class MultihashLike(Protocol):
     digest: str
     hash_function: int
@@ -990,25 +1007,6 @@ def _sync_profile_ownership_transferred(
         "DistributionProfile %s ownership transferred to %s",
         event_data.profile_id,
         new_owner.address,
-    )
-
-
-@transaction.atomic
-def _sync_all_profiles_transferred(
-    event_data: DynamicRevenueSplitter.AllProfilesTransferred,
-) -> None:
-    """Handle bulk profile transfer when LocalProvider is revoked."""
-    new_owner, _ = CyberValleyUser.objects.get_or_create(address=event_data.to.lower())
-
-    updated_count = DistributionProfile.objects.filter(
-        owner__address=event_data.from_addr.lower()
-    ).update(owner=new_owner)
-
-    log.info(
-        "Transferred %d distribution profiles from %s to %s",
-        updated_count,
-        event_data.from_addr,
-        event_data.to,
     )
 
 

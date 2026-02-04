@@ -178,7 +178,9 @@ class CyberValleyEvents(BaseModel):
         None, alias="NewEventPlaceRequest"
     )
     new_event_request: NewEventRequest | None = Field(None, alias="NewEventRequest")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
+    role_admin_changed: RoleAdminChanged | None = Field(
+        None, alias="RoleAdminChanged"
+    )
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
     ticket_category_created: TicketCategoryCreated | None = Field(

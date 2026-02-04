@@ -183,7 +183,7 @@ def parse_log(log_receipt: LogReceipt, contracts: list[type[Contract]]) -> BaseM
         }
         assert not duplicated_event_names, f"{duplicated_event_names=}"
         for event_name in event_names:
-            log.info("trying event %s", event_name)
+            log.debug("trying event %s", event_name)
             try:
                 event = getattr(contract.events, event_name).process_log(log_receipt)
             except (MismatchedABI, LogTopicError):
