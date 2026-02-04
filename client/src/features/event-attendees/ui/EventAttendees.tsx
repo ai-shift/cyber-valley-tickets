@@ -4,17 +4,25 @@ import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
 
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 
 type EventAttendeesProps = {
   eventId: number;
+  searchParamName?: string;
 };
 
-export const EventAttendees: React.FC<EventAttendeesProps> = ({ eventId }) => {
+export const EventAttendees: React.FC<EventAttendeesProps> = ({
+  eventId,
+  searchParamName = "search",
+}) => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get(searchParamName) || undefined;
+
   const {
     data: attendees,
     error,
     isLoading,
-  } = useQuery(eventQueries.attendees(eventId));
+  } = useQuery(eventQueries.attendees(eventId, searchQuery));
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;

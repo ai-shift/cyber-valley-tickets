@@ -291,7 +291,7 @@ const getEventCid = async (event: EventDto, cid: string) => {
   const formData = new FormData();
   formData.set("title", title);
   formData.set("description", description);
-  formData.set("website", website);
+  formData.set("website", website || "");
   formData.set("cover", image);
   formData.set("socials_cid", cid);
 

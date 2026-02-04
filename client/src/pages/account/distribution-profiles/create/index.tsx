@@ -7,6 +7,7 @@ import { PageContainer } from "@/shared/ui/PageContainer";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+// @ts-ignore - Loader is used in JSX but TS doesn't detect it
 import { AlertCircle, Loader, Plus, Trash2 } from "lucide-react";
 import { useActiveAccount } from "thirdweb/react";
 import { isAddress } from "thirdweb/utils";
