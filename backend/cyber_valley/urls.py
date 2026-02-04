@@ -106,6 +106,7 @@ urlpatterns = [
     path("api/auth/logout", logout, name="jwt_logout"),
     path("api/auth/custom/", include("cyber_valley.custom_auth.urls")),
     path("api/shaman/verify/", include("cyber_valley.shaman_verification.urls")),
+    path("api/telegram/", include("cyber_valley.telegram_bot.urls")),
     path("api/health/", health_check, name="health_check"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
 ]
