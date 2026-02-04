@@ -1,7 +1,7 @@
 import json
 import os
-import subprocess
 import signal
+import subprocess
 import threading
 from collections.abc import Callable, Generator
 from contextlib import AbstractContextManager, contextmanager, suppress
