@@ -91,7 +91,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200, null=False)
     description = models.TextField(null=False)
     image_url = models.URLField(null=True)
-    website = models.CharField()
+    website = models.URLField(max_length=2048, blank=True, null=True)
     created_at = models.DateTimeField(null=False)
     updated_at = models.DateTimeField(null=False)
 
@@ -115,6 +115,7 @@ class Ticket(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     is_redeemed = models.BooleanField(default=False, null=False)
     pending_is_redeemed = models.BooleanField(default=False, null=False)
+    price_paid = models.PositiveIntegerField(default=0)
 
     def __str__(self) -> str:
         return f"Ticket for {self.event.title} owned by {self.owner.address}"

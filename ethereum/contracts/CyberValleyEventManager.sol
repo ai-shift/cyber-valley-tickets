@@ -756,7 +756,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             digest,
             hashFunction,
             size,
-            referralData
+            referralData,
+            totalPrice
         );
         evt.customers.push(msg.sender);
         for (uint256 i = 0; i < amount; i++) {

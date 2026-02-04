@@ -29,7 +29,8 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size,
-        string referralData
+        string referralData,
+        uint256 pricePaid
     );
 
     event TicketRedeemed(uint256 ticketId);
@@ -87,7 +88,8 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size,
-        string memory referralData
+        string memory referralData,
+        uint256 pricePaid
     ) external onlyEventManager {
         lastTokenId += 1;
         _mint(to, lastTokenId);
@@ -96,7 +98,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
             hashFunction,
             size
         );
-        emit TicketMinted(eventId, lastTokenId, categoryId, to, digest, hashFunction, size, referralData);
+        emit TicketMinted(eventId, lastTokenId, categoryId, to, digest, hashFunction, size, referralData, pricePaid);
     }
 
     function mintBatch(
@@ -107,7 +109,8 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size,
-        string memory referralData
+        string memory referralData,
+        uint256 pricePaid
     ) external onlyEventManager {
         for (uint256 i = 0; i < amount; i++) {
             lastTokenId += 1;
@@ -117,7 +120,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
                 hashFunction,
                 size
             );
-            emit TicketMinted(eventId, lastTokenId, categoryId, to, digest, hashFunction, size, referralData);
+            emit TicketMinted(eventId, lastTokenId, categoryId, to, digest, hashFunction, size, referralData, pricePaid);
         }
     }
 
