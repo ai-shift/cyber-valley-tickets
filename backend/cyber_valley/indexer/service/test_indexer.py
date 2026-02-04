@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+import signal
 import threading
 from collections.abc import Callable, Generator
 from contextlib import AbstractContextManager, contextmanager, suppress
@@ -178,21 +179,28 @@ def _execute(
         stderr=subprocess.STDOUT,
         shell=True,
         text=True,
+        start_new_session=True,
         env=os.environ.copy() | (env or {}),
     )
 
     output_thread = threading.Thread(target=partial(_capture_output, proc))
+    output_thread.daemon = True
     output_thread.start()
 
     if yield_after_line:
         t = threading.Thread(target=partial(_wait_for_line, proc, yield_after_line))
+        t.daemon = True
         t.start()
         t.join(timeout=timeout)
     else:
         proc.wait()
 
     yield
+    with suppress(ProcessLookupError):
+        os.killpg(proc.pid, signal.SIGKILL)
     proc.kill()
+    if proc.stdout:
+        proc.stdout.close()
     output_thread.join(timeout=1)
 
     print(f"\n=== End of command: {command} ===")
@@ -200,8 +208,14 @@ def _execute(
 
 def _wait_for_line(proc: subprocess.Popen[str], return_after_line: str) -> None:
     assert proc.stdout
-    while return_after_line not in proc.stdout.readline():
-        pass
+    while True:
+        line = proc.stdout.readline()
+        if not line:
+            if proc.poll() is not None:
+                return
+            continue
+        if return_after_line in line:
+            return
 
 
 def _get_event_name_from_topic(

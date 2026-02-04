@@ -86,3 +86,7 @@ gen-types:
 
 test-indexer:
 	uv run pytest cyber_valley/indexer/service/test_indexer.py -vvv -s
+
+test-indexer-one:
+	test -n "$(TEST)" || (echo "Usage: make test-indexer-one TEST=<pytest -k expr>" && exit 1)
+	uv run pytest cyber_valley/indexer/service/test_indexer.py -vvv -s -k "$(TEST)"
