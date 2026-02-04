@@ -423,8 +423,14 @@ def ticket_info(_: Request, event_id: int, ticket_id: str) -> Response:
 def verify_ticket(
     request: Request, event_id: int, ticket_id: str, nonce: str
 ) -> Response:
+    from cyber_valley.users.models import CyberValleyUser
+
     user = request.user
     assert not isinstance(user, AnonymousUser)
+
+    # Only staff or master can verify tickets
+    if not user.has_role(CyberValleyUser.STAFF, CyberValleyUser.MASTER):
+        return Response("Only staff or master can verify tickets", status=403)
 
     key = f"{nonce}:{event_id}:{ticket_id}"
     if not cache.delete(key):
