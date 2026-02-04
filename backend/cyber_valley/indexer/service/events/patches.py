@@ -14,6 +14,7 @@ _ROLES = (
     "EVENT_MANAGER_ROLE",
     "BACKEND_ROLE",
     "ADMIN_ROLE",
+    "PROFILE_MANAGER_ROLE",
 )
 _BYTES_TO_ROLE = {Web3.keccak(text=role): role for role in _ROLES}
 _BYTES_TO_ROLE[HexBytes(b"\x00" * 32)] = _ROLES[0]
