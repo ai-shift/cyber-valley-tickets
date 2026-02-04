@@ -7,7 +7,7 @@ import { PageContainer } from "@/shared/ui/PageContainer";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-// @ts-ignore - Loader is used in JSX but TS doesn't detect it
+// @ts-expect-error Loader is used in JSX but TS doesn't detect it through conditional
 import { AlertCircle, Loader, Plus, Trash2 } from "lucide-react";
 import { useActiveAccount } from "thirdweb/react";
 import { isAddress } from "thirdweb/utils";
@@ -115,7 +115,7 @@ export const CreateDistributionProfilePage: React.FC = () => {
     return null;
   }
 
-  // @ts-ignore - used in JSX below, TS doesn't detect it through conditional return
+  // @ts-expect-error Used in JSX but TS doesn't detect it through conditional return
   async function handleSubmit() {
     if (!account) {
       setSubmitError("Please connect your wallet");

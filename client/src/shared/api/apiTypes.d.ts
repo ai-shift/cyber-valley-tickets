@@ -256,7 +256,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations["api_events_tickets_nonce_retrieve"];
+    get: operations["api_events_tickets_nonce_generate"];
     put?: never;
     post?: never;
     delete?: never;
@@ -272,7 +272,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get: operations["api_events_tickets_nonce_retrieve_2"];
+    get: operations["api_events_tickets_verify"];
     put?: never;
     post?: never;
     delete?: never;
@@ -374,7 +374,7 @@ export interface paths {
      * List available geodata layers
      * @description Returns a list of available geodata layer names
      */
-    get: operations["api_geodata_list"];
+    get: operations["api_geodata_layers_list"];
     put?: never;
     post?: never;
     delete?: never;
@@ -394,7 +394,7 @@ export interface paths {
      * Get geodata layer by name
      * @description Returns the geodata features for a specific layer. Each feature represents a geographical area with coordinates, name, type, and optional styling information.
      */
-    get: operations["api_geodata_list_2"];
+    get: operations["api_geodata_layer_retrieve"];
     put?: never;
     post?: never;
     delete?: never;
@@ -487,7 +487,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/notifications/{id}/": {
+  "/api/notifications/{notification_id}/": {
     parameters: {
       query?: never;
       header?: never;
@@ -736,11 +736,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    ApiAuthCustomSendSmsCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiAuthCustomSubmitApplicationCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiAuthCustomVerifyCodeCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiAuthLogoutRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiAuthRefreshRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiAuthVerifyRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiAuthWeb3LoginCreateAddressErrorComponent: {
       /**
@@ -1096,11 +1092,13 @@ export interface components {
     ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsStatusRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsTicketsNonceRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiEventsTicketsNonceGenerateErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsTicketsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiEventsTicketsVerifyErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsTotalRevenueRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiEventsVerificationStatsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiGeodataListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiGeodataLayerRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiGeodataLayersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiIpfsEventsMetaUpdateCoverErrorComponent: {
       /**
        * @description * `cover` - cover (enum property replaced by openapi-typescript)
@@ -1744,10 +1742,7 @@ export interface components {
     };
     ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiShamanVerifyCompanyCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiShamanVerifyIndividualCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiTelegramSchemaRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiTelegramUpdatesCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersLocalProvidersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersProfileRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
@@ -1822,16 +1817,34 @@ export interface components {
     ApiUsersSocialsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersStaffListErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersVerifiedShamansListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApplicationRequestRequest:
+      | components["schemas"]["IndividualApplicationRequest"]
+      | components["schemas"]["BusinessApplicationRequest"];
     Attendee: {
       address: string;
       readonly socials: components["schemas"]["UploadSocials"];
       readonly ticketsCount: number;
+    };
+    BusinessApplicationRequest: {
+      directorId: string;
+      /** Format: binary */
+      akta: string;
+      /** Format: binary */
+      skKemenkumham: string;
     };
     /**
      * @description * `client_error` - Client Error
      * @enum {string}
      */
     ClientErrorEnum: "client_error";
+    CompanyVerificationRequest: {
+      /** Format: binary */
+      ktp: string;
+      /** Format: binary */
+      akta: string;
+      /** Format: binary */
+      sk: string;
+    };
     Coordinate: {
       /**
        * Format: double
@@ -1851,11 +1864,10 @@ export interface components {
     CreatorEvent: {
       readonly id: number;
       creator: components["schemas"]["Creator"];
-      status?: components["schemas"]["Status925Enum"];
+      status?: components["schemas"]["EventStatusEnum"];
       title: string;
       description: string;
       place: components["schemas"]["EventPlace"];
-      /** Format: int64 */
       readonly placeId: number;
       /** Format: int64 */
       ticketPrice: number;
@@ -1865,7 +1877,6 @@ export interface components {
       readonly ticketPriceRange: {
         [key: string]: number | null;
       };
-      /** Format: int64 */
       daysAmount: number;
       /** Format: uri */
       imageUrl?: string | null;
@@ -1986,21 +1997,15 @@ export interface components {
       errors: components["schemas"]["Error500"][];
     };
     EventPlace: {
-      /** Format: int64 */
       id: number;
       title: string;
-      /** Format: int64 */
       maxTickets: number;
-      /** Format: int64 */
       minTickets: number;
       /** Format: int64 */
       minPrice: number;
-      /** Format: int64 */
       minDays: number;
       geometry: components["schemas"]["GeoFeature"];
-      /** Format: int64 */
       daysBeforeCancel: number;
-      /** Format: int64 */
       eventDepositSize?: number;
       available?: boolean;
       status?: components["schemas"]["EventPlaceStatusEnum"];
@@ -2013,6 +2018,20 @@ export interface components {
      * @enum {string}
      */
     EventPlaceStatusEnum: "submitted" | "approved" | "declined";
+    /**
+     * @description * `submitted` - submitted
+     *     * `approved` - approved
+     *     * `declined` - declined
+     *     * `cancelled` - cancelled
+     *     * `closed` - closed
+     * @enum {string}
+     */
+    EventStatusEnum:
+      | "submitted"
+      | "approved"
+      | "declined"
+      | "cancelled"
+      | "closed";
     GeoFeature: {
       /** @description Name of the geographical feature */
       name: string;
@@ -2028,6 +2047,13 @@ export interface components {
       attributes?: {
         [key: string]: string;
       };
+    };
+    IndividualApplicationRequest: {
+      ktp: string;
+    };
+    IndividualVerificationRequest: {
+      /** Format: binary */
+      ktp: string;
     };
     /**
      * @description * `telegram` - Telegram
@@ -2108,6 +2134,14 @@ export interface components {
       network: components["schemas"]["NetworkEnum"];
       value: string;
     };
+    SendSMSRequest: {
+      phoneNumber: string;
+    };
+    SendSMSResponse: {
+      success: boolean;
+      message: string;
+      developmentNote?: string;
+    };
     /**
      * @description * `server_error` - Server Error
      * @enum {string}
@@ -2124,11 +2158,10 @@ export interface components {
     StaffEvent: {
       readonly id: number;
       creator: components["schemas"]["Creator"];
-      status?: components["schemas"]["Status925Enum"];
+      status?: components["schemas"]["EventStatusEnum"];
       title: string;
       description: string;
       place: components["schemas"]["EventPlace"];
-      /** Format: int64 */
       readonly placeId: number;
       /** Format: int64 */
       ticketPrice: number;
@@ -2138,34 +2171,22 @@ export interface components {
       readonly ticketPriceRange: {
         [key: string]: number | null;
       };
-      /** Format: int64 */
       daysAmount: number;
       /** Format: uri */
       imageUrl?: string | null;
       /** Format: uri */
       website?: string | null;
       readonly startDateTimestamp: number;
-      /** Format: int64 */
       ticketsBought: number;
       readonly totalRevenue: number;
       readonly paidDeposit: number;
       readonly ticketsRequiredUntilCancel: number;
       readonly cancelDateTimestamp: number;
     };
-    /**
-     * @description * `submitted` - submitted
-     *     * `approved` - approved
-     *     * `declined` - declined
-     *     * `cancelled` - cancelled
-     *     * `closed` - closed
-     * @enum {string}
-     */
-    Status925Enum:
-      | "submitted"
-      | "approved"
-      | "declined"
-      | "cancelled"
-      | "closed";
+    SubmitApplicationResponse: {
+      message: string;
+      applicationType: string;
+    };
     Ticket: {
       readonly id: string;
       readonly eventId: number;
@@ -2224,6 +2245,17 @@ export interface components {
      * @enum {string}
      */
     ValidationErrorEnum: "validation_error";
+    VerifyCodeRequest: {
+      phoneNumber: string;
+      verificationCode: string;
+    };
+    VerifyCodeResponse: {
+      success: boolean;
+      payload: {
+        [key: string]: unknown;
+      };
+      message: string;
+    };
   };
   responses: never;
   parameters: never;
@@ -2240,21 +2272,28 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/x-www-form-urlencoded": components["schemas"]["SendSMSRequest"];
+        "multipart/form-data": components["schemas"]["SendSMSRequest"];
+        "application/json": components["schemas"]["SendSMSRequest"];
+      };
+    };
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["SendSMSResponse"];
+        };
       };
       400: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiAuthCustomSendSmsCreateErrorResponse400"];
+          "application/json": components["schemas"]["SendSMSResponse"];
         };
       };
       401: {
@@ -2306,21 +2345,26 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody?: {
+      content: {
+        "multipart/form-data": components["schemas"]["ApplicationRequestRequest"];
+      };
+    };
     responses: {
-      /** @description No response body */
-      200: {
+      201: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["SubmitApplicationResponse"];
+        };
       };
       400: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiAuthCustomSubmitApplicationCreateErrorResponse400"];
+          "application/json": components["schemas"]["SubmitApplicationResponse"];
         };
       };
       401: {
@@ -2372,21 +2416,28 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/x-www-form-urlencoded": components["schemas"]["VerifyCodeRequest"];
+        "multipart/form-data": components["schemas"]["VerifyCodeRequest"];
+        "application/json": components["schemas"]["VerifyCodeRequest"];
+      };
+    };
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["VerifyCodeResponse"];
+        };
       };
       400: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiAuthCustomVerifyCodeCreateErrorResponse400"];
+          "application/json": components["schemas"]["VerifyCodeResponse"];
         };
       };
       401: {
@@ -2426,7 +2477,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
+          "application/json": components["schemas"]["VerifyCodeResponse"];
         };
       };
     };
@@ -2440,12 +2491,15 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": {
+            detail?: string;
+          };
+        };
       };
       400: {
         headers: {
@@ -2507,7 +2561,7 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description No response body */
-      200: {
+      204: {
         headers: {
           [name: string]: unknown;
         };
@@ -2518,7 +2572,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiAuthRefreshRetrieveErrorResponse400"];
+          "application/json": {
+            detail?: string;
+          };
         };
       };
       401: {
@@ -2528,6 +2584,13 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["ErrorResponse401"];
         };
+      };
+      /** @description No response body */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       405: {
         headers: {
@@ -2592,7 +2655,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
+          "application/json": {
+            detail?: string;
+          };
         };
       };
       405: {
@@ -2948,7 +3013,8 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: string;
+        /** @description Distribution profile ID */
+        id: number;
       };
       cookie?: never;
     };
@@ -3413,7 +3479,7 @@ export interface operations {
       };
     };
   };
-  api_events_tickets_nonce_retrieve: {
+  api_events_tickets_nonce_generate: {
     parameters: {
       query?: never;
       header?: never;
@@ -3440,7 +3506,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiEventsTicketsNonceRetrieveErrorResponse400"];
+          "application/json": components["schemas"]["ApiEventsTicketsNonceGenerateErrorResponse400"];
         };
       };
       401: {
@@ -3493,32 +3559,41 @@ export interface operations {
       };
     };
   };
-  api_events_tickets_nonce_retrieve_2: {
+  api_events_tickets_verify: {
     parameters: {
       query?: never;
       header?: never;
       path: {
         eventId: number;
         nonce: string;
-        ticketId: number;
+        ticketId: string;
       };
       cookie?: never;
     };
     requestBody?: never;
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": string;
+        };
+      };
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
       };
       400: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiEventsTicketsNonceRetrieveErrorResponse400"];
+          "application/json": components["schemas"]["ApiEventsTicketsVerifyErrorResponse400"];
         };
       };
       401: {
@@ -3529,12 +3604,20 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse401"];
         };
       };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
+      };
       404: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
+          "application/json": string;
         };
       };
       405: {
@@ -3551,6 +3634,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
         };
       };
       415: {
@@ -4004,7 +4095,7 @@ export interface operations {
       };
     };
   };
-  api_geodata_list: {
+  api_geodata_layers_list: {
     parameters: {
       query?: never;
       header?: never;
@@ -4026,7 +4117,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiGeodataListErrorResponse400"];
+          "application/json": components["schemas"]["ApiGeodataLayersListErrorResponse400"];
         };
       };
       401: {
@@ -4071,11 +4162,12 @@ export interface operations {
       };
     };
   };
-  api_geodata_list_2: {
+  api_geodata_layer_retrieve: {
     parameters: {
       query?: never;
       header?: never;
       path: {
+        /** @description Geodata layer name */
         id: string;
       };
       cookie?: never;
@@ -4095,7 +4187,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiGeodataListErrorResponse400"];
+          "application/json": components["schemas"]["ApiGeodataLayerRetrieveErrorResponse400"];
         };
       };
       401: {
@@ -4518,7 +4610,9 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
+        /** @description Notification ID */
         id: string;
+        notificationId: string;
       };
       cookie?: never;
     };
@@ -4595,6 +4689,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
+        /** @description Notification ID */
         notificationId: string;
       };
       cookie?: never;
@@ -4821,21 +4916,33 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["CompanyVerificationRequest"];
+      };
+    };
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": {
+            cid?: string;
+            ktp?: string;
+            akta?: string;
+            sk?: string;
+          };
+        };
       };
       400: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiShamanVerifyCompanyCreateErrorResponse400"];
+          "application/json": {
+            error?: string;
+          };
         };
       };
       401: {
@@ -4887,21 +4994,31 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["IndividualVerificationRequest"];
+      };
+    };
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": {
+            cid?: string;
+            ktp?: string;
+          };
+        };
       };
       400: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiShamanVerifyIndividualCreateErrorResponse400"];
+          "application/json": {
+            error?: string;
+          };
         };
       };
       401: {
@@ -4955,12 +5072,18 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": {
+            version?: number;
+            schema_ttl_seconds?: number;
+            forward_to?: string;
+            matches?: unknown[];
+          };
+        };
       };
       400: {
         headers: {
@@ -5019,21 +5142,38 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody?: {
+      content: {
+        type: {
+          [key: string]: unknown;
+        };
+        description: {
+          [key: string]: unknown;
+        };
+        additionalProperties: {
+          [key: string]: unknown;
+        };
+      };
+    };
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": {
+            status?: string;
+          };
+        };
       };
       400: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiTelegramUpdatesCreateErrorResponse400"];
+          "application/json": {
+            detail?: string;
+          };
         };
       };
       401: {
@@ -5073,7 +5213,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
+          "application/json": {
+            detail?: string;
+          };
         };
       };
     };

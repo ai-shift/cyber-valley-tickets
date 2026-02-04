@@ -9,8 +9,7 @@ export const useGetNonce = (eventId: number, ticketId: string) =>
         "/api/events/{event_id}/tickets/{ticket_id}/nonce",
         {
           params: {
-            // @ts-ignore: TS2561
-            path: { event_id: eventId, ticket_id: ticketId },
+            path: { eventId, ticketId: Number(ticketId) },
           },
         },
       );
