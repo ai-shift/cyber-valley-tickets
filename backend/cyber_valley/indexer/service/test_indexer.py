@@ -32,6 +32,7 @@ def run_hardhat_node(printer_session: Printer) -> ProcessStarter:
             "node_modules/.bin/hardhat node",
             yield_after_line="Started HTTP and WebSocket JSON-RPC server at ",
             env={"HARDHAT_INITIAL_DATE": "2024-01-01T00:00:00Z"},
+            quiet=True,
         )
     subprocess.run("pkill -f node.*hardhat.*.js", shell=True, check=False)  # noqa: S602, S607
     (ETHEREUM_DIR / "cache/solidity-files-cache.json").unlink(missing_ok=True)
@@ -159,6 +160,7 @@ def _execute(
     yield_after_line: None | str = None,
     timeout: int = 5,
     env: None | dict[str, str] = None,
+    quiet: bool = False,
 ) -> ProcessStarter:
     output_lines: list[str] = []
 
@@ -166,7 +168,8 @@ def _execute(
         assert proc.stdout
         for line in proc.stdout:
             output_lines.append(line)
-            print(line, end="", flush=True)
+            if not quiet:
+                print(line, end="", flush=True)
 
     proc = subprocess.Popen(  # noqa: S602
         command,

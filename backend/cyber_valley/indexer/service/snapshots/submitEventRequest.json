@@ -55,6 +55,156 @@
         "hashFunction": 18,
         "maxTickets": 100,
         "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 150,
+        "minDays": 2,
+        "minPrice": 30,
+        "minTickets": 20,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "size": 32,
+        "status": 1
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "eventDepositSize": 100,
+        "eventPlaceId": 0,
+        "hashFunction": 18,
+        "maxTickets": 100,
+        "minDays": 1,
         "minPrice": 30,
         "minTickets": 50,
         "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
@@ -182,6 +332,136 @@
       }
     ],
     "CyberValleyEventManager.NewEventPlaceRequest": [
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
+      {
+        "available": true,
+        "daysBeforeCancel": 1,
+        "digest": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "hashFunction": 18,
+        "id": 0,
+        "maxTickets": 100,
+        "minDays": 1,
+        "minPrice": 20,
+        "minTickets": 50,
+        "requester": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "size": 32
+      },
       {
         "available": true,
         "daysBeforeCancel": 1,
@@ -449,6 +729,116 @@
         "newAdminRole": "BACKEND_ROLE",
         "previousAdminRole": "DEFAULT_ADMIN_ROLE",
         "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
+      },
+      {
+        "newAdminRole": "BACKEND_ROLE",
+        "previousAdminRole": "DEFAULT_ADMIN_ROLE",
+        "role": "VERIFIED_SHAMAN_ROLE"
       }
     ],
     "CyberValleyEventManager.RoleGranted": [
@@ -518,67 +908,7 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "DEFAULT_ADMIN_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "MASTER_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "STAFF_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "DEFAULT_ADMIN_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "ADMIN_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "DEFAULT_ADMIN_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "MASTER_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "LOCAL_PROVIDER_ROLE",
-        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-      },
-      {
-        "account": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
-        "role": "EVENT_MANAGER_ROLE",
-        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-      },
-      {
-        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-        "role": "LOCAL_PROVIDER_ROLE",
-        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-      },
-      {
-        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-        "role": "LOCAL_PROVIDER_ROLE",
-        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-      },
-      {
-        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "role": "BACKEND_ROLE",
-        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-      },
-      {
-        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -623,7 +953,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+        "account": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -644,6 +974,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -688,7 +1023,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x0B306BF915C4d645ff596e518fAf3F9669b97016",
+        "account": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -709,6 +1044,16 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -753,7 +1098,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+        "account": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -774,6 +1119,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -818,7 +1168,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
+        "account": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -839,6 +1189,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -883,7 +1238,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x09635F643e140090A9A8Dcd712eD6285858ceBef",
+        "account": "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -904,6 +1259,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -948,7 +1308,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690",
+        "account": "0xc5a5C42992dECbae36851359345FE25997F5C42d",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -969,6 +1329,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -1013,7 +1378,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8",
+        "account": "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -1034,6 +1399,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -1078,7 +1448,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x998abeb3E57409262aE5b751f60747921B33613E",
+        "account": "0x851356ae760d987E095750cCeb3bC6014560891C",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -1099,6 +1469,11 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -1143,7 +1518,7 @@
         "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
-        "account": "0x0E801D84Fa97b50751Dbf25036d067dCf18858bF",
+        "account": "0x4826533B4897376654Bb4d4AD88B7faFD0C98528",
         "role": "EVENT_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
@@ -1164,6 +1539,1621 @@
       },
       {
         "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x9d4454B023096f34B160D6B654540c56A1F81688",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x4c5859f0F772848b2D91F1D83E2Fe57935348029",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xCD8a1C3ba11CF5ECfa6267617243239504a98d90",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x36b58F5C1969B7b6591D752ea6F5486D069010AB",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xD84379CEae14AA33C123Af12424A37803F885889",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xC9a43158891282A2B1475592D5719c001986Aaec",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x7A9Ec1d04904907De0ED7b6839CcdD59c3716AC9",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xA4899D35897033b927acFCf422bc745916139776",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x720472c8ce72c2A2D711333e064ABD3E6BbEAdd3",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x4b6aB5F819A515382B0dEB6935D793817bB4af28",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xc0F115A19107322cFBf1cDBC7ea011C19EbDB4F8",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x07882Ae1ecB7429a84f1D53048d35c4bB2056877",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x276C216D241856199A83bf27b2286659e5b877D3",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0xffa7CA1AEEEbBc30C874d32C7e22F052BbEa0429",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x1f10F3Ba7ACB61b2F50B9d6DdCf91a6f787C0E82",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x5fc748f1FEb28d7b76fa1c6B07D8ba2d5535177c",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x8A93d247134d91e0de6f96547cB0204e5BE8e5D8",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "STAFF_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "DEFAULT_ADMIN_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "MASTER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      },
+      {
+        "account": "0x99dBE4AEa58E518C50a1c04aE9b48C9F6354612f",
+        "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "role": "LOCAL_PROVIDER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "role": "BACKEND_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+        "role": "VERIFIED_SHAMAN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "role": "VERIFIED_SHAMAN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       }
@@ -1251,9 +3241,295 @@
       },
       {
         "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
+      },
+      {
+        "profileId": 1
       }
     ],
     "DynamicRevenueSplitter.DistributionProfileCreated": [
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
+      {
+        "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "profileId": 1,
+        "recipients": [
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+        ],
+        "shares": [
+          10000
+        ]
+      },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
@@ -1409,70 +3685,204 @@
         "profileId": 2
       }
     ],
+    "DynamicRevenueSplitter.LocalProviderDefaultShareSet": [
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      },
+      {
+        "provider": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+        "shareBps": 500
+      }
+    ],
     "SimpleERC20Xylose.Approval": [
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+        "spender": "0xA4899D35897033b927acFCf422bc745916139776",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+        "spender": "0x720472c8ce72c2A2D711333e064ABD3E6BbEAdd3",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x0B306BF915C4d645ff596e518fAf3F9669b97016",
+        "spender": "0xc0F115A19107322cFBf1cDBC7ea011C19EbDB4F8",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c",
+        "spender": "0x07882Ae1ecB7429a84f1D53048d35c4bB2056877",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44",
+        "spender": "0x276C216D241856199A83bf27b2286659e5b877D3",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x09635F643e140090A9A8Dcd712eD6285858ceBef",
+        "spender": "0xffa7CA1AEEEbBc30C874d32C7e22F052BbEa0429",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690",
+        "spender": "0x1f10F3Ba7ACB61b2F50B9d6DdCf91a6f787C0E82",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8",
+        "spender": "0x5fc748f1FEb28d7b76fa1c6B07D8ba2d5535177c",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8",
+        "spender": "0x5fc748f1FEb28d7b76fa1c6B07D8ba2d5535177c",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x998abeb3E57409262aE5b751f60747921B33613E",
+        "spender": "0x8A93d247134d91e0de6f96547cB0204e5BE8e5D8",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x998abeb3E57409262aE5b751f60747921B33613E",
+        "spender": "0x8A93d247134d91e0de6f96547cB0204e5BE8e5D8",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x0E801D84Fa97b50751Dbf25036d067dCf18858bF",
+        "spender": "0x99dBE4AEa58E518C50a1c04aE9b48C9F6354612f",
         "value": 100
       },
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "spender": "0x0E801D84Fa97b50751Dbf25036d067dCf18858bF",
+        "spender": "0x99dBE4AEa58E518C50a1c04aE9b48C9F6354612f",
         "value": 100
       }
     ],
@@ -1484,7 +3894,7 @@
       },
       {
         "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "to": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+        "to": "0xA4899D35897033b927acFCf422bc745916139776",
         "value": 100
       },
       {
@@ -1494,7 +3904,7 @@
       },
       {
         "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "to": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+        "to": "0x720472c8ce72c2A2D711333e064ABD3E6BbEAdd3",
         "value": 100
       },
       {
@@ -1510,31 +3920,6 @@
       {
         "from": "0x0000000000000000000000000000000000000000",
         "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "value": 100
-      },
-      {
-        "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "value": 100
-      },
-      {
-        "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "value": 100
-      },
-      {
-        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "to": "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690",
-        "value": 100
-      },
-      {
-        "from": "0x0000000000000000000000000000000000000000",
-        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "value": 100
-      },
-      {
-        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "to": "0x1613beB3B2C4f22Ee086B2b38C1476A3cE7f78E8",
         "value": 100
       },
       {
@@ -1549,7 +3934,17 @@
       },
       {
         "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "to": "0x998abeb3E57409262aE5b751f60747921B33613E",
+        "to": "0x1f10F3Ba7ACB61b2F50B9d6DdCf91a6f787C0E82",
+        "value": 100
+      },
+      {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "value": 100
+      },
+      {
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "to": "0x5fc748f1FEb28d7b76fa1c6B07D8ba2d5535177c",
         "value": 100
       },
       {
@@ -1564,7 +3959,22 @@
       },
       {
         "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        "to": "0x0E801D84Fa97b50751Dbf25036d067dCf18858bF",
+        "to": "0x8A93d247134d91e0de6f96547cB0204e5BE8e5D8",
+        "value": 100
+      },
+      {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "value": 100
+      },
+      {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "value": 100
+      },
+      {
+        "from": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+        "to": "0x99dBE4AEa58E518C50a1c04aE9b48C9F6354612f",
         "value": 100
       },
       {
@@ -1574,6 +3984,6 @@
       }
     ]
   },
-  "events_count": 251,
+  "events_count": 690,
   "test_name": "submitEventRequest"
 }
