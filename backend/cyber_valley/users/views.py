@@ -115,7 +115,7 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     @action(detail=False, methods=["get"], name="Verified Shamans")
     def verified_shamans(self, request: Request) -> Response:
         assert request.user.is_authenticated
-        if request.user.role not in (
+        if not request.user.has_role(
             CyberValleyUser.LOCAL_PROVIDER,
             CyberValleyUser.MASTER,
         ):

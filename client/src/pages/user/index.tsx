@@ -1,11 +1,11 @@
-import { useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { PageContainer } from "@/shared/ui/PageContainer";
-import { Loader } from "@/shared/ui/Loader";
-import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { useEnsLookup } from "@/shared/hooks/useEnsLookup";
 import { formatAddress } from "@/shared/lib/formatAddress";
+import { ErrorMessage } from "@/shared/ui/ErrorMessage";
+import { Loader } from "@/shared/ui/Loader";
+import { PageContainer } from "@/shared/ui/PageContainer";
+import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
+import { useParams } from "react-router";
 
 interface UserProfile {
   address: string;
@@ -45,7 +45,8 @@ export const UserPage: React.FC = () => {
   if (error) return <ErrorMessage errors={error} />;
   if (!profile) return <ErrorMessage errors="User not found" />;
 
-  const displayName = ensName || formatAddress(profile.address as `0x${string}`);
+  const displayName =
+    ensName || formatAddress(profile.address as `0x${string}`);
 
   return (
     <PageContainer name="User Profile">
@@ -94,7 +95,9 @@ export const UserPage: React.FC = () => {
                   key={social.network}
                   className="flex justify-between items-center py-2 px-3 bg-secondary/10 rounded"
                 >
-                  <span className="capitalize font-medium">{social.network}</span>
+                  <span className="capitalize font-medium">
+                    {social.network}
+                  </span>
                   <span className="text-secondary">{social.value}</span>
                 </div>
               ))}
