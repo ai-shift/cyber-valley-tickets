@@ -7,7 +7,7 @@ import { PageContainer } from "@/shared/ui/PageContainer";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { AlertCircle, Plus, Trash2 } from "lucide-react";
+import { AlertCircle, Loader, Plus, Trash2 } from "lucide-react";
 import { useActiveAccount } from "thirdweb/react";
 import { isAddress } from "thirdweb/utils";
 
@@ -167,7 +167,7 @@ export const CreateDistributionProfilePage: React.FC = () => {
         {/* Info Section */}
         <div className="mb-6">
           <p className="text-sm text-muted-foreground mb-2">
-            <strong>Distribution Profile</strong> defines how the 85% flexible
+            <strong>Distribution Profile</strong> defines how the 80% flexible
             revenue share is distributed among recipients.
           </p>
           <p className="text-sm text-muted-foreground">

@@ -504,11 +504,13 @@ export async function removeStaff(
 export async function grantLocalProvider(
   account: Account,
   address: string,
+  defaultSharePercent: number,
 ): Promise<TxHash> {
+  const shareBps = BigInt(Math.round(defaultSharePercent * 100));
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "grantLocalProvider",
-    params: [address],
+    params: [address, shareBps],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;

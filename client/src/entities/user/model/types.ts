@@ -7,7 +7,7 @@ export type User = {
   roles: Role[];
   tickets: components["schemas"]["Ticket"][];
   socials: components["schemas"]["Social"][];
-  defaultShare: number;
+  profileManagerBps: number;
 };
 
 export type NetworkEnum = components["schemas"]["NetworkEnum"];

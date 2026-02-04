@@ -11,6 +11,6 @@ export const formSchema = z.object({
   share: z
     .number()
     .int()
-    .gt(0, "Share have to be a whole number from 0 to 100")
-    .lt(100, "Share have to be a whole number from 0 to 100"),
+    .min(0, "Share have to be a whole number from 0 to 100")
+    .max(100, "Share have to be a whole number from 0 to 100"),
 });
