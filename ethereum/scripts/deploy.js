@@ -39,26 +39,27 @@ async function main() {
     .connect(master)
     .setRevenueSplitter(await splitter.getAddress());
 
-  // Set EventManager on splitter and grant LOCAL_PROVIDER_ROLE
+  // Set EventManager on splitter
   await splitter
     .connect(master)
     .setEventManager(await eventManager.getAddress());
-  const LOCAL_PROVIDER_ROLE = await splitter.LOCAL_PROVIDER_ROLE();
+
+  // Grant profile manager role with 5% bps to localProvider
+  // This allows them to create distribution profiles and receive bps share
   await splitter
     .connect(master)
-    .grantRole(LOCAL_PROVIDER_ROLE, localProvider.address);
+    .grantProfileManager(localProvider.address, 500);
 
-  // Setup default profile
+  // Create initial distribution profile for localProvider
+  // (using master as recipient since profile manager can't add themselves)
   await splitter
-    .connect(master)
-    .createDistributionProfile(
-      localProvider.address,
-      [localProvider.address],
-      [10000],
-    );
-  await splitter.connect(master).setDefaultProfile(1);
+    .connect(localProvider)
+    .createDistributionProfile([master.address], [10000]);
 
-  await eventManager.connect(master).grantLocalProvider(localProvider.address);
+  // Grant LOCAL_PROVIDER_ROLE on EventManager and set bps
+  await eventManager
+    .connect(master)
+    .grantLocalProvider(localProvider.address, 500);
 
   // Grant BACKEND_ROLE to backend EOA
   const BACKEND_ROLE = await eventManager.BACKEND_ROLE();
