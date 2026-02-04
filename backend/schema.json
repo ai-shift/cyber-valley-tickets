@@ -12,6 +12,26 @@
                 "tags": [
                     "api"
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendSMSRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendSMSRequest"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendSMSRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "security": [
                     {
                         "cookieJWTAuth": []
@@ -22,16 +42,6 @@
                     {}
                 ],
                 "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiAuthCustomSendSmsCreateErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "401": {
                         "content": {
                             "application/json": {
@@ -165,7 +175,24 @@
                         "description": ""
                     },
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SendSMSResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SendSMSResponse"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -176,6 +203,15 @@
                 "tags": [
                     "api"
                 ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplicationRequestRequest"
+                            }
+                        }
+                    }
+                },
                 "security": [
                     {
                         "cookieJWTAuth": []
@@ -185,16 +221,6 @@
                     }
                 ],
                 "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiAuthCustomSubmitApplicationCreateErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "401": {
                         "content": {
                             "application/json": {
@@ -327,8 +353,25 @@
                         },
                         "description": ""
                     },
-                    "200": {
-                        "description": "No response body"
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubmitApplicationResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubmitApplicationResponse"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -340,6 +383,26 @@
                 "tags": [
                     "api"
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifyCodeRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifyCodeRequest"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifyCodeRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "security": [
                     {
                         "cookieJWTAuth": []
@@ -350,16 +413,6 @@
                     {}
                 ],
                 "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiAuthCustomVerifyCodeCreateErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "401": {
                         "content": {
                             "application/json": {
@@ -468,11 +521,31 @@
                         },
                         "description": ""
                     },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VerifyCodeResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VerifyCodeResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
                     "500": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse500"
+                                    "$ref": "#/components/schemas/VerifyCodeResponse"
                                 },
                                 "examples": {
                                     "APIException": {
@@ -491,9 +564,6 @@
                             }
                         },
                         "description": ""
-                    },
-                    "200": {
-                        "description": "No response body"
                     }
                 }
             }
@@ -657,7 +727,19 @@
                         "description": ""
                     },
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "detail": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -678,16 +760,6 @@
                     {}
                 ],
                 "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiAuthRefreshRetrieveErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "401": {
                         "content": {
                             "application/json": {
@@ -820,7 +892,25 @@
                         },
                         "description": ""
                     },
-                    "200": {
+                    "204": {
+                        "description": "No response body"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "detail": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
                         "description": "No response body"
                     }
                 }
@@ -851,42 +941,6 @@
                         },
                         "description": ""
                     },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse401"
-                                },
-                                "examples": {
-                                    "AuthenticationFailed": {
-                                        "value": {
-                                            "type": "client_error",
-                                            "errors": [
-                                                {
-                                                    "code": "authentication_failed",
-                                                    "detail": "Incorrect authentication credentials.",
-                                                    "attr": null
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "NotAuthenticated": {
-                                        "value": {
-                                            "type": "client_error",
-                                            "errors": [
-                                                {
-                                                    "code": "not_authenticated",
-                                                    "detail": "Authentication credentials were not provided.",
-                                                    "attr": null
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "405": {
                         "content": {
                             "application/json": {
@@ -985,6 +1039,47 @@
                     },
                     "200": {
                         "description": "No response body"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "detail": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -1993,8 +2088,9 @@
                         "in": "path",
                         "name": "id",
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         },
+                        "description": "Distribution profile ID",
                         "required": true
                     }
                 ],
@@ -3235,7 +3331,7 @@
         },
         "/api/events/{event_id}/tickets/{ticket_id}/nonce": {
             "get": {
-                "operationId": "api_events_tickets_nonce_retrieve",
+                "operationId": "api_events_tickets_nonce_generate",
                 "parameters": [
                     {
                         "in": "path",
@@ -3270,7 +3366,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiEventsTicketsNonceRetrieveErrorResponse400"
+                                    "$ref": "#/components/schemas/ApiEventsTicketsNonceGenerateErrorResponse400"
                                 }
                             }
                         },
@@ -3452,7 +3548,7 @@
         },
         "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}": {
             "get": {
-                "operationId": "api_events_tickets_nonce_retrieve_2",
+                "operationId": "api_events_tickets_verify",
                 "parameters": [
                     {
                         "in": "path",
@@ -3474,7 +3570,7 @@
                         "in": "path",
                         "name": "ticketId",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
                         "required": true
                     }
@@ -3495,7 +3591,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiEventsTicketsNonceRetrieveErrorResponse400"
+                                    "$ref": "#/components/schemas/ApiEventsTicketsVerifyErrorResponse400"
                                 }
                             }
                         },
@@ -3527,30 +3623,6 @@
                                                 {
                                                     "code": "not_authenticated",
                                                     "detail": "Authentication credentials were not provided.",
-                                                    "attr": null
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse404"
-                                },
-                                "examples": {
-                                    "NotFound": {
-                                        "value": {
-                                            "type": "client_error",
-                                            "errors": [
-                                                {
-                                                    "code": "not_found",
-                                                    "detail": "Not found.",
                                                     "attr": null
                                                 }
                                             ]
@@ -3658,7 +3730,87 @@
                         "description": ""
                     },
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "no redeem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "pending redeem"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "Only staff or master can verify tickets"
+                                },
+                                "examples": {
+                                    "PermissionDenied": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "permission_denied",
+                                                    "detail": "You do not have permission to perform this action.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "Nonce expired or invalid"
+                                },
+                                "examples": {
+                                    "NotFound": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_found",
+                                                    "detail": "Not found.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "redeemed"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -4821,7 +4973,7 @@
         },
         "/api/geodata/": {
             "get": {
-                "operationId": "api_geodata_list",
+                "operationId": "api_geodata_layers_list",
                 "description": "Returns a list of available geodata layer names",
                 "summary": "List available geodata layers",
                 "tags": [
@@ -4841,7 +4993,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiGeodataListErrorResponse400"
+                                    "$ref": "#/components/schemas/ApiGeodataLayersListErrorResponse400"
                                 }
                             }
                         },
@@ -4997,7 +5149,7 @@
         },
         "/api/geodata/{id}/": {
             "get": {
-                "operationId": "api_geodata_list_2",
+                "operationId": "api_geodata_layer_retrieve",
                 "description": "Returns the geodata features for a specific layer. Each feature represents a geographical area with coordinates, name, type, and optional styling information.",
                 "summary": "Get geodata layer by name",
                 "parameters": [
@@ -5007,6 +5159,7 @@
                         "schema": {
                             "type": "string"
                         },
+                        "description": "Geodata layer name",
                         "required": true
                     }
                 ],
@@ -5027,7 +5180,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiGeodataListErrorResponse400"
+                                    "$ref": "#/components/schemas/ApiGeodataLayerRetrieveErrorResponse400"
                                 }
                             }
                         },
@@ -6147,13 +6300,22 @@
                 }
             }
         },
-        "/api/notifications/{id}/": {
+        "/api/notifications/{notification_id}/": {
             "get": {
                 "operationId": "api_notifications_retrieve",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Notification ID",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "notificationId",
                         "schema": {
                             "type": "string"
                         },
@@ -6361,6 +6523,7 @@
                         "schema": {
                             "type": "string"
                         },
+                        "description": "Notification ID",
                         "required": true
                     }
                 ],
@@ -6741,9 +6904,8 @@
                         "name": "id",
                         "schema": {
                             "type": "integer",
-                            "maximum": 9223372036854775807,
-                            "minimum": -9223372036854775808,
-                            "format": "int64"
+                            "maximum": 2147483647,
+                            "minimum": -2147483648
                         },
                         "description": "A unique value identifying this event place.",
                         "required": true
@@ -6947,6 +7109,16 @@
                 "tags": [
                     "api"
                 ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompanyVerificationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "security": [
                     {
                         "cookieJWTAuth": []
@@ -6957,16 +7129,6 @@
                     {}
                 ],
                 "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiShamanVerifyCompanyCreateErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "401": {
                         "content": {
                             "application/json": {
@@ -7100,7 +7262,43 @@
                         "description": ""
                     },
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cid": {
+                                            "type": "string"
+                                        },
+                                        "ktp": {
+                                            "type": "string"
+                                        },
+                                        "akta": {
+                                            "type": "string"
+                                        },
+                                        "sk": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -7111,6 +7309,16 @@
                 "tags": [
                     "api"
                 ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/IndividualVerificationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "security": [
                     {
                         "cookieJWTAuth": []
@@ -7121,16 +7329,6 @@
                     {}
                 ],
                 "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiShamanVerifyIndividualCreateErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "401": {
                         "content": {
                             "application/json": {
@@ -7264,7 +7462,37 @@
                         "description": ""
                     },
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cid": {
+                                            "type": "string"
+                                        },
+                                        "ktp": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -7428,7 +7656,28 @@
                         "description": ""
                     },
                     "200": {
-                        "description": "No response body"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "version": {
+                                            "type": "integer"
+                                        },
+                                        "schema_ttl_seconds": {
+                                            "type": "integer"
+                                        },
+                                        "forward_to": {
+                                            "type": "string"
+                                        },
+                                        "matches": {
+                                            "type": "array"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -7439,6 +7688,31 @@
                 "tags": [
                     "api"
                 ],
+                "requestBody": {
+                    "content": {
+                        "type": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {},
+                                "description": "Unspecified request body"
+                            }
+                        },
+                        "description": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {},
+                                "description": "Unspecified request body"
+                            }
+                        },
+                        "additionalProperties": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {},
+                                "description": "Unspecified request body"
+                            }
+                        }
+                    }
+                },
                 "security": [
                     {
                         "cookieJWTAuth": []
@@ -7449,16 +7723,6 @@
                     {}
                 ],
                 "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiTelegramUpdatesCreateErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
                     "401": {
                         "content": {
                             "application/json": {
@@ -7567,11 +7831,46 @@
                         },
                         "description": ""
                     },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "detail": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
                     "500": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse500"
+                                    "type": "object",
+                                    "properties": {
+                                        "detail": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "examples": {
                                     "APIException": {
@@ -7590,9 +7889,6 @@
                             }
                         },
                         "description": ""
-                    },
-                    "200": {
-                        "description": "No response body"
                     }
                 }
             }
@@ -8952,59 +9248,7 @@
     },
     "components": {
         "schemas": {
-            "ApiAuthCustomSendSmsCreateErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
-            "ApiAuthCustomSubmitApplicationCreateErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
-            "ApiAuthCustomVerifyCodeCreateErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
             "ApiAuthLogoutRetrieveErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
-            "ApiAuthRefreshRetrieveErrorResponse400": {
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
@@ -9714,7 +9958,7 @@
                     }
                 }
             },
-            "ApiEventsTicketsNonceRetrieveErrorResponse400": {
+            "ApiEventsTicketsNonceGenerateErrorResponse400": {
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
@@ -9728,6 +9972,19 @@
                 }
             },
             "ApiEventsTicketsRetrieveErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ParseErrorResponse"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "client_error": "#/components/schemas/ParseErrorResponse"
+                    }
+                }
+            },
+            "ApiEventsTicketsVerifyErrorResponse400": {
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
@@ -9766,7 +10023,20 @@
                     }
                 }
             },
-            "ApiGeodataListErrorResponse400": {
+            "ApiGeodataLayerRetrieveErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ParseErrorResponse"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "client_error": "#/components/schemas/ParseErrorResponse"
+                    }
+                }
+            },
+            "ApiGeodataLayersListErrorResponse400": {
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
@@ -11078,46 +11348,7 @@
                     }
                 }
             },
-            "ApiShamanVerifyCompanyCreateErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
-            "ApiShamanVerifyIndividualCreateErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
             "ApiTelegramSchemaRetrieveErrorResponse400": {
-                "oneOf": [
-                    {
-                        "$ref": "#/components/schemas/ParseErrorResponse"
-                    }
-                ],
-                "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                        "client_error": "#/components/schemas/ParseErrorResponse"
-                    }
-                }
-            },
-            "ApiTelegramUpdatesCreateErrorResponse400": {
                 "oneOf": [
                     {
                         "$ref": "#/components/schemas/ParseErrorResponse"
@@ -11353,6 +11584,16 @@
                     }
                 }
             },
+            "ApplicationRequestRequest": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/IndividualApplicationRequest"
+                    },
+                    {
+                        "$ref": "#/components/schemas/BusinessApplicationRequest"
+                    }
+                ]
+            },
             "Attendee": {
                 "type": "object",
                 "properties": {
@@ -11379,12 +11620,57 @@
                     "ticketsCount"
                 ]
             },
+            "BusinessApplicationRequest": {
+                "type": "object",
+                "properties": {
+                    "directorId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 16
+                    },
+                    "akta": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "skKemenkumham": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "required": [
+                    "akta",
+                    "directorId",
+                    "skKemenkumham"
+                ]
+            },
             "ClientErrorEnum": {
                 "enum": [
                     "client_error"
                 ],
                 "type": "string",
                 "description": "* `client_error` - Client Error"
+            },
+            "CompanyVerificationRequest": {
+                "type": "object",
+                "properties": {
+                    "ktp": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "akta": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "sk": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "required": [
+                    "akta",
+                    "ktp",
+                    "sk"
+                ]
             },
             "Coordinate": {
                 "type": "object",
@@ -11437,7 +11723,7 @@
                         "$ref": "#/components/schemas/Creator"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/Status925Enum"
+                        "$ref": "#/components/schemas/EventStatusEnum"
                     },
                     "title": {
                         "type": "string",
@@ -11451,9 +11737,8 @@
                     },
                     "placeId": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": -9223372036854775808,
-                        "format": "int64",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
                         "readOnly": true
                     },
                     "ticketPrice": {
@@ -11473,9 +11758,8 @@
                     },
                     "daysAmount": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": 0
                     },
                     "imageUrl": {
                         "type": "string",
@@ -11906,9 +12190,8 @@
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": -9223372036854775808,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": -2147483648
                     },
                     "title": {
                         "type": "string",
@@ -11916,15 +12199,13 @@
                     },
                     "maxTickets": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": 0
                     },
                     "minTickets": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": 0
                     },
                     "minPrice": {
                         "type": "integer",
@@ -11934,24 +12215,21 @@
                     },
                     "minDays": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": 0
                     },
                     "geometry": {
                         "$ref": "#/components/schemas/GeoFeature"
                     },
                     "daysBeforeCancel": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 32767,
+                        "minimum": 0
                     },
                     "eventDepositSize": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": 0
                     },
                     "available": {
                         "type": "boolean"
@@ -11984,6 +12262,17 @@
                 ],
                 "type": "string",
                 "description": "* `submitted` - submitted\n* `approved` - approved\n* `declined` - declined"
+            },
+            "EventStatusEnum": {
+                "enum": [
+                    "submitted",
+                    "approved",
+                    "declined",
+                    "cancelled",
+                    "closed"
+                ],
+                "type": "string",
+                "description": "* `submitted` - submitted\n* `approved` - approved\n* `declined` - declined\n* `cancelled` - cancelled\n* `closed` - closed"
             },
             "GeoFeature": {
                 "type": "object",
@@ -12023,6 +12312,31 @@
                     "coordinates",
                     "name",
                     "type"
+                ]
+            },
+            "IndividualApplicationRequest": {
+                "type": "object",
+                "properties": {
+                    "ktp": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 16
+                    }
+                },
+                "required": [
+                    "ktp"
+                ]
+            },
+            "IndividualVerificationRequest": {
+                "type": "object",
+                "properties": {
+                    "ktp": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "required": [
+                    "ktp"
                 ]
             },
             "NetworkEnum": {
@@ -12305,6 +12619,37 @@
                     "value"
                 ]
             },
+            "SendSMSRequest": {
+                "type": "object",
+                "properties": {
+                    "phoneNumber": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 20
+                    }
+                },
+                "required": [
+                    "phoneNumber"
+                ]
+            },
+            "SendSMSResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "developmentNote": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message",
+                    "success"
+                ]
+            },
             "ServerErrorEnum": {
                 "enum": [
                     "server_error"
@@ -12358,7 +12703,7 @@
                         "$ref": "#/components/schemas/Creator"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/Status925Enum"
+                        "$ref": "#/components/schemas/EventStatusEnum"
                     },
                     "title": {
                         "type": "string",
@@ -12372,9 +12717,8 @@
                     },
                     "placeId": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": -9223372036854775808,
-                        "format": "int64",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
                         "readOnly": true
                     },
                     "ticketPrice": {
@@ -12394,9 +12738,8 @@
                     },
                     "daysAmount": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": 0
                     },
                     "imageUrl": {
                         "type": "string",
@@ -12416,9 +12759,8 @@
                     },
                     "ticketsBought": {
                         "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "maximum": 2147483647,
+                        "minimum": 0
                     },
                     "totalRevenue": {
                         "type": "integer",
@@ -12455,16 +12797,20 @@
                     "totalRevenue"
                 ]
             },
-            "Status925Enum": {
-                "enum": [
-                    "submitted",
-                    "approved",
-                    "declined",
-                    "cancelled",
-                    "closed"
-                ],
-                "type": "string",
-                "description": "* `submitted` - submitted\n* `approved` - approved\n* `declined` - declined\n* `cancelled` - cancelled\n* `closed` - closed"
+            "SubmitApplicationResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "applicationType": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "applicationType",
+                    "message"
+                ]
             },
             "Ticket": {
                 "type": "object",
@@ -12668,6 +13014,45 @@
                 ],
                 "type": "string",
                 "description": "* `validation_error` - Validation Error"
+            },
+            "VerifyCodeRequest": {
+                "type": "object",
+                "properties": {
+                    "phoneNumber": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 20
+                    },
+                    "verificationCode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 10
+                    }
+                },
+                "required": [
+                    "phoneNumber",
+                    "verificationCode"
+                ]
+            },
+            "VerifyCodeResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message",
+                    "payload",
+                    "success"
+                ]
             }
         },
         "securitySchemes": {
