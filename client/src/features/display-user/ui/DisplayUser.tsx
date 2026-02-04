@@ -1,8 +1,8 @@
 import { useEnsLookup } from "@/shared/hooks/useEnsLookup";
 import { formatAddress } from "@/shared/lib/formatAddress";
 import type React from "react";
-import { twMerge } from "tailwind-merge";
 import { useNavigate } from "react-router";
+import { twMerge } from "tailwind-merge";
 
 interface DisplayUserProps {
   address: string;
@@ -51,7 +51,7 @@ export const DisplayUser: React.FC<DisplayUserProps> = ({
           onClick={handleClick}
           className={twMerge(
             "text-secondary hover:underline cursor-pointer",
-            className
+            className,
           )}
           title={`${address} (click to view profile)`}
         >
@@ -78,7 +78,7 @@ export const DisplayUser: React.FC<DisplayUserProps> = ({
       className={twMerge(
         "text-secondary font-medium",
         clickableClasses,
-        className
+        className,
       )}
       title={`${address} (click to view profile)`}
     >

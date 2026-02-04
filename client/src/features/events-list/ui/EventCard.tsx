@@ -1,9 +1,9 @@
-import type { Event } from "@/entities/event";
 import { useAuthSlice } from "@/app/providers";
+import type { Event } from "@/entities/event";
+import { hasRole } from "@/shared/lib/RBAC";
 import { formatTimestamp } from "@/shared/lib/formatTimestamp";
 import { getTimeString } from "@/shared/lib/getTimeString";
 import { pluralTickets } from "@/shared/lib/pluralDays";
-import { hasRole } from "@/shared/lib/RBAC";
 import { Link } from "react-router";
 import { StatusBage } from "./StatusBage";
 

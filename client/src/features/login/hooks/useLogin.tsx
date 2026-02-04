@@ -180,7 +180,10 @@ export const useLogin = () => {
               }
               if (error != null) {
                 if (import.meta.env.DEV) {
-                  console.error("[useLogin] Error fetching current user:", error);
+                  console.error(
+                    "[useLogin] Error fetching current user:",
+                    error,
+                  );
                 }
                 throw error;
               }
@@ -232,7 +235,10 @@ export const useLogin = () => {
               }
               if (!resp.ok) {
                 if (import.meta.env.DEV) {
-                  console.error("[useLogin] Logout failed, status:", resp.status);
+                  console.error(
+                    "[useLogin] Logout failed, status:",
+                    resp.status,
+                  );
                 }
                 throw new Error(`Logout failed: ${resp.status}`);
               }
@@ -259,7 +265,10 @@ export const useLogin = () => {
           "[useLogin] Login failed - error is undefined:",
           error === undefined,
         );
-        console.error("[useLogin] Login failed - error is null:", error === null);
+        console.error(
+          "[useLogin] Login failed - error is null:",
+          error === null,
+        );
 
         if (error === undefined || error === null) {
           console.error(
@@ -280,9 +289,7 @@ export const useLogin = () => {
       }
 
       if (error === undefined || error === null) {
-        throw new Error(
-          "Login was cancelled or failed with no specific error",
-        );
+        throw new Error("Login was cancelled or failed with no specific error");
       }
 
       throw error;
