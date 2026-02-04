@@ -2,6 +2,7 @@ import logging
 
 import ipfshttpclient
 from django.conf import settings
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
@@ -14,6 +15,17 @@ from cyber_valley.users.models import CyberValleyUser, UserSocials
 
 from .models import VerificationRequest
 from .serializers import CompanyVerificationSerializer, IndividualVerificationSerializer
+
+
+class VerifyIndividualResponseSerializer:
+    """Serializer for verify_individual response schema."""
+
+
+
+class VerifyCompanyResponseSerializer:
+    """Serializer for verify_company response schema."""
+
+
 
 log = logging.getLogger(__name__)
 
@@ -50,6 +62,19 @@ def send_verification_to_local_providers(
         )
 
 
+@extend_schema(
+    request=IndividualVerificationSerializer,
+    responses={
+        200: {
+            "type": "object",
+            "properties": {
+                "cid": {"type": "string"},
+                "ktp": {"type": "string"},
+            },
+        },
+        400: {"type": "object", "properties": {"error": {"type": "string"}}},
+    },
+)
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
 def verify_individual(request: Request) -> Response:
@@ -93,6 +118,21 @@ def verify_individual(request: Request) -> Response:
     return Response({"cid": metadata_cid, "ktp": ktp_cid})
 
 
+@extend_schema(
+    request=CompanyVerificationSerializer,
+    responses={
+        200: {
+            "type": "object",
+            "properties": {
+                "cid": {"type": "string"},
+                "ktp": {"type": "string"},
+                "akta": {"type": "string"},
+                "sk": {"type": "string"},
+            },
+        },
+        400: {"type": "object", "properties": {"error": {"type": "string"}}},
+    },
+)
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
 def verify_company(request: Request) -> Response:

@@ -394,12 +394,13 @@ def upload_order_meta_to_ipfs(request: Request) -> Response:
 
 
 @extend_schema(
+    operation_id="api_events_tickets_nonce_generate",
     responses={
         (200, "application/json"): {
             "type": "object",
             "properties": {"nonce": {"type": "string"}},
         }
-    }
+    },
 )
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -434,6 +435,21 @@ def ticket_info(_: Request, event_id: int, ticket_id: str) -> Response:
     return Response(resp.data, status=200)
 
 
+@extend_schema(
+    operation_id="api_events_tickets_verify",
+    parameters=[
+        OpenApiParameter(name="event_id", type=int, location=OpenApiParameter.PATH),
+        OpenApiParameter(name="ticket_id", type=str, location=OpenApiParameter.PATH),
+        OpenApiParameter(name="nonce", type=str, location=OpenApiParameter.PATH),
+    ],
+    responses={
+        200: {"type": "string", "example": "no redeem"},
+        202: {"type": "string", "example": "pending redeem"},
+        403: {"type": "string", "example": "Only staff or master can verify tickets"},
+        404: {"type": "string", "example": "Nonce expired or invalid"},
+        409: {"type": "string", "example": "redeemed"},
+    },
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def verify_ticket(
@@ -893,6 +909,14 @@ def verification_stats(_request: Request) -> Response:
     ),
     retrieve=extend_schema(
         description="Get a specific distribution profile",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=int,
+                location=OpenApiParameter.PATH,
+                description="Distribution profile ID",
+            ),
+        ],
     ),
 )
 class DistributionProfileViewSet(viewsets.ReadOnlyModelViewSet[DistributionProfile]):
@@ -904,6 +928,7 @@ class DistributionProfileViewSet(viewsets.ReadOnlyModelViewSet[DistributionProfi
 
     serializer_class = DistributionProfileSerializer
     permission_classes = (IsAuthenticated,)
+    lookup_field = "id"
 
     def get_queryset(self) -> QuerySet[DistributionProfile]:
         from cyber_valley.users.models import CyberValleyUser

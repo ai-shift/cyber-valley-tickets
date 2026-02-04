@@ -7,6 +7,7 @@ from typing import Any, assert_never
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import MultiPartParser
@@ -20,13 +21,23 @@ from .models import ApplicationType, SMSVerification
 from .serializers import (
     BusinessApplicationSerializer,
     IndividualApplicationSerializer,
+    SendSMSResponseSerializer,
     SendSMSSerializer,
+    SubmitApplicationResponseSerializer,
+    VerifyCodeResponseSerializer,
     VerifyCodeSerializer,
 )
 
 log = logging.getLogger(__name__)
 
 
+@extend_schema(
+    request=SendSMSSerializer,
+    responses={
+        200: SendSMSResponseSerializer,
+        400: SendSMSResponseSerializer,
+    },
+)
 @api_view(["POST"])
 def send_sms(request: Request) -> Response:
     """Send SMS verification code (mocked)"""
@@ -59,6 +70,14 @@ def send_sms(request: Request) -> Response:
     )
 
 
+@extend_schema(
+    request=VerifyCodeSerializer,
+    responses={
+        200: VerifyCodeResponseSerializer,
+        400: VerifyCodeResponseSerializer,
+        500: VerifyCodeResponseSerializer,
+    },
+)
 @api_view(["POST"])
 def verify_code(request: Request) -> Response:
     """Verify SMS code and return custom auth payload"""
@@ -141,6 +160,20 @@ def generate_auth_payload(phone_number: str) -> dict[str, Any]:
     }
 
 
+@extend_schema(
+    request=PolymorphicProxySerializer(
+        component_name="ApplicationRequest",
+        serializers=[
+            IndividualApplicationSerializer,
+            BusinessApplicationSerializer,
+        ],
+        resource_type_field_name=None,
+    ),
+    responses={
+        201: SubmitApplicationResponseSerializer,
+        400: SubmitApplicationResponseSerializer,
+    },
+)
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
 @permission_classes([IsAuthenticated])

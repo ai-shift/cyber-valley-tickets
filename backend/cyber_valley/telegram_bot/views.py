@@ -2,6 +2,7 @@ import os
 from typing import Any
 
 import telebot
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -33,11 +34,36 @@ def _schema_payload() -> dict[str, Any]:
     }
 
 
+@extend_schema(
+    responses={
+        200: {
+            "type": "object",
+            "properties": {
+                "version": {"type": "integer"},
+                "schema_ttl_seconds": {"type": "integer"},
+                "forward_to": {"type": "string"},
+                "matches": {"type": "array"},
+            },
+        },
+    },
+)
 @api_view(["GET"])
 def telegram_schema(_request: Request) -> Response:
     return Response(_schema_payload())
 
 
+@extend_schema(
+    request={
+        "type": "object",
+        "description": "Telegram update payload",
+        "additionalProperties": True,
+    },
+    responses={
+        200: {"type": "object", "properties": {"status": {"type": "string"}}},
+        400: {"type": "object", "properties": {"detail": {"type": "string"}}},
+        500: {"type": "object", "properties": {"detail": {"type": "string"}}},
+    },
+)
 @api_view(["POST"])
 def telegram_updates(request: Request) -> Response:
     data: Any = request.data
