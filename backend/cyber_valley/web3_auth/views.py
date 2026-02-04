@@ -74,6 +74,13 @@ def login(request: Request) -> Response:
     return response
 
 
+@extend_schema(
+    responses={
+        204: None,
+        400: {"type": "object", "properties": {"detail": {"type": "string"}}},
+        404: None,
+    },
+)
 @api_view(["GET"])
 def refresh(request: Request) -> Response:
     cookie_name = settings.SIMPLE_JWT["REFRESH_COOKIE"]
@@ -121,6 +128,12 @@ def refresh(request: Request) -> Response:
     return response
 
 
+@extend_schema(
+    responses={
+        200: None,
+        401: {"type": "object", "properties": {"detail": {"type": "string"}}},
+    },
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def verify(_request: Request) -> Response:
@@ -166,6 +179,11 @@ def nonce(request: Request, address: str) -> Response:
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    responses={
+        200: {"type": "object", "properties": {"detail": {"type": "string"}}},
+    },
+)
 @api_view(["GET"])
 def logout(_request: Request) -> Response:
     response = Response(status=200)

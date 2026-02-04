@@ -7,6 +7,25 @@ from .models import (
     IndividualApplication,
 )
 
+
+# Response serializers for OpenAPI schema
+class SendSMSResponseSerializer(serializers.Serializer[Any]):
+    success = serializers.BooleanField()
+    message = serializers.CharField()
+    development_note = serializers.CharField(required=False)
+
+
+class VerifyCodeResponseSerializer(serializers.Serializer[Any]):
+    success = serializers.BooleanField()
+    payload = serializers.DictField()
+    message = serializers.CharField()
+
+
+class SubmitApplicationResponseSerializer(serializers.Serializer[Any]):
+    message = serializers.CharField()
+    application_type = serializers.CharField()
+
+
 MIN_PHONE_LENGTH = 8
 MAX_FILE_SIZE = 5 * 1024 * 1024
 ID_LENGTH = 16

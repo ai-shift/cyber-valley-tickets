@@ -128,6 +128,9 @@ SPECTACULAR_SETTINGS = {
         "ErrorCode415Enum": "drf_standardized_errors.openapi_serializers.ErrorCode415Enum.choices",
         "ErrorCode429Enum": "drf_standardized_errors.openapi_serializers.ErrorCode429Enum.choices",
         "ErrorCode500Enum": "drf_standardized_errors.openapi_serializers.ErrorCode500Enum.choices",
+        # Status field enums to avoid naming collisions
+        "EventStatusEnum": "cyber_valley.events.models.Event.STATUS_CHOICES",
+        "EventPlaceStatusEnum": "cyber_valley.events.models.EventPlace.STATUS_CHOICES",
     },
     "COMPONENT_SPLIT_REQUEST": True,
 }

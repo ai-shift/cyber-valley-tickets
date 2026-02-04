@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
@@ -30,11 +31,32 @@ from .serializers import NotificationSerializer
                 required=False,
             ),
         ],
-    )
+    ),
+    retrieve=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Notification ID",
+            ),
+        ],
+    ),
+    seen=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="notification_id",
+                type=str,
+                location=OpenApiParameter.PATH,
+                description="Notification ID",
+            ),
+        ],
+    ),
 )
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
     serializer_class = NotificationSerializer
     permission_classes = (IsAuthenticated,)
+    lookup_field = "notification_id"
 
     def retrieve(self, request: Request, pk: int | None = None) -> Response:
         user = request.user
@@ -53,9 +75,19 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
             )
         return queryset
 
-    @extend_schema(responses={204: OpenApiResponse()})
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="notification_id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Notification ID",
+            ),
+        ],
+        responses={204: OpenApiResponse()},
+    )
     @action(detail=False, methods=["post"], url_path="seen/(?P<notification_id>[^/.]+)")
-    def seen(self, request: Request, notification_id: int | None = None) -> Response:
+    def seen(self, request: Request, notification_id: str) -> Response:
         user = request.user
         notification = get_object_or_404(
             Notification, notification_id=notification_id, user=user
