@@ -231,10 +231,13 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
     assert not isinstance(user, AnonymousUser)
     target_base_path = settings.IPFS_DATA_PATH / "users" / user.address / "events"
     target_base_path.mkdir(exist_ok=True, parents=True)
-    # FIXME: Can be a name without a suffix
-    assert meta.cover.name
-    extension = Path(meta.cover.name).suffix
-    assert extension
+    
+    # Handle file extension safely
+    extension = ".jpg"  # default extension
+    if meta.cover.name:
+        detected = Path(meta.cover.name).suffix
+        if detected:
+            extension = detected
     result_path = target_base_path / f"{int(time.time())}{extension}"
     result_path.write_bytes(meta.cover.read())
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
