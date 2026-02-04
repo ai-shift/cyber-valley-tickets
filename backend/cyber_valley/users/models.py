@@ -67,7 +67,9 @@ class CyberValleyUser(AbstractBaseUser):
     address = AddressField(primary_key=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=CUSTOMER)
     roles = models.ManyToManyField(Role, blank=True, related_name="users")
-    default_share = models.PositiveSmallIntegerField(default=0)
+    profile_manager_bps = models.PositiveSmallIntegerField(default=0)
+    # Basis points for profile manager share
+    # Applied after fixed bps, before profile recipients
     # XXX: This field is requred because of bug in simplejwt
     is_active = models.BooleanField(default=True)
 
