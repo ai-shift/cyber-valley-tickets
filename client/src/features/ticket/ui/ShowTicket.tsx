@@ -41,9 +41,8 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         apiClient.GET("/api/events/{event_id}/tickets/{ticket_id}", {
           params: {
             path: {
-              // @ts-ignore: T2561
-              event_id: ticket.eventId,
-              ticket_id: ticket.id,
+              eventId: ticket.eventId,
+              ticketId: Number(ticket.id),
             },
           },
         }),

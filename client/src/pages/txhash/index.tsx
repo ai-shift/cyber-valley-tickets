@@ -36,8 +36,7 @@ export const TxHashPlaceholderPage: React.FC = () => {
           {
             params: {
               path: {
-                // @ts-ignore: T2561 - API uses snake_case in URL, types use camelCase
-                tx_hash: normalizedTxHash,
+                txHash: normalizedTxHash,
               },
             },
           },

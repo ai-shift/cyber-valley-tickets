@@ -9,8 +9,7 @@ export const useEventStatus = (eventId: number) =>
     queryFn: async () => {
       return await apiClient.GET("/api/events/{event_id}/status", {
         params: {
-          // @ts-ignore: TS2561
-          path: { event_id: eventId },
+          path: { eventId },
         },
       });
     },
@@ -40,8 +39,7 @@ export const redeem = async (
     "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}",
     {
       params: {
-        // @ts-ignore: TS2561
-        path: { nonce, event_id: eventId, ticket_id: ticketId },
+        path: { nonce, eventId, ticketId: ticketId.toString() },
       },
     },
   );
