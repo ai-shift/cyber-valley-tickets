@@ -29,10 +29,10 @@ export const eventQueries = {
       select: (queryData) => queryData?.data,
       refetchInterval: 5000,
     }),
-  attendees: (eventId: number) =>
+  attendees: (eventId: number, search?: string) =>
     queryOptions({
-      queryKey: ["events", eventId, "attendees"],
-      queryFn: () => getEventAttendees(eventId),
+      queryKey: ["events", eventId, "attendees", search || ""],
+      queryFn: () => getEventAttendees(eventId, search),
       select: (queryData) => queryData?.data,
       refetchInterval: 3000,
     }),

@@ -583,6 +583,58 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/telegram/schema": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["api_telegram_schema_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/telegram/updates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["api_telegram_updates_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/{address}/profile": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get user profile info.
+     *
+     *     Socials are only returned if requester is the user or has
+     *     localprovider/master role. */
+    get: operations["api_users_profile_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/{address}/socials": {
     parameters: {
       query?: never;
@@ -1512,10 +1564,27 @@ export interface components {
     ApiIpfsPlacesMetaUpdateError:
       | components["schemas"]["ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"]
       | components["schemas"]["ApiIpfsPlacesMetaUpdateTitleErrorComponent"]
-      | components["schemas"]["ApiIpfsPlacesMetaUpdateGeometryErrorComponent"];
+      | components["schemas"]["ApiIpfsPlacesMetaUpdateGeometryErrorComponent"]
+      | components["schemas"]["ApiIpfsPlacesMetaUpdateEventDepositSizeErrorComponent"];
     ApiIpfsPlacesMetaUpdateErrorResponse400:
       | components["schemas"]["ApiIpfsPlacesMetaUpdateValidationError"]
       | components["schemas"]["ParseErrorResponse"];
+    ApiIpfsPlacesMetaUpdateEventDepositSizeErrorComponent: {
+      /**
+       * @description * `event_deposit_size` - event_deposit_size (enum property replaced by openapi-typescript)
+       * @enum {string}
+       */
+      attr: "event_deposit_size";
+      /**
+       * @description * `invalid` - invalid
+       *     * `max_string_length` - max_string_length
+       *     * `min_value` - min_value
+       *     * `null` - null
+       * @enum {string}
+       */
+      code: "invalid" | "max_string_length" | "min_value" | "null";
+      detail: string;
+    };
     ApiIpfsPlacesMetaUpdateGeometryErrorComponent: {
       /**
        * @description * `geometry` - geometry (enum property replaced by openapi-typescript)
@@ -1677,8 +1746,11 @@ export interface components {
     ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiShamanVerifyCompanyCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiShamanVerifyIndividualCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiTelegramSchemaRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiTelegramUpdatesCreateErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersLocalProvidersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+    ApiUsersProfileRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
     ApiUsersSocialsCreateError:
       | components["schemas"]["ApiUsersSocialsCreateNonFieldErrorsErrorComponent"]
       | components["schemas"]["ApiUsersSocialsCreateNetworkErrorComponent"]
@@ -1797,7 +1869,8 @@ export interface components {
       daysAmount: number;
       /** Format: uri */
       imageUrl?: string | null;
-      website: string;
+      /** Format: uri */
+      website?: string | null;
       readonly startDateTimestamp: number;
       ticketsBought: number | null;
       readonly totalRevenue: number;
@@ -1810,7 +1883,7 @@ export interface components {
       readonly roles: string[];
       readonly tickets: components["schemas"]["Ticket"][];
       readonly socials: components["schemas"]["Social"][];
-      readonly defaultShare: number;
+      readonly profileManagerBps: number;
     };
     /** @description Serializer for DistributionProfile model. */
     DistributionProfile: {
@@ -2069,7 +2142,8 @@ export interface components {
       daysAmount: number;
       /** Format: uri */
       imageUrl?: string | null;
-      website: string;
+      /** Format: uri */
+      website?: string | null;
       readonly startDateTimestamp: number;
       /** Format: int64 */
       ticketsBought: number;
@@ -2131,6 +2205,11 @@ export interface components {
       title: string;
       /** @description Geometry with type and coordinates */
       geometry: unknown;
+      /**
+       * @description Suggested deposit size for events at this place (in USDT)
+       * @default 0
+       */
+      eventDepositSize: number;
     };
     UploadSocials: {
       network: components["schemas"]["NetworkEnum"];
@@ -2869,8 +2948,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        /** @description A unique value identifying this distribution profile. */
-        id: number;
+        id: string;
       };
       cookie?: never;
     };
@@ -4832,6 +4910,224 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_telegram_schema_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiTelegramSchemaRetrieveErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_telegram_updates_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiTelegramUpdatesCreateErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      405: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse405"];
+        };
+      };
+      406: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse406"];
+        };
+      };
+      415: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse415"];
+        };
+      };
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse500"];
+        };
+      };
+    };
+  };
+  api_users_profile_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        address: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            address?: string;
+            ens?: string | null;
+            avatar_url?: string;
+            socials?: {
+              network?: string;
+              value?: string;
+            }[];
+            roles?: string[];
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiUsersProfileRetrieveErrorResponse400"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse401"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse404"];
         };
       };
       405: {

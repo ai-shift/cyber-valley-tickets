@@ -510,7 +510,7 @@ export async function grantLocalProvider(
   const transaction = prepareContractCall({
     contract: eventManager,
     method: "grantLocalProvider",
-    params: [address, shareBps],
+    params: [address, Number(shareBps)],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;

@@ -19,12 +19,13 @@ export const getDetailEvent = async (id: number) =>
 export const getTotalRevenue = async () =>
   await apiClient.GET("/api/events/total_revenue");
 
-export const getEventAttendees = async (eventId: number) =>
+export const getEventAttendees = async (eventId: number, search?: string) =>
   await apiClient.GET("/api/events/{id}/attendees/", {
     params: {
       path: {
         id: eventId,
       },
+      query: search ? { search } : undefined,
     },
   });
 

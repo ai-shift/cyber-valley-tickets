@@ -6,7 +6,7 @@ export function mapEventToEventForm(event: Event): EventFormInput {
   return {
     title: event.title,
     description: event.description,
-    website: event.website,
+    website: event.website || undefined,
     image: undefined,
     place: event.place.id.toString(),
     ticketPrice: event.ticketPrice,

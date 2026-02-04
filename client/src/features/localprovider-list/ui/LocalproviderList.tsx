@@ -82,7 +82,9 @@ export const LocalproviderList: React.FC<LocalproviderListProps> = ({
                 </td>
                 <td className="py-3 px-3">
                   {profileManagerBps > 0 ? (
-                    <span className="text-sm font-medium">{profileManagerBps}%</span>
+                    <span className="text-sm font-medium">
+                      {profileManagerBps}%
+                    </span>
                   ) : (
                     <span className="text-sm text-muted-foreground">-</span>
                   )}

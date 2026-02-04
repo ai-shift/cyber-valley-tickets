@@ -66,7 +66,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     <div className="flex flex-col">
       <div className="relative">
         <a
-          href={website}
+          href={website || undefined}
           target="_blank"
           className="absolute top-3 right-2 aspect-square h-10 rounded-full flex items-center justify-center bg-black"
           rel="noreferrer"
