@@ -794,8 +794,8 @@ def _multihash2cid(multihash: MultihashLike) -> None | str:
 def _sync_ticket_category_created(
     event_data: CyberValleyEventManager.TicketCategoryCreated,
 ) -> None:
-    # Event might not exist yet (TicketCategoryCreated can be emitted before NewEventRequest)
-    # Skip and let error handling retry later
+    # Event might not exist yet (TicketCategoryCreated can be emitted
+    # before NewEventRequest). Skip and let error handling retry later.
     try:
         event = Event.objects.get(id=event_data.event_id)
     except Event.DoesNotExist:
@@ -910,8 +910,9 @@ def _send_distribution_profile_notification(
         )
     else:
         body = (
-            f"You have been added as a recipient in distribution profile #{profile_id}. "
-            f"You will receive a share of revenue when this profile is used for events."
+            f"You have been added as a recipient in distribution profile "
+            f"#{profile_id}. You will receive a share of revenue when this "
+            f"profile is used for events."
         )
 
     notification = send_notification(user, title, body)

@@ -20,7 +20,7 @@ class DistributionProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering: ClassVar[list[str]] = ["-created_at"]
 
     def __str__(self) -> str:
         return f"Distribution Profile {self.id} (Owner: {self.owner.address})"

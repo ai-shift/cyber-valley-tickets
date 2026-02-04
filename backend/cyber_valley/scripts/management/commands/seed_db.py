@@ -70,12 +70,9 @@ class Command(BaseCommand):
         if options["flush_only"]:
             return
 
-        # ============================================================================
-        # SECTION 1: Users and Authentication
-        # ============================================================================
-        # Creates: CyberValleyUser, UserSocials, Token
-        # Source: Database (off-chain)
-        # ============================================================================
+        # Users and Authentication section
+        # - Creates CyberValleyUser, UserSocials, Token
+        # - Source is Database (off-chain entities)
 
         users = [
             ("0x2789023F36933E208675889869c7d3914A422921", CyberValleyUser.MASTER),
@@ -123,9 +120,8 @@ class Command(BaseCommand):
                 elif role == CyberValleyUser.LOCAL_PROVIDER:
                     # NOT creating TELEGRAM social for LOCAL_PROVIDER to avoid
                     # ValueError in _sync.py:_send_pending_verifications_to_new_provider
-                    # which expects numeric chat_id but seed data had username.
-                    # The code path at _sync.py:601 only triggers for LOCAL_PROVIDER.
-                    # If needed, use format: value="<numeric_chat_id>", metadata={"username": "..."}
+                    # which expects numeric chat_id. The code path at _sync.py:601
+                    # only triggers for LOCAL_PROVIDER.
                     self.stdout.write(
                         "  Skipped TELEGRAM social for local provider (see comment)"
                     )
