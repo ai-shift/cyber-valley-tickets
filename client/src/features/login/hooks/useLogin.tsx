@@ -54,12 +54,14 @@ export const useLogin = () => {
     [],
   );
 
-  if (installedWallets.length < 1) {
+  if (installedWallets.length < 1 && import.meta.env.DEV) {
     console.log("Installed wallets wasn't found");
   }
 
   const login = useCallback(async () => {
-    console.log("[useLogin] Starting login process");
+    if (import.meta.env.DEV) {
+      console.log("[useLogin] Starting login process");
+    }
     try {
       const wallet = await connect({
         client,
@@ -70,71 +72,98 @@ export const useLogin = () => {
           getLoginPayload: async (params: {
             address: string;
           }): Promise<LoginPayload> => {
-            console.log(
-              "[useLogin] Getting login payload for address:",
-              params.address,
-            );
+            if (import.meta.env.DEV) {
+              console.log(
+                "[useLogin] Getting login payload for address:",
+                params.address,
+              );
+            }
             try {
               const resp = await fetch(
-                `/api/auth/web3/nonce/${params.address}`,
+                `${import.meta.env.PUBLIC_API_HOST}/api/auth/web3/nonce/${params.address}`,
+                { credentials: "include" },
               );
-              console.log(
-                "[useLogin] Nonce fetch response status:",
-                resp.status,
-              );
-              if (!resp.ok) {
-                console.error(
-                  "[useLogin] Failed to fetch nonce, status:",
+              if (import.meta.env.DEV) {
+                console.log(
+                  "[useLogin] Nonce fetch response status:",
                   resp.status,
                 );
+              }
+              if (!resp.ok) {
+                if (import.meta.env.DEV) {
+                  console.error(
+                    "[useLogin] Failed to fetch nonce, status:",
+                    resp.status,
+                  );
+                }
                 throw new Error(`Failed to fetch nonce: ${resp.status}`);
               }
               const data = await resp.json();
-              console.log("[useLogin] Generated login payload successfully");
+              if (import.meta.env.DEV) {
+                console.log("[useLogin] Generated login payload successfully");
+              }
               return data;
             } catch (error) {
-              console.error("[useLogin] Error in getLoginPayload:", error);
+              if (import.meta.env.DEV) {
+                console.error("[useLogin] Error in getLoginPayload:", error);
+              }
               throw error;
             }
           },
           doLogin: async (params: VerifyLoginPayloadParams) => {
-            console.log("[useLogin] Performing login with signature");
+            if (import.meta.env.DEV) {
+              console.log("[useLogin] Performing login with signature");
+            }
             try {
-              const loginResp = await fetch("/api/auth/web3/login/", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
+              const loginResp = await fetch(
+                `${import.meta.env.PUBLIC_API_HOST}/api/auth/web3/login/`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  credentials: "include",
+                  body: JSON.stringify({
+                    signature: params.signature,
+                    ...params.payload,
+                  }),
                 },
-                body: JSON.stringify({
-                  signature: params.signature,
-                  ...params.payload,
-                }),
-              });
-              console.log(
-                "[useLogin] Login API response status:",
-                loginResp.status,
               );
-              if (!loginResp.ok) {
-                console.error(
-                  "[useLogin] Login API failed, status:",
+              if (import.meta.env.DEV) {
+                console.log(
+                  "[useLogin] Login API response status:",
                   loginResp.status,
                 );
+              }
+              if (!loginResp.ok) {
+                if (import.meta.env.DEV) {
+                  console.error(
+                    "[useLogin] Login API failed, status:",
+                    loginResp.status,
+                  );
+                }
                 throw new Error(`Login API failed: ${loginResp.status}`);
               }
-              console.log(
-                "[useLogin] Login API successful, fetching current user",
-              );
+              if (import.meta.env.DEV) {
+                console.log(
+                  "[useLogin] Login API successful, fetching current user",
+                );
+              }
               const { data, error } = await apiClient.GET(
                 "/api/users/current/",
               );
-              console.log(
-                "[useLogin] Get current user response - data:",
-                !!data,
-                "error:",
-                !!error,
-              );
+              if (import.meta.env.DEV) {
+                console.log(
+                  "[useLogin] Get current user response - data:",
+                  !!data,
+                  "error:",
+                  !!error,
+                );
+              }
               if (data != null) {
-                console.log("[useLogin] User data received, logging in");
+                if (import.meta.env.DEV) {
+                  console.log("[useLogin] User data received, logging in");
+                }
                 authLogin(data as User);
                 const expirationRaw =
                   params.payload.expiration_time ??
@@ -144,80 +173,115 @@ export const useLogin = () => {
                 if (expiresAt && !Number.isNaN(expiresAt)) {
                   setSignature(params.signature, expiresAt);
                 }
-                console.log("[useLogin] Auth login completed");
+                if (import.meta.env.DEV) {
+                  console.log("[useLogin] Auth login completed");
+                }
                 return;
               }
               if (error != null) {
-                console.error("[useLogin] Error fetching current user:", error);
+                if (import.meta.env.DEV) {
+                  console.error("[useLogin] Error fetching current user:", error);
+                }
                 throw error;
               }
             } catch (error) {
-              console.error("[useLogin] Error in doLogin:", error);
+              if (import.meta.env.DEV) {
+                console.error("[useLogin] Error in doLogin:", error);
+              }
               throw error;
             }
           },
           isLoggedIn: async () => {
-            console.log("[useLogin] Checking if user is logged in");
+            if (import.meta.env.DEV) {
+              console.log("[useLogin] Checking if user is logged in");
+            }
             try {
-              const resp = await fetch("/api/auth/verify");
-              console.log(
-                "[useLogin] Auth verify response status:",
-                resp.status,
+              const resp = await fetch(
+                `${import.meta.env.PUBLIC_API_HOST}/api/auth/verify`,
+                { credentials: "include" },
               );
+              if (import.meta.env.DEV) {
+                console.log(
+                  "[useLogin] Auth verify response status:",
+                  resp.status,
+                );
+              }
               const isLoggedIn = resp.status === 200;
-              console.log("[useLogin] Is logged in:", isLoggedIn);
+              if (import.meta.env.DEV) {
+                console.log("[useLogin] Is logged in:", isLoggedIn);
+              }
               return isLoggedIn;
             } catch (error) {
-              console.error("[useLogin] Error in isLoggedIn:", error);
+              if (import.meta.env.DEV) {
+                console.error("[useLogin] Error in isLoggedIn:", error);
+              }
               return false;
             }
           },
           doLogout: async () => {
-            console.log("[useLogin] Performing logout");
+            if (import.meta.env.DEV) {
+              console.log("[useLogin] Performing logout");
+            }
             try {
-              const resp = await fetch("/api/auth/logout");
-              console.log("[useLogin] Logout response status:", resp.status);
+              const resp = await fetch(
+                `${import.meta.env.PUBLIC_API_HOST}/api/auth/logout`,
+                { credentials: "include" },
+              );
+              if (import.meta.env.DEV) {
+                console.log("[useLogin] Logout response status:", resp.status);
+              }
               if (!resp.ok) {
-                console.error("[useLogin] Logout failed, status:", resp.status);
+                if (import.meta.env.DEV) {
+                  console.error("[useLogin] Logout failed, status:", resp.status);
+                }
                 throw new Error(`Logout failed: ${resp.status}`);
               }
-              console.log("[useLogin] Logout successful");
+              if (import.meta.env.DEV) {
+                console.log("[useLogin] Logout successful");
+              }
             } catch (error) {
-              console.error("[useLogin] Error in doLogout:", error);
+              if (import.meta.env.DEV) {
+                console.error("[useLogin] Error in doLogout:", error);
+              }
               throw error;
             }
           },
         },
       });
-      console.log("[useLogin] Wallet connected successfully:", wallet);
+      if (import.meta.env.DEV) {
+        console.log("[useLogin] Wallet connected successfully:", wallet);
+      }
     } catch (error) {
-      console.error("[useLogin] Login failed - raw error:", error);
-      console.error("[useLogin] Login failed - error type:", typeof error);
-      console.error(
-        "[useLogin] Login failed - error is undefined:",
-        error === undefined,
-      );
-      console.error("[useLogin] Login failed - error is null:", error === null);
-
-      if (error === undefined || error === null) {
+      if (import.meta.env.DEV) {
+        console.error("[useLogin] Login failed - raw error:", error);
+        console.error("[useLogin] Login failed - error type:", typeof error);
         console.error(
-          "[useLogin] Error is undefined/null - this might be a user cancellation or thirdweb internal error",
+          "[useLogin] Login failed - error is undefined:",
+          error === undefined,
         );
-        const wrappedError = new Error(
-          "Login was cancelled or failed with no specific error",
-        );
-        console.error("[useLogin] Wrapped error:", wrappedError);
-        throw wrappedError;
+        console.error("[useLogin] Login failed - error is null:", error === null);
+
+        if (error === undefined || error === null) {
+          console.error(
+            "[useLogin] Error is undefined/null - this might be a user cancellation or thirdweb internal error",
+          );
+        }
+
+        if (error instanceof Error) {
+          console.error("[useLogin] Error name:", error.name);
+          console.error("[useLogin] Error message:", error.message);
+          console.error("[useLogin] Error stack:", error.stack);
+        } else {
+          console.error(
+            "[useLogin] Non-Error object thrown:",
+            JSON.stringify(error),
+          );
+        }
       }
 
-      if (error instanceof Error) {
-        console.error("[useLogin] Error name:", error.name);
-        console.error("[useLogin] Error message:", error.message);
-        console.error("[useLogin] Error stack:", error.stack);
-      } else {
-        console.error(
-          "[useLogin] Non-Error object thrown:",
-          JSON.stringify(error),
+      if (error === undefined || error === null) {
+        throw new Error(
+          "Login was cancelled or failed with no specific error",
         );
       }
 

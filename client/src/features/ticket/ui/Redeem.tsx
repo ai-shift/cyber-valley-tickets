@@ -16,11 +16,11 @@ export const Redeem: React.FC<RedeemProps> = ({ eventId }) => {
   const account = useActiveAccount();
   const { data } = useQuery(useEventStatus(eventId));
 
-  function handleDetect(detected: IDetectedBarcode[]) {
+  async function handleDetect(detected: IDetectedBarcode[]) {
     const value = detected.at(0);
     if (!value) return;
     try {
-      redeem(account, value.rawValue);
+      await redeem(account, value.rawValue);
     } catch (e) {
       alert("Failed to redeem ticket");
     }

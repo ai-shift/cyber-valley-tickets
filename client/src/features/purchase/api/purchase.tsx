@@ -178,20 +178,26 @@ const createEvent = async (
     throw new Error("Event place deposit size must be greater than 0");
   }
   const depositSize = BigInt(placeData.eventDepositSize);
-  console.log("Event creation params:", {
-    place,
-    ticketPrice,
-    startTimeTimeStamp,
-    daysAmount,
-    depositSize: depositSize.toString(),
-    eventDepositSize: placeData.eventDepositSize,
-  });
+  if (import.meta.env.DEV) {
+    console.log("Event creation params:", {
+      place,
+      ticketPrice,
+      startTimeTimeStamp,
+      daysAmount,
+      depositSize: depositSize.toString(),
+      eventDepositSize: placeData.eventDepositSize,
+    });
+  }
   const approve = approveSubmitEventRequest(account, depositSize);
   sendTx(approve);
   await approve;
-  console.log("Submit event request ERC20 transfer approved");
+  if (import.meta.env.DEV) {
+    console.log("Submit event request ERC20 transfer approved");
+  }
   await new Promise((r) => setTimeout(r, 1000));
-  console.log("Starting submit transaction");
+  if (import.meta.env.DEV) {
+    console.log("Starting submit transaction");
+  }
   // Convert categories to contract format
   const contractCategories: CategoryInput[] = order.event.categories.map(
     (cat) => ({
@@ -202,7 +208,9 @@ const createEvent = async (
     }),
   );
 
-  console.log("Creating event with categories:", contractCategories);
+  if (import.meta.env.DEV) {
+    console.log("Creating event with categories:", contractCategories);
+  }
 
   const result = submitEventRequest(
     account,
@@ -220,7 +228,9 @@ const createEvent = async (
 };
 
 const getSocialsCid = async (socials: Socials) => {
-  console.log(socials);
+  if (import.meta.env.DEV) {
+    console.log(socials);
+  }
   if (!socials) throw new Error("There is no socials in the order");
   return await apiClient.PUT("/api/ipfs/users/socials", {
     body: {
@@ -265,7 +275,7 @@ const getOrderCid = async (
       })),
       total_tickets: totalTickets,
       total_price: totalPrice,
-      currency: "USDC",
+      currency: "USDT",
       referral_data: "",
     },
   });
@@ -274,7 +284,9 @@ const getOrderCid = async (
 const getEventCid = async (event: EventDto, cid: string) => {
   const { title, description, image, website } = event;
 
-  console.log(image);
+  if (import.meta.env.DEV) {
+    console.log(image);
+  }
 
   const formData = new FormData();
   formData.set("title", title);

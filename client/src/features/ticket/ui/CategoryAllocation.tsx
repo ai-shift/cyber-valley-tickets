@@ -65,7 +65,9 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
 
     const currentCount = getAllocationCount(categoryId);
     const remainingQuota = getRemainingQuota(category);
-    const maxAllowed = remainingQuota !== null ? remainingQuota : 10;
+    // For unlimited categories (no quota), allow up to 100 tickets
+    // For limited categories, respect the remaining quota
+    const maxAllowed = remainingQuota !== null ? remainingQuota : 100;
 
     const newCount = Math.max(0, Math.min(currentCount + delta, maxAllowed));
 
