@@ -65,7 +65,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
         _;
     }
 
-    function setEventManagerAddress(address _eventManagerAddress) external {
+    function setEventManagerAddress(address _eventManagerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(
             _eventManagerAddress != address(0),
             "Event manager address cannot be zero"
@@ -75,6 +75,7 @@ contract CyberValleyEventTicket is ERC721, AccessControl {
             "Event manager was already saved"
         );
         _grantRole(EVENT_MANAGER_ROLE, _eventManagerAddress);
+        eventManagerAddress = _eventManagerAddress;
     }
 
     function setIpfsHost(string calldata host) public onlyMaster {

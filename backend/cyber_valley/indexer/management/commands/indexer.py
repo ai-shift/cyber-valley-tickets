@@ -26,7 +26,10 @@ _ETH_ABIS = {
 # Log the events found in each ABI for debugging
 for addr, abi in _ETH_ABIS.items():
     events = [e["name"] for e in abi if e["type"] == "event"]
-    print(f"DEBUG: Loaded ABI for {addr}: {len(events)} events: {sorted(events)}", flush=True)
+    print(
+        f"DEBUG: Loaded ABI for {addr}: {len(events)} events: {sorted(events)}",
+        flush=True,
+    )
 
 ETH_CONTRACT_ADDRESS_TO_ABI: Final = _ETH_ABIS
 

@@ -262,7 +262,9 @@ def get_user_profile(request: Request, address: str) -> Response:
         # Only include socials if authorized
         if can_view_socials:
             socials = target_user.socials.all()
-            data["socials"] = [{"network": s.network, "value": s.value} for s in socials]
+            data["socials"] = [
+                {"network": s.network, "value": s.value} for s in socials
+            ]
         else:
             data["socials"] = []
 

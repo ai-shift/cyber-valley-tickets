@@ -453,10 +453,10 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
             if category.discount > 0:
                 discount = (event.ticket_price * category.discount) // 10000
                 price_paid = event.ticket_price - discount
-        
+
         ticket.price_paid = price_paid
         ticket.save(update_fields=["price_paid"])
-        
+
         event.tickets_bought += 1
         event.total_revenue += price_paid
         event.save(update_fields=["tickets_bought", "total_revenue"])
@@ -882,9 +882,7 @@ def _sync_distribution_profile_created(
         recipient_address = recipient_data["address"]
         if recipient_address != owner_address_lower:
             with suppress(CyberValleyUser.DoesNotExist):
-                recipient_user = CyberValleyUser.objects.get(
-                    address=recipient_address
-                )
+                recipient_user = CyberValleyUser.objects.get(address=recipient_address)
                 _send_distribution_profile_notification(
                     recipient_user,
                     event_data.profile_id,
