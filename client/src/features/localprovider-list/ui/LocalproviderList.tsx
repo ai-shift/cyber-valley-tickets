@@ -73,7 +73,7 @@ export const LocalproviderList: React.FC<LocalproviderListProps> = ({
         <tbody className="divide-y divide-secondary/60">
           {uniqueAddresses.map((address) => {
             const user = users.find((entry) => entry.address === address);
-            const defaultShare = user?.defaultShare ?? 0;
+            const profileManagerBps = user?.profileManagerBps ?? 0;
 
             return (
               <tr key={address} className="border-b border-secondary/30">
@@ -81,8 +81,8 @@ export const LocalproviderList: React.FC<LocalproviderListProps> = ({
                   <DisplayUser address={address} />
                 </td>
                 <td className="py-3 px-3">
-                  {defaultShare > 0 ? (
-                    <span className="text-sm font-medium">{defaultShare}%</span>
+                  {profileManagerBps > 0 ? (
+                    <span className="text-sm font-medium">{profileManagerBps}%</span>
                   ) : (
                     <span className="text-sm text-muted-foreground">-</span>
                   )}

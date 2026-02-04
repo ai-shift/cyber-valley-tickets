@@ -26,7 +26,7 @@ export const LocalproviderForm: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       address: "",
-      share: 50,
+      share: 5,
     },
   });
 
@@ -40,7 +40,7 @@ export const LocalproviderForm: React.FC = () => {
       throw new Error("Account isn't connected");
     }
     sendTx(
-      grantLocalProvider(account, values.address).then(() => {
+      grantLocalProvider(account, values.address, values.share).then(() => {
         setIsOpen(true);
         optimisticAddLocalprovider(values.address);
         form.reset();

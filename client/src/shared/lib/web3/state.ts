@@ -888,6 +888,11 @@ export const eventManager = getContract({
           name: "eoa",
           type: "address",
         },
+        {
+          internalType: "uint16",
+          name: "defaultShareBps",
+          type: "uint16",
+        },
       ],
       name: "grantLocalProvider",
       outputs: [],
