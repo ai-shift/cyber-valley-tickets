@@ -193,9 +193,7 @@ def _sync_new_event_request(
         network = socials.get("network")
         value = socials.get("value")
         if network and value:
-            UserSocials.objects.create(
-                user=creator, network=network, value=value
-            )
+            UserSocials.objects.create(user=creator, network=network, value=value)
 
     event = Event.objects.create(
         id=event_data.id,
@@ -241,9 +239,7 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
         network = socials.get("network")
         value = socials.get("value")
         if network and value:
-            UserSocials.objects.create(
-                user=event.creator, network=network, value=value
-            )
+            UserSocials.objects.create(user=event.creator, network=network, value=value)
 
     event.place = place
     event.ticket_price = event_data.ticket_price
@@ -423,9 +419,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
         network = socials.get("network")
         value = socials.get("value")
         if network and value:
-            UserSocials.objects.create(
-                user=owner, network=network, value=value
-            )
+            UserSocials.objects.create(user=owner, network=network, value=value)
 
     log.info(
         "Saving ticket for event %s, owner %s from event %s", event, owner, event_data
