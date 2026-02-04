@@ -40,16 +40,13 @@ def telegram_schema(_request: Request) -> Response:
 
 @api_view(["POST"])
 def telegram_updates(request: Request) -> Response:
-    payload: dict[str, Any] | None = None
-    if isinstance(request.data, dict):
-        payload = request.data
-
-    if payload is None:
+    data: Any = request.data
+    if not isinstance(data, dict):
         return Response({"detail": "Invalid update payload"}, status=400)
 
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
     if not token:
         return Response({"detail": "TELEGRAM_BOT_TOKEN is not set"}, status=500)
     bot = telebot.TeleBot(token)
-    handle_update(bot, payload)
+    handle_update(bot, data)
     return Response({"status": "ok"})
