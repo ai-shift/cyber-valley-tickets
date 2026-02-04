@@ -138,8 +138,6 @@ class CyberValleyEvents(BaseModel):
     revenue_distributed: RevenueDistributed | None = Field(
         None, alias="RevenueDistributed"
     )
-    role_admin_changed: RoleAdminChanged | None = Field(
-        None, alias="RoleAdminChanged"
-    )
+    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
