@@ -38,10 +38,10 @@ class EventPlace(models.Model):
         User, on_delete=models.CASCADE, related_name="event_places", null=True
     )
     title = models.CharField(max_length=200, null=False)
-    max_tickets = models.PositiveSmallIntegerField(null=False)
-    min_tickets = models.PositiveSmallIntegerField(null=False)
-    min_price = models.PositiveSmallIntegerField(null=False)
-    min_days = models.PositiveSmallIntegerField(null=False)
+    max_tickets = models.PositiveIntegerField(null=False)
+    min_tickets = models.PositiveIntegerField(null=False)
+    min_price = models.PositiveBigIntegerField(null=False)
+    min_days = models.PositiveIntegerField(null=False)
     geometry = models.JSONField(null=False)
     days_before_cancel = models.PositiveSmallIntegerField(null=False)
     event_deposit_size = models.PositiveIntegerField(default=0)
@@ -79,10 +79,10 @@ class Event(models.Model):
         blank=True,
         related_name="events",
     )
-    ticket_price = models.PositiveSmallIntegerField(null=False)
-    tickets_bought = models.PositiveSmallIntegerField(null=False)
+    ticket_price = models.PositiveBigIntegerField(null=False)
+    tickets_bought = models.PositiveIntegerField(null=False)
     start_date = models.DateTimeField(null=False)
-    days_amount = models.PositiveSmallIntegerField(null=False)
+    days_amount = models.PositiveIntegerField(null=False)
     paid_deposit = models.PositiveIntegerField(default=0)
     total_revenue = models.PositiveIntegerField(default=0)
     status = models.CharField(
@@ -127,7 +127,7 @@ class TicketCategory(models.Model):
     )
     category_id = models.PositiveIntegerField()
     name = models.CharField(max_length=100)
-    discount = models.PositiveSmallIntegerField()
+    discount = models.PositiveIntegerField()
     quota = models.PositiveIntegerField()
     has_quota = models.BooleanField(default=False)
     tickets_bought = models.PositiveIntegerField(default=0)

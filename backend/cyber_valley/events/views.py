@@ -724,7 +724,9 @@ def verification_stats(_request: Request) -> Response:
         provider_stats = []
 
         # Get all local providers
-        providers = CyberValleyUser.objects.filter(roles__name=CyberValleyUser.LOCAL_PROVIDER)
+        providers = CyberValleyUser.objects.filter(
+            roles__name=CyberValleyUser.LOCAL_PROVIDER
+        )
 
         for provider in providers:
             provider_queryset = queryset.filter(**{f"{provider_field}": provider})
