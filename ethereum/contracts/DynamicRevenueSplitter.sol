@@ -8,31 +8,37 @@ import "./IDynamicRevenueSplitter.sol";
 
 contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, ReentrancyGuard {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-    bytes32 public constant LOCAL_PROVIDER_ROLE = keccak256("LOCAL_PROVIDER_ROLE");
+    bytes32 public constant PROFILE_MANAGER_ROLE = keccak256("PROFILE_MANAGER_ROLE");
 
     // Fixed recipients (immutable)
-    address public immutable cyberiaDAO;  // CyberiaDAO LLC - platform
-    address public immutable cvePtPma;    // CVE PT PMA - land owner
+    address public immutable cyberiaDAO;      // CyberiaDAO LLC - platform
+    address public immutable cvePtPma;        // CVE PT PMA - land owner
     IERC20 public immutable usdt;
 
     // Fixed shares (constants) - basis points where 10000 = 100%
-    uint256 public constant CYBERIA_DAO_SHARE = 1000;  // 10%
-    uint256 public constant CVE_PT_PMA_SHARE = 500;    // 5%
-    uint256 public constant FLEXIBLE_SHARE = 8500;     // 85%
+    uint256 public constant CYBERIA_DAO_SHARE = 1000;      // 10%
+    uint256 public constant CVE_PT_PMA_SHARE = 500;        // 5%
+    uint256 public constant MAX_PROFILE_MANAGER_BPS = 8500; // 85% max for profile manager
     uint256 public constant BASIS_POINTS = 10000;
 
     struct Distribution {
         address[] recipients;
-        uint256[] shares; // Basis points (10000 = 100% of flexible portion)
+        uint256[] shares; // Basis points (10000 = 100% of remaining portion after fixed + manager)
         address owner;        // Owner of this profile
         bool isActive;        // Soft delete capability
     }
 
-    mapping(uint256 => Distribution) internal profiles;
-    mapping(uint256 => uint256) public eventProfiles;  // eventId => profileId
-    mapping(address => uint256[]) public ownerProfiles;  // owner => profileIds[]
-    uint256 public defaultProfileId;
-    uint256 public nextProfileId = 1;
+    Distribution[] internal profiles;
+    mapping(uint256 => uint256) public eventProfiles;       // eventId => profileId
+    mapping(address => uint256[]) public ownerProfiles;     // owner => profileIds[]
+    
+    /**
+     * @notice Basis points each profile manager receives from distributions.
+     * Applied after fixed bps (CyberiaDAO 10% + CVE PT PMA 5%) and before 
+     * profile recipients. Manager cannot add their own address to distribution profiles.
+     */
+    mapping(address => uint256) public profileManagerBps;   // basis points for each manager
+    
     address public eventManager;
 
     event DistributionProfileCreated(
@@ -42,7 +48,6 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         uint256[] shares
     );
     event DistributionProfileUpdated(uint256 indexed profileId, address[] recipients, uint256[] shares);
-    event DefaultProfileSet(uint256 profileId);
     event EventProfileSet(uint256 indexed eventId, uint256 profileId);
     event RevenueDistributed(uint256 amount, uint256 indexed eventId);
     event ProfileOwnershipTransferred(
@@ -50,13 +55,21 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         address indexed previousOwner,
         address indexed newOwner
     );
-    event AllProfilesTransferred(
-        address indexed from,
-        address indexed to
-    );
     event ProfileDeactivated(uint256 indexed profileId);
+    
+    /**
+     * @notice Emitted when a profile manager is granted role with bps share
+     * @param account The account granted PROFILE_MANAGER_ROLE
+     * @param bps The basis points (0-8500) applied after fixed bps and before profile recipients
+     */
+    event ProfileManagerGranted(address indexed account, uint256 bps);
 
-    constructor(address _usdt, address _cyberiaDAO, address _cvePtPma, address _admin) {
+    constructor(
+        address _usdt,
+        address _cyberiaDAO,
+        address _cvePtPma,
+        address _admin
+    ) {
         require(_usdt != address(0), "USDT address cannot be zero");
         require(_cyberiaDAO != address(0), "CyberiaDAO address cannot be zero");
         require(_cvePtPma != address(0), "CVE PT PMA address cannot be zero");
@@ -75,42 +88,63 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         eventManager = _eventManager;
     }
 
-    modifier onlyProfileOwnerOrAdmin(uint256 profileId) {
-        require(profileId > 0 && profileId < nextProfileId, "Profile does not exist");
+    modifier onlyAdminOrEventManager() {
         require(
-            profiles[profileId].owner == msg.sender || hasRole(ADMIN_ROLE, msg.sender),
+            hasRole(ADMIN_ROLE, msg.sender) || msg.sender == eventManager,
+            "Caller must be admin or EventManager"
+        );
+        _;
+    }
+
+    modifier onlyProfileOwnerOrAdmin(uint256 profileId) {
+        require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
+        require(
+            profiles[profileId - 1].owner == msg.sender || hasRole(ADMIN_ROLE, msg.sender),
             "Caller must be profile owner or admin"
         );
         _;
     }
 
+    /**
+     * @notice Grants PROFILE_MANAGER_ROLE to an account with specified bps share
+     * @param account The address to grant the role to
+     * @param bps The basis points (0-8500) this account receives from each distribution.
+     *           Applied after fixed bps (CyberiaDAO 10% + CVE PT PMA 5%) and before 
+     *           profile recipients. Account cannot add themselves to distribution profiles.
+     */
+    function grantProfileManager(address account, uint256 bps) external onlyAdminOrEventManager {
+        require(account != address(0), "Account cannot be zero address");
+        require(bps <= MAX_PROFILE_MANAGER_BPS, "Bps must be <= 8500");
+        
+        _grantRole(PROFILE_MANAGER_ROLE, account);
+        profileManagerBps[account] = bps;
+        
+        emit ProfileManagerGranted(account, bps);
+    }
+
     function createDistributionProfile(
-        address owner,
         address[] calldata recipients,
         uint256[] calldata shares
     ) external returns (uint256) {
         require(
-            hasRole(ADMIN_ROLE, msg.sender) || hasRole(LOCAL_PROVIDER_ROLE, msg.sender),
-            "Caller must have ADMIN_ROLE or LOCAL_PROVIDER_ROLE"
+            hasRole(ADMIN_ROLE, msg.sender) || hasRole(PROFILE_MANAGER_ROLE, msg.sender),
+            "Caller must have ADMIN_ROLE or PROFILE_MANAGER_ROLE"
         );
 
-        address profileOwner;
-        if (hasRole(ADMIN_ROLE, msg.sender)) {
-            // Admin can specify any owner
-            require(owner != address(0), "Owner cannot be zero address");
-            profileOwner = owner;
-        } else {
-            // LocalProvider can only create for themselves
-            require(owner == msg.sender, "LocalProvider can only create profiles for themselves");
-            profileOwner = msg.sender;
+        // Profile manager cannot add themselves to recipients - they get bps automatically
+        if (hasRole(PROFILE_MANAGER_ROLE, msg.sender)) {
+            for (uint256 i = 0; i < recipients.length; i++) {
+                require(recipients[i] != msg.sender, "Profile manager cannot add themselves to distribution");
+            }
         }
 
         _validateDistribution(recipients, shares);
-        uint256 profileId = nextProfileId++;
-        profiles[profileId] = Distribution(recipients, shares, profileOwner, true);
-        ownerProfiles[profileOwner].push(profileId);
+        
+        uint256 profileId = profiles.length + 1;
+        profiles.push(Distribution(recipients, shares, msg.sender, true));
+        ownerProfiles[msg.sender].push(profileId);
 
-        emit DistributionProfileCreated(profileId, profileOwner, recipients, shares);
+        emit DistributionProfileCreated(profileId, msg.sender, recipients, shares);
         return profileId;
     }
 
@@ -119,17 +153,18 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         address[] calldata recipients,
         uint256[] calldata shares
     ) external onlyProfileOwnerOrAdmin(profileId) {
+        // Profile owner cannot add themselves to recipients - they get bps automatically
+        if (hasRole(PROFILE_MANAGER_ROLE, msg.sender)) {
+            for (uint256 i = 0; i < recipients.length; i++) {
+                require(recipients[i] != msg.sender, "Profile manager cannot add themselves to distribution");
+            }
+        }
+        
         _validateDistribution(recipients, shares);
-        profiles[profileId].recipients = recipients;
-        profiles[profileId].shares = shares;
+        Distribution storage profile = profiles[profileId - 1];
+        profile.recipients = recipients;
+        profile.shares = shares;
         emit DistributionProfileUpdated(profileId, recipients, shares);
-    }
-
-    function setDefaultProfile(uint256 profileId) external onlyRole(ADMIN_ROLE) {
-        require(profileId > 0 && profileId < nextProfileId, "Profile does not exist");
-        require(profiles[profileId].isActive, "Profile is not active");
-        defaultProfileId = profileId;
-        emit DefaultProfileSet(profileId);
     }
 
     function setEventProfile(uint256 eventId, uint256 profileId) external override {
@@ -137,8 +172,8 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
             hasRole(ADMIN_ROLE, msg.sender) || msg.sender == eventManager,
             "Caller must be admin or EventManager"
         );
-        require(profileId > 0 && profileId < nextProfileId, "Profile does not exist");
-        require(profiles[profileId].isActive, "Profile is not active");
+        require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
+        require(profiles[profileId - 1].isActive, "Profile is not active");
         eventProfiles[eventId] = profileId;
         emit EventProfileSet(eventId, profileId);
     }
@@ -151,7 +186,15 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
 
         uint256 cyberiaDAOAmount = (amount * CYBERIA_DAO_SHARE) / BASIS_POINTS;
         uint256 cvePtPmaAmount = (amount * CVE_PT_PMA_SHARE) / BASIS_POINTS;
-        uint256 flexibleAmount = amount - cyberiaDAOAmount - cvePtPmaAmount;
+        
+        // Get profile manager for this event and their bps
+        uint256 profileId = eventProfiles[eventId];
+        address manager = profileId > 0 ? profiles[profileId - 1].owner : address(0);
+        uint256 managerBps = manager == address(0) ? 0 : profileManagerBps[manager];
+        uint256 managerAmount = (amount * managerBps) / BASIS_POINTS;
+        
+        // Remaining amount goes to profile recipients
+        uint256 flexibleAmount = amount - cyberiaDAOAmount - cvePtPmaAmount - managerAmount;
 
         // Distribute fixed shares
         if (cyberiaDAOAmount > 0) {
@@ -160,23 +203,20 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         if (cvePtPmaAmount > 0) {
             require(usdt.transfer(cvePtPma, cvePtPmaAmount), "Transfer to CVE PT PMA failed");
         }
+        if (managerAmount > 0 && manager != address(0)) {
+            require(usdt.transfer(manager, managerAmount), "Transfer to profile manager failed");
+        }
 
-        // Distribute flexible portion
-        if (flexibleAmount > 0) {
-            _distributeFlexible(flexibleAmount, eventId);
+        // Distribute flexible portion to profile recipients
+        if (flexibleAmount > 0 && profileId > 0) {
+            _distributeFlexible(flexibleAmount, profileId);
         }
 
         emit RevenueDistributed(amount, eventId);
     }
 
-    function _distributeFlexible(uint256 flexibleAmount, uint256 eventId) internal {
-        uint256 profileId = eventProfiles[eventId];
-        if (profileId == 0) {
-            profileId = defaultProfileId;
-        }
-        require(profileId != 0, "No distribution profile set");
-
-        Distribution storage profile = profiles[profileId];
+    function _distributeFlexible(uint256 flexibleAmount, uint256 profileId) internal {
+        Distribution storage profile = profiles[profileId - 1];
         require(profile.isActive, "Profile is not active");
 
         uint256 distributed = 0;
@@ -202,14 +242,14 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         address owner,
         bool isActive
     ) {
-        require(profileId > 0 && profileId < nextProfileId, "Profile does not exist");
-        Distribution storage profile = profiles[profileId];
+        require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
+        Distribution storage profile = profiles[profileId - 1];
         return (profile.recipients, profile.shares, profile.owner, profile.isActive);
     }
 
-    function isProfileOwner(uint256 profileId, address account) external view returns (bool) {
-        require(profileId > 0 && profileId < nextProfileId, "Profile does not exist");
-        return profiles[profileId].owner == account;
+    function isProfileOwner(uint256 profileId, address account) external view override returns (bool) {
+        require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
+        return profiles[profileId - 1].owner == account;
     }
 
     function getProfilesByOwner(address owner) external view returns (uint256[] memory) {
@@ -217,10 +257,10 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
     }
 
     function transferProfileOwnership(uint256 profileId, address newOwner) external onlyRole(ADMIN_ROLE) {
-        require(profileId > 0 && profileId < nextProfileId, "Profile does not exist");
+        require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
         require(newOwner != address(0), "New owner cannot be zero address");
 
-        Distribution storage profile = profiles[profileId];
+        Distribution storage profile = profiles[profileId - 1];
         address previousOwner = profile.owner;
         require(previousOwner != newOwner, "New owner must be different");
 
@@ -241,7 +281,7 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         emit ProfileOwnershipTransferred(profileId, previousOwner, newOwner);
     }
 
-    function transferAllProfiles(address from, address to) external onlyRole(ADMIN_ROLE) {
+    function transferAllProfiles(address from, address to) external override onlyRole(ADMIN_ROLE) {
         require(from != address(0), "From address cannot be zero");
         require(to != address(0), "To address cannot be zero");
         require(from != to, "From and to must be different");
@@ -251,18 +291,16 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
 
         for (uint256 i = 0; i < fromProfiles.length; i++) {
             uint256 profileId = fromProfiles[i];
-            profiles[profileId].owner = to;
+            profiles[profileId - 1].owner = to;
             toProfiles.push(profileId);
         }
 
         // Clear from's list
         delete ownerProfiles[from];
-
-        emit AllProfilesTransferred(from, to);
     }
 
     function deactivateProfile(uint256 profileId) external onlyProfileOwnerOrAdmin(profileId) {
-        profiles[profileId].isActive = false;
+        profiles[profileId - 1].isActive = false;
         emit ProfileDeactivated(profileId);
     }
 
