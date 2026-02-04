@@ -190,9 +190,12 @@ def _sync_new_event_request(
     log.info("data=%s", data)
     socials = _get_ipfs_json_with_retry(data["socialsCid"])
     with suppress(IntegrityError), transaction.atomic():
-        UserSocials.objects.create(
-            user=creator, network=socials["network"], value=socials["value"]
-        )
+        network = socials.get("network")
+        value = socials.get("value")
+        if network and value:
+            UserSocials.objects.create(
+                user=creator, network=network, value=value
+            )
 
     event = Event.objects.create(
         id=event_data.id,
@@ -235,9 +238,12 @@ def _sync_event_updated(event_data: CyberValleyEventManager.EventUpdated) -> Non
     socials = _get_ipfs_json_with_retry(data["socialsCid"])
 
     with suppress(IntegrityError), transaction.atomic():
-        UserSocials.objects.create(
-            user=event.creator, network=socials["network"], value=socials["value"]
-        )
+        network = socials.get("network")
+        value = socials.get("value")
+        if network and value:
+            UserSocials.objects.create(
+                user=event.creator, network=network, value=value
+            )
 
     event.place = place
     event.ticket_price = event_data.ticket_price
@@ -414,9 +420,12 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
     ticket_meta, socials = _fetch_ticket_metadata(cid)
 
     with suppress(IntegrityError), transaction.atomic():
-        UserSocials.objects.create(
-            user=owner, network=socials["network"], value=socials["value"]
-        )
+        network = socials.get("network")
+        value = socials.get("value")
+        if network and value:
+            UserSocials.objects.create(
+                user=owner, network=network, value=value
+            )
 
     log.info(
         "Saving ticket for event %s, owner %s from event %s", event, owner, event_data

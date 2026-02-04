@@ -137,16 +137,12 @@ async function deployContracts() {
       [localProvider.address],
       [10000],
     );
-  
+
   // Create a distribution profile for master as well
   await splitter
     .connect(master)
-    .createDistributionProfile(
-      master.address,
-      [master.address],
-      [10000],
-    );
-  
+    .createDistributionProfile(master.address, [master.address], [10000]);
+
   await splitter.connect(master).setDefaultProfile(1);
 
   await eventManager.connect(master).grantLocalProvider(localProvider.address);
@@ -286,10 +282,14 @@ async function createPlaces(
     const placeId = newEventPlaceRequestEvent.args.id;
 
     // Approve event place as local provider with the deposit from config
-    await eventManager.connect(localProvider).approveEventPlace(placeId, cfg.deposit);
+    await eventManager
+      .connect(localProvider)
+      .approveEventPlace(placeId, cfg.deposit);
 
     places.push({ id: placeId, ...cfg, cid: result.cid });
-    console.log(`Created place: ${cfg.title} (ID: ${placeId}, Deposit: ${cfg.deposit} USDT)`);
+    console.log(
+      `Created place: ${cfg.title} (ID: ${placeId}, Deposit: ${cfg.deposit} USDT)`,
+    );
   }
 
   return places;
