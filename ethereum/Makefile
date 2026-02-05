@@ -16,11 +16,6 @@ deploy-dev:
 	rm -rf ignition/deployments
 	pnpm exec hardhat run scripts/deploy-dev.js --network cvlandDev
 
-# Unified deployment and seeding (replaces deploy-dev + mint-tickets)
-deploy-and-seed:
-	rm -rf ignition/deployments
-	pnpm exec hardhat run scripts/deploy-and-seed.js --network cvlandDev
-
 grant-backend-role:
 	pnpm exec hardhat run scripts/grant-backend-role.js --network cvlandDev
 

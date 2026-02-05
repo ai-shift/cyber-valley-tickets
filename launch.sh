@@ -319,7 +319,7 @@ log_success "Geodata synchronization completed" "done"
 log_section "Smart Contract Deployment"
 
 log_info "Deploying contracts and seeding on-chain entities" "starting"
-if ! run_buf_command "make -C ethereum/ deploy-and-seed"; then
+if ! run_buf_command "make -C ethereum/ deploy-dev"; then
     log_error "Deployment and seeding failed" "failed"
     echo -e "${RED}Check the buf window for error details:${NC}"
     echo -e "  ${CYAN}tmux attach -t $SESSION_NAME:buf${NC}"
@@ -407,7 +407,7 @@ done
 log_success "IPFS is ready" "ready"
 
 # Reset indexer state to ensure it processes all historical events
-# Events are created during deploy-and-seed at past blocks due to time manipulation
+# Events are created during deploy-dev at past blocks due to time manipulation
 log_info "Resetting indexer state for full re-index" "resetting"
 cd backend
 .venv/bin/python manage.py shell -c "
@@ -461,7 +461,7 @@ else
     restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
 fi
 
-# Note: Tickets are now minted during deploy-and-seed phase
+# Note: Tickets are now minted during deploy-dev phase
 # No need to wait for indexing before minting - contract is source of truth
 
 log_info "Waiting for services to restart" "waiting"
