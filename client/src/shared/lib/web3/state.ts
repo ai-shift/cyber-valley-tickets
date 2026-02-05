@@ -3025,25 +3025,6 @@ export const revenueSplitter = getContract({
       type: "function",
     },
     {
-      inputs: [{ internalType: "address", name: "owner", type: "address" }],
-      name: "getProfilesByOwner",
-      outputs: [{ internalType: "uint256[]", name: "", type: "uint256[]" }],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [{ internalType: "uint256", name: "profileId", type: "uint256" }],
-      name: "getProfile",
-      outputs: [
-        { internalType: "address[]", name: "recipients", type: "address[]" },
-        { internalType: "uint256[]", name: "shares", type: "uint256[]" },
-        { internalType: "address", name: "owner", type: "address" },
-        { internalType: "bool", name: "isActive", type: "bool" },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
       inputs: [
         { internalType: "bytes32", name: "role", type: "bytes32" },
         { internalType: "address", name: "account", type: "address" },

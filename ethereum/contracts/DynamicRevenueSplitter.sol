@@ -134,10 +134,8 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
     function grantProfileManager(address account, uint256 bps) external onlyAdminOrEventManager {
         require(account != address(0), "Account cannot be zero address");
         require(bps <= MAX_PROFILE_MANAGER_BPS, "Bps must be <= 8500");
-        
         _grantRole(PROFILE_MANAGER_ROLE, account);
         profileManagerBps[account] = bps;
-        
         emit ProfileManagerGranted(account, bps);
     }
 
@@ -169,7 +167,7 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         uint256 profileId,
         address[] calldata recipients,
         uint256[] calldata shares
-    ) external onlyProfileOwnerOrAdmin(profileId) {
+    ) external onlyRole(ADMIN_ROLE) {
         Distribution storage profile = profiles[profileId - 1];
         (address[] memory fullRecipients, uint16[] memory fullShares) =
             _buildDistribution(profile.owner, recipients, shares);
@@ -195,7 +193,10 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
     function distributeRevenue(uint256 amount, uint256 eventId) external override nonReentrant {
         require(amount > 0, "Amount must be greater than zero");
         uint256 profileId = eventProfiles[eventId];
-        if (profileId == 0 || profileId > profiles.length) {
+        if (profileId == 0) {
+            revert EventProfileNotSet(eventId);
+        }
+        if (profileId > profiles.length) {
             revert EventProfileNotSet(eventId);
         }
 
@@ -220,6 +221,9 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         }
 
         _distributeProfileShares(amount, profile);
+
+        // Clear the profile assignment to prevent re-distribution
+        eventProfiles[eventId] = 0;
 
         emit RevenueDistributed(amount, eventId);
     }
@@ -252,32 +256,9 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         }
     }
 
-    function getProfile(uint256 profileId) external view returns (
-        address[] memory recipients,
-        uint256[] memory shares,
-        address owner,
-        bool isActive
-    ) {
-        require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
-        Distribution storage profile = profiles[profileId - 1];
-        uint256 recipientsCount = profile.recipientShares.length;
-        recipients = new address[](recipientsCount);
-        shares = new uint256[](recipientsCount);
-        for (uint256 i = 0; i < recipientsCount; i++) {
-            RecipientShare storage recipientShare = profile.recipientShares[i];
-            recipients[i] = recipientShare.recipient;
-            shares[i] = recipientShare.bps;
-        }
-        return (recipients, shares, profile.owner, profile.isActive);
-    }
-
     function isProfileOwner(uint256 profileId, address account) external view override returns (bool) {
         require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
         return profiles[profileId - 1].owner == account;
-    }
-
-    function getProfilesByOwner(address owner) external view returns (uint256[] memory) {
-        return ownerProfiles[owner];
     }
 
     function transferProfileOwnership(uint256 profileId, address newOwner) external onlyRole(ADMIN_ROLE) {
