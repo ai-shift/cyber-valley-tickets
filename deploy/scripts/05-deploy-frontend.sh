@@ -1,35 +1,22 @@
 #!/bin/bash
 set -euo pipefail
 
-# Source common functions
 source "$(dirname "$0")/lib/common.sh"
 
-# Validate required environment variables
 require_env_vars TARGET_HOST
 
-echo "==> Building and deploying frontend..."
+SSH_TARGET="${SSH_TARGET:-root@$TARGET_HOST}"
 
-# Build frontend locally (in subshell to avoid changing directory)
-echo "Building frontend..."
+echo "==> Building frontend locally..."
 (
   cd ../client
-  pnpm install
   pnpm build
 )
-echo "✓ Frontend built"
 
-# rsync to server
-echo "Syncing frontend to ${TARGET_HOST}..."
-(
-    cd ../client
-    rsync -avz --delete \
-          dist/ ${SSH_TARGET:-root@$TARGET_HOST}:/home/tickets/client/dist/
-)
+echo "==> Syncing frontend dist to ${TARGET_HOST}..."
+rsync -avz --delete \
+  ../client/dist/ "$SSH_TARGET":/home/tickets/client/dist/
 
-# Set ownership
-ssh ${SSH_TARGET:-root@$TARGET_HOST} bash <<'EOF'
-chown -R tickets:tickets /home/tickets/client
-echo "✓ Frontend ownership set"
-EOF
+ssh "$SSH_TARGET" "chown -R tickets:tickets /home/tickets/client"
 
-echo "==> Frontend deployment complete"
+echo "==> Frontend deploy complete"
