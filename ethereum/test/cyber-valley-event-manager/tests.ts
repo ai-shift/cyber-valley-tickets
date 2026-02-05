@@ -2110,7 +2110,7 @@ describe("CyberValleyEventManager", () => {
       // Create and set event-specific profile (admin creates for themselves)
       await splitter
         .connect(master)
-        .createDistributionProfile([await customer.getAddress()], [10000]);
+        .createDistributionProfile([await customer.getAddress()], [8500]);
       await splitter.connect(master).setEventProfile(eventId, 2);
 
       await time.increase(100_000_000);
@@ -2121,6 +2121,616 @@ describe("CyberValleyEventManager", () => {
 
       // Creator gets deposit back (100), no ticket revenue to distribute
       await expect(tx).to.changeTokenBalance(ERC20, creator, 100);
+    });
+  });
+
+  describe("Local Provider Management", () => {
+    describe("grantLocalProvider", () => {
+      itExpectsOnlyMaster("grantLocalProvider", [ethers.ZeroAddress, 100]);
+
+      it("grants LOCAL_PROVIDER_ROLE and sets bps in splitter", async () => {
+        const { eventManager, splitter, master, owner } =
+          await loadFixture(deployContract);
+        const LOCAL_PROVIDER_ROLE = await eventManager.LOCAL_PROVIDER_ROLE();
+
+        await expect(
+          eventManager
+            .connect(master)
+            .grantLocalProvider(await owner.getAddress(), 1000),
+        )
+          .to.emit(eventManager, "RoleGranted")
+          .withArgs(
+            LOCAL_PROVIDER_ROLE,
+            await owner.getAddress(),
+            await master.getAddress(),
+          );
+
+        expect(
+          await eventManager.hasRole(
+            LOCAL_PROVIDER_ROLE,
+            await owner.getAddress(),
+          ),
+        ).to.be.true;
+        expect(
+          await splitter.profileManagerBps(await owner.getAddress()),
+        ).to.equal(1000);
+      });
+
+      it("reverts when revenue splitter is not set", async () => {
+        const { eventManager, master, owner } =
+          await loadFixture(deployContract);
+        // Create a new event manager without splitter
+        const CyberValleyEventManagerFactory = await ethers.getContractFactory(
+          "CyberValleyEventManager",
+        );
+        const newEventManager = await CyberValleyEventManagerFactory.deploy(
+          await eventManager.usdtTokenContract(),
+          await eventManager.eventTicketContract(),
+          master,
+          100,
+          await timestamp(0),
+        );
+
+        await expect(
+          newEventManager
+            .connect(master)
+            .grantLocalProvider(await owner.getAddress(), 1000),
+        ).to.be.revertedWith("Revenue splitter not set");
+      });
+
+      it("reverts for zero address", async () => {
+        const { eventManager, master } = await loadFixture(deployContract);
+        await expect(
+          eventManager
+            .connect(master)
+            .grantLocalProvider(ethers.ZeroAddress, 1000),
+        ).to.be.revertedWith("Local provider cannot be zero address");
+      });
+    });
+
+    describe("revokeLocalProvider", () => {
+      itExpectsOnlyMaster("revokeLocalProvider", [ethers.ZeroAddress]);
+
+      it("transfers EventPlaces to Master and profiles to Master", async () => {
+        const {
+          eventManager,
+          splitter,
+          master,
+          localProvider,
+          verifiedShaman,
+          creator,
+        } = await loadFixture(deployContract);
+
+        // Create an EventPlace - shamans submit, localProvider approves
+        // This creates the place with localProvider as provider
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+          {
+            ...defaultCreateEventPlaceRequest,
+            eventDepositSize: 200,
+          },
+        );
+
+        // Verify localProvider is the provider
+        let eventPlace = await eventManager.eventPlaces(eventPlaceId);
+        expect(eventPlace.provider).to.equal(await localProvider.getAddress());
+
+        // Create a profile for localProvider (using creator as recipient)
+        await splitter
+          .connect(localProvider)
+          .createDistributionProfile([await creator.getAddress()], [8000]);
+
+        const profilesBefore = await splitter.getProfilesByOwner(
+          await localProvider.getAddress(),
+        );
+        expect(profilesBefore.length).to.be.greaterThan(0);
+
+        // Revoke local provider
+        await expect(
+          eventManager
+            .connect(master)
+            .revokeLocalProvider(await localProvider.getAddress()),
+        )
+          .to.emit(eventManager, "EventPlaceUpdated")
+          .withArgs(
+            await master.getAddress(),
+            eventPlaceId,
+            eventPlace.maxTickets,
+            eventPlace.minTickets,
+            eventPlace.minPrice,
+            eventPlace.daysBeforeCancel,
+            eventPlace.minDays,
+            eventPlace.available,
+            eventPlace.status,
+            eventPlace.meta.digest,
+            eventPlace.meta.hashFunction,
+            eventPlace.meta.size,
+            eventPlace.eventDepositSize,
+          );
+
+        // Verify EventPlace provider is now Master
+        eventPlace = await eventManager.eventPlaces(eventPlaceId);
+        expect(eventPlace.provider).to.equal(await master.getAddress());
+
+        // Verify LOCAL_PROVIDER_ROLE is revoked
+        const LOCAL_PROVIDER_ROLE = await eventManager.LOCAL_PROVIDER_ROLE();
+        expect(
+          await eventManager.hasRole(
+            LOCAL_PROVIDER_ROLE,
+            await localProvider.getAddress(),
+          ),
+        ).to.be.false;
+
+        // Verify profiles were transferred to Master
+        const profilesAfterLocal = await splitter.getProfilesByOwner(
+          await localProvider.getAddress(),
+        );
+        expect(profilesAfterLocal).to.deep.equal([]);
+
+        const profilesAfterMaster = await splitter.getProfilesByOwner(
+          await master.getAddress(),
+        );
+        expect(profilesAfterMaster.length).to.be.greaterThan(0);
+      });
+
+      it("handles provider with no EventPlaces", async () => {
+        const { eventManager, splitter, master } =
+          await loadFixture(deployContract);
+
+        // Create a completely new provider address
+        const newProvider = ethers.Wallet.createRandom().connect(
+          ethers.provider,
+        );
+
+        // Send some ETH for gas
+        await master.sendTransaction({
+          to: await newProvider.getAddress(),
+          value: ethers.parseEther("1"),
+        });
+
+        // Grant local provider role
+        await eventManager
+          .connect(master)
+          .grantLocalProvider(await newProvider.getAddress(), 500);
+
+        // Create a profile for the new provider (so transferAllProfiles has something to transfer)
+        await splitter
+          .connect(newProvider)
+          .createDistributionProfile([await master.getAddress()], [8000]);
+
+        // Revoke should succeed even with no EventPlaces
+        await expect(
+          eventManager
+            .connect(master)
+            .revokeLocalProvider(await newProvider.getAddress()),
+        ).to.not.be.reverted;
+
+        // Verify role is revoked
+        const LOCAL_PROVIDER_ROLE = await eventManager.LOCAL_PROVIDER_ROLE();
+        expect(
+          await eventManager.hasRole(
+            LOCAL_PROVIDER_ROLE,
+            await newProvider.getAddress(),
+          ),
+        ).to.be.false;
+      });
+    });
+
+    describe("revokeVerifiedShaman", () => {
+      itExpectsOnlyLocalProvider("revokeVerifiedShaman", [ethers.ZeroAddress]);
+
+      it("revokes VERIFIED_SHAMAN_ROLE", async () => {
+        const { eventManager, master, localProvider, creator } =
+          await loadFixture(deployContract);
+
+        const VERIFIED_SHAMAN_ROLE = await eventManager.VERIFIED_SHAMAN_ROLE();
+
+        // Ensure creator has the role
+        expect(
+          await eventManager.hasRole(
+            VERIFIED_SHAMAN_ROLE,
+            await creator.getAddress(),
+          ),
+        ).to.be.true;
+
+        await expect(
+          eventManager
+            .connect(localProvider)
+            .revokeVerifiedShaman(await creator.getAddress()),
+        )
+          .to.emit(eventManager, "RoleRevoked")
+          .withArgs(
+            VERIFIED_SHAMAN_ROLE,
+            await creator.getAddress(),
+            await localProvider.getAddress(),
+          );
+
+        expect(
+          await eventManager.hasRole(
+            VERIFIED_SHAMAN_ROLE,
+            await creator.getAddress(),
+          ),
+        ).to.be.false;
+      });
+    });
+  });
+
+  describe("Category Management", () => {
+    describe("updateCategory", () => {
+      itExpectsOnlyLocalProvider("updateCategory", [
+        BigInt(0),
+        "Updated Name",
+        500,
+        10,
+        true,
+      ]);
+
+      it("updates category name and discount", async () => {
+        const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+          await loadFixture(deployContract);
+
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+        );
+
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+
+        const { getEventId } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(10),
+          categories: [limitedCategory],
+        });
+        const eventId = await getEventId();
+
+        // Category 0 is the default category created during event submission
+        await expect(
+          eventManager
+            .connect(localProvider)
+            .updateCategory(0, "Updated Name", 500, 15, true),
+        )
+          .to.emit(eventManager, "TicketCategoryUpdated")
+          .withArgs(0, eventId, "Updated Name", 500, 15, true);
+
+        const category = await eventManager.getCategory(0);
+        expect(category.name).to.equal("Updated Name");
+        expect(category.discountPercentage).to.equal(500);
+        expect(category.quota).to.equal(15);
+      });
+
+      it("reverts when event is not in submitted state", async () => {
+        const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+          await loadFixture(deployContract);
+
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+        );
+
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+
+        const { getEventId } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(10),
+        });
+        const eventId = await getEventId();
+
+        // Approve the event - now it's no longer in submitted state
+        await eventManager.connect(localProvider).approveEvent(eventId, 1n);
+
+        // Try to update category after approval - should fail
+        await expect(
+          eventManager
+            .connect(localProvider)
+            .updateCategory(0, "Updated Name", 500, 10, true),
+        ).to.be.revertedWith("Event must be in submitted state");
+      });
+
+      it("reverts when caller is not the event's local provider", async () => {
+        const {
+          eventManager,
+          ERC20,
+          verifiedShaman,
+          localProvider,
+          creator,
+          master,
+          splitter,
+        } = await loadFixture(deployContract);
+
+        // Create a second local provider who has role but doesn't own the event place
+        const [, , , , , otherProvider] = await ethers.getSigners();
+        await eventManager
+          .connect(master)
+          .grantLocalProvider(await otherProvider.getAddress(), 300);
+
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+          { minTickets: 5 },
+        );
+
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+
+        const { getEventId } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(10),
+          categories: [
+            {
+              name: "Limited",
+              discountPercentage: 0,
+              quota: 5,
+              hasQuota: true,
+            },
+          ],
+        });
+        const eventId = await getEventId();
+
+        // Try to update category as otherProvider (has LOCAL_PROVIDER_ROLE but doesn't own this event)
+        await expect(
+          eventManager
+            .connect(otherProvider)
+            .updateCategory(0, "Limited", 0, 3, true),
+        ).to.be.revertedWith(
+          "Only the local provider of the event can update categories",
+        );
+      });
+
+      it("reverts when increasing total quotas beyond maxTickets", async () => {
+        const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+          await loadFixture(deployContract);
+
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+          { maxTickets: 10, minTickets: 1 },
+        );
+
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+
+        const { getEventId } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(10),
+          categories: [
+            { name: "Cat1", discountPercentage: 0, quota: 5, hasQuota: true },
+            { name: "Cat2", discountPercentage: 0, quota: 5, hasQuota: true },
+          ],
+        });
+        const eventId = await getEventId();
+
+        // Try to update Cat1 quota to exceed maxTickets (total would be 6+5=11 > 10)
+        await expect(
+          eventManager
+            .connect(localProvider)
+            .updateCategory(0, "Cat1", 0, 6, true),
+        ).to.be.revertedWith("Total category quotas exceed event capacity");
+      });
+
+      it("reverts when changing from limited to unlimited quota", async () => {
+        const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+          await loadFixture(deployContract);
+
+        // Create event place with lower minTickets
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+          { minTickets: 5 },
+        );
+
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+
+        const { getEventId } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(10),
+          // Create a limited category first (quota 5 meets minTickets=5)
+          categories: [
+            {
+              name: "Limited",
+              discountPercentage: 0,
+              quota: 5,
+              hasQuota: true,
+            },
+          ],
+        });
+        const eventId = await getEventId();
+
+        // Try to change from limited to unlimited
+        await expect(
+          eventManager
+            .connect(localProvider)
+            .updateCategory(0, "Unlimited", 0, 0, false),
+        ).to.be.revertedWith("Cannot change from limited to unlimited quota");
+      });
+
+      it("reverts for non-existent category", async () => {
+        const { eventManager, localProvider } =
+          await loadFixture(deployContract);
+
+        await expect(
+          eventManager
+            .connect(localProvider)
+            .updateCategory(999, "Name", 0, 10, true),
+        ).to.be.revertedWith("Category does not exist");
+      });
+    });
+
+    describe("getCategory", () => {
+      it("returns correct category data", async () => {
+        const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+          await loadFixture(deployContract);
+
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+        );
+
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+
+        const { getEventId } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(10),
+          categories: [
+            {
+              name: "TestCat",
+              discountPercentage: 1000,
+              quota: 50,
+              hasQuota: true,
+            },
+          ],
+        });
+        const eventId = await getEventId();
+
+        const category = await eventManager.getCategory(0);
+        expect(category.name).to.equal("TestCat");
+        expect(category.eventId).to.equal(eventId);
+        expect(category.discountPercentage).to.equal(1000);
+        expect(category.quota).to.equal(50);
+        expect(category.hasQuota).to.be.true;
+        expect(category.sold).to.equal(0);
+      });
+
+      it("reverts for non-existent category", async () => {
+        const { eventManager } = await loadFixture(deployContract);
+
+        await expect(eventManager.getCategory(999)).to.be.revertedWith(
+          "Category does not exist",
+        );
+      });
+    });
+
+    describe("getCategoriesForEvent", () => {
+      it("returns all category IDs for an event", async () => {
+        const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
+          await loadFixture(deployContract);
+
+        const { eventPlaceId } = await createEventPlace(
+          eventManager,
+          verifiedShaman,
+          localProvider,
+          { minTickets: 10 }, // Lower minTickets so 25+25=50 >= 10 passes
+        );
+
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+
+        const { getEventId } = await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(10),
+          categories: [
+            { name: "Cat1", discountPercentage: 0, quota: 25, hasQuota: true },
+            {
+              name: "Cat2",
+              discountPercentage: 500,
+              quota: 25,
+              hasQuota: true,
+            },
+          ],
+        });
+        const eventId = await getEventId();
+
+        const categoryIds = await eventManager.getCategoriesForEvent(eventId);
+        expect(categoryIds.length).to.equal(2);
+        expect(categoryIds[0]).to.equal(0);
+        expect(categoryIds[1]).to.equal(1);
+      });
+
+      it("returns empty array for event with no categories", async () => {
+        const { eventManager } = await loadFixture(deployContract);
+
+        const categoryIds = await eventManager.getCategoriesForEvent(999);
+        expect(categoryIds).to.deep.equal([]);
+      });
+    });
+  });
+
+  describe("View Functions", () => {
+    describe("getEventsCount", () => {
+      it("returns correct event count", async () => {
+        const {
+          eventManager,
+          ERC20,
+          verifiedShaman,
+          localProvider,
+          creator,
+          splitter,
+        } = await loadFixture(deployContract);
+
+        expect(await eventManager.getEventsCount()).to.equal(0);
+
+        // Create first event
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+        const { eventId: eventId1 } = await createEvent(
+          eventManager,
+          ERC20,
+          verifiedShaman,
+          localProvider,
+          creator,
+          {},
+          {},
+          {},
+          splitter,
+        );
+
+        expect(await eventManager.getEventsCount()).to.equal(1);
+
+        // Create second event
+        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).approve(
+          await eventManager.getAddress(),
+          eventRequestSubmitionPrice,
+        );
+        const { eventId: eventId2 } = await createEvent(
+          eventManager,
+          ERC20,
+          verifiedShaman,
+          localProvider,
+          creator,
+          {},
+          { startDate: await timestamp(30) },
+          {},
+          splitter,
+        );
+
+        expect(await eventManager.getEventsCount()).to.equal(2);
+      });
     });
   });
 });

@@ -54,7 +54,7 @@ async function main() {
   // (using master as recipient since profile manager can't add themselves)
   await splitter
     .connect(localProvider)
-    .createDistributionProfile([master.address], [10000]);
+    .createDistributionProfile([master.address], [8000]);
 
   // Grant LOCAL_PROVIDER_ROLE on EventManager and set bps
   await eventManager

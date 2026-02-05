@@ -130,6 +130,12 @@ export async function deployContract(): Promise<ContractsFixture> {
     .connect(master)
     .setEventManager(await eventManager.getAddress());
 
+  // Grant ADMIN_ROLE to EventManager so it can call transferAllProfiles
+  const ADMIN_ROLE = await splitter.ADMIN_ROLE();
+  await splitter
+    .connect(master)
+    .grantRole(ADMIN_ROLE, await eventManager.getAddress());
+
   // Grant profile manager role with 5% bps to localProvider
   await splitter
     .connect(master)
@@ -139,7 +145,7 @@ export async function deployContract(): Promise<ContractsFixture> {
   // Use creator address as recipient since localProvider can't add themselves
   await splitter
     .connect(localProvider)
-    .createDistributionProfile([await creator.getAddress()], [10000]);
+    .createDistributionProfile([await creator.getAddress()], [8000]);
 
   await eventManager
     .connect(master)
@@ -324,7 +330,7 @@ export async function createEvent(
 
     await splitter
       .connect(localProvider)
-      .createDistributionProfile([creatorAddress], [10000]);
+      .createDistributionProfile([creatorAddress], [8000]);
     distributionProfileId = newProfileId;
   }
 

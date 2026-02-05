@@ -10,6 +10,12 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant PROFILE_MANAGER_ROLE = keccak256("PROFILE_MANAGER_ROLE");
 
+    error EventProfileNotSet(uint256 eventId);
+    error ProfileInactive(uint256 profileId);
+    error InvalidProfileShares();
+    error UsdtTransferFromFailed();
+    error UsdtTransferFailed();
+
     // Fixed recipients (immutable)
     address public immutable cyberiaDAO;      // CyberiaDAO LLC - platform
     address public immutable cvePtPma;        // CVE PT PMA - land owner
@@ -21,9 +27,14 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
     uint256 public constant MAX_PROFILE_MANAGER_BPS = 8500; // 85% max for profile manager
     uint256 public constant BASIS_POINTS = 10000;
 
+    struct RecipientShare {
+        address recipient;
+        uint16 bps;
+    }
+
     struct Distribution {
-        address[] recipients;
-        uint256[] shares; // Basis points (10000 = 100% of remaining portion after fixed + manager)
+        RecipientShare[] recipientShares;
+        uint16 totalBps;
         address owner;        // Owner of this profile
         bool isActive;        // Soft delete capability
     }
@@ -96,6 +107,14 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         _;
     }
 
+    modifier onlyAdminOrProfileManager() {
+        require(
+            hasRole(ADMIN_ROLE, msg.sender) || hasRole(PROFILE_MANAGER_ROLE, msg.sender),
+            "Caller must have ADMIN_ROLE or PROFILE_MANAGER_ROLE"
+        );
+        _;
+    }
+
     modifier onlyProfileOwnerOrAdmin(uint256 profileId) {
         require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
         require(
@@ -125,26 +144,24 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
     function createDistributionProfile(
         address[] calldata recipients,
         uint256[] calldata shares
-    ) external returns (uint256) {
-        require(
-            hasRole(ADMIN_ROLE, msg.sender) || hasRole(PROFILE_MANAGER_ROLE, msg.sender),
-            "Caller must have ADMIN_ROLE or PROFILE_MANAGER_ROLE"
-        );
-
-        // Profile manager cannot add themselves to recipients - they get bps automatically
-        if (hasRole(PROFILE_MANAGER_ROLE, msg.sender)) {
-            for (uint256 i = 0; i < recipients.length; i++) {
-                require(recipients[i] != msg.sender, "Profile manager cannot add themselves to distribution");
-            }
-        }
-
-        _validateDistribution(recipients, shares);
+    ) external onlyAdminOrProfileManager returns (uint256) {
+        (address[] memory fullRecipients, uint16[] memory fullShares) =
+            _buildDistribution(msg.sender, recipients, shares);
         
         uint256 profileId = profiles.length + 1;
-        profiles.push(Distribution(recipients, shares, msg.sender, true));
+        profiles.push();
+        Distribution storage profile = profiles[profileId - 1];
+        profile.owner = msg.sender;
+        profile.isActive = true;
+        _setRecipientShares(profile, fullRecipients, fullShares);
         ownerProfiles[msg.sender].push(profileId);
 
-        emit DistributionProfileCreated(profileId, msg.sender, recipients, shares);
+        emit DistributionProfileCreated(
+            profileId,
+            msg.sender,
+            fullRecipients,
+            _toUint256Array(fullShares)
+        );
         return profileId;
     }
 
@@ -153,18 +170,15 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         address[] calldata recipients,
         uint256[] calldata shares
     ) external onlyProfileOwnerOrAdmin(profileId) {
-        // Profile owner cannot add themselves to recipients - they get bps automatically
-        if (hasRole(PROFILE_MANAGER_ROLE, msg.sender)) {
-            for (uint256 i = 0; i < recipients.length; i++) {
-                require(recipients[i] != msg.sender, "Profile manager cannot add themselves to distribution");
-            }
-        }
-        
-        _validateDistribution(recipients, shares);
         Distribution storage profile = profiles[profileId - 1];
-        profile.recipients = recipients;
-        profile.shares = shares;
-        emit DistributionProfileUpdated(profileId, recipients, shares);
+        (address[] memory fullRecipients, uint16[] memory fullShares) =
+            _buildDistribution(profile.owner, recipients, shares);
+        _setRecipientShares(profile, fullRecipients, fullShares);
+        emit DistributionProfileUpdated(
+            profileId,
+            fullRecipients,
+            _toUint256Array(fullShares)
+        );
     }
 
     function setEventProfile(uint256 eventId, uint256 profileId) external override {
@@ -180,57 +194,59 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
 
     function distributeRevenue(uint256 amount, uint256 eventId) external override nonReentrant {
         require(amount > 0, "Amount must be greater than zero");
+        uint256 profileId = eventProfiles[eventId];
+        if (profileId == 0 || profileId > profiles.length) {
+            revert EventProfileNotSet(eventId);
+        }
+
+        Distribution storage profile = profiles[profileId - 1];
+        if (!profile.isActive) {
+            revert ProfileInactive(profileId);
+        }
 
         // Pull funds from EventManager
-        require(usdt.transferFrom(msg.sender, address(this), amount), "USDT transfer from EventManager failed");
+        if (!usdt.transferFrom(msg.sender, address(this), amount)) {
+            revert UsdtTransferFromFailed();
+        }
 
         uint256 cyberiaDAOAmount = (amount * CYBERIA_DAO_SHARE) / BASIS_POINTS;
         uint256 cvePtPmaAmount = (amount * CVE_PT_PMA_SHARE) / BASIS_POINTS;
-        
-        // Get profile manager for this event and their bps
-        uint256 profileId = eventProfiles[eventId];
-        address manager = profileId > 0 ? profiles[profileId - 1].owner : address(0);
-        uint256 managerBps = manager == address(0) ? 0 : profileManagerBps[manager];
-        uint256 managerAmount = (amount * managerBps) / BASIS_POINTS;
-        
-        // Remaining amount goes to profile recipients
-        uint256 flexibleAmount = amount - cyberiaDAOAmount - cvePtPmaAmount - managerAmount;
 
-        // Distribute fixed shares
         if (cyberiaDAOAmount > 0) {
-            require(usdt.transfer(cyberiaDAO, cyberiaDAOAmount), "Transfer to CyberiaDAO failed");
+            _transferUsdt(cyberiaDAO, cyberiaDAOAmount);
         }
         if (cvePtPmaAmount > 0) {
-            require(usdt.transfer(cvePtPma, cvePtPmaAmount), "Transfer to CVE PT PMA failed");
-        }
-        if (managerAmount > 0 && manager != address(0)) {
-            require(usdt.transfer(manager, managerAmount), "Transfer to profile manager failed");
+            _transferUsdt(cvePtPma, cvePtPmaAmount);
         }
 
-        // Distribute flexible portion to profile recipients
-        if (flexibleAmount > 0 && profileId > 0) {
-            _distributeFlexible(flexibleAmount, profileId);
-        }
+        _distributeProfileShares(amount, profile);
 
         emit RevenueDistributed(amount, eventId);
     }
 
-    function _distributeFlexible(uint256 flexibleAmount, uint256 profileId) internal {
-        Distribution storage profile = profiles[profileId - 1];
-        require(profile.isActive, "Profile is not active");
+    function _distributeProfileShares(uint256 amount, Distribution storage profile) internal {
+        uint256 recipientsCount = profile.recipientShares.length;
+        if (recipientsCount == 0) {
+            revert InvalidProfileShares();
+        }
+        if (profile.totalBps == 0) {
+            revert InvalidProfileShares();
+        }
 
+        uint256 profileAmount = (amount * profile.totalBps) / BASIS_POINTS;
         uint256 distributed = 0;
-        for (uint256 i = 0; i < profile.recipients.length; i++) {
+        for (uint256 i = 0; i < recipientsCount; i++) {
             uint256 shareAmount;
-            if (i == profile.recipients.length - 1) {
+            RecipientShare storage recipientShare = profile.recipientShares[i];
+            if (i == recipientsCount - 1) {
                 // Last recipient gets the remainder to handle rounding
-                shareAmount = flexibleAmount - distributed;
+                shareAmount = profileAmount - distributed;
             } else {
-                shareAmount = (flexibleAmount * profile.shares[i]) / BASIS_POINTS;
+                shareAmount = (amount * recipientShare.bps) / BASIS_POINTS;
             }
 
             if (shareAmount > 0) {
-                require(usdt.transfer(profile.recipients[i], shareAmount), "Flexible transfer failed");
+                _transferUsdt(recipientShare.recipient, shareAmount);
                 distributed += shareAmount;
             }
         }
@@ -244,7 +260,15 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
     ) {
         require(profileId > 0 && profileId <= profiles.length, "Profile does not exist");
         Distribution storage profile = profiles[profileId - 1];
-        return (profile.recipients, profile.shares, profile.owner, profile.isActive);
+        uint256 recipientsCount = profile.recipientShares.length;
+        recipients = new address[](recipientsCount);
+        shares = new uint256[](recipientsCount);
+        for (uint256 i = 0; i < recipientsCount; i++) {
+            RecipientShare storage recipientShare = profile.recipientShares[i];
+            recipients[i] = recipientShare.recipient;
+            shares[i] = recipientShare.bps;
+        }
+        return (recipients, shares, profile.owner, profile.isActive);
     }
 
     function isProfileOwner(uint256 profileId, address account) external view override returns (bool) {
@@ -304,14 +328,84 @@ contract DynamicRevenueSplitter is IDynamicRevenueSplitter, AccessControl, Reent
         emit ProfileDeactivated(profileId);
     }
 
-    function _validateDistribution(address[] calldata recipients, uint256[] calldata shares) internal pure {
+    function _buildDistribution(
+        address owner,
+        address[] calldata recipients,
+        uint256[] calldata shares
+    ) internal view returns (address[] memory fullRecipients, uint16[] memory fullShares) {
         require(recipients.length == shares.length, "Arrays length mismatch");
-        require(recipients.length > 0, "Empty distribution");
+
+        uint256 ownerBps = profileManagerBps[owner];
+        uint256 expectedInputSharesTotal = BASIS_POINTS - ownerBps - CYBERIA_DAO_SHARE - CVE_PT_PMA_SHARE;
         uint256 totalShares = 0;
+        uint256 extraOwnerSlot = ownerBps > 0 ? 1 : 0;
+
+        require(recipients.length + extraOwnerSlot > 0, "Empty distribution");
+
+        fullRecipients = new address[](recipients.length + extraOwnerSlot);
+        fullShares = new uint16[](shares.length + extraOwnerSlot);
+
         for (uint256 i = 0; i < shares.length; i++) {
             require(recipients[i] != address(0), "Zero address recipient");
+            require(
+                recipients[i] != owner,
+                "Profile owner is added automatically to distribution"
+            );
+
+            for (uint256 j = i + 1; j < recipients.length; j++) {
+                require(recipients[i] != recipients[j], "Duplicate recipient");
+            }
+
+            fullRecipients[i] = recipients[i];
+            require(shares[i] <= BASIS_POINTS, "Share exceeds bps");
+            fullShares[i] = uint16(shares[i]);
             totalShares += shares[i];
         }
-        require(totalShares == BASIS_POINTS, "Shares must sum to 10000");
+
+        require(totalShares == expectedInputSharesTotal, "Shares must sum to remaining bps");
+
+        if (ownerBps > 0) {
+            uint256 ownerIndex = recipients.length;
+            fullRecipients[ownerIndex] = owner;
+            fullShares[ownerIndex] = uint16(ownerBps);
+            totalShares += ownerBps;
+        }
+
+        if (totalShares != BASIS_POINTS - CYBERIA_DAO_SHARE - CVE_PT_PMA_SHARE) {
+            revert InvalidProfileShares();
+        }
+    }
+
+    function _setRecipientShares(
+        Distribution storage profile,
+        address[] memory recipients,
+        uint16[] memory shares
+    ) internal {
+        delete profile.recipientShares;
+        uint256 totalBps = 0;
+        for (uint256 i = 0; i < recipients.length; i++) {
+            profile.recipientShares.push(
+                RecipientShare({recipient: recipients[i], bps: shares[i]})
+            );
+            totalBps += shares[i];
+        }
+        if (totalBps != BASIS_POINTS - CYBERIA_DAO_SHARE - CVE_PT_PMA_SHARE) {
+            revert InvalidProfileShares();
+        }
+        profile.totalBps = uint16(totalBps);
+    }
+
+    function _toUint256Array(uint16[] memory values) internal pure returns (uint256[] memory) {
+        uint256[] memory out = new uint256[](values.length);
+        for (uint256 i = 0; i < values.length; i++) {
+            out[i] = values[i];
+        }
+        return out;
+    }
+
+    function _transferUsdt(address to, uint256 amount) internal {
+        if (!usdt.transfer(to, amount)) {
+            revert UsdtTransferFailed();
+        }
     }
 }
