@@ -241,7 +241,7 @@ async function createPlaces(
     const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
       method: "PUT",
-      headers: { Authorization: `Token ${master.address.slice(0, 40)}` },
+      headers: { Authorization: `Token ${master.address}` },
     });
 
     if (!resp.ok) {
@@ -445,7 +445,7 @@ async function createSingleEvent(
       body: JSON.stringify(cfg.socials),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Token ${cfg.creator.address.slice(0, 40)}`,
+        Authorization: `Token ${cfg.creator.address}`,
       },
     },
   );
@@ -472,7 +472,7 @@ async function createSingleEvent(
     {
       body,
       method: "PUT",
-      headers: { Authorization: `Token ${cfg.creator.address.slice(0, 40)}` },
+      headers: { Authorization: `Token ${cfg.creator.address}` },
     },
   );
   if (!eventMetaResponse.ok) {
