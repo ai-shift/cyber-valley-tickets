@@ -20,7 +20,7 @@ contract ReverseRegistrar {
         defaultResolver = _resolver;
     }
     
-    function setName(string calldata name) external returns (bytes32) {
+    function setName(string calldata) external returns (bytes32) {
         bytes32 label = sha3HexAddress(msg.sender);
         bytes32 node = keccak256(abi.encodePacked(ADDR_REVERSE_NODE, label));
         

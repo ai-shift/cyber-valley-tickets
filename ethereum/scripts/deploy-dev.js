@@ -133,12 +133,12 @@ async function deployContracts() {
   // Setup default profile for localProvider (using master as recipient)
   await splitter
     .connect(localProvider)
-    .createDistributionProfile([master.address], [10000]);
+    .createDistributionProfile([master.address], [8000]);
 
   // Create a distribution profile for master as well
   await splitter
     .connect(master)
-    .createDistributionProfile([master.address], [10000]);
+    .createDistributionProfile([master.address], [8500]);
 
   await eventManager
     .connect(master)

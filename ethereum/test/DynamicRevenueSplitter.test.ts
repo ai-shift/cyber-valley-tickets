@@ -61,7 +61,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       const [recipients, shares, owner, isActive] =
         await splitter.getProfile(1);
@@ -76,7 +76,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(admin)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [8500]);
 
       const [recipients, shares, owner, isActive] =
         await splitter.getProfile(1);
@@ -94,10 +94,10 @@ describe("DynamicRevenueSplitter", () => {
           .connect(profileManager)
           .createDistributionProfile(
             [await profileManager.getAddress()],
-            [10000],
+            [7500],
           ),
       ).to.be.revertedWith(
-        "Profile manager cannot add themselves to distribution",
+        "Profile owner is added automatically to distribution",
       );
     });
 
@@ -105,13 +105,16 @@ describe("DynamicRevenueSplitter", () => {
       const { splitter, profileManager, provider } = await loadFixture(
         deploySplitterFixture,
       );
-      const recipients = [await provider.getAddress()];
-      const shares = [10000];
+      const recipients = [
+        await provider.getAddress(),
+        await profileManager.getAddress(),
+      ];
+      const shares = [7500, 1000];
 
       await expect(
         splitter
           .connect(profileManager)
-          .createDistributionProfile(recipients, shares),
+          .createDistributionProfile([await provider.getAddress()], [7500]),
       )
         .to.emit(splitter, "DistributionProfileCreated")
         .withArgs(1, await profileManager.getAddress(), recipients, shares);
@@ -127,19 +130,24 @@ describe("DynamicRevenueSplitter", () => {
       // Create profile
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       // Update as owner
       const newRecipients = [
         await provider.getAddress(),
         await shaman.getAddress(),
+        await profileManager.getAddress(),
       ];
-      const newShares = [5000, 5000];
+      const newShares = [3750, 3750, 1000];
 
       await expect(
         splitter
           .connect(profileManager)
-          .updateDistributionProfile(1, newRecipients, newShares),
+          .updateDistributionProfile(
+            1,
+            newRecipients.slice(0, 2),
+            [3750, 3750],
+          ),
       )
         .to.emit(splitter, "DistributionProfileUpdated")
         .withArgs(1, newRecipients, newShares);
@@ -157,16 +165,19 @@ describe("DynamicRevenueSplitter", () => {
       // Create profile as profileManager (use provider as recipient, not self)
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       // Update as admin
-      const newRecipients = [await provider.getAddress()];
-      const newShares = [10000];
+      const newRecipients = [
+        await provider.getAddress(),
+        await profileManager.getAddress(),
+      ];
+      const newShares = [7500, 1000];
 
       await expect(
         splitter
           .connect(admin)
-          .updateDistributionProfile(1, newRecipients, newShares),
+          .updateDistributionProfile(1, [await provider.getAddress()], [7500]),
       )
         .to.emit(splitter, "DistributionProfileUpdated")
         .withArgs(1, newRecipients, newShares);
@@ -180,7 +191,7 @@ describe("DynamicRevenueSplitter", () => {
       // Create profile
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       // Try to update adding themselves
       await expect(
@@ -189,10 +200,10 @@ describe("DynamicRevenueSplitter", () => {
           .updateDistributionProfile(
             1,
             [await profileManager.getAddress()],
-            [10000],
+            [7500],
           ),
       ).to.be.revertedWith(
-        "Profile manager cannot add themselves to distribution",
+        "Profile owner is added automatically to distribution",
       );
     });
 
@@ -204,7 +215,7 @@ describe("DynamicRevenueSplitter", () => {
       // Create profile as profileManager (use shaman as recipient, not self)
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await shaman.getAddress()], [10000]);
+        .createDistributionProfile([await shaman.getAddress()], [7500]);
 
       // Try to update as provider (not owner, not admin)
       await expect(
@@ -223,7 +234,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       expect(
         await splitter.isProfileOwner(1, await profileManager.getAddress()),
@@ -237,7 +248,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await shaman.getAddress()], [10000]);
+        .createDistributionProfile([await shaman.getAddress()], [7500]);
 
       expect(await splitter.isProfileOwner(1, await provider.getAddress())).to
         .be.false;
@@ -250,11 +261,11 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await shaman.getAddress()], [10000]);
+        .createDistributionProfile([await shaman.getAddress()], [7500]);
 
       const profileIds = await splitter.getProfilesByOwner(
         await profileManager.getAddress(),
@@ -270,7 +281,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await shaman.getAddress()], [10000]);
+        .createDistributionProfile([await shaman.getAddress()], [7500]);
 
       await expect(
         splitter
@@ -302,11 +313,11 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await shaman.getAddress()], [10000]);
+        .createDistributionProfile([await shaman.getAddress()], [7500]);
 
       await splitter
         .connect(admin)
@@ -335,7 +346,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await shaman.getAddress()], [10000]);
+        .createDistributionProfile([await shaman.getAddress()], [7500]);
 
       await expect(
         splitter
@@ -356,7 +367,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       await expect(splitter.connect(profileManager).deactivateProfile(1))
         .to.emit(splitter, "ProfileDeactivated")
@@ -373,7 +384,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       await expect(splitter.connect(admin).deactivateProfile(1))
         .to.emit(splitter, "ProfileDeactivated")
@@ -390,7 +401,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await shaman.getAddress()], [10000]);
+        .createDistributionProfile([await shaman.getAddress()], [7500]);
 
       await expect(
         splitter.connect(provider).deactivateProfile(1),
@@ -404,7 +415,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await provider.getAddress()], [10000]);
+        .createDistributionProfile([await provider.getAddress()], [7500]);
 
       await splitter.connect(profileManager).deactivateProfile(1);
 
@@ -425,7 +436,7 @@ describe("DynamicRevenueSplitter", () => {
         await shaman.getAddress(),
         await sales.getAddress(),
       ];
-      const shares = [5000, 3000, 2000]; // Sums to 10000
+      const shares = [4000, 3000, 1500]; // Sums to 8500
 
       await expect(
         splitter.connect(admin).createDistributionProfile(recipients, shares),
@@ -447,7 +458,7 @@ describe("DynamicRevenueSplitter", () => {
       const shares = [9999];
       await expect(
         splitter.connect(admin).createDistributionProfile(recipients, shares),
-      ).to.be.revertedWith("Shares must sum to 10000");
+      ).to.be.revertedWith("Shares must sum to remaining bps");
     });
 
     it("should fail if arrays length mismatch", async () => {
@@ -473,6 +484,31 @@ describe("DynamicRevenueSplitter", () => {
         "Caller must have ADMIN_ROLE or PROFILE_MANAGER_ROLE",
       );
     });
+
+    it("should fail for profile manager when shares do not reserve owner bps", async () => {
+      const { splitter, profileManager, provider } = await loadFixture(
+        deploySplitterFixture,
+      );
+
+      await expect(
+        splitter
+          .connect(profileManager)
+          .createDistributionProfile([await provider.getAddress()], [10000]),
+      ).to.be.revertedWith("Shares must sum to remaining bps");
+    });
+
+    it("should fail for duplicate recipients", async () => {
+      const { splitter, admin, provider } = await loadFixture(
+        deploySplitterFixture,
+      );
+      const recipient = await provider.getAddress();
+
+      await expect(
+        splitter
+          .connect(admin)
+          .createDistributionProfile([recipient, recipient], [5000, 5000]),
+      ).to.be.revertedWith("Duplicate recipient");
+    });
   });
 
   describe("Profile Updates", () => {
@@ -482,14 +518,14 @@ describe("DynamicRevenueSplitter", () => {
       );
       await splitter.createDistributionProfile(
         [await provider.getAddress()],
-        [10000],
+        [8500],
       );
 
       const newRecipients = [
         await provider.getAddress(),
         await shaman.getAddress(),
       ];
-      const newShares = [5000, 5000];
+      const newShares = [5000, 3500];
       await expect(
         splitter.updateDistributionProfile(1, newRecipients, newShares),
       )
@@ -512,6 +548,45 @@ describe("DynamicRevenueSplitter", () => {
           [10000],
         ),
       ).to.be.revertedWith("Profile does not exist");
+    });
+
+    it("should use profile owner bps when admin updates manager profile", async () => {
+      const { splitter, admin, profileManager, provider, shaman } =
+        await loadFixture(deploySplitterFixture);
+
+      await splitter
+        .connect(profileManager)
+        .createDistributionProfile([await provider.getAddress()], [7500]);
+
+      await expect(
+        splitter
+          .connect(admin)
+          .updateDistributionProfile(
+            1,
+            [await provider.getAddress(), await shaman.getAddress()],
+            [5000, 5000],
+          ),
+      ).to.be.revertedWith("Shares must sum to remaining bps");
+
+      await expect(
+        splitter
+          .connect(admin)
+          .updateDistributionProfile(
+            1,
+            [await provider.getAddress(), await shaman.getAddress()],
+            [3750, 3750],
+          ),
+      )
+        .to.emit(splitter, "DistributionProfileUpdated")
+        .withArgs(
+          1,
+          [
+            await provider.getAddress(),
+            await shaman.getAddress(),
+            await profileManager.getAddress(),
+          ],
+          [3750, 3750, 1000],
+        );
     });
   });
 
@@ -571,7 +646,7 @@ describe("DynamicRevenueSplitter", () => {
         await provider.getAddress(),
         await shaman.getAddress(),
       ];
-      const shares = [7000, 3000];
+      const shares = [5250, 2250];
       await splitter
         .connect(profileManager)
         .createDistributionProfile(recipients, shares);
@@ -588,14 +663,12 @@ describe("DynamicRevenueSplitter", () => {
 
       // Check balances
       // Fixed: 10% to cyberiaDAO, 5% to cvePtPma
-      // Profile manager: 10% (1000 bps)
-      // Flexible: 75% (100 - 10 - 5 - 10) split 70/30
+      // Profile shares sum to 85% (owner auto-added)
       // 100 * 0.10 = 10 (cyberiaDAO)
       // 100 * 0.05 = 5 (cvePtPma)
+      // 100 * 0.525 = 52.5 (provider)
+      // 100 * 0.225 = 22.5 (shaman)
       // 100 * 0.10 = 10 (profileManager)
-      // 100 * 0.75 = 75 (flexible)
-      // 75 * 0.70 = 52.5 (provider)
-      // 75 * 0.30 = 22.5 (shaman)
 
       expect(await usdt.balanceOf(await cyberiaDAO.getAddress())).to.equal(
         ethers.parseUnits("10", 6),
@@ -621,7 +694,7 @@ describe("DynamicRevenueSplitter", () => {
       // Create profile as profileManager (has 10% bps)
       await splitter
         .connect(profileManager)
-        .createDistributionProfile([await signer.getAddress()], [10000]);
+        .createDistributionProfile([await signer.getAddress()], [7500]);
       await splitter.setEventProfile(42, 1);
 
       const amount = ethers.parseUnits("100", 6);
@@ -630,7 +703,7 @@ describe("DynamicRevenueSplitter", () => {
 
       await splitter.distributeRevenue(amount, 42);
 
-      // 100 - 10 (cyberiaDAO) - 5 (cvePtPma) - 10 (profileManager) = 75 to signer
+      // Signer has 75% of profile shares, owner has 10%, fixed 15%
       expect(await usdt.balanceOf(await signer.getAddress())).to.equal(
         ethers.parseUnits("75", 6),
       );
@@ -647,7 +720,7 @@ describe("DynamicRevenueSplitter", () => {
       for (let i = 0; i < recipientCount; i++) {
         const wallet = ethers.Wallet.createRandom().connect(ethers.provider);
         recipients.push(wallet.address);
-        shares.push(500); // 5% each, total 100%
+        shares.push(375); // 3.75% each, total 75%
       }
 
       await splitter
@@ -664,7 +737,7 @@ describe("DynamicRevenueSplitter", () => {
         "RevenueDistributed",
       );
 
-      // Each should get 80 / 20 = 4.00 (after fixed 15% and profileManager 10% = 75% flexible)
+      // Each recipient has 3.75% share => 3.75
       expect(await usdt.balanceOf(recipients[0])).to.equal(
         ethers.parseUnits("3.75", 6),
       );
@@ -676,7 +749,7 @@ describe("DynamicRevenueSplitter", () => {
       );
       await splitter.createDistributionProfile(
         [await provider.getAddress()],
-        [10000],
+        [8500],
       );
       await splitter.setEventProfile(1, 1);
 
@@ -686,6 +759,86 @@ describe("DynamicRevenueSplitter", () => {
       // signer calls distributeRevenue without approving
       await expect(splitter.connect(signer).distributeRevenue(amount, 1)).to.be
         .reverted; // ERC20: insufficient allowance
+    });
+
+    it("should revert when event profile is not set", async () => {
+      const { splitter, usdt } = await loadFixture(deploySplitterFixture);
+
+      const amount = ethers.parseUnits("100", 6);
+      await usdt.mint(amount);
+      await usdt.approve(await splitter.getAddress(), amount);
+
+      await expect(splitter.distributeRevenue(amount, 999))
+        .to.be.revertedWithCustomError(splitter, "EventProfileNotSet")
+        .withArgs(999);
+    });
+  });
+
+  describe("setEventManager", () => {
+    it("allows admin to set EventManager address", async () => {
+      const { splitter, admin, profileManager } = await loadFixture(
+        deploySplitterFixture,
+      );
+
+      const newEventManager = await profileManager.getAddress();
+      await expect(splitter.connect(admin).setEventManager(newEventManager)).to
+        .not.be.reverted;
+
+      expect(await splitter.eventManager()).to.equal(newEventManager);
+    });
+
+    it("reverts when non-admin calls", async () => {
+      const { splitter, profileManager, signer } = await loadFixture(
+        deploySplitterFixture,
+      );
+
+      await expect(
+        splitter
+          .connect(signer)
+          .setEventManager(await profileManager.getAddress()),
+      ).to.be.revertedWithCustomError(
+        splitter,
+        "AccessControlUnauthorizedAccount",
+      );
+    });
+
+    it("reverts for zero address", async () => {
+      const { splitter, admin } = await loadFixture(deploySplitterFixture);
+
+      await expect(
+        splitter.connect(admin).setEventManager(ethers.ZeroAddress),
+      ).to.be.revertedWith("EventManager cannot be zero address");
+    });
+
+    it("allows onlyAdminOrEventManager modifier to work correctly", async () => {
+      const { splitter, admin, profileManager, signer } = await loadFixture(
+        deploySplitterFixture,
+      );
+
+      // Set event manager
+      const eventManagerAddress = await profileManager.getAddress();
+      await splitter.connect(admin).setEventManager(eventManagerAddress);
+
+      // Test that grantProfileManager can be called by admin
+      await expect(
+        splitter
+          .connect(admin)
+          .grantProfileManager(await signer.getAddress(), 500),
+      ).to.not.be.reverted;
+
+      // Test that grantProfileManager can be called by event manager
+      await expect(
+        splitter
+          .connect(profileManager)
+          .grantProfileManager(await signer.getAddress(), 600),
+      ).to.not.be.reverted;
+
+      // Test that non-admin/non-event-manager cannot call
+      await expect(
+        splitter
+          .connect(signer)
+          .grantProfileManager(await signer.getAddress(), 700),
+      ).to.be.revertedWith("Caller must be admin or EventManager");
     });
   });
 });

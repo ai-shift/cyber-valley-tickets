@@ -1,5 +1,16 @@
 {
   "extends": "solhint:recommended",
   "plugins": [],
-  "rules": {}
+  "rules": {
+    "gas-custom-errors": "off",
+    "reason-string": "off",
+    "no-global-import": "off",
+    "func-visibility": "off",
+    "state-visibility": "off",
+    "one-contract-per-file": "off",
+    "explicit-types": "off",
+    "no-empty-blocks": "off",
+    "no-inline-assembly": "off",
+    "immutable-vars-naming": "off"
+  }
 }
