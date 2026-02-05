@@ -2222,10 +2222,9 @@ describe("CyberValleyEventManager", () => {
           .connect(localProvider)
           .createDistributionProfile([await creator.getAddress()], [8000]);
 
-        const profilesBefore = await splitter.getProfilesByOwner(
-          await localProvider.getAddress(),
-        );
-        expect(profilesBefore.length).to.be.greaterThan(0);
+        // Verify localProvider owns the profile (profileId 1)
+        expect(await splitter.isProfileOwner(1, await localProvider.getAddress()))
+          .to.be.true;
 
         // Revoke local provider
         await expect(
@@ -2264,15 +2263,10 @@ describe("CyberValleyEventManager", () => {
         ).to.be.false;
 
         // Verify profiles were transferred to Master
-        const profilesAfterLocal = await splitter.getProfilesByOwner(
-          await localProvider.getAddress(),
-        );
-        expect(profilesAfterLocal).to.deep.equal([]);
-
-        const profilesAfterMaster = await splitter.getProfilesByOwner(
-          await master.getAddress(),
-        );
-        expect(profilesAfterMaster.length).to.be.greaterThan(0);
+        expect(await splitter.isProfileOwner(1, await localProvider.getAddress()))
+          .to.be.false;
+        expect(await splitter.isProfileOwner(1, await master.getAddress())).to.be
+          .true;
       });
 
       it("handles provider with no EventPlaces", async () => {

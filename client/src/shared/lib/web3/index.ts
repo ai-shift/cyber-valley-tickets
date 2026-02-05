@@ -673,25 +673,4 @@ export async function isProfileOwner(
   });
 }
 
-export async function getProfilesByOwner(address: string): Promise<bigint[]> {
-  const profileIds = await readContract({
-    contract: revenueSplitter,
-    method: "getProfilesByOwner",
-    params: [address],
-  });
-  return profileIds.map((id: bigint) => BigInt(id));
-}
 
-export async function getProfile(profileId: bigint): Promise<{
-  recipients: readonly string[];
-  shares: readonly bigint[];
-  owner: string;
-  isActive: boolean;
-}> {
-  const [recipients, shares, owner, isActive] = await readContract({
-    contract: revenueSplitter,
-    method: "getProfile",
-    params: [profileId],
-  });
-  return { recipients, shares, owner, isActive };
-}

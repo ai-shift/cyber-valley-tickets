@@ -323,15 +323,23 @@ export async function createEvent(
     const creatorAddress = await creator.getAddress();
     const localProviderAddress = await localProvider.getAddress();
 
-    // Get current profile count for this owner to determine new profile ID
-    const existingProfiles =
-      await splitter.getProfilesByOwner(localProviderAddress);
-    const newProfileId = existingProfiles.length + 1;
-
-    await splitter
+    // Create profile and get the ID from the event
+    const tx = await splitter
       .connect(localProvider)
       .createDistributionProfile([creatorAddress], [8000]);
-    distributionProfileId = newProfileId;
+    const receipt = await tx.wait();
+    const event = receipt?.logs.find(
+      (log) => {
+        try {
+          const parsed = splitter.interface.parseLog(log);
+          return parsed?.name === "DistributionProfileCreated";
+        } catch {
+          return false;
+        }
+      },
+    );
+    const parsedEvent = event ? splitter.interface.parseLog(event) : null;
+    distributionProfileId = parsedEvent?.args[0] ?? 1n;
   }
 
   // Approve
