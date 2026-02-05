@@ -15,7 +15,7 @@ pre-commit: lint
 
 run: run-ipfs-node run-valkey run-server
 
-make-migrations:
+migrations:
 	$(python) manage.py makemigrations
 
 migrate:
