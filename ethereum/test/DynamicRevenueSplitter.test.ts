@@ -72,8 +72,9 @@ describe("DynamicRevenueSplitter", () => {
           [7500, 1000],
         );
 
-      expect(await splitter.isProfileOwner(1, await profileManager.getAddress())).to
-        .be.true;
+      expect(
+        await splitter.isProfileOwner(1, await profileManager.getAddress()),
+      ).to.be.true;
     });
 
     it("allows Admin to create profile", async () => {
@@ -94,7 +95,8 @@ describe("DynamicRevenueSplitter", () => {
           [8500],
         );
 
-      expect(await splitter.isProfileOwner(1, await admin.getAddress())).to.be.true;
+      expect(await splitter.isProfileOwner(1, await admin.getAddress())).to.be
+        .true;
     });
 
     it("reverts if ProfileManager tries to add themselves to recipients", async () => {
@@ -136,9 +138,8 @@ describe("DynamicRevenueSplitter", () => {
 
   describe("Profile Updates", () => {
     it("allows admin to update any profile", async () => {
-      const { splitter, admin, profileManager, provider, shaman } = await loadFixture(
-        deploySplitterFixture,
-      );
+      const { splitter, admin, profileManager, provider, shaman } =
+        await loadFixture(deploySplitterFixture);
 
       // Create profile as profileManager
       await splitter
@@ -279,10 +280,12 @@ describe("DynamicRevenueSplitter", () => {
         .connect(profileManager)
         .createDistributionProfile([await shaman.getAddress()], [7500]);
 
-      expect(await splitter.isProfileOwner(1, await profileManager.getAddress())).to
-        .be.true;
-      expect(await splitter.isProfileOwner(2, await profileManager.getAddress())).to
-        .be.true;
+      expect(
+        await splitter.isProfileOwner(1, await profileManager.getAddress()),
+      ).to.be.true;
+      expect(
+        await splitter.isProfileOwner(2, await profileManager.getAddress()),
+      ).to.be.true;
     });
   });
 
@@ -308,10 +311,11 @@ describe("DynamicRevenueSplitter", () => {
         );
 
       // Verify ownership transfer
-      expect(await splitter.isProfileOwner(1, await provider.getAddress())).to.be
-        .true;
-      expect(await splitter.isProfileOwner(1, await profileManager.getAddress())).to
-        .be.false;
+      expect(await splitter.isProfileOwner(1, await provider.getAddress())).to
+        .be.true;
+      expect(
+        await splitter.isProfileOwner(1, await profileManager.getAddress()),
+      ).to.be.false;
     });
 
     it("allows admin to transfer all profiles from one owner to another", async () => {
@@ -338,10 +342,12 @@ describe("DynamicRevenueSplitter", () => {
         .true;
       expect(await splitter.isProfileOwner(2, await master.getAddress())).to.be
         .true;
-      expect(await splitter.isProfileOwner(1, await profileManager.getAddress())).to
-        .be.false;
-      expect(await splitter.isProfileOwner(2, await profileManager.getAddress())).to
-        .be.false;
+      expect(
+        await splitter.isProfileOwner(1, await profileManager.getAddress()),
+      ).to.be.false;
+      expect(
+        await splitter.isProfileOwner(2, await profileManager.getAddress()),
+      ).to.be.false;
     });
 
     it("reverts transferProfileOwnership if non-admin calls", async () => {
@@ -379,9 +385,9 @@ describe("DynamicRevenueSplitter", () => {
         .withArgs(1);
 
       // Verify deactivation by checking setEventProfile fails
-      await expect(
-        splitter.setEventProfile(1, 1),
-      ).to.be.revertedWith("Profile is not active");
+      await expect(splitter.setEventProfile(1, 1)).to.be.revertedWith(
+        "Profile is not active",
+      );
     });
 
     it("allows admin to deactivate any profile", async () => {
@@ -398,9 +404,9 @@ describe("DynamicRevenueSplitter", () => {
         .withArgs(1);
 
       // Verify deactivation by checking setEventProfile fails
-      await expect(
-        splitter.setEventProfile(1, 1),
-      ).to.be.revertedWith("Profile is not active");
+      await expect(splitter.setEventProfile(1, 1)).to.be.revertedWith(
+        "Profile is not active",
+      );
     });
 
     it("reverts if non-owner tries to deactivate", async () => {
@@ -455,7 +461,8 @@ describe("DynamicRevenueSplitter", () => {
 
       // Verify profile was created via event emission (already checked above)
       // and owner verification
-      expect(await splitter.isProfileOwner(1, await admin.getAddress())).to.be.true;
+      expect(await splitter.isProfileOwner(1, await admin.getAddress())).to.be
+        .true;
     });
 
     it("should fail if shares do not sum to 10000", async () => {

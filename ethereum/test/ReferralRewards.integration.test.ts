@@ -1,7 +1,11 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-import { createEvent, deployContract, loadFixture } from "./cyber-valley-event-manager/helpers";
+import {
+  createEvent,
+  deployContract,
+  loadFixture,
+} from "./cyber-valley-event-manager/helpers";
 
 describe("ReferralRewards (ERC20) integration", () => {
   it("pays 3-level bonuses from ticket revenue and reduces event networth", async () => {
@@ -50,18 +54,19 @@ describe("ReferralRewards (ERC20) integration", () => {
 
     const categoryId = 0n;
     const amount = 50n;
-    const digest = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    const digest =
+      "0x0000000000000000000000000000000000000000000000000000000000000000";
 
-    async function buy(
-      buyer: typeof a,
-      ref: string,
-    ): Promise<void> {
+    async function buy(buyer: typeof a, ref: string): Promise<void> {
       const event = await fx.eventManager.events(eventId);
       // Default test ticket price is small; mint multiple tickets to get non-zero referral payouts.
       const ticketPrice = BigInt(event.ticketPrice);
       const totalPrice = ticketPrice * amount;
       await fx.ERC20.connect(buyer).mint(totalPrice);
-      await fx.ERC20.connect(buyer).approve(await fx.eventManager.getAddress(), totalPrice);
+      await fx.ERC20.connect(buyer).approve(
+        await fx.eventManager.getAddress(),
+        totalPrice,
+      );
 
       await fx.eventManager
         .connect(buyer)
@@ -93,6 +98,8 @@ describe("ReferralRewards (ERC20) integration", () => {
 
     // Note: EventManager also holds the event submission fee paid during `createEvent`.
     // default eventRequestSubmitionPrice is 100.
-    expect(await fx.ERC20.balanceOf(await fx.eventManager.getAddress())).to.equal(3078n);
+    expect(
+      await fx.ERC20.balanceOf(await fx.eventManager.getAddress()),
+    ).to.equal(3078n);
   });
 });

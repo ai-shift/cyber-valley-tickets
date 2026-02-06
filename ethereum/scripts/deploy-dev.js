@@ -21,8 +21,8 @@ import bs58 from "bs58";
 import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
-import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
 import ReferralRewardsModule from "../ignition/modules/ReferralRewards";
+import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
 import { deployENS } from "./deploy-ens";
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
@@ -719,8 +719,14 @@ async function main() {
   if (!IPFS_HOST) throw new Error("IPFS_PUBLIC_HOST env var is missing");
 
   // Phase 1: Deploy contracts
-  const { eventManager, eventTicket, erc20, splitter, signers } =
-    await deployContracts();
+  const {
+    eventManager,
+    eventTicket,
+    erc20,
+    splitter,
+    referralRewards,
+    signers,
+  } = await deployContracts();
 
   // Phase 2: Create places (returns places with IDs)
   const places = await createPlaces(
@@ -748,6 +754,9 @@ async function main() {
   );
   console.log(
     `export PUBLIC_REVENUE_SPLITTER_ADDRESS=${await splitter.getAddress()}`,
+  );
+  console.log(
+    `export PUBLIC_REFERRAL_REWARDS_ADDRESS=${await referralRewards.getAddress()}`,
   );
   console.log(
     "\nNext step: Start the indexer to sync on-chain state to database",

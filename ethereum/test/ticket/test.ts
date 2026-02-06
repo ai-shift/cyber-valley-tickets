@@ -18,7 +18,16 @@ describe("CyberValleyEventTicket", () => {
       const mh = getBytes32FromMultiash(cid);
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 0);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          0,
+        );
       const tx = await undertest.connect(master).tokenURI(1);
       await expect(tx).to.equal(`${IPFS_HOST}/${cid}`);
     });
@@ -40,7 +49,16 @@ describe("CyberValleyEventTicket", () => {
 
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          100,
+        );
 
       expect(await undertest.isRedeemed(1)).to.be.false;
 
@@ -58,7 +76,16 @@ describe("CyberValleyEventTicket", () => {
 
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          100,
+        );
 
       await undertest.connect(staff).redeemTicket(1);
 
@@ -74,7 +101,16 @@ describe("CyberValleyEventTicket", () => {
 
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          100,
+        );
 
       await expect(undertest.connect(owner).redeemTicket(1)).to.be.revertedWith(
         "Must have staff role",
@@ -100,7 +136,16 @@ describe("CyberValleyEventTicket", () => {
 
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          100,
+        );
 
       const meta = await undertest.ticketMeta(1);
       expect(meta.digest).to.equal(mh.digest);
@@ -126,7 +171,16 @@ describe("CyberValleyEventTicket", () => {
       // Mint ticket to master
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          100,
+        );
 
       // Attempt to transfer from master to owner should fail
       await expect(
@@ -145,7 +199,16 @@ describe("CyberValleyEventTicket", () => {
       await expect(
         undertest
           .connect(eventManager)
-          .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100),
+          .mint(
+            master,
+            1,
+            0,
+            mh.digest,
+            mh.hashFunction,
+            mh.size,
+            ZERO_ADDRESS,
+            100,
+          ),
       ).to.not.be.reverted;
 
       expect(await undertest.ownerOf(1)).to.equal(await master.getAddress());
@@ -164,7 +227,16 @@ describe("CyberValleyEventTicket", () => {
       const [, , eventManager] = await ethers.getSigners();
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          100,
+        );
 
       const cid = getCIDFromMultihash(mh.digest, mh.hashFunction, mh.size);
       expect(await undertest.tokenURI(1)).to.equal(`${newHost}/${cid}`);
@@ -260,62 +332,62 @@ describe("CyberValleyEventTicket", () => {
     });
   });
 
-	  describe("mint (single)", () => {
-	    it("mints single ticket with correct metadata", async () => {
-	      const { undertest, eventManager, master, owner } =
-	        await loadFixture(deployContract);
-	      const mh = getTestMultihash();
-	      const referrer = await owner.getAddress();
+  describe("mint (single)", () => {
+    it("mints single ticket with correct metadata", async () => {
+      const { undertest, eventManager, master, owner } =
+        await loadFixture(deployContract);
+      const mh = getTestMultihash();
+      const referrer = await owner.getAddress();
 
       await expect(
         undertest
           .connect(eventManager)
-	          .mint(
-	            master,
-	            1,
-	            0,
-	            mh.digest,
-	            mh.hashFunction,
-	            mh.size,
-	            referrer,
-	            100,
-	          ),
-	      )
+          .mint(
+            master,
+            1,
+            0,
+            mh.digest,
+            mh.hashFunction,
+            mh.size,
+            referrer,
+            100,
+          ),
+      )
         .to.emit(undertest, "TicketMinted")
-	        .withArgs(
-	          1,
-	          1,
-	          0,
-	          await master.getAddress(),
-	          mh.digest,
-	          mh.hashFunction,
-	          mh.size,
-	          referrer,
-	          100,
-	        );
+        .withArgs(
+          1,
+          1,
+          0,
+          await master.getAddress(),
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          referrer,
+          100,
+        );
 
       expect(await undertest.ownerOf(1)).to.equal(await master.getAddress());
     });
 
-	    it("reverts if non-event-manager calls", async () => {
-	      const { undertest, master, owner } = await loadFixture(deployContract);
-	      const mh = getTestMultihash();
+    it("reverts if non-event-manager calls", async () => {
+      const { undertest, master, owner } = await loadFixture(deployContract);
+      const mh = getTestMultihash();
 
-	      await expect(
-	        undertest
-	          .connect(owner)
-	          .mint(
-	            master,
-	            1,
-	            0,
-	            mh.digest,
-	            mh.hashFunction,
-	            mh.size,
-	            ZERO_ADDRESS,
-	            100,
-	          ),
-	      ).to.be.revertedWith("Must have event manager role");
-	    });
+      await expect(
+        undertest
+          .connect(owner)
+          .mint(
+            master,
+            1,
+            0,
+            mh.digest,
+            mh.hashFunction,
+            mh.size,
+            ZERO_ADDRESS,
+            100,
+          ),
+      ).to.be.revertedWith("Must have event manager role");
+    });
 
     it("increments token ID correctly", async () => {
       const { undertest, eventManager, master, owner } =
@@ -324,10 +396,28 @@ describe("CyberValleyEventTicket", () => {
 
       await undertest
         .connect(eventManager)
-        .mint(master, 1, 0, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 100);
-	      await undertest
-	        .connect(eventManager)
-	        .mint(owner, 2, 1, mh.digest, mh.hashFunction, mh.size, ZERO_ADDRESS, 200);
+        .mint(
+          master,
+          1,
+          0,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          100,
+        );
+      await undertest
+        .connect(eventManager)
+        .mint(
+          owner,
+          2,
+          1,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          200,
+        );
 
       expect(await undertest.ownerOf(1)).to.equal(await master.getAddress());
       expect(await undertest.ownerOf(2)).to.equal(await owner.getAddress());
@@ -342,17 +432,17 @@ describe("CyberValleyEventTicket", () => {
 
       await undertest
         .connect(eventManager)
-	        .mintBatch(
-	          master,
-	          1,
-	          0,
-	          3,
-	          mh.digest,
-	          mh.hashFunction,
-	          mh.size,
-	          ZERO_ADDRESS,
-	          50,
-	        );
+        .mintBatch(
+          master,
+          1,
+          0,
+          3,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          50,
+        );
 
       expect(await undertest.ownerOf(1)).to.equal(await master.getAddress());
       expect(await undertest.ownerOf(2)).to.equal(await master.getAddress());
@@ -366,17 +456,17 @@ describe("CyberValleyEventTicket", () => {
 
       const tx = await undertest
         .connect(eventManager)
-	        .mintBatch(
-	          master,
-	          1,
-	          0,
-	          2,
-	          mh.digest,
-	          mh.hashFunction,
-	          mh.size,
-	          ZERO_ADDRESS,
-	          50,
-	        );
+        .mintBatch(
+          master,
+          1,
+          0,
+          2,
+          mh.digest,
+          mh.hashFunction,
+          mh.size,
+          ZERO_ADDRESS,
+          50,
+        );
 
       const receipt = await tx.wait();
       const events = receipt?.logs.filter(
@@ -392,17 +482,17 @@ describe("CyberValleyEventTicket", () => {
       await expect(
         undertest
           .connect(owner)
-	          .mintBatch(
-	            master,
-	            1,
-	            0,
-	            2,
-	            mh.digest,
-	            mh.hashFunction,
-	            mh.size,
-	            ZERO_ADDRESS,
-	            100,
-	          ),
+          .mintBatch(
+            master,
+            1,
+            0,
+            2,
+            mh.digest,
+            mh.hashFunction,
+            mh.size,
+            ZERO_ADDRESS,
+            100,
+          ),
       ).to.be.revertedWith("Must have event manager role");
     });
   });
