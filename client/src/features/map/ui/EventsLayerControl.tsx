@@ -1,7 +1,7 @@
+import { Calendar, ChevronRight, MapPin } from "lucide-react";
 import { memo } from "react";
 import { twMerge } from "tailwind-merge";
 import { useMapState } from "../model/slice";
-import { Calendar, ChevronRight, MapPin } from "lucide-react";
 
 type EventsLayerControlProps = {
   closeGroups: () => void;
@@ -19,7 +19,7 @@ export const EventsLayerControl: React.FC<EventsLayerControlProps> = memo(
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
             <Calendar className="h-5 w-5 text-primary" />
           </div>
-          
+
           {/* Title section */}
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-lg text-primary flex items-center gap-2">
@@ -30,7 +30,7 @@ export const EventsLayerControl: React.FC<EventsLayerControlProps> = memo(
             </h3>
           </div>
         </div>
-        
+
         {/* Content - always expanded */}
         <div className="pt-2 space-y-1">
           {events.length === 0 ? (
@@ -43,7 +43,7 @@ export const EventsLayerControl: React.FC<EventsLayerControlProps> = memo(
                 type="button"
                 className={twMerge(
                   "w-full flex items-center gap-3 p-3 rounded-lg transition-colors",
-                  "border border-transparent"
+                  "border border-transparent",
                 )}
                 key={event.id}
                 onClick={() => {
