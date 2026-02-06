@@ -153,6 +153,10 @@ def synchronize_event(event_data: BaseModel, *, tx_hash: str | None = None) -> N
         case CyberValleyEventManager.TicketCategoryUpdated():
             _sync_ticket_category_updated(event_data)
             log.info("Ticket category updated")
+        case CyberValleyEventManager.ReferralRewardsUpdated():
+            # Optional indexing: currently the backend reads the ReferralRewards
+            # address from env and does not need to persist this update.
+            pass
         case CyberValleyEventTicket.Transfer():
             pass
         case DynamicRevenueSplitter.DistributionProfileCreated():
