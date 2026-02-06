@@ -1,5 +1,48 @@
 # Cyber Valley Tickets
 
+## Remote Ops (cyberia.my)
+
+Deployment on `cyberia.my` uses a bare Git repo + worktree:
+- bare repo: `/home/tickets/repo.git`
+- worktree (main): `/home/tickets/tickets`
+
+Local git remote:
+- `cyberia` -> `ssh://tickets@cyberia.my:/home/tickets/repo.git`
+
+### Update Workflow
+
+1. Push changes from your machine:
+```bash
+git push cyberia main
+```
+
+2. SSH to the server and apply changes from the worktree:
+```bash
+ssh tickets@cyberia.my
+cd /home/tickets/tickets
+```
+
+3. Common actions (run on the server):
+```bash
+# Full restart (recreates sqlite DB, redeploys contracts, rebuilds frontend)
+make prod-restart
+
+# Rebuild only the production frontend (updates /home/tickets/tickets/client/dist)
+make prod-rebuild-frontend
+
+# Restart only Django runserver inside the existing tmux session
+make prod-restart-backend
+
+# Restart only indexer inside the existing tmux session
+make prod-restart-indexer
+```
+
+Notes:
+- `make prod-restart` runs `./launch.sh --production-frontend` which will reset
+  sqlite (`backend/db.sqlite3`) and re-seed events/tickets.
+- Frontend env vars are baked at build time. If you change `.env` values like
+  `PUBLIC_GOOGLE_MAPS_API_KEY`, run `make prod-rebuild-frontend`.
+
 ## Problem
 
 Cyber Valley wants to host events and needs a convenient way to accept events offers from creators, sell tickets in crypto, verify bought tickets from customer's devices and distribution of acquired means across creator, master and dev team
