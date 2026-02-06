@@ -479,7 +479,7 @@ def _sync_ticket_minted(event_data: CyberValleyEventTicket.TicketMinted) -> None
         category.save(update_fields=["tickets_bought"])
 
         # Create referral record if valid referral data provided
-        _create_referral_record(event, ticket, owner, event_data.referral_data)
+        _create_referral_record(event, ticket, owner, event_data.referrer)
 
         send_notification(
             user=owner,
@@ -511,6 +511,9 @@ def _create_referral_record(
 
     # Validate that referral_data is a valid Ethereum address (0x prefix + 40 hex chars)
     referral_data = referral_data.strip().lower()
+    # Treat the zero-address as "no referral".
+    if referral_data == "0x0000000000000000000000000000000000000000":
+        return
     if not referral_data.startswith("0x") or len(referral_data) != 42:
         log.warning("Invalid referral address format: %s", referral_data)
         return

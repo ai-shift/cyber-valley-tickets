@@ -418,13 +418,20 @@ export async function mintTicket(
   eventId: bigint,
   categoryId: bigint,
   socialsCID: string,
-  _referralData?: string,
+  referrer?: string,
 ): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
   const mintTransaction = prepareContractCall({
     contract: eventManager,
     method: "mintTicket",
-    params: [eventId, categoryId, digest, hashFunction, size],
+    params: [
+      eventId,
+      categoryId,
+      digest,
+      hashFunction,
+      size,
+      referrer ?? "0x0000000000000000000000000000000000000000",
+    ],
   });
   const { transactionHash } = await sendTransaction({
     account,
@@ -439,7 +446,7 @@ export async function mintTickets(
   categoryId: bigint,
   amount: bigint,
   socialsCID: string,
-  referralData?: string,
+  referrer?: string,
 ): Promise<TxHash> {
   const { digest, hashFunction, size } = getBytes32FromMultiash(socialsCID);
   const mintTransaction = prepareContractCall({
@@ -452,7 +459,7 @@ export async function mintTickets(
       digest,
       hashFunction,
       size,
-      referralData ?? "",
+      referrer ?? "0x0000000000000000000000000000000000000000",
     ],
   });
   const { transactionHash } = await sendTransaction({
@@ -672,5 +679,4 @@ export async function isProfileOwner(
     params: [profileId, address],
   });
 }
-
 

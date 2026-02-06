@@ -788,9 +788,71 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
       await expect(tx).to.emit(eventTicket, "TicketMinted");
+    });
+
+    it("emits referralData as 0x-hex string when referrer is provided", async () => {
+      const {
+        eventManager,
+        eventTicket,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        owner,
+        staff,
+        splitter,
+      } = await loadFixture(deployContract);
+
+      const { eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        {},
+        {},
+        splitter,
+      );
+
+      const ticketPrice = 20;
+      const multihash = {
+        digest:
+          "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        hashFunction: 18,
+        size: 32,
+      };
+
+      await ERC20.connect(owner).mint(ticketPrice);
+      await ERC20.connect(owner).approve(await eventManager.getAddress(), ticketPrice);
+
+      const referrer = await staff.getAddress();
+      const tx = eventManager.connect(owner).mintTickets(
+        eventId,
+        0, // categoryId
+        1, // amount
+        multihash.digest,
+        multihash.hashFunction,
+        multihash.size,
+        referrer,
+      );
+
+      await expect(tx)
+        .to.emit(eventTicket, "TicketMinted")
+        .withArgs(
+          eventId,
+          1,
+          0,
+          await owner.getAddress(),
+          multihash.digest,
+          multihash.hashFunction,
+          multihash.size,
+          referrer,
+          ticketPrice,
+        );
     });
 
     it("reverts on sold out", async () => {
@@ -838,7 +900,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
       // Second mint should revert due to category quota
       await expect(
@@ -849,7 +911,7 @@ describe("CyberValleyEventManager", () => {
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
-          "",
+          "0x0000000000000000000000000000000000000000",
         ),
       ).to.be.revertedWith("Category quota exceeded");
     });
@@ -895,7 +957,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
       await expect(tx).to.changeTokenBalances(
         ERC20,
@@ -947,7 +1009,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
       await expect(tx)
         .to.emit(eventTicket, "TicketMinted")
@@ -959,7 +1021,7 @@ describe("CyberValleyEventManager", () => {
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
-          "",
+          "0x0000000000000000000000000000000000000000",
           ticketPrice,
         );
     });
@@ -1074,7 +1136,7 @@ describe("CyberValleyEventManager", () => {
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
           18,
           32,
-          "",
+          "0x0000000000000000000000000000000000000000",
         ),
       ).to.changeTokenBalances(
         ERC20,
@@ -1124,7 +1186,7 @@ describe("CyberValleyEventManager", () => {
         "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         18,
         32,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
       await expect(
         eventManager.connect(owner).mintTickets(
@@ -1134,7 +1196,7 @@ describe("CyberValleyEventManager", () => {
           "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
           18,
           32,
-          "",
+          "0x0000000000000000000000000000000000000000",
         ),
       ).to.be.revertedWith("Category quota exceeded");
     });
@@ -1287,7 +1349,7 @@ describe("CyberValleyEventManager", () => {
         "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         18,
         32,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
 
       // Try to update quota to 5 (less than 10 sold) - should fail because event is approved
@@ -1623,7 +1685,7 @@ describe("CyberValleyEventManager", () => {
         "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         18,
         32,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
 
       // Move time to allow closing
@@ -1720,7 +1782,7 @@ describe("CyberValleyEventManager", () => {
         "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         18,
         32,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
 
       const tx = await eventManager.connect(localProvider).cancelEvent(eventId);
@@ -1938,7 +2000,7 @@ describe("CyberValleyEventManager", () => {
           multihash.digest,
           multihash.hashFunction,
           multihash.size,
-          "",
+          "0x0000000000000000000000000000000000000000",
         );
       }
 
@@ -2038,7 +2100,7 @@ describe("CyberValleyEventManager", () => {
         multihash.digest,
         multihash.hashFunction,
         multihash.size,
-        "",
+        "0x0000000000000000000000000000000000000000",
       );
 
       // Total ticket revenue = 100 (distributed via splitter)

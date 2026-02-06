@@ -994,39 +994,6 @@ export const eventManager = getContract({
           type: "uint256",
         },
         {
-          internalType: "bytes32",
-          name: "digest",
-          type: "bytes32",
-        },
-        {
-          internalType: "uint8",
-          name: "hashFunction",
-          type: "uint8",
-        },
-        {
-          internalType: "uint8",
-          name: "size",
-          type: "uint8",
-        },
-        {
-          internalType: "string",
-          name: "referralData",
-          type: "string",
-        },
-      ],
-      name: "mintTicket",
-      outputs: [],
-      stateMutability: "nonpayable",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
-          name: "eventId",
-          type: "uint256",
-        },
-        {
           internalType: "uint256",
           name: "categoryId",
           type: "uint256",
@@ -1046,12 +1013,19 @@ export const eventManager = getContract({
           name: "size",
           type: "uint8",
         },
+        {
+          internalType: "address",
+          name: "referrer",
+          type: "address",
+        },
       ],
       name: "mintTicket",
       outputs: [],
       stateMutability: "nonpayable",
       type: "function",
     },
+    // NOTE: `mintTicket(eventId, categoryId, digest, hashFunction, size)` was removed.
+    // We keep only the referrer-enabled version to match the contract ABI.
     {
       inputs: [
         {
@@ -1085,9 +1059,9 @@ export const eventManager = getContract({
           type: "uint8",
         },
         {
-          internalType: "string",
-          name: "referralData",
-          type: "string",
+          internalType: "address",
+          name: "referrer",
+          type: "address",
         },
       ],
       name: "mintTickets",

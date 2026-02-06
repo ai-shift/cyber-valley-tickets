@@ -3,12 +3,11 @@ pragma solidity 0.8.28;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-
 import "./CyberValleyEventTicket.sol";
 import "./DateOverlapChecker.sol";
 import "./CyberValley.sol";
 import "./IDynamicRevenueSplitter.sol";
+import "./IReferralRewards.sol";
 
 // TODO: Pad layout after general work finish
 contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
@@ -146,6 +145,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint16 quota,
         bool hasQuota
     );
+    event ReferralRewardsUpdated(address referralRewards);
 
     IERC20 public usdtTokenContract;
     CyberValleyEventTicket public eventTicketContract;
@@ -153,12 +153,13 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     address public master;
     uint256 public eventRequestPrice;
     address public revenueSplitter;
+    IReferralRewards public referralRewards;
 
     EventPlace[] public eventPlaces;
     Event[] public events;
     TicketCategory[] public categories;
     mapping(uint256 => uint256[]) public categoryCounters;
-    mapping(uint256 => uint16[]) public ticketPrices;
+    // NOTE: `ticketPrices` was removed because it was written but never read anywhere.
 
     modifier onlyExistingEvent(uint256 eventId) {
         require(eventId < events.length, "Event with given id does not exist");
@@ -197,6 +198,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         _grantRole(MASTER_ROLE, _master);
         _grantRole(LOCAL_PROVIDER_ROLE, _master);
         _setRoleAdmin(VERIFIED_SHAMAN_ROLE, BACKEND_ROLE);
+    }
+
+    function setReferralRewards(address _referralRewards) external onlyRole(MASTER_ROLE) {
+        referralRewards = IReferralRewards(_referralRewards);
+        emit ReferralRewardsUpdated(_referralRewards);
     }
 
     /**
@@ -718,9 +724,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size,
-        string memory referralData
+        address referrer
     ) external onlyExistingEvent(eventId) {
-        _mintTicketInternal(eventId, categoryId, 1, digest, hashFunction, size, referralData);
+        _mintTicketInternal(eventId, categoryId, 1, digest, hashFunction, size, referrer);
     }
 
     function mintTickets(
@@ -730,9 +736,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size,
-        string memory referralData
+        address referrer
     ) external onlyExistingEvent(eventId) {
-        _mintTicketInternal(eventId, categoryId, amount, digest, hashFunction, size, referralData);
+        _mintTicketInternal(eventId, categoryId, amount, digest, hashFunction, size, referrer);
     }
 
     function _mintTicketInternal(
@@ -742,7 +748,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         bytes32 digest,
         uint8 hashFunction,
         uint8 size,
-        string memory referralData
+        address referrer
     ) internal onlyExistingEvent(eventId) {
         require(amount > 0, "Amount must be greater than 0");
 
@@ -769,6 +775,26 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             ),
             "Failed to transfer tokens"
         );
+
+        // Referral payouts are taken out of event revenue (reduces `evt.networth`).
+        uint256 referralPaid = 0;
+        if (address(referralRewards) != address(0)) {
+            address safeReferrer = referrer == msg.sender ? address(0) : referrer;
+
+            (address[3] memory recipients, uint256[3] memory bonuses, uint256 paid) =
+                referralRewards.processPurchase(msg.sender, safeReferrer, totalPrice);
+            referralPaid = paid;
+
+            for (uint256 i = 0; i < 3; i++) {
+                if (recipients[i] != address(0) && bonuses[i] > 0) {
+                    require(
+                        usdtTokenContract.transfer(recipients[i], bonuses[i]),
+                        "Failed to pay referral"
+                    );
+                }
+            }
+        }
+
         eventTicketContract.mintBatch(
             msg.sender,
             eventId,
@@ -777,14 +803,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             digest,
             hashFunction,
             size,
-            referralData,
+            referrer,
             totalPrice
         );
         evt.customers.push(msg.sender);
-        for (uint256 i = 0; i < amount; i++) {
-            ticketPrices[eventId].push(price);
-        }
-        evt.networth += totalPrice;
+        evt.networth += (totalPrice - referralPaid);
     }
 
     function applyDiscount(uint16 originalPrice, uint16 discountPercentage) internal pure returns (uint16) {

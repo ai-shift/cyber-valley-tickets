@@ -2,6 +2,7 @@ import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
 import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
+import ReferralRewardsModule from "../ignition/modules/ReferralRewards";
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const BACKEND_EOA = "0xEd7f6CA6e91AaA3Ff2C3918B5cAF02FF449Ab3A4";
@@ -39,6 +40,19 @@ async function main() {
     .connect(master)
     .setRevenueSplitter(await splitter.getAddress());
 
+  const { referralRewards } = await hre.ignition.deploy(ReferralRewardsModule, {
+    parameters: {
+      ReferralRewards: {
+        rewardToken: await erc20.getAddress(),
+        admin: MASTER_EOA,
+        operator: await eventManager.getAddress(),
+      },
+    },
+  });
+  await eventManager
+    .connect(master)
+    .setReferralRewards(await referralRewards.getAddress());
+
   // Set EventManager on splitter
   await splitter
     .connect(master)
@@ -74,6 +88,9 @@ async function main() {
   );
   console.log(
     `export PUBLIC_REVENUE_SPLITTER_ADDRESS=${await splitter.getAddress()}`,
+  );
+  console.log(
+    `export PUBLIC_REFERRAL_REWARDS_ADDRESS=${await referralRewards.getAddress()}`,
   );
 }
 

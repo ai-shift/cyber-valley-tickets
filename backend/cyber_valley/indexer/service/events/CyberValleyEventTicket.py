@@ -85,7 +85,7 @@ class TicketMinted(BaseModel):
     digest: Annotated[str, BeforeValidator(validate_digest)]
     hash_function: int = Field(..., alias="hashFunction")
     size: int
-    referral_data: str = Field(..., alias="referralData")
+    referrer: str = Field(..., alias="referrer")
     price_paid: int = Field(..., alias="pricePaid")
 
 
