@@ -150,10 +150,15 @@ async function deployContracts() {
     .connect(localProvider)
     .createDistributionProfile([master.address], [8000]);
 
-  // Create a distribution profile for master as well
-  await splitter
-    .connect(master)
-    .createDistributionProfile([master.address], [8500]);
+  // Create a distribution profile for master as well.
+  //
+  // Note: DynamicRevenueSplitter automatically adds the profile owner to the
+  // distribution when they have a non-zero profileManagerBps configured.
+  // Passing the owner in recipients will revert ("Profile owner is added
+  // automatically to distribution"), so we instead grant the master a full
+  // remainder share and create an empty-recipient profile.
+  await splitter.connect(master).grantProfileManager(master.address, 8500);
+  await splitter.connect(master).createDistributionProfile([], []);
 
   await eventManager
     .connect(master)
