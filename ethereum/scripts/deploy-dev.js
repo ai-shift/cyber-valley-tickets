@@ -680,10 +680,15 @@ async function mintTickets(eventManager, erc20, events, signers) {
     ).wait();
 
     // Mint ticket
+    // Use fully-qualified signature to avoid any ABI name-resolution ambiguity
+    // across tooling versions (we've seen empty tx.data in some environments).
+    const mintTicketsFn =
+      eventManager
+        .connect(completeSlave)[
+          "mintTickets(uint256,uint256,uint256,bytes32,uint8,uint8,address)"
+        ];
     await (
-      await eventManager
-        .connect(completeSlave)
-        .mintTickets(
+      await mintTicketsFn(
           event.id,
           cfg.categoryId,
           1,
