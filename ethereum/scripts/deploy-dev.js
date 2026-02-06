@@ -22,6 +22,7 @@ import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
 import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
+import ReferralRewardsModule from "../ignition/modules/ReferralRewards";
 import { deployENS } from "./deploy-ens";
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
@@ -120,6 +121,20 @@ async function deployContracts() {
     .connect(master)
     .setRevenueSplitter(await splitter.getAddress());
 
+  // Deploy and wire referral rewards (payouts are in the same ERC20 token as ticket payments).
+  const { referralRewards } = await hre.ignition.deploy(ReferralRewardsModule, {
+    parameters: {
+      ReferralRewards: {
+        rewardToken: await erc20.getAddress(),
+        admin: MASTER_EOA,
+        operator: await eventManager.getAddress(),
+      },
+    },
+  });
+  await eventManager
+    .connect(master)
+    .setReferralRewards(await referralRewards.getAddress());
+
   // Set EventManager on splitter and grant LOCAL_PROVIDER_ROLE
   await splitter
     .connect(master)
@@ -158,12 +173,14 @@ async function deployContracts() {
   console.log(`  EventManager: ${await eventManager.getAddress()}`);
   console.log(`  EventTicket: ${await eventTicket.getAddress()}`);
   console.log(`  ERC20: ${await erc20.getAddress()}`);
+  console.log(`  ReferralRewards: ${await referralRewards.getAddress()}`);
 
   return {
     eventManager,
     eventTicket,
     erc20,
     splitter,
+    referralRewards,
     ensRegistry,
     publicResolver,
     reverseRegistrar,
@@ -668,7 +685,7 @@ async function mintTickets(eventManager, erc20, events, signers) {
           mh.digest,
           mh.hashFunction,
           mh.size,
-          "",
+          "0x0000000000000000000000000000000000000000",
         )
     ).wait();
 

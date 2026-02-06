@@ -306,7 +306,7 @@ def test_sync_ticket_minted(
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
-            "referralData": "",
+            "referrer": "0x0000000000000000000000000000000000000000",
         }
     )
 
@@ -345,7 +345,7 @@ def test_sync_ticket_minted_event_not_found(user: UserType) -> None:
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
-            "referralData": "",
+            "referrer": "0x0000000000000000000000000000000000000000",
         }
     )
     with pytest.raises(Event.DoesNotExist):
@@ -424,7 +424,7 @@ def test_role_mapping_covers_all_user_roles() -> None:
 def test_sync_ticket_minted_with_referral(
     event: Event, user: UserType, ticket_category: TicketCategory
 ) -> None:
-    """Test that a referral record is created when valid referralData is provided."""
+    """Test that a referral record is created when valid referrer is provided."""
     from cyber_valley.events.models import Referral
 
     # Create a referrer user
@@ -451,7 +451,7 @@ def test_sync_ticket_minted_with_referral(
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
-            "referralData": referrer_address,
+            "referrer": referrer_address,
         }
     )
 
@@ -492,7 +492,7 @@ def test_sync_ticket_minted_self_referral_skipped(
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
-            "referralData": user.address,  # Self-referral
+            "referrer": user.address,  # Self-referral
         }
     )
 
@@ -530,7 +530,7 @@ def test_sync_ticket_minted_invalid_referral_skipped(
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
-            "referralData": "invalid-address",
+            "referrer": "invalid-address",
         }
     )
 
@@ -545,7 +545,7 @@ def test_sync_ticket_minted_invalid_referral_skipped(
 def test_sync_ticket_minted_empty_referral_skipped(
     event: Event, user: UserType, ticket_category: TicketCategory
 ) -> None:
-    """Test that empty referralData is handled gracefully."""
+    """Test that empty referrer is handled gracefully."""
     from cyber_valley.events.models import Referral
 
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
@@ -568,7 +568,7 @@ def test_sync_ticket_minted_empty_referral_skipped(
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
-            "referralData": "",
+            "referrer": "0x0000000000000000000000000000000000000000",
         }
     )
 

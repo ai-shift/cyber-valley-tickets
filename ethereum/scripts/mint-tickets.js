@@ -151,7 +151,7 @@ async function main() {
           mh.digest,
           mh.hashFunction,
           mh.size,
-          "",
+          "0x0000000000000000000000000000000000000000",
         )
     ).wait();
 
