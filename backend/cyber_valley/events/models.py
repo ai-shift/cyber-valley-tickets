@@ -151,3 +151,19 @@ class Referral(models.Model):
         User, on_delete=models.CASCADE, related_name="referrals_received"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class ReferralLink(models.Model):
+    """ReferralRewards (on-chain) referrer binding: referee -> referrer.
+
+    This is distinct from `Referral`, which is per-ticket/purchase.
+    """
+
+    referee = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="referral_link"
+    )
+    referrer = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="referral_downline"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

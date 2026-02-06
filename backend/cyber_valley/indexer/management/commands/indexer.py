@@ -20,6 +20,7 @@ _ETH_ABIS = {
         os.environ["PUBLIC_EVENT_TICKET_ADDRESS"]: settings.CONTRACTS_INFO[1],
         os.environ["PUBLIC_EVENT_MANAGER_ADDRESS"]: settings.CONTRACTS_INFO[2],
         os.environ["PUBLIC_REVENUE_SPLITTER_ADDRESS"]: settings.CONTRACTS_INFO[3],
+        os.environ["PUBLIC_REFERRAL_REWARDS_ADDRESS"]: settings.CONTRACTS_INFO[4],
     }.items()
 }
 

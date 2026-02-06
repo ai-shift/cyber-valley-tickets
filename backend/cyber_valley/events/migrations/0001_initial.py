@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,102 +15,248 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='DistributionProfile',
+            name="DistributionProfile",
             fields=[
-                ('id', models.PositiveIntegerField(primary_key=True, serialize=False)),
-                ('recipients', models.JSONField(default=list)),
-                ('is_active', models.BooleanField(default=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='owned_distribution_profiles', to=settings.AUTH_USER_MODEL)),
+                ("id", models.PositiveIntegerField(primary_key=True, serialize=False)),
+                ("recipients", models.JSONField(default=list)),
+                ("is_active", models.BooleanField(default=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="owned_distribution_profiles",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='EventPlace',
+            name="EventPlace",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=200)),
-                ('max_tickets', models.PositiveIntegerField()),
-                ('min_tickets', models.PositiveIntegerField()),
-                ('min_price', models.PositiveBigIntegerField()),
-                ('min_days', models.PositiveIntegerField()),
-                ('geometry', models.JSONField()),
-                ('days_before_cancel', models.PositiveSmallIntegerField()),
-                ('event_deposit_size', models.PositiveIntegerField(default=0)),
-                ('available', models.BooleanField(default=True)),
-                ('status', models.CharField(choices=[('submitted', 'submitted'), ('approved', 'approved'), ('declined', 'declined')], default='submitted', max_length=10)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('provider', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='event_places', to=settings.AUTH_USER_MODEL)),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("title", models.CharField(max_length=200)),
+                ("max_tickets", models.PositiveIntegerField()),
+                ("min_tickets", models.PositiveIntegerField()),
+                ("min_price", models.PositiveBigIntegerField()),
+                ("min_days", models.PositiveIntegerField()),
+                ("geometry", models.JSONField()),
+                ("days_before_cancel", models.PositiveSmallIntegerField()),
+                ("event_deposit_size", models.PositiveIntegerField(default=0)),
+                ("available", models.BooleanField(default=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("submitted", "submitted"),
+                            ("approved", "approved"),
+                            ("declined", "declined"),
+                        ],
+                        default="submitted",
+                        max_length=10,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "provider",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="event_places",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creation_tx_hash', models.CharField(blank=True, db_index=True, max_length=66, null=True)),
-                ('ticket_price', models.PositiveBigIntegerField()),
-                ('tickets_bought', models.PositiveIntegerField()),
-                ('start_date', models.DateTimeField()),
-                ('days_amount', models.PositiveIntegerField()),
-                ('paid_deposit', models.PositiveIntegerField(default=0)),
-                ('total_revenue', models.PositiveIntegerField(default=0)),
-                ('status', models.CharField(choices=[('submitted', 'submitted'), ('approved', 'approved'), ('declined', 'declined'), ('cancelled', 'cancelled'), ('closed', 'closed')], default='submitted', max_length=10)),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('image_url', models.URLField(null=True)),
-                ('website', models.URLField(blank=True, max_length=2048, null=True)),
-                ('created_at', models.DateTimeField()),
-                ('updated_at', models.DateTimeField()),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to=settings.AUTH_USER_MODEL)),
-                ('distribution_profile', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='events', to='events.distributionprofile')),
-                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='events.eventplace')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "creation_tx_hash",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=66, null=True
+                    ),
+                ),
+                ("ticket_price", models.PositiveBigIntegerField()),
+                ("tickets_bought", models.PositiveIntegerField()),
+                ("start_date", models.DateTimeField()),
+                ("days_amount", models.PositiveIntegerField()),
+                ("paid_deposit", models.PositiveIntegerField(default=0)),
+                ("total_revenue", models.PositiveIntegerField(default=0)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("submitted", "submitted"),
+                            ("approved", "approved"),
+                            ("declined", "declined"),
+                            ("cancelled", "cancelled"),
+                            ("closed", "closed"),
+                        ],
+                        default="submitted",
+                        max_length=10,
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("image_url", models.URLField(null=True)),
+                ("website", models.URLField(blank=True, max_length=2048, null=True)),
+                ("created_at", models.DateTimeField()),
+                ("updated_at", models.DateTimeField()),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="events",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "distribution_profile",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="events",
+                        to="events.distributionprofile",
+                    ),
+                ),
+                (
+                    "place",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="events.eventplace",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.CharField(max_length=255, primary_key=True, serialize=False)),
-                ('is_redeemed', models.BooleanField(default=False)),
-                ('pending_is_redeemed', models.BooleanField(default=False)),
-                ('price_paid', models.PositiveIntegerField(default=0)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='events.event')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.CharField(max_length=255, primary_key=True, serialize=False),
+                ),
+                ("is_redeemed", models.BooleanField(default=False)),
+                ("pending_is_redeemed", models.BooleanField(default=False)),
+                ("price_paid", models.PositiveIntegerField(default=0)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tickets",
+                        to="events.event",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tickets",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Referral',
+            name="Referral",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='referrals', to='events.event')),
-                ('referee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='referrals_received', to=settings.AUTH_USER_MODEL)),
-                ('referrer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='referrals_given', to=settings.AUTH_USER_MODEL)),
-                ('ticket', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='referral', to='events.ticket')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="referrals",
+                        to="events.event",
+                    ),
+                ),
+                (
+                    "referee",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="referrals_received",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "referrer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="referrals_given",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "ticket",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="referral",
+                        to="events.ticket",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='TicketCategory',
+            name="TicketCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category_id', models.PositiveIntegerField()),
-                ('name', models.CharField(max_length=100)),
-                ('discount', models.PositiveIntegerField()),
-                ('quota', models.PositiveIntegerField()),
-                ('has_quota', models.BooleanField(default=False)),
-                ('tickets_bought', models.PositiveIntegerField(default=0)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='categories', to='events.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("category_id", models.PositiveIntegerField()),
+                ("name", models.CharField(max_length=100)),
+                ("discount", models.PositiveIntegerField()),
+                ("quota", models.PositiveIntegerField()),
+                ("has_quota", models.BooleanField(default=False)),
+                ("tickets_bought", models.PositiveIntegerField(default=0)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="categories",
+                        to="events.event",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('event', 'category_id')},
+                "unique_together": {("event", "category_id")},
             },
         ),
         migrations.AddField(
-            model_name='ticket',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='events.ticketcategory'),
+            model_name="ticket",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="tickets",
+                to="events.ticketcategory",
+            ),
         ),
     ]

@@ -7,49 +7,123 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Role',
+            name="Role",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('customer', 'Customer'), ('staff', 'Staff'), ('creator', 'Creator'), ('localprovider', 'Local Provider'), ('verifiedshaman', 'Verified Shaman'), ('master', 'Master')], max_length=20, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        choices=[
+                            ("customer", "Customer"),
+                            ("staff", "Staff"),
+                            ("creator", "Creator"),
+                            ("localprovider", "Local Provider"),
+                            ("verifiedshaman", "Verified Shaman"),
+                            ("master", "Master"),
+                        ],
+                        max_length=20,
+                        unique=True,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'users_role',
+                "db_table": "users_role",
             },
         ),
         migrations.CreateModel(
-            name='CyberValleyUser',
+            name="CyberValleyUser",
             fields=[
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('address', cyber_valley.users.models.AddressField(max_length=42, primary_key=True, serialize=False)),
-                ('role', models.CharField(choices=[('customer', 'Customer'), ('staff', 'Staff'), ('creator', 'Creator'), ('localprovider', 'Local Provider'), ('verifiedshaman', 'Verified Shaman'), ('master', 'Master')], default='customer', max_length=20)),
-                ('profile_manager_bps', models.PositiveSmallIntegerField(default=0)),
-                ('is_active', models.BooleanField(default=True)),
-                ('roles', models.ManyToManyField(blank=True, related_name='users', to='users.role')),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "address",
+                    cyber_valley.users.models.AddressField(
+                        max_length=42, primary_key=True, serialize=False
+                    ),
+                ),
+                (
+                    "role",
+                    models.CharField(
+                        choices=[
+                            ("customer", "Customer"),
+                            ("staff", "Staff"),
+                            ("creator", "Creator"),
+                            ("localprovider", "Local Provider"),
+                            ("verifiedshaman", "Verified Shaman"),
+                            ("master", "Master"),
+                        ],
+                        default="customer",
+                        max_length=20,
+                    ),
+                ),
+                ("profile_manager_bps", models.PositiveSmallIntegerField(default=0)),
+                ("is_active", models.BooleanField(default=True)),
+                (
+                    "roles",
+                    models.ManyToManyField(
+                        blank=True, related_name="users", to="users.role"
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='UserSocials',
+            name="UserSocials",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('network', models.CharField(choices=[('telegram', 'Telegram'), ('instagram', 'Instagram'), ('discord', 'Discord'), ('whatsapp', 'Whatsapp')])),
-                ('value', models.CharField()),
-                ('metadata', models.JSONField(blank=True, default=dict, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='socials', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "network",
+                    models.CharField(
+                        choices=[
+                            ("telegram", "Telegram"),
+                            ("instagram", "Instagram"),
+                            ("discord", "Discord"),
+                            ("whatsapp", "Whatsapp"),
+                        ]
+                    ),
+                ),
+                ("value", models.CharField()),
+                ("metadata", models.JSONField(blank=True, default=dict, null=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="socials",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'network', 'value')},
+                "unique_together": {("user", "network", "value")},
             },
         ),
     ]

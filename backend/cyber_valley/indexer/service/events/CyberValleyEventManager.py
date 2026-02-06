@@ -105,6 +105,13 @@ class NewEventRequest(BaseModel):
     size: int
 
 
+class ReferralRewardsUpdated(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    referral_rewards: str = Field(..., alias="referralRewards")
+
+
 class RoleAdminChanged(BaseModel):
     model_config = ConfigDict(
         frozen=True,
@@ -178,6 +185,9 @@ class CyberValleyEvents(BaseModel):
         None, alias="NewEventPlaceRequest"
     )
     new_event_request: NewEventRequest | None = Field(None, alias="NewEventRequest")
+    referral_rewards_updated: ReferralRewardsUpdated | None = Field(
+        None, alias="ReferralRewardsUpdated"
+    )
     role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")

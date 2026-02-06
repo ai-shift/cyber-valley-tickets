@@ -12,6 +12,7 @@ SOL_TO_JSON_SCHEMA_TYPES = {
     "uint256": "integer",
     "uint16": "integer",
     "uint8": "integer",
+    "uint32": "integer",
     "address": "string",
     "bytes32": "string",
     "string": "string",

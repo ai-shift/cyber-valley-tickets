@@ -287,6 +287,11 @@ CONTRACTS_INFO: Final = (
         / "ethereum_artifacts/contracts/DynamicRevenueSplitter.sol"
         / "DynamicRevenueSplitter.json"
     ),
+    (
+        BASE_DIR
+        / "ethereum_artifacts/contracts/ReferralRewards.sol"
+        / "ReferralRewards.json"
+    ),
 )
 
 IPFS_DATA_PATH = Path(os.environ["IPFS_DATA"])

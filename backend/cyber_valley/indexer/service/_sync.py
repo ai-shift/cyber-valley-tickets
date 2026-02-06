@@ -25,6 +25,7 @@ from cyber_valley.events.models import (
     DistributionProfile,
     Event,
     EventPlace,
+    ReferralLink,
     Ticket,
     TicketCategory,
 )
@@ -38,6 +39,7 @@ from .events import (
     CyberValleyEventManager,
     CyberValleyEventTicket,
     DynamicRevenueSplitter,
+    ReferralRewards,
 )
 
 log = logging.getLogger(__name__)
@@ -118,6 +120,14 @@ def synchronize_event(event_data: BaseModel, *, tx_hash: str | None = None) -> N
             _sync_ticket_redeemed(event_data)
             log.info("Ticket redeemed")
         case (
+            ReferralRewards.RoleGranted()
+            | ReferralRewards.RoleRevoked()
+            | ReferralRewards.RoleAdminChanged()
+        ):
+            # ReferralRewards uses its own roles (e.g. OPERATOR_ROLE).
+            # We don't map these to backend user roles.
+            pass
+        case (
             CyberValleyEventTicket.RoleGranted()
             | CyberValleyEventManager.RoleGranted()
             | DynamicRevenueSplitter.RoleGranted()
@@ -163,9 +173,32 @@ def synchronize_event(event_data: BaseModel, *, tx_hash: str | None = None) -> N
         case DynamicRevenueSplitter.ProfileManagerGranted():
             _sync_profile_manager_granted(event_data)
             log.info("Profile manager granted")
+        case ReferralRewards.ReferrerSet():
+            _sync_referrer_set(event_data)
+            log.info("Referrer set")
+        case ReferralRewards.ActiveUpdated() | ReferralRewards.ConfigUpdated():
+            # Indexing these is optional; for now we just accept them so the indexer
+            # doesn't error out when ReferralRewards emits.
+            pass
         case _:
             log.error("Unknown event data %s", type(event_data))
             raise UnknownEventError(event_data)
+
+
+@transaction.atomic
+def _sync_referrer_set(event_data: ReferralRewards.ReferrerSet) -> None:
+    """Sync ReferralRewards referrer binding (referee -> referrer)."""
+    # Defensive skip: no self links.
+    if event_data.referee.lower() == event_data.referrer.lower():
+        return
+
+    referee, _ = CyberValleyUser.objects.get_or_create(address=event_data.referee)
+    referrer, _ = CyberValleyUser.objects.get_or_create(address=event_data.referrer)
+
+    ReferralLink.objects.get_or_create(
+        referee=referee,
+        defaults={"referrer": referrer},
+    )
 
 
 @transaction.atomic
@@ -592,7 +625,9 @@ def _sync_ticket_redeemed(event_data: CyberValleyEventTicket.TicketRedeemed) -> 
     ticket = Ticket.objects.get(id=event_data.ticket_id)
 
     ticket.is_redeemed = True
-    ticket.save()
+    # Clear pending flag set by the backend "verify" endpoint once redeem lands.
+    ticket.pending_is_redeemed = False
+    ticket.save(update_fields=["is_redeemed", "pending_is_redeemed"])
 
     send_notification(
         user=ticket.owner,
