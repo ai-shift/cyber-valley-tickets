@@ -695,6 +695,9 @@ async function mintTickets(eventManager, erc20, events, signers) {
       await completeSlave.sendTransaction({
         to: await eventManager.getAddress(),
         data: mintData,
+        // Ganache can under-estimate gas for this path (esp. after several mints),
+        // which results in runtime "out of gas" despite estimateGas passing.
+        gasLimit: 1_000_000n,
       })
     ).wait();
 
