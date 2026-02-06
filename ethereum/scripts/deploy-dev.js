@@ -680,23 +680,22 @@ async function mintTickets(eventManager, erc20, events, signers) {
     ).wait();
 
     // Mint ticket
-    // Use fully-qualified signature to avoid any ABI name-resolution ambiguity
-    // across tooling versions (we've seen empty tx.data in some environments).
-    const mintTicketsFn =
-      eventManager
-        .connect(completeSlave)[
-          "mintTickets(uint256,uint256,uint256,bytes32,uint8,uint8,address)"
-        ];
+    // Encode calldata manually to avoid any contract-method invocation edge
+    // cases across provider/tooling versions.
+    const mintData = eventManager.interface.encodeFunctionData("mintTickets", [
+      event.id,
+      cfg.categoryId,
+      1,
+      mh.digest,
+      mh.hashFunction,
+      mh.size,
+      "0x0000000000000000000000000000000000000000",
+    ]);
     await (
-      await mintTicketsFn(
-          event.id,
-          cfg.categoryId,
-          1,
-          mh.digest,
-          mh.hashFunction,
-          mh.size,
-          "0x0000000000000000000000000000000000000000",
-        )
+      await completeSlave.sendTransaction({
+        to: await eventManager.getAddress(),
+        data: mintData,
+      })
     ).wait();
 
     console.log(
