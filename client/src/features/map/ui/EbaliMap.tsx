@@ -9,7 +9,7 @@ import { Layers, Map, RotateCcw, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-import type { LatLng, Placemark as PlacemarkType } from "@/entities/geodata";
+import { type LatLng, usePreloadGeodataLayers } from "@/entities/geodata";
 import { debounce } from "@/shared/lib/debounce.ts";
 import {
   Sheet,
@@ -52,34 +52,21 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
     setZoom,
     setCenter,
     setSelectedPlacemark,
-    layersTitles,
-    fetchLayersTitles,
     getDisplayedLayers,
     selectEventPlace,
     selectedPlace,
     eventPlaceLayer,
-    displayedGroups,
-    fetchLayer,
   } = useMapState();
 
   const map = useMap();
   const [showGroups, setShowGroups] = useState(false);
 
-  useEffect(() => {
-    fetchLayersTitles();
-  }, [fetchLayersTitles]);
+  // Preload all geodata layers in the background on map load
+  // This ensures layers are instantly accessible when clicked
+  const { layerTitles, layers: preloadedLayers } = usePreloadGeodataLayers();
 
-  useEffect(() => {
-    if (layersTitles.length === 0) return;
-
-    for (const group of displayedGroups) {
-      if (layersTitles.includes(group)) {
-        fetchLayer(group);
-      }
-    }
-  }, [layersTitles, displayedGroups, fetchLayer]);
-
-  const displayedLayers = getDisplayedLayers();
+  // Pass preloaded layers from TanStack Query cache to get displayed layers
+  const displayedLayers = getDisplayedLayers(preloadedLayers);
 
   const onMapClick = useCallback(() => {
     setSelectedPlacemark(null);
@@ -113,7 +100,11 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
             <Layers className="w-6 h-6 text-primary" />
           </div>
         </SheetTrigger>
-        <SheetContent side="left" className="w-[320px] sm:w-[380px] p-0" aria-describedby={undefined}>
+        <SheetContent
+          side="left"
+          className="w-[320px] sm:w-[380px] p-0"
+          aria-describedby={undefined}
+        >
           {/* Header */}
           <div className="border-b bg-background px-4 py-4">
             <SheetTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
@@ -124,7 +115,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
               Toggle visibility and explore locations
             </p>
           </div>
-          
+
           {/* Scrollable content */}
           <div className="h-[calc(100%-85px)] overflow-y-auto px-4 py-3">
             <EventsLayerControl
@@ -132,9 +123,9 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
                 setShowGroups(false);
               }}
             />
-            
+
             {/* Divider */}
-            {layersTitles.length > 0 && (
+            {layerTitles.length > 0 && (
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-border" />
@@ -146,8 +137,8 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
                 </div>
               </div>
             )}
-            
-            {layersTitles.map((title) => {
+
+            {layerTitles.map((title) => {
               return (
                 <LayerControl
                   key={title}
@@ -195,7 +186,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
               onClick={(placemark) => setSelectedPlacemark(placemark)}
               // Fix: Use unique identifier instead of index for stable key
               key={`${placemark.name}-${placemark.type}-${JSON.stringify(placemark.coordinates[0])}-${idx}`}
-              placemark={placemark as PlacemarkType}
+              placemark={placemark}
               opacity={layersOpacity}
             />
           ));

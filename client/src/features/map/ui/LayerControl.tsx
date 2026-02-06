@@ -1,12 +1,13 @@
 import type { Placemark } from "@/entities/geodata";
+import { useGeodataLayer } from "@/entities/geodata";
 import { Loader } from "@/shared/ui/Loader";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
 import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
 import { ExpandableTrigger } from "@/shared/ui/expandable/ui/ExpandableTrigger";
 import { useMap } from "@vis.gl/react-google-maps";
-import { twMerge } from "tailwind-merge";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { getThumbUrl } from "../lib/getThumbUrl.ts";
 import { useMapState } from "../model/slice.ts";
@@ -23,16 +24,22 @@ export const LayerControl: React.FC<LayerControlProps> = ({
   closeGroups,
 }) => {
   const map = useMap();
-  const { getDisplayedLayers, toggleGroup, loadingLayers, error } = useMapState();
+  const { toggleGroup, displayedGroups } = useMapState();
   const [, setIsExpanded] = useState(true);
 
-  const current = getDisplayedLayers()[value];
+  // Use TanStack Query to get layer data from cache
+  // This will be instant if data was preloaded by usePreloadGeodataLayers
+  const { data: rawLayerData, isLoading, isError } = useGeodataLayer(value);
+
+  // Cast to Placemark type (API returns camelCase, internal types use snake_case)
+  const layerData = rawLayerData as Placemark[] | undefined;
+
+  const isDisplayed = displayedGroups.includes(value);
 
   // Auto-expand when visibility is toggled on, collapse when off
   useEffect(() => {
-    const isDisplayed = !!current;
     setIsExpanded(isDisplayed);
-  }, [current]);
+  }, [isDisplayed]);
 
   const handleClick = (placemark: Placemark) => {
     if (!map) {
@@ -48,14 +55,14 @@ export const LayerControl: React.FC<LayerControlProps> = ({
     closeGroups();
   };
 
-  const isDisplayed = !!current;
-  const isLoading = loadingLayers.includes(value);
-  const isError = !!error;
-
   const displayName = value.replace(/_/, " ");
 
   return (
-    <Expandable expanded={isDisplayed} setExpanded={setIsExpanded} className="mb-2">
+    <Expandable
+      expanded={isDisplayed}
+      setExpanded={setIsExpanded}
+      className="mb-2"
+    >
       <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors group">
         {/* Eye icon toggle */}
         <button
@@ -68,10 +75,14 @@ export const LayerControl: React.FC<LayerControlProps> = ({
             "h-8 w-8 rounded-full flex items-center justify-center transition-all",
             isDisplayed
               ? "bg-primary/10 text-primary"
-              : "text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent"
+              : "text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent",
           )}
         >
-          {isDisplayed ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+          {isDisplayed ? (
+            <Eye className="h-4 w-4" />
+          ) : (
+            <EyeOff className="h-4 w-4" />
+          )}
         </button>
         {/* Expand trigger */}
         <ExpandableTrigger className="flex-1 flex items-center gap-2 text-left">
@@ -80,13 +91,13 @@ export const LayerControl: React.FC<LayerControlProps> = ({
               <ChevronRight
                 className={twMerge(
                   "h-5 w-5 text-muted-foreground transition-transform duration-200",
-                  isCurrentExpanded && "rotate-90"
+                  isCurrentExpanded && "rotate-90",
                 )}
               />
               <span
                 className={twMerge(
                   "capitalize text-lg font-medium transition-opacity",
-                  !isDisplayed && "opacity-50"
+                  !isDisplayed && "opacity-50",
                 )}
               >
                 {displayName}
@@ -97,7 +108,7 @@ export const LayerControl: React.FC<LayerControlProps> = ({
       </div>
       <ExpandableContent>
         <LayerItemsList
-          placemarks={current || []}
+          placemarks={layerData || []}
           isLoading={isLoading}
           isError={isError}
           onItemClick={handleClick}
@@ -126,7 +137,11 @@ const LayerItemsList: React.FC<LayerItemsListProps> = ({
   }
 
   if (isError) {
-    return <p className="text-sm text-destructive py-2">Couldn&apos;t load the layer</p>;
+    return (
+      <p className="text-sm text-destructive py-2">
+        Couldn&apos;t load the layer
+      </p>
+    );
   }
 
   if (!placemarks.length) {
