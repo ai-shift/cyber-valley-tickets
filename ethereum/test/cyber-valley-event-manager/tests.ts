@@ -827,7 +827,10 @@ describe("CyberValleyEventManager", () => {
       };
 
       await ERC20.connect(owner).mint(ticketPrice);
-      await ERC20.connect(owner).approve(await eventManager.getAddress(), ticketPrice);
+      await ERC20.connect(owner).approve(
+        await eventManager.getAddress(),
+        ticketPrice,
+      );
 
       const referrer = await staff.getAddress();
       const tx = eventManager.connect(owner).mintTickets(
@@ -2285,8 +2288,9 @@ describe("CyberValleyEventManager", () => {
           .createDistributionProfile([await creator.getAddress()], [8000]);
 
         // Verify localProvider owns the profile (profileId 1)
-        expect(await splitter.isProfileOwner(1, await localProvider.getAddress()))
-          .to.be.true;
+        expect(
+          await splitter.isProfileOwner(1, await localProvider.getAddress()),
+        ).to.be.true;
 
         // Revoke local provider
         await expect(
@@ -2325,10 +2329,11 @@ describe("CyberValleyEventManager", () => {
         ).to.be.false;
 
         // Verify profiles were transferred to Master
-        expect(await splitter.isProfileOwner(1, await localProvider.getAddress()))
-          .to.be.false;
-        expect(await splitter.isProfileOwner(1, await master.getAddress())).to.be
-          .true;
+        expect(
+          await splitter.isProfileOwner(1, await localProvider.getAddress()),
+        ).to.be.false;
+        expect(await splitter.isProfileOwner(1, await master.getAddress())).to
+          .be.true;
       });
 
       it("handles provider with no EventPlaces", async () => {

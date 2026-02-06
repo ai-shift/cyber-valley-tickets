@@ -1,5 +1,5 @@
-import { expect } from "chai";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
+import { expect } from "chai";
 import { ethers } from "hardhat";
 
 const ZERO = "0x0000000000000000000000000000000000000000";
@@ -15,7 +15,9 @@ describe("ReferralRewards (unit)", () => {
     await ethers.provider.send("evm_revert", [snapshotId]);
   });
 
-  async function deployReferralRewards(rateSteps?: Array<{ refereeCount: number; rate: number }>) {
+  async function deployReferralRewards(
+    rateSteps?: Array<{ refereeCount: number; rate: number }>,
+  ) {
     const [admin, operator, a, b, c, d] = await ethers.getSigners();
     const token = await ethers.deployContract("SimpleERC20Xylose");
 
@@ -51,7 +53,9 @@ describe("ReferralRewards (unit)", () => {
     expect(await rr.directRefereeCount(aAddr)).to.equal(1);
 
     // Second purchase with a different referrer hint should NOT change binding.
-    await rr.connect(operator).processPurchase(bAddr, await operator.getAddress(), 1000);
+    await rr
+      .connect(operator)
+      .processPurchase(bAddr, await operator.getAddress(), 1000);
     expect(await rr.referrerOf(bAddr)).to.equal(aAddr);
     expect(await rr.directRefereeCount(aAddr)).to.equal(1);
   });
@@ -94,7 +98,9 @@ describe("ReferralRewards (unit)", () => {
     await rr.connect(operator).processPurchase(bAddr, aAddr, 1000);
 
     // B is active (they purchased). A should still be inactive and thus not paid.
-    const out1 = await rr.connect(operator).processPurchase.staticCall(cAddr, bAddr, 1000);
+    const out1 = await rr
+      .connect(operator)
+      .processPurchase.staticCall(cAddr, bAddr, 1000);
     expect(out1.totalPaid).to.be.greaterThan(0);
     expect(out1.bonuses[1]).to.equal(0); // level-2 (A) should be 0 since inactive
 
@@ -102,7 +108,9 @@ describe("ReferralRewards (unit)", () => {
     await rr.connect(operator).processPurchase(aAddr, ZERO, 1000);
 
     // Now C purchase should pay both B (L1) and A (L2).
-    const out2 = await rr.connect(operator).processPurchase.staticCall(cAddr, bAddr, 1000);
+    const out2 = await rr
+      .connect(operator)
+      .processPurchase.staticCall(cAddr, bAddr, 1000);
     expect(out2.bonuses[0]).to.be.greaterThan(0);
     expect(out2.bonuses[1]).to.be.greaterThan(0);
   });
@@ -121,7 +129,9 @@ describe("ReferralRewards (unit)", () => {
     await rr.connect(operator).processPurchase(aAddr, ZERO, 1000);
 
     // First direct referee: B binds to A, but A has only 1 direct referee (<2), so rate=0 => no bonus.
-    const out1 = await rr.connect(operator).processPurchase.staticCall(bAddr, aAddr, 1000);
+    const out1 = await rr
+      .connect(operator)
+      .processPurchase.staticCall(bAddr, aAddr, 1000);
     expect(out1.totalPaid).to.equal(0);
 
     await rr.connect(operator).processPurchase(bAddr, aAddr, 1000);
@@ -131,7 +141,9 @@ describe("ReferralRewards (unit)", () => {
     await rr.connect(operator).processPurchase(cAddr, aAddr, 1000);
     expect(await rr.directRefereeCount(aAddr)).to.equal(2);
 
-    const out2 = await rr.connect(operator).processPurchase.staticCall(cAddr, aAddr, 1000);
+    const out2 = await rr
+      .connect(operator)
+      .processPurchase.staticCall(cAddr, aAddr, 1000);
     expect(out2.totalPaid).to.be.greaterThan(0);
   });
 
@@ -150,7 +162,9 @@ describe("ReferralRewards (unit)", () => {
     // Advance time beyond the 30 day window; A becomes inactive.
     await time.increase(31 * 24 * 60 * 60);
 
-    const out = await rr.connect(operator).processPurchase.staticCall(bAddr, aAddr, 1000);
+    const out = await rr
+      .connect(operator)
+      .processPurchase.staticCall(bAddr, aAddr, 1000);
     // Still returns a recipient, but bonus should be 0 due to inactivity.
     expect(out.recipients[0]).to.equal(aAddr);
     expect(out.bonuses[0]).to.equal(0);

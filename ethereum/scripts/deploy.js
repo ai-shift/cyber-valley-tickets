@@ -1,8 +1,8 @@
 import ERC20Module from "../ignition/modules/ERC20";
 import EventManagerModule from "../ignition/modules/EventManager";
 import EventTicketModule from "../ignition/modules/EventTicket";
-import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
 import ReferralRewardsModule from "../ignition/modules/ReferralRewards";
+import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const BACKEND_EOA = "0xEd7f6CA6e91AaA3Ff2C3918B5cAF02FF449Ab3A4";

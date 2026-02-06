@@ -328,16 +328,14 @@ export async function createEvent(
       .connect(localProvider)
       .createDistributionProfile([creatorAddress], [8000]);
     const receipt = await tx.wait();
-    const event = receipt?.logs.find(
-      (log) => {
-        try {
-          const parsed = splitter.interface.parseLog(log);
-          return parsed?.name === "DistributionProfileCreated";
-        } catch {
-          return false;
-        }
-      },
-    );
+    const event = receipt?.logs.find((log) => {
+      try {
+        const parsed = splitter.interface.parseLog(log);
+        return parsed?.name === "DistributionProfileCreated";
+      } catch {
+        return false;
+      }
+    });
     const parsedEvent = event ? splitter.interface.parseLog(event) : null;
     distributionProfileId = parsedEvent?.args[0] ?? 1n;
   }
