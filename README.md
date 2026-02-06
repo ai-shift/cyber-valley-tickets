@@ -16,32 +16,32 @@ Local git remote:
 git push cyberia main
 ```
 
-2. SSH to the server and apply changes from the worktree:
+2. Run remote commands from your machine (recommended):
 ```bash
-ssh tickets@cyberia.my
-cd /home/tickets/tickets
+cd deploy
+make remote-restart
 ```
 
-3. Common actions (run on the server):
+3. Common actions:
 ```bash
 # Full restart (recreates sqlite DB, redeploys contracts, rebuilds frontend)
-make prod-restart
+make -C deploy remote-restart
 
 # Rebuild only the production frontend (updates /home/tickets/tickets/client/dist)
-make prod-rebuild-frontend
+make -C deploy remote-rebuild-frontend
 
 # Restart only Django runserver inside the existing tmux session
-make prod-restart-backend
+make -C deploy remote-restart-backend
 
 # Restart only indexer inside the existing tmux session
-make prod-restart-indexer
+make -C deploy remote-restart-indexer
 ```
 
 Notes:
-- `make prod-restart` runs `./launch.sh --production-frontend` which will reset
+- `make -C deploy remote-restart` runs `./launch.sh --production-frontend` which will reset
   sqlite (`backend/db.sqlite3`) and re-seed events/tickets.
 - Frontend env vars are baked at build time. If you change `.env` values like
-  `PUBLIC_GOOGLE_MAPS_API_KEY`, run `make prod-rebuild-frontend`.
+  `PUBLIC_GOOGLE_MAPS_API_KEY`, run `make -C deploy remote-rebuild-frontend`.
 
 ## Problem
 
