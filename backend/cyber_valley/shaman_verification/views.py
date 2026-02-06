@@ -21,10 +21,8 @@ class VerifyIndividualResponseSerializer:
     """Serializer for verify_individual response schema."""
 
 
-
 class VerifyCompanyResponseSerializer:
     """Serializer for verify_company response schema."""
-
 
 
 log = logging.getLogger(__name__)

@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,20 +15,55 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='VerificationRequest',
+            name="VerificationRequest",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
-                ('metadata_cid', models.CharField(max_length=255)),
-                ('verification_type', models.CharField(choices=[('Individual', 'Individual'), ('Company', 'Company')], max_length=20)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('approved', 'Approved'), ('declined', 'Declined')], default='pending', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('requester', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='verification_requests', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "uuid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
+                ("metadata_cid", models.CharField(max_length=255)),
+                (
+                    "verification_type",
+                    models.CharField(
+                        choices=[("Individual", "Individual"), ("Company", "Company")],
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("approved", "Approved"),
+                            ("declined", "Declined"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "requester",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="verification_requests",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'verification_requests',
-                'ordering': ['-created_at'],
+                "db_table": "verification_requests",
+                "ordering": ["-created_at"],
             },
         ),
     ]

@@ -22,25 +22,35 @@ from typing import Annotated
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
-from .patches import validate_digest, validate_role
+from .patches import validate_role
 
 
-class Approval(BaseModel):
+class ActiveUpdated(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    owner: str
-    approved: str
-    token_id: int = Field(..., alias="tokenId")
+    user: str
+    timestamp: int
 
 
-class ApprovalForAll(BaseModel):
+class ConfigUpdated(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    owner: str
-    operator: str
-    approved: bool
+    referral_bonus: int = Field(..., alias="referralBonus")
+    seconds_until_inactive: int = Field(..., alias="secondsUntilInactive")
+    only_reward_active_referrers: bool = Field(..., alias="onlyRewardActiveReferrers")
+    level1: int
+    level2: int
+    level3: int
+
+
+class ReferrerSet(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+    referee: str
+    referrer: str
 
 
 class RoleAdminChanged(BaseModel):
@@ -74,46 +84,13 @@ class RoleRevoked(BaseModel):
     sender: str
 
 
-class TicketMinted(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    event_id: int = Field(..., alias="eventId")
-    ticket_id: int = Field(..., alias="ticketId")
-    category_id: int = Field(..., alias="categoryId")
-    owner: str
-    digest: Annotated[str, BeforeValidator(validate_digest)]
-    hash_function: int = Field(..., alias="hashFunction")
-    size: int
-    referrer: str
-    price_paid: int = Field(..., alias="pricePaid")
-
-
-class TicketRedeemed(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    ticket_id: int = Field(..., alias="ticketId")
-
-
-class Transfer(BaseModel):
-    model_config = ConfigDict(
-        frozen=True,
-    )
-    from_: str = Field(..., alias="from")
-    to: str
-    token_id: int = Field(..., alias="tokenId")
-
-
 class CyberValleyEvents(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
-    approval: Approval | None = Field(None, alias="Approval")
-    approval_for_all: ApprovalForAll | None = Field(None, alias="ApprovalForAll")
+    active_updated: ActiveUpdated | None = Field(None, alias="ActiveUpdated")
+    config_updated: ConfigUpdated | None = Field(None, alias="ConfigUpdated")
+    referrer_set: ReferrerSet | None = Field(None, alias="ReferrerSet")
     role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")
-    ticket_minted: TicketMinted | None = Field(None, alias="TicketMinted")
-    ticket_redeemed: TicketRedeemed | None = Field(None, alias="TicketRedeemed")
-    transfer: Transfer | None = Field(None, alias="Transfer")

@@ -4,26 +4,35 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='GeodataLayer',
+            name="GeodataLayer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=100, unique=True)),
-                ('data', models.JSONField()),
-                ('source_file', models.CharField(blank=True, max_length=500, null=True)),
-                ('last_updated', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(db_index=True, max_length=100, unique=True)),
+                ("data", models.JSONField()),
+                (
+                    "source_file",
+                    models.CharField(blank=True, max_length=500, null=True),
+                ),
+                ("last_updated", models.DateTimeField(auto_now=True)),
+                ("is_active", models.BooleanField(default=True)),
             ],
             options={
-                'db_table': 'geodata_layer',
-                'ordering': ['name'],
+                "db_table": "geodata_layer",
+                "ordering": ["name"],
             },
         ),
     ]

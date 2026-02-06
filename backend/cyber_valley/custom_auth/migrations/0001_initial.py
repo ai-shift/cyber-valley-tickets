@@ -4,48 +4,70 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='BusinessApplication',
+            name="BusinessApplication",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('director_id', models.CharField(max_length=16)),
-                ('akta', models.FileField(upload_to='applications/akta/')),
-                ('sk_kemenkumham', models.FileField(upload_to='applications/sk/')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("director_id", models.CharField(max_length=16)),
+                ("akta", models.FileField(upload_to="applications/akta/")),
+                ("sk_kemenkumham", models.FileField(upload_to="applications/sk/")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='IndividualApplication',
+            name="IndividualApplication",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ktp', models.CharField(max_length=16)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("ktp", models.CharField(max_length=16)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='SMSVerification',
+            name="SMSVerification",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('phone_number', models.CharField(max_length=20)),
-                ('verification_code', models.CharField(max_length=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('verified', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("phone_number", models.CharField(max_length=20)),
+                ("verification_code", models.CharField(max_length=10)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("verified", models.BooleanField(default=False)),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

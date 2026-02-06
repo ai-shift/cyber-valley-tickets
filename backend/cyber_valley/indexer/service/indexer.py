@@ -25,6 +25,7 @@ from .events import (
     CyberValleyEventManager,
     CyberValleyEventTicket,
     DynamicRevenueSplitter,
+    ReferralRewards,
     SimpleERC20Xylose,
 )
 
@@ -34,6 +35,7 @@ _EVENTS_MODULES: Final = (
     CyberValleyEventManager,
     CyberValleyEventTicket,
     DynamicRevenueSplitter,
+    ReferralRewards,
     SimpleERC20Xylose,
 )
 
