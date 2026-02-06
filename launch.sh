@@ -377,17 +377,25 @@ try:
         print("ERROR: .env file not found", file=sys.stderr)
         sys.exit(1)
     
+    # Replace existing values, but also append missing vars so fresh .env files
+    # (without contract placeholders) still work.
     updated = []
+    replaced = set()
     for line in env_file.read_text().splitlines():
         for replacement in splitted:
             if line.startswith(f"{replacement[0]}="):
                 updated.append("=".join(replacement))
+                replaced.add(replacement[0])
                 break
         else:
             updated.append(line.rstrip())
+
+    for var_name, var_value in splitted:
+        if var_name not in replaced:
+            updated.append(f"{var_name}={var_value}")
     
     env_file.write_text("\n".join(updated))
-    print(f"Updated {len(splitted)} contract addresses")
+    print(f"Processed {len(splitted)} contract addresses ({len(replaced)} replaced, {len(splitted) - len(replaced)} appended)")
 except Exception as e:
     print(f"ERROR: {e}", file=sys.stderr)
     sys.exit(1)
@@ -400,6 +408,12 @@ fi
 
 rm -f /tmp/contract_vars.txt
 log_success "Contract addresses updated" "done"
+
+# Re-source .env so subsequent direct manage.py invocations (not via make)
+# see the newly updated contract addresses.
+set -a
+source "$SCRIPT_DIR/.env"
+set +a
 
 # ============================================================================
 log_section "Starting Indexer & Restarting Services"
@@ -443,14 +457,18 @@ fi
 log_success "Blockchain indexer started" "started"
 
 log_info "Starting telegram bot" "starting"
-create_tmux_window "telegram-bot" "/tmp/telegram-bot.log"
-tmux send-keys -t "$SESSION_NAME:telegram-bot" "make -C backend/ run-telegram-bot" Enter
-sleep 2
-if ! tmux list-windows -t "$SESSION_NAME" | grep -q "telegram-bot"; then
-    log_error "Failed to create telegram-bot window" "failed"
-    exit 1
+if [[ -z "${TELEGRAM_BOT_TOKEN:-}" ]]; then
+    log_warning "Skipping telegram bot (TELEGRAM_BOT_TOKEN not set)" "skipped"
+else
+    create_tmux_window "telegram-bot" "/tmp/telegram-bot.log"
+    tmux send-keys -t "$SESSION_NAME:telegram-bot" "make -C backend/ run-telegram-bot" Enter
+    sleep 2
+    if ! tmux list-windows -t "$SESSION_NAME" | grep -q "telegram-bot"; then
+        log_error "Failed to create telegram-bot window" "failed"
+        exit 1
+    fi
+    log_success "Telegram bot started" "started"
 fi
-log_success "Telegram bot started" "started"
 
 restart_service "Backend" "backend" "/tmp/backend.log" "make -C backend/ run"
 
