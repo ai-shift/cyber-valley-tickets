@@ -260,7 +260,13 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EVENT_MODELS_BASE_PATH = BASE_DIR / "cyber_valley/indexer/service/events"
-HTTP_ETH_NODE_HOST = os.environ["PUBLIC_HTTP_ETH_NODE_HOST"]
+#
+# Backend/indexer should prefer a direct local HTTP RPC URL (HTTP_ETH_NODE_HOST)
+# when available, while the frontend uses PUBLIC_HTTP_ETH_NODE_HOST (often via
+# a public reverse-proxy path like https://<domain>/ganache).
+HTTP_ETH_NODE_HOST = os.environ.get("HTTP_ETH_NODE_HOST") or os.environ[
+    "PUBLIC_HTTP_ETH_NODE_HOST"
+]
 WS_ETH_NODE_HOST = os.environ["WS_ETH_NODE_HOST"]
 
 DEFAULT_CHAIN_ID = 1337

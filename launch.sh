@@ -270,14 +270,18 @@ log_info "Updating blockchain connection to local Ganache" "updating"
 GANACHE_PORT=${GANACHE_PORT:-8545}
 # Set environment variables for current session
 export WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}
-export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}
-# Update .env file for child processes
+# Update .env file for child processes (backend/indexer) to ensure they talk to
+# the local Ganache instance. We intentionally avoid overwriting PUBLIC_* URLs
+# when building the production frontend, because those should point to the
+# public reverse-proxy path (e.g. https://<domain>/ganache) for browser clients.
 sed -i "s|^export WS_ETH_NODE_HOST=.*|export WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" .env
-sed -i "s|^export PUBLIC_WS_ETH_NODE_HOST=.*|export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" .env 2>/dev/null || echo "export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}" >> .env
-# Also update HTTP endpoint for local Ganache
-sed -i "s|^export PUBLIC_HTTP_ETH_NODE_HOST=.*|export PUBLIC_HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" .env
-# For backwards compatibility
-sed -i "s|^export HTTP_ETH_NODE_HOST=.*|export HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" .env 2>/dev/null || true
+sed -i "s|^export HTTP_ETH_NODE_HOST=.*|export HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" .env 2>/dev/null || echo "export HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}" >> .env
+if [[ "$PRODUCTION_FRONTEND" == false ]]; then
+    sed -i "s|^export PUBLIC_HTTP_ETH_NODE_HOST=.*|export PUBLIC_HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" .env
+    sed -i "s|^export PUBLIC_WS_ETH_NODE_HOST=.*|export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" .env 2>/dev/null || echo "export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}" >> .env
+else
+    log_info "Keeping PUBLIC_* blockchain endpoints unchanged (production frontend)" "skipped"
+fi
 log_success "Blockchain connection updated to local Ganache (port ${GANACHE_PORT})" "done"
 
 log_info "Starting Django backend server" "starting"
