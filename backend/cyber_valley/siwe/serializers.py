@@ -5,7 +5,6 @@ from typing import Any, Literal
 
 from rest_framework import serializers
 
-
 Purpose = Literal["ticket_qr", "staff_verify"]
 
 
@@ -60,4 +59,3 @@ class SiweVerifyResponseSerializer(serializers.Serializer[dict[str, Any]]):
     proof_token = serializers.CharField()
     address = serializers.CharField()
     expires_at = serializers.IntegerField()
-

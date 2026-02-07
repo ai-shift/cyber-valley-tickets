@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
@@ -25,7 +27,7 @@ def extract_address(request: Request) -> str | None:
         return query.strip().lower()
 
     try:
-        body_val = request.data.get("address")  # type: ignore[union-attr]
+        body_val = request.data.get("address")
     except Exception:
         body_val = None
     if isinstance(body_val, str) and body_val.strip():
@@ -41,10 +43,9 @@ def require_address(request: Request) -> str:
     return address
 
 
-def get_or_create_user_by_address(address: str):
+def get_or_create_user_by_address(address: str) -> Any:
     address_l = address.strip().lower()
     if not address_l:
         raise ValidationError({"address": "Wallet address is required"})
     user, _created = User.objects.get_or_create(address=address_l)
     return user
-

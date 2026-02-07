@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any
 
 from django.core.signing import BadSignature, SignatureExpired, TimestampSigner
 from rest_framework import exceptions
@@ -50,8 +49,10 @@ def require_proof_claims(
         raise exceptions.NotAuthenticated("Invalid proof token payload")
     address = str(data.get("address", "")).lower()
     scopes = data.get("scopes")
-    if not address or not isinstance(scopes, list) or not all(
-        isinstance(s, str) for s in scopes
+    if (
+        not address
+        or not isinstance(scopes, list)
+        or not all(isinstance(s, str) for s in scopes)
     ):
         raise exceptions.NotAuthenticated("Invalid proof token payload")
 
@@ -68,4 +69,3 @@ def require_proof_claims(
         issued_at=now,
         expires_at=now,
     )
-

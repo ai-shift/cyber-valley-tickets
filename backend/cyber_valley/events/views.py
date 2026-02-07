@@ -29,7 +29,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from cyber_valley.common.request_address import get_or_create_user_by_address, require_address
+from cyber_valley.common.request_address import (
+    get_or_create_user_by_address,
+    require_address,
+)
 from cyber_valley.siwe.trust_cookie import maybe_refresh_cookie, require_trusted_address
 
 from .models import DistributionProfile, Event, EventPlace, Ticket
@@ -168,8 +171,8 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
 
         # Get owners with ticket count annotation
         owners = User.objects.filter(address__in=owner_addresses).annotate(
-            # When filtering by socials, joins can duplicate ticket rows. `distinct=True`
-            # makes the count stable.
+            # When filtering by socials, joins can duplicate ticket rows.
+            # `distinct=True` makes the count stable.
             tickets_count=Count(
                 "tickets", filter=Q(tickets__event=event), distinct=True
             )

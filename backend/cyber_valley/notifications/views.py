@@ -16,7 +16,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from cyber_valley.common.request_address import get_or_create_user_by_address, require_address
+from cyber_valley.common.request_address import (
+    get_or_create_user_by_address,
+    require_address,
+)
 
 from .models import Notification
 from .serializers import NotificationSerializer

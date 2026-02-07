@@ -46,8 +46,18 @@ def send_notification_to_telegram(notification: Notification) -> None:
     if not telegram_social:
         return
 
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    if not token:
+        # In many dev/staging setups we don't run the telegram bot.
+        # Don't spam ERROR logs.
+        logger.info(
+            "Skipping Telegram notification for user %s: TELEGRAM_BOT_TOKEN is not set",
+            notification.user.address,
+        )
+        return
+
     try:
-        bot = telebot.TeleBot(os.environ["TELEGRAM_BOT_TOKEN"])
+        bot = telebot.TeleBot(token)
         chat_id = telegram_social.value
         message = f"<b>{notification.title}</b>\n\n{notification.body}"
 

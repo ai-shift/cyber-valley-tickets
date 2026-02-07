@@ -177,7 +177,10 @@ def generate_auth_payload(phone_number: str) -> dict[str, Any]:
 @parser_classes([MultiPartParser])
 @permission_classes([AllowAny])
 def submit_application(request: Request) -> Response:
-    from cyber_valley.common.request_address import get_or_create_user_by_address, require_address
+    from cyber_valley.common.request_address import (
+        get_or_create_user_by_address,
+        require_address,
+    )
 
     user = get_or_create_user_by_address(require_address(request))
 
