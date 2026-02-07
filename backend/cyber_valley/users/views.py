@@ -19,7 +19,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from cyber_valley.common.request_address import extract_address, get_or_create_user_by_address, require_address
+from cyber_valley.common.request_address import (
+    extract_address,
+    get_or_create_user_by_address,
+    require_address,
+)
 
 from .models import CyberValleyUser, UserSocials
 from .serializers import (
@@ -154,7 +158,7 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
 def upload_user_socials_to_ipfs(request: Request) -> Response:
     socials = UploadSocialsSerializer(data=request.data)
     socials.is_valid(raise_exception=True)
-    user = get_or_create_user_by_address(require_address(request))
+    get_or_create_user_by_address(require_address(request))
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_hash = client.add_json(socials.data)
     return Response({"cid": socials_hash})

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Any
 
 from django.conf import settings
 from django.core.signing import BadSignature, Signer
@@ -87,10 +86,16 @@ def read_trust_cookie(request: Request) -> TrustCookie | None:
     return cookie
 
 
-def upsert_trusted_address(cookie: TrustCookie | None, *, address: str, scopes: list[str]) -> TrustCookie:
+def upsert_trusted_address(
+    cookie: TrustCookie | None, *, address: str, scopes: list[str]
+) -> TrustCookie:
     addr = address.lower()
     now = _now_ts()
-    expires_at = int((datetime.fromtimestamp(now, tz=UTC) + timedelta(days=COOKIE_TTL_DAYS)).timestamp())
+    expires_at = int(
+        (
+            datetime.fromtimestamp(now, tz=UTC) + timedelta(days=COOKIE_TTL_DAYS)
+        ).timestamp()
+    )
     entries: list[TrustedEntry] = []
     if cookie:
         entries = cookie.entries
@@ -128,13 +133,19 @@ def maybe_refresh_cookie(response: Response, cookie: TrustCookie) -> None:
         return
     refreshed = TrustCookie(
         updated_at=now,
-        expires_at=int((datetime.fromtimestamp(now, tz=UTC) + timedelta(days=COOKIE_TTL_DAYS)).timestamp()),
+        expires_at=int(
+            (
+                datetime.fromtimestamp(now, tz=UTC) + timedelta(days=COOKIE_TTL_DAYS)
+            ).timestamp()
+        ),
         entries=cookie.entries,
     )
     set_trust_cookie(response, refreshed)
 
 
-def is_trusted(cookie: TrustCookie | None, *, address: str, required_scopes: list[str]) -> bool:
+def is_trusted(
+    cookie: TrustCookie | None, *, address: str, required_scopes: list[str]
+) -> bool:
     if not cookie:
         return False
     addr = address.lower()
@@ -156,4 +167,3 @@ def require_trusted_address(
         raise exceptions.NotAuthenticated("Wallet not trusted on this device")
     assert cookie is not None
     return cookie
-

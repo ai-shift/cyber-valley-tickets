@@ -8,6 +8,7 @@ import {
   declineEvent,
   formatTxError,
 } from "@/shared/lib/web3";
+import { apiClient } from "@/shared/api";
 import { AcceptDialog } from "@/shared/ui/AcceptDialog";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
@@ -73,9 +74,12 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
   const { data: profiles, isLoading: isProfilesLoading } = useQuery({
     queryKey: ["distribution-profiles"],
     queryFn: async () => {
-      const response = await fetch("/api/distribution-profiles/");
-      if (!response.ok) throw new Error("Failed to fetch profiles");
-      return response.json() as Promise<DistributionProfile[]>;
+      if (!account?.address) return [];
+      const resp = await apiClient.GET("/api/distribution-profiles/", {
+        headers: { "X-User-Address": account.address },
+      });
+      if (resp.error || !resp.data) throw new Error("Failed to fetch profiles");
+      return resp.data as DistributionProfile[];
     },
     enabled: !!account,
   });

@@ -32,7 +32,8 @@ from cyber_valley.web3_auth.service import create_login_message, verify_signatur
 
 NONCE_TTL_SECONDS = 5 * 60
 # Proof token TTL can be longer than the SIWE message TTL. It only grants the
-# ability to request short-lived rotating nonces, which remain the primary anti-replay mechanism.
+# ability to request short-lived rotating nonces, which remain the primary
+# anti-replay mechanism.
 PROOF_TTL_SECONDS = 60 * 60
 
 
@@ -122,7 +123,6 @@ def siwe_verify(request: Request) -> Response:
 
     purpose_scopes = cast(list[str], payload.get("resources", []))
     token = issue_proof_token(address=model.address, scopes=purpose_scopes)
-    expires_at = int((datetime.now(tz=UTC) + timedelta(seconds=PROOF_TTL_SECONDS)).timestamp())
 
     # Persist device trust via HttpOnly cookie (supports one-click account switching).
     cookie = upsert_trusted_address(
@@ -163,7 +163,11 @@ def siwe_status(request: Request) -> Response:
     scope = request.query_params.get("scope") or ""
     cookie = read_trust_cookie(request)
 
-    trusted = bool(address and scope and is_trusted(cookie, address=address, required_scopes=[scope]))
+    trusted = bool(
+        address
+        and scope
+        and is_trusted(cookie, address=address, required_scopes=[scope])
+    )
     expires_at = cookie.expires_at if cookie else 0
 
     response = Response({"trusted": trusted, "expires_at": expires_at}, status=200)
