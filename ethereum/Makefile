@@ -16,6 +16,13 @@ deploy-dev:
 	rm -rf ignition/deployments
 	pnpm exec hardhat run scripts/deploy-dev.js --network cvlandDev
 
+deploy-ens-cyberia:
+	pnpm exec hardhat run scripts/deploy-ens.js --network cyberia
+
+register-ens-names-cyberia:
+	@echo "Registering ENS names for all addresses on cyberia..."
+	pnpm exec hardhat run scripts/register-ens-names.js --network cyberia
+
 grant-backend-role:
 	pnpm exec hardhat run scripts/grant-backend-role.js --network cvlandDev
 
