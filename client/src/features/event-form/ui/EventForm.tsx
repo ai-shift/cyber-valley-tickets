@@ -2,7 +2,7 @@ import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/shared/ui/button";
 import {
@@ -108,8 +108,18 @@ export const EventForm: React.FC<EventFormProps> = ({
 
   !eventForEdit && useEventPersist(form);
 
+  const watchedPlaceId = useWatch({ control: form.control, name: "place" });
+  const watchedDaysAmount = useWatch({
+    control: form.control,
+    name: "daysAmount",
+  });
+  const watchedStartDate = useWatch({
+    control: form.control,
+    name: "startDate",
+  });
+
   const selectedPlace = places.find(
-    (place) => `${place?.id}` === form.watch("place"),
+    (place) => `${place?.id}` === watchedPlaceId,
   );
   const isSelected = !!selectedPlace;
 
@@ -138,7 +148,7 @@ export const EventForm: React.FC<EventFormProps> = ({
     form.setValue("ticketPrice", ticketPrice);
   }, [form, selectedPlace, events, eventIdsToExclude]);
 
-  const currentDate = form.watch("startDate");
+  const currentDate = watchedStartDate;
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const eventDto = mapEventFormToEventDto(values);
@@ -317,14 +327,14 @@ export const EventForm: React.FC<EventFormProps> = ({
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormLabel>Start date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  daysBeforeCancel={selectedPlace.daysBeforeCancel}
-                  selectedDuration={form.watch("daysAmount")}
-                  date={field.value}
-                  setDate={field.onChange}
-                  disabled={placeRanges}
-                />
+                <FormControl>
+                  <DatePicker
+                    daysBeforeCancel={selectedPlace.daysBeforeCancel}
+                    selectedDuration={watchedDaysAmount}
+                    date={field.value}
+                    setDate={field.onChange}
+                    disabled={placeRanges}
+                  />
               </FormControl>
               <FormMessage />
             </FormItem>
