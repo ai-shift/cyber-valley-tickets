@@ -682,13 +682,18 @@ def _sync_role_granted(
     | CyberValleyEventTicket.RoleGranted
     | DynamicRevenueSplitter.RoleGranted,
 ) -> None:
-    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE", "ADMIN_ROLE"):
+    if event_data.role in (
+        "DEFAULT_ADMIN_ROLE",
+        "BACKEND_ROLE",
+        "ADMIN_ROLE",
+        "PROFILE_MANAGER_ROLE",
+    ):
         return
 
     user_role_name = ROLE_MAPPING.get(event_data.role)
     if user_role_name is None:
-        msg = f"Unknown role {event_data.role} in RoleGranted event"
-        raise ValueError(msg)
+        log.info("Skipping unmapped role granted: %s", event_data.role)
+        return
 
     user, created = CyberValleyUser.objects.get_or_create(address=event_data.account)
 
@@ -728,13 +733,18 @@ def _sync_role_revoked(
     | CyberValleyEventTicket.RoleRevoked
     | DynamicRevenueSplitter.RoleRevoked,
 ) -> None:
-    if event_data.role in ("DEFAULT_ADMIN_ROLE", "BACKEND_ROLE", "ADMIN_ROLE"):
+    if event_data.role in (
+        "DEFAULT_ADMIN_ROLE",
+        "BACKEND_ROLE",
+        "ADMIN_ROLE",
+        "PROFILE_MANAGER_ROLE",
+    ):
         return
 
     revoked_role_name = ROLE_MAPPING.get(event_data.role)
     if revoked_role_name is None:
-        msg = f"Unknown role {event_data.role} in RoleRevoked event"
-        raise ValueError(msg)
+        log.info("Skipping unmapped role revoked: %s", event_data.role)
+        return
 
     # If LOCAL_PROVIDER is revoked, transfer all their EventPlaces to Master
     if event_data.role == "LOCAL_PROVIDER_ROLE":

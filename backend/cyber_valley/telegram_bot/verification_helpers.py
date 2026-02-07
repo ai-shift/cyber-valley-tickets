@@ -57,7 +57,15 @@ def send_verification_request_to_provider(
     chat_id: int, verification_request_id: int, username: str | None = None
 ) -> None:
     """Send a single verification request to a local provider via Telegram."""
-    token = os.environ["TELEGRAM_BOT_TOKEN"]
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    if not token:
+        log.info(
+            "Skipping sending verification request %s to provider %s: "
+            "TELEGRAM_BOT_TOKEN is not set",
+            verification_request_id,
+            username or chat_id,
+        )
+        return
     bot = telebot.TeleBot(token)
 
     try:
