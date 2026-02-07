@@ -5,12 +5,17 @@ import type { Ticket } from "../model/types";
 
 type TicketQRProps = {
   ticket: Ticket;
-  proofToken: string | null;
+  userAddress: string;
+  enabled: boolean;
 };
 
-export const TicketQR: React.FC<TicketQRProps> = ({ ticket, proofToken }) => {
+export const TicketQR: React.FC<TicketQRProps> = ({
+  ticket,
+  userAddress,
+  enabled,
+}) => {
   const { data } = useSuspenseQuery(
-    useGetNonce(ticket.eventId, ticket.id, proofToken),
+    useGetNonce(ticket.eventId, ticket.id, userAddress, enabled),
   );
 
   // NOTE: Looks weird

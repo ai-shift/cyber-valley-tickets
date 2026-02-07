@@ -39,6 +39,7 @@ export async function fetchSiwePayload(opts: {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(opts),
+    credentials: "include",
   });
   if (!resp.ok) {
     throw new Error(`SIWE payload failed: HTTP ${resp.status}`);
@@ -55,6 +56,7 @@ export async function fetchSiweVerify(opts: {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(opts),
+    credentials: "include",
   });
   if (!resp.ok) {
     throw new Error(`SIWE verify failed: HTTP ${resp.status}`);
