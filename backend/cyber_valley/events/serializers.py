@@ -215,14 +215,19 @@ class CreatorEventSerializer(StaffEventSerializer):
         return data
 
     def should_provide_sensitive(self, obj: Event) -> bool:
-        user = self.context["request"].user
-        if isinstance(user, User):
-            return obj.creator.address == user.address
+        request = self.context.get("request")
+        if request is not None:
+            addr = request.headers.get("X-User-Address") or request.query_params.get(
+                "address"
+            )
+            if isinstance(addr, str) and addr:
+                return obj.creator.address.lower() == addr.lower()
         return False
 
 
 @dataclass
 class EventMetaData:
+    address: str
     cover: "File[bytes]"
     title: str
     website: str
@@ -231,6 +236,7 @@ class EventMetaData:
 
 
 class UploadEventMetaToIpfsSerializer(serializers.Serializer[EventMetaData]):
+    address = serializers.CharField()
     cover = serializers.FileField()
     title = serializers.CharField()
     description = serializers.CharField()

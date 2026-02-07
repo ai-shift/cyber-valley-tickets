@@ -45,7 +45,6 @@ from .users.views import (
     save_user_socials,
     upload_user_socials_to_ipfs,
 )
-from .web3_auth.views import login, logout, nonce, refresh, verify
 
 router = routers.DefaultRouter()
 router.register(r"places", EventPlaceViewSet)
@@ -99,11 +98,6 @@ urlpatterns = [
     path("api/users/socials", save_user_socials, name="save-socials"),
     path("api/users/<str:address>/socials", get_user_socials, name="get-user-socials"),
     path("api/users/<str:address>/profile", get_user_profile, name="get-user-profile"),
-    path("api/auth/web3/login/", login, name="web3_login"),
-    path("api/auth/web3/nonce/<str:address>", nonce, name="web3_nonce"),
-    path("api/auth/verify", verify, name="jwt_verify"),
-    path("api/auth/refresh", refresh, name="jwt_refresh"),
-    path("api/auth/logout", logout, name="jwt_logout"),
     path("api/auth/custom/", include("cyber_valley.custom_auth.urls")),
     path("api/shaman/verify/", include("cyber_valley.shaman_verification.urls")),
     path("api/telegram/", include("cyber_valley.telegram_bot.urls")),
