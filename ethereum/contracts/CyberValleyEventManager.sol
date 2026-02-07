@@ -18,6 +18,15 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     bytes32 public constant VERIFIED_SHAMAN_ROLE = keccak256("VERIFIED_SHAMAN_ROLE");
     bytes32 public constant BACKEND_ROLE = keccak256("BACKEND_ROLE");
 
+    // LOCAL_PROVIDER_ROLE is the primary "event manager" role; MASTER_ROLE should be
+    // able to act across all providers for operational recovery (e.g. close/cancel).
+    modifier onlyLocalProviderOrMaster() {
+        if (!hasRole(MASTER_ROLE, msg.sender)) {
+            _checkRole(LOCAL_PROVIDER_ROLE);
+        }
+        _;
+    }
+
     enum EventPlaceStatus {
         Submitted,
         Approved,
@@ -821,7 +830,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function closeEvent(
         uint256 eventId
-    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
+    ) external onlyLocalProviderOrMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProviderOrMaster(evt.eventPlaceId);
         require(
@@ -849,7 +858,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function cancelEvent(
         uint256 eventId
-    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
+    ) external onlyLocalProviderOrMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
         ensureEventBelongsToProviderOrMaster(evt.eventPlaceId);
         require(

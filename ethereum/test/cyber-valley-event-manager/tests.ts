@@ -1470,6 +1470,35 @@ describe("CyberValleyEventManager", () => {
   describe("closeEvent", () => {
     itExpectsOnlyLocalProvider("closeEvent", [BigInt(0)]);
 
+    it("allows master to close any provider event", async () => {
+      const {
+        eventManager,
+        ERC20,
+        master,
+        verifiedShaman,
+        localProvider,
+        creator,
+        splitter,
+      } = await loadFixture(deployContract);
+
+      const { tx: createEventTx, eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        {},
+        {},
+        splitter,
+      );
+      await createEventTx;
+      await time.increase(100_000_000);
+
+      const tx = await eventManager.connect(master).closeEvent(eventId);
+      await expect(tx).to.emit(eventManager, "EventStatusChanged").withArgs(eventId, 4);
+    });
+
     it("emits EventStatusChanged", async () => {
       const {
         eventManager,
@@ -1717,6 +1746,35 @@ describe("CyberValleyEventManager", () => {
 
   describe("cancelEvent", () => {
     itExpectsOnlyLocalProvider("cancelEvent", [BigInt(0)]);
+
+    it("allows master to cancel any provider event", async () => {
+      const {
+        eventManager,
+        ERC20,
+        master,
+        verifiedShaman,
+        localProvider,
+        creator,
+        splitter,
+      } = await loadFixture(deployContract);
+
+      const { tx: createEventTx, eventId } = await createEvent(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        {},
+        {},
+        splitter,
+      );
+      await createEventTx;
+      await time.increase(100_000_000);
+
+      const tx = await eventManager.connect(master).cancelEvent(eventId);
+      await expect(tx).to.emit(eventManager, "EventStatusChanged").withArgs(eventId, 3);
+    });
 
     it("emits EventStatusChanged", async () => {
       const {
