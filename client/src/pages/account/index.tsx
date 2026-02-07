@@ -16,7 +16,11 @@ import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
-import { useActiveAccount, useActiveWallet, useDisconnect } from "thirdweb/react";
+import {
+  useActiveAccount,
+  useActiveWallet,
+  useDisconnect,
+} from "thirdweb/react";
 
 const getRoleDisplayName = (user: User | null): string | null => {
   if (!user) return null;
@@ -134,152 +138,156 @@ export const AccountPage: React.FC = () => {
           </div>
         ) : (
           <>
-        <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
-          <div className="flex flex-col gap-4">
-            {(() => {
-              const lastSocial =
-                user?.socials && user.socials.length > 0
-                  ? user.socials[user.socials.length - 1]
-                  : null;
-              return (
-                lastSocial && (
-                  <div className="flex items-center justify-between">
-                    <h3 className="capitalize font-semibold text-lg">
-                      {lastSocial.network}:
-                    </h3>
-                    <p className="italic">{lastSocial.value}</p>
-                  </div>
-                )
-              );
-            })()}
-            <Button
-              filling="outline"
-              type="button"
-              onClick={() => navigate("/socials")}
-            >
-              {user?.socials[0] ? "Update" : "Set"} socials
-            </Button>
-            <Button
-              className="mt-8"
-              disabled={isMinting}
-              onClick={async () => {
-                const maybeAmount = prompt("Amount of tokens to mint:");
-                if (maybeAmount == null) {
-                  // User decided to cancel
-                  return;
-                }
+            <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
+              <div className="flex flex-col gap-4">
+                {(() => {
+                  const lastSocial =
+                    user?.socials && user.socials.length > 0
+                      ? user.socials[user.socials.length - 1]
+                      : null;
+                  return (
+                    lastSocial && (
+                      <div className="flex items-center justify-between">
+                        <h3 className="capitalize font-semibold text-lg">
+                          {lastSocial.network}:
+                        </h3>
+                        <p className="italic">{lastSocial.value}</p>
+                      </div>
+                    )
+                  );
+                })()}
+                <Button
+                  filling="outline"
+                  type="button"
+                  onClick={() => navigate("/socials")}
+                >
+                  {user?.socials[0] ? "Update" : "Set"} socials
+                </Button>
+                <Button
+                  className="mt-8"
+                  disabled={isMinting}
+                  onClick={async () => {
+                    const maybeAmount = prompt("Amount of tokens to mint:");
+                    if (maybeAmount == null) {
+                      // User decided to cancel
+                      return;
+                    }
 
-                let amount: bigint;
-                try {
-                  amount = BigInt(maybeAmount);
-                } catch (e) {
-                  alert(`Failed to process amount with: ${JSON.stringify(e)}`);
-                  return;
-                }
+                    let amount: bigint;
+                    try {
+                      amount = BigInt(maybeAmount);
+                    } catch (e) {
+                      alert(
+                        `Failed to process amount with: ${JSON.stringify(e)}`,
+                      );
+                      return;
+                    }
 
-                if (amount <= 0) {
-                  alert("Amount should be greater than zero");
-                  return;
-                }
+                    if (amount <= 0) {
+                      alert("Amount should be greater than zero");
+                      return;
+                    }
 
-                if (!account) {
-                  alert("No active account found");
-                  return;
-                }
+                    if (!account) {
+                      alert("No active account found");
+                      return;
+                    }
 
-                setIsMinting(true);
-                try {
-                  await mintERC20(account, amount);
-                  alert(`Minted ${amount} tokens`);
-                  // Invalidate and refetch the token balance
-                  queryClient.invalidateQueries({
-                    queryKey: ["tokenBalance", account?.address],
-                  });
-                } catch (err) {
-                  alert(`Failed to mint ERC20 with ${JSON.stringify(err)}`);
-                } finally {
-                  setIsMinting(false);
-                }
-              }}
-            >
-              {isMinting ? "Minting..." : "Mint ERC20"}
-            </Button>
-            <BridgeWidget />
-          </div>
-        </div>
-        {user && manageView(user)}
-        <div className="p-5">
-          <Expandable defaultOpened>
-            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
-              {({ isCurrentExpanded }) => (
-                <>
-                  <img
-                    className={twMerge(
-                      "h-8 transition-all duration-300",
-                      isCurrentExpanded && "rotate-90",
-                    )}
-                    alt="chevrone"
-                    src="/icons/chevrone_right.svg"
+                    setIsMinting(true);
+                    try {
+                      await mintERC20(account, amount);
+                      alert(`Minted ${amount} tokens`);
+                      // Invalidate and refetch the token balance
+                      queryClient.invalidateQueries({
+                        queryKey: ["tokenBalance", account?.address],
+                      });
+                    } catch (err) {
+                      alert(`Failed to mint ERC20 with ${JSON.stringify(err)}`);
+                    } finally {
+                      setIsMinting(false);
+                    }
+                  }}
+                >
+                  {isMinting ? "Minting..." : "Mint ERC20"}
+                </Button>
+                <BridgeWidget />
+              </div>
+            </div>
+            {user && manageView(user)}
+            <div className="p-5">
+              <Expandable defaultOpened>
+                <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
+                  {({ isCurrentExpanded }) => (
+                    <>
+                      <img
+                        className={twMerge(
+                          "h-8 transition-all duration-300",
+                          isCurrentExpanded && "rotate-90",
+                        )}
+                        alt="chevrone"
+                        src="/icons/chevrone_right.svg"
+                      />
+                      <span>Current events</span>
+                    </>
+                  )}
+                </ExpandableTrigger>
+                <ExpandableContent>
+                  <EventsList
+                    filterFn={(event, user) =>
+                      myEventsFilter(event, user, "current")
+                    }
                   />
-                  <span>Current events</span>
-                </>
-              )}
-            </ExpandableTrigger>
-            <ExpandableContent>
-              <EventsList
-                filterFn={(event, user) =>
-                  myEventsFilter(event, user, "current")
-                }
-              />
-            </ExpandableContent>
-          </Expandable>
-          <Expandable defaultOpened>
-            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
-              {({ isCurrentExpanded }) => (
-                <>
-                  <img
-                    className={twMerge(
-                      "h-8 transition-all duration-300",
-                      isCurrentExpanded && "rotate-90",
-                    )}
-                    alt="chevrone"
-                    src="/icons/chevrone_right.svg"
+                </ExpandableContent>
+              </Expandable>
+              <Expandable defaultOpened>
+                <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
+                  {({ isCurrentExpanded }) => (
+                    <>
+                      <img
+                        className={twMerge(
+                          "h-8 transition-all duration-300",
+                          isCurrentExpanded && "rotate-90",
+                        )}
+                        alt="chevrone"
+                        src="/icons/chevrone_right.svg"
+                      />
+                      <span>Upcoming events</span>
+                    </>
+                  )}
+                </ExpandableTrigger>
+                <ExpandableContent>
+                  <EventsList
+                    filterFn={(event, user) =>
+                      myEventsFilter(event, user, "upcoming")
+                    }
                   />
-                  <span>Upcoming events</span>
-                </>
-              )}
-            </ExpandableTrigger>
-            <ExpandableContent>
-              <EventsList
-                filterFn={(event, user) =>
-                  myEventsFilter(event, user, "upcoming")
-                }
-              />
-            </ExpandableContent>
-          </Expandable>
-          <Expandable defaultOpened>
-            <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
-              {({ isCurrentExpanded }) => (
-                <>
-                  <img
-                    className={twMerge(
-                      "h-8 transition-all duration-300",
-                      isCurrentExpanded && "rotate-90",
-                    )}
-                    alt="chevrone"
-                    src="/icons/chevrone_right.svg"
+                </ExpandableContent>
+              </Expandable>
+              <Expandable defaultOpened>
+                <ExpandableTrigger className="w-full my-3 p-3 text-xl flex justify-start gap-3 items-center">
+                  {({ isCurrentExpanded }) => (
+                    <>
+                      <img
+                        className={twMerge(
+                          "h-8 transition-all duration-300",
+                          isCurrentExpanded && "rotate-90",
+                        )}
+                        alt="chevrone"
+                        src="/icons/chevrone_right.svg"
+                      />
+                      <span>Past events</span>
+                    </>
+                  )}
+                </ExpandableTrigger>
+                <ExpandableContent>
+                  <EventsList
+                    filterFn={(event, user) =>
+                      myEventsFilter(event, user, "past")
+                    }
                   />
-                  <span>Past events</span>
-                </>
-              )}
-            </ExpandableTrigger>
-            <ExpandableContent>
-              <EventsList
-                filterFn={(event, user) => myEventsFilter(event, user, "past")}
-              />
-            </ExpandableContent>
-          </Expandable>
-        </div>
+                </ExpandableContent>
+              </Expandable>
+            </div>
           </>
         )}
       </div>

@@ -61,8 +61,7 @@ export const AcceptDialog: React.FC<AcceptDialogProps> = ({
               variant={option === "decline" ? "destructive" : "secondary"}
               onClick={confirmFn}
             >
-              {confirmText ?? "Confirm"}{" "}
-              {(option === "decline" && timer) || ""}
+              {confirmText ?? "Confirm"} {(option === "decline" && timer) || ""}
             </Button>
           </span>
         </DialogClose>

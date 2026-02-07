@@ -9,7 +9,9 @@ function getStringField(obj: AnyRecord, key: string): string | undefined {
   return typeof v === "string" ? v : undefined;
 }
 
-function pickFirstNonEmpty(...values: Array<string | undefined>): string | undefined {
+function pickFirstNonEmpty(
+  ...values: Array<string | undefined>
+): string | undefined {
   for (const v of values) {
     if (v && v.trim().length > 0) return v;
   }
@@ -48,7 +50,12 @@ function extractJsonBlobAfterPrefix(msg: string): unknown | undefined {
   if (first === -1) return;
 
   // If there's metadata after the JSON, trim it out.
-  const metaMarkers = ["\n\ncontract:", "\ncontract:", "\n\nchainId:", "\nchainId:"];
+  const metaMarkers = [
+    "\n\ncontract:",
+    "\ncontract:",
+    "\n\nchainId:",
+    "\nchainId:",
+  ];
   let end = msg.length;
   for (const marker of metaMarkers) {
     const idx = msg.indexOf(marker, first);

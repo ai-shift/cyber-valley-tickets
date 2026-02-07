@@ -35,10 +35,6 @@ export function getCurrencySymbol(): string {
   return "/icons/tether.svg";
 }
 
-export function getEventSubmitionPrice(): bigint {
-  return 100n;
-}
-
 export type TxHash = `0x${string}`;
 
 export async function submitEventPlaceRequest(
@@ -405,11 +401,11 @@ export async function cancelEvent(
   return result.transactionHash;
 }
 
-export async function approveMintTicket(account: Account, ticketPrice: bigint) {
+export async function approveMintTicket(account: Account, amount: bigint) {
   const transaction = prepareContractCall({
     contract: erc20,
     method: "approve",
-    params: [eventManager.address, ticketPrice],
+    params: [eventManager.address, amount],
   });
   await sendTransaction({ account, transaction });
 }
@@ -488,7 +484,8 @@ export async function assignStaff(
   address: string,
 ): Promise<TxHash> {
   const transaction = prepareContractCall({
-    contract: eventManager,
+    // STAFF_ROLE is enforced on the ticket contract (redeemTicket), not on EventManager.
+    contract: eventTicket,
     method: "grantRole",
     params: [STAFF_ROLE, address],
   });
@@ -501,7 +498,8 @@ export async function removeStaff(
   address: string,
 ): Promise<TxHash> {
   const transaction = prepareContractCall({
-    contract: eventManager,
+    // STAFF_ROLE is enforced on the ticket contract (redeemTicket), not on EventManager.
+    contract: eventTicket,
     method: "revokeRole",
     params: [STAFF_ROLE, address],
   });
@@ -552,18 +550,17 @@ export async function revokeVerifiedShaman(
 
 export async function hasEnoughtTokens(
   account: Account,
-  tokens?: bigint,
+  tokens: bigint,
 ): Promise<{
   enoughTokens: boolean;
   balanceAfterPayment: bigint;
 }> {
-  const tokensToCheck = tokens == null ? getEventSubmitionPrice() : tokens;
   const erc20Balance = await balanceOf({
     contract: erc20,
     address: account.address,
   });
   console.log("ERC20 balance", erc20Balance);
-  const balanceAfterPayment = erc20Balance - tokensToCheck;
+  const balanceAfterPayment = erc20Balance - tokens;
   return {
     enoughTokens: balanceAfterPayment >= BigInt(0),
     balanceAfterPayment: babs(balanceAfterPayment),
@@ -621,7 +618,7 @@ export async function createDistributionProfile(
   const transaction = prepareContractCall({
     contract: revenueSplitter,
     method: "createDistributionProfile",
-    params: [account.address, recipients, shares.map((s) => BigInt(s))],
+    params: [recipients, shares.map((s) => BigInt(s))],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
   return transactionHash;
@@ -633,13 +630,14 @@ export async function createDistributionProfileAsMaster(
   recipients: string[],
   shares: number[],
 ): Promise<TxHash> {
-  const transaction = prepareContractCall({
-    contract: revenueSplitter,
-    method: "createDistributionProfile",
-    params: [ownerAddress, recipients, shares.map((s) => BigInt(s))],
-  });
-  const { transactionHash } = await sendTransaction({ account, transaction });
-  return transactionHash;
+  // DynamicRevenueSplitter does not support creating a profile for an arbitrary owner.
+  // The profile owner is always `msg.sender`.
+  if (ownerAddress.toLowerCase() !== account.address.toLowerCase()) {
+    throw new Error(
+      "Distribution profile owner is always the transaction sender (msg.sender).",
+    );
+  }
+  return createDistributionProfile(account, recipients, shares);
 }
 
 export async function updateDistributionProfile(
@@ -648,6 +646,23 @@ export async function updateDistributionProfile(
   recipients: string[],
   shares: number[],
 ): Promise<TxHash> {
+  // In DynamicRevenueSplitter, only ADMIN_ROLE can update profiles.
+  const adminRole = await readContract({
+    contract: revenueSplitter,
+    method: "ADMIN_ROLE",
+    params: [],
+  });
+  const isAdmin = await readContract({
+    contract: revenueSplitter,
+    method: "hasRole",
+    params: [adminRole, account.address],
+  });
+  if (!isAdmin) {
+    throw new Error(
+      "Only revenue splitter admins can update distribution profiles",
+    );
+  }
+
   const transaction = prepareContractCall({
     contract: revenueSplitter,
     method: "updateDistributionProfile",

@@ -8,13 +8,13 @@ import {
 } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
+import { useAuthSlice } from "@/app/providers";
 import type { EventDto } from "@/entities/event";
 import type { Order, OrderTicket } from "@/entities/order";
 import { getPlaceById } from "@/entities/place";
 import type { Socials } from "@/entities/user";
 import { cleanEventLocal } from "@/features/event-form";
 import { clearReferral } from "@/features/referral";
-import { useAuthSlice } from "@/app/providers";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
 

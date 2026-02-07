@@ -1,4 +1,4 @@
-import { Outlet, Navigate } from "react-router";
+import { Navigate, Outlet } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { useAuthSlice } from "../model/authSlice";
 

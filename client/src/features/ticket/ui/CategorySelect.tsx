@@ -114,9 +114,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
                 >
                   <div className="flex items-center justify-between w-full gap-4 text-sm">
                     <span className="font-medium">{category.name}</span>
-                    <span className="text-green-500">
-                      {discountLabel}
-                    </span>
+                    <span className="text-green-500">{discountLabel}</span>
                     <span
                       className={category.discount > 0 ? "text-green-500" : ""}
                     >
