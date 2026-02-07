@@ -52,6 +52,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   } = event;
 
   const priceRangeDisplay = getTicketPriceRangeDisplay(ticketPriceRange);
+  const priceMinDisplay = priceRangeDisplay?.replace(/^from\s+/, "");
 
   function placeClickHandler() {
     const location = place.geometry.coordinates[0] as LatLng;
@@ -132,8 +133,8 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
         )}
         <DetailsBlock
           icon="/icons/price_2.svg"
-          title="Price"
-          information={priceRangeDisplay ?? "Sold out"}
+          title={priceMinDisplay ? "Price from" : "Price"}
+          information={priceMinDisplay ?? "Sold out"}
         />
       </div>
 
