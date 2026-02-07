@@ -34,7 +34,11 @@ export const Purchase: React.FC = () => {
         </>
       )}
       {order?.type === "create_event" && (
-        <PurchaseEvent type={order.type} event={order.event} />
+        <PurchaseEvent
+          type={order.type}
+          event={order.event}
+          placeDepositSize={order.placeDepositSize}
+        />
       )}
       {order?.type === "update_event" && (
         <PurchaseEvent type={order.type} event={order.event} />

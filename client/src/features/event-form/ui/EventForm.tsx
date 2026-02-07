@@ -67,8 +67,6 @@ export const EventForm: React.FC<EventFormProps> = ({
       <ErrorMessage errors={new Error("No availible places to create event")} />
     );
 
-  const { WithSubmitCheck, props } = useCheckSubmit();
-
   const eventForEdit = existingEvent
     ? mapEventToEventForm(existingEvent, existingCategories)
     : undefined;
@@ -116,6 +114,9 @@ export const EventForm: React.FC<EventFormProps> = ({
   const isSelected = !!selectedPlace;
 
   assertIsDefined(selectedPlace);
+  const { WithSubmitCheck, props } = useCheckSubmit(
+    selectedPlace.eventDepositSize,
+  );
   const placeRanges = extractBookedRangesForPlace(
     events,
     selectedPlace,

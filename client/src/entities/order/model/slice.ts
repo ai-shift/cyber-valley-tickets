@@ -5,7 +5,10 @@ import type { Order, OrderTicket, TicketAllocation } from "./types";
 
 interface OrderState {
   order: Order | null;
-  setEventOrder: (event: EventDto | EventDtoWithId) => void;
+  setEventOrder: (
+    event: EventDto | EventDtoWithId,
+    placeDepositSize?: number,
+  ) => void;
   setTicketOrder: (order: OrderTicket) => void;
   updateTicketAllocations: (allocations: TicketAllocation[]) => void;
   updateTotalTickets: (total: number) => void;
@@ -16,7 +19,7 @@ const initialState = { order: null };
 export const useOrderStore = create<OrderState>()(
   devtools((set) => ({
     initialState,
-    setEventOrder: (event) =>
+    setEventOrder: (event, placeDepositSize) =>
       "id" in event
         ? set(
             {
@@ -35,6 +38,7 @@ export const useOrderStore = create<OrderState>()(
               order: {
                 type: "create_event",
                 event: event,
+                placeDepositSize: placeDepositSize ?? 0,
               },
             },
             undefined,

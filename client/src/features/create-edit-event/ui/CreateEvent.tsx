@@ -5,7 +5,7 @@ import { EventForm } from "@/features/event-form";
 import { EventDataProvider } from "./EventDataProvider";
 
 type CreateEventProps = {
-  onSubmit: (event: EventDto) => void;
+  onSubmit: (event: EventDto, placeDepositSize: number) => void;
 };
 
 type CreateEventWithData = CreateEventProps & {
@@ -18,7 +18,16 @@ const CreateEventWithData: React.FC<CreateEventWithData> = ({
   events,
   places,
 }) => {
-  return <EventForm events={events} places={places} onSumbit={onSubmit} />;
+  return (
+    <EventForm
+      events={events}
+      places={places}
+      onSumbit={(event) => {
+        const place = places.find((p) => `${p.id}` === event.place);
+        onSubmit(event, place?.eventDepositSize ?? 0);
+      }}
+    />
+  );
 };
 
 export const CreateEvent: React.FC<CreateEventProps> = ({ onSubmit }) => (
