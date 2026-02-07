@@ -47,13 +47,16 @@ ganache:
 	@echo "VerifiedShaman 	 (3) 0x7617b92b06c4ce513c53Df1c818ed25f95475f69 (100 ETH)"
 	@echo "LocalProvider 	 (4) 0x9772d9a6A104c162b97767e6a654Be54370A042F (100 ETH)"
 	@echo "Backend	         (5) 0xEd7f6CA6e91AaA3Ff2C3918B5cAF02FF449Ab3A4 (100ETH)"
+	@if [ -n "$$GANACHE_DB_DIR" ]; then mkdir -p "$$GANACHE_DB_DIR"; fi
 	podman run -d \
 	  --name cvland-ganache \
 	  --rm \
 	  -p $$GANACHE_PORT:8545 \
+	  $${GANACHE_DB_DIR:+-v $$GANACHE_DB_DIR:/data:Z} \
 	  docker.io/trufflesuite/ganache:v7.9.2 \
 	  --logging.verbose=true \
 	  --chain.chainId=1337 \
+	  $${GANACHE_DB_DIR:+--database.dbPath=/data} \
 	  --wallet.accounts=0xc631efb34d5ac643c79eb1bad6e88589fbd1e29236cd8a145fd48283ae52bb05,0X56BC75E2D63100000 \
 	  --wallet.accounts=0x39e6d142076a3898e7533b9095d0ac78867d6642a9c172b4a1bf41e32980263d,0X56BC75E2D63100000 \
 	  --wallet.accounts=0xf47ff34e4ac62439d984e415b48676bda8698ef2603d6bf984d0ebe1ba7d5e07,0X56BC75E2D63100000 \
