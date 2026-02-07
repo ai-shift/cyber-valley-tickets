@@ -87,7 +87,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     }
   }, [profiles, selectedProfileId]);
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (action: ManageAction) => {
       console.log("got manage event action", action);
       console.log("eventId:", eventId, "account:", account?.address);
@@ -221,7 +221,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
     <div className="flex flex-col items-center justify-center gap-7 py-10">
       <div className="w-3/4 flex flex-col justify-center gap-3">
         {canEdit && (
-          <Button className="w-full" onClick={onEdit}>
+          <Button className="w-full" onClick={onEdit} disabled={isPending}>
             Edit
           </Button>
         )}
@@ -231,6 +231,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               className="w-full"
               variant="secondary"
               onClick={handleAcceptClick}
+              disabled={isPending}
             >
               Accept
             </Button>
@@ -238,8 +239,10 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               title="Are you sure you want to decline the event?"
               option="decline"
               confirmFn={() => mutate("decline")}
+              confirmDisabled={isPending}
+              confirmText={isPending ? "Sending..." : "Confirm"}
             >
-              <Button className="w-full" variant="destructive">
+              <Button className="w-full" variant="destructive" disabled={isPending}>
                 Decline
               </Button>
             </AcceptDialog>
@@ -251,8 +254,10 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               title="Are you sure you want to finalize the event?"
               option="accept"
               confirmFn={() => mutate("close")}
+              confirmDisabled={isPending}
+              confirmText={isPending ? "Sending..." : "Confirm"}
             >
-              <Button className="w-full" variant="secondary">
+              <Button className="w-full" variant="secondary" disabled={isPending}>
                 Finalize
               </Button>
             </AcceptDialog>
@@ -260,8 +265,10 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               title="Are you sure you want to fuck up the event?"
               option="accept"
               confirmFn={() => mutate("cancel")}
+              confirmDisabled={isPending}
+              confirmText={isPending ? "Sending..." : "Confirm"}
             >
-              <Button className="w-full" variant="destructive">
+              <Button className="w-full" variant="destructive" disabled={isPending}>
                 Fuck up
               </Button>
             </AcceptDialog>
