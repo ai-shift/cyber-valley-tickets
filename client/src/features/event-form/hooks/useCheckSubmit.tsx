@@ -79,15 +79,15 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
       className="w-full h-20 flex flex-col"
       onClick={() => alert("Suda swap widget")}
     >
-      <span>Not enough tokens to create event</span>
+      <span>Need more tokens</span>
       <p className="flex gap-1">
-        <span>You need {requriedTokens}</span>
+        <span>Need {requriedTokens}</span>
         <img
           src={getCurrencySymbol()}
           className="h-6 aspect-square inline"
           alt="currency"
         />
-        <span>more</span>
+        <span>to submit</span>
       </p>
     </Button>
   );
