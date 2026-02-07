@@ -1,7 +1,7 @@
 import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { cn } from "@/shared/lib/utils";
-import { client, wallets } from "@/shared/lib/web3";
+import { client, cvlandChain, wallets } from "@/shared/lib/web3";
 import { connectTheme } from "@/shared/lib/web3/connectTheme";
 import { walletConnectConfig } from "@/shared/lib/web3/walletConnect";
 import { Loader } from "@/shared/ui/Loader";
@@ -20,6 +20,7 @@ export const useLogin = () => {
       if (!address) {
         const w = await connect({
           client,
+          chain: cvlandChain,
           wallets,
           theme: connectTheme,
           showThirdwebBranding: false,
