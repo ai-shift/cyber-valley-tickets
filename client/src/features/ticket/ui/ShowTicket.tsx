@@ -42,8 +42,11 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
 
   const shouldPollRedeemStatus = open && !!proofToken;
   const dialogFullscreenClass =
-    "top-0 left-0 translate-x-0 translate-y-0 w-screen max-w-screen sm:max-w-screen " +
-    "h-[calc(100dvh-var(--app-tabbar-h,0px))] max-h-[calc(100dvh-var(--app-tabbar-h,0px))] " +
+    // Fullscreen dialog that behaves on mobile browsers (Safari/Chrome address bars).
+    // `svh` avoids the classic 100vh "behind the browser UI" issue on iOS.
+    "inset-0 translate-x-0 translate-y-0 w-screen max-w-screen sm:max-w-screen " +
+    "h-[100svh] max-h-[100svh] " +
+    "pb-[env(safe-area-inset-bottom)] " +
     "flex flex-col z-50 border-black overflow-y-auto";
 
   const ticketQueries = useQueries({
