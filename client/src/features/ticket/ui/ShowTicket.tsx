@@ -1,7 +1,6 @@
 import { useOrderStore } from "@/entities/order";
 import { apiClient } from "@/shared/api";
 import { pluralTickets } from "@/shared/lib/pluralDays";
-import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -12,8 +11,10 @@ import {
 import { useQueries } from "@tanstack/react-query";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { useActiveAccount } from "thirdweb/react";
 import type { Ticket } from "../model/types";
 import { TicketCard } from "./TicketCard";
+import { fetchSiwePayload, fetchSiweStatus, fetchSiweVerify } from "@/shared/lib/siwe/api";
 
 type ShowTicketProps = {
   tickets: Ticket[];
@@ -34,6 +35,12 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   const { setTicketOrder } = useOrderStore();
   const [open, setOpen] = useState(false);
   const wasClosed = useRef<boolean>(false);
+  const account = useActiveAccount();
+  const [proofToken, setProofToken] = useState<string | null>(null);
+  const [isSigning, setIsSigning] = useState(false);
+  const [isTrusted, setIsTrusted] = useState(false);
+
+  const shouldPollRedeemStatus = open && !!proofToken;
 
   const ticketQueries = useQueries({
     queries: tickets.map((ticket) => ({
@@ -41,24 +48,26 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         apiClient.GET("/api/events/{event_id}/tickets/{ticket_id}", {
           params: {
             path: {
-              eventId: ticket.eventId,
-              ticketId: Number(ticket.id),
+              event_id: ticket.eventId,
+              ticket_id: Number(ticket.id),
             },
-          },
+          } as any,
         }),
       select: (data: {
         data?: { isRedeemed: boolean; pendingIsRedeemed: boolean };
       }) => data.data,
       queryKey: ["redeemed", ticket.eventId, ticket.id],
-      refetchInterval: open ? 1000 : -1,
+      enabled: shouldPollRedeemStatus,
+      refetchInterval: shouldPollRedeemStatus ? 1000 : -1,
     })),
   });
 
-  const isLoading = ticketQueries.some((query) => query.isLoading);
   const hasError = ticketQueries.some((query) => query.error);
   const allData = ticketQueries.map((query) => query.data);
+  const canCheckRedeemStatus = !hasError && !allData.some((data) => !data);
 
   useEffect(() => {
+    if (!canCheckRedeemStatus) return;
     const anyPendingRedeemed = allData.some(
       (data) => data?.pendingIsRedeemed && !data?.isRedeemed,
     );
@@ -66,12 +75,59 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
       setOpen(false);
       wasClosed.current = true;
     }
-  }, [allData]);
+  }, [allData, canCheckRedeemStatus]);
 
-  const allRedeemed = allData.every((data) => data?.isRedeemed);
-  const anyPending = allData.some(
-    (data) => data?.pendingIsRedeemed && !data?.isRedeemed,
-  );
+  useEffect(() => {
+    if (!open) return;
+    const addr = account?.address;
+    if (!addr) {
+      setIsTrusted(false);
+      setProofToken(null);
+      return;
+    }
+
+    // Check server-side trust cookie; avoid forcing SIWE each time.
+    fetchSiweStatus({ address: addr, scope: "ticket:nonce" })
+      .then((s) => {
+        setIsTrusted(s.trusted);
+        setProofToken(s.trusted ? "cookie" : null);
+      })
+      .catch(() => {
+        setIsTrusted(false);
+        setProofToken(null);
+      });
+  }, [open, account?.address]);
+
+  const signToShowQr = async () => {
+    if (!account) {
+      alert("No active wallet");
+      return;
+    }
+    setIsSigning(true);
+    try {
+      const addr = account.address;
+      const { payload, message } = await fetchSiwePayload({
+        address: addr,
+        purpose: "ticket_qr",
+      });
+      const signature = await account.signMessage({ message });
+      await fetchSiweVerify({ payload, signature });
+      setIsTrusted(true);
+      setProofToken("cookie");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to sign");
+    } finally {
+      setIsSigning(false);
+    }
+  };
+
+  const allRedeemed = canCheckRedeemStatus
+    ? allData.every((data) => data?.isRedeemed)
+    : tickets.every((t) => t.isRedeemed);
+  const anyPending = canCheckRedeemStatus
+    ? allData.some((data) => data?.pendingIsRedeemed && !data?.isRedeemed)
+    : tickets.some((t) => t.pendingIsRedeemed && !t.isRedeemed);
 
   function handleBuyMoreClick() {
     setTicketOrder({
@@ -84,15 +140,73 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
     navigate("/purchase");
   }
 
-  if (isLoading) return <Loader className="h-8" containerClassName="h-20" />;
-  if (hasError || allData.some((data) => !data))
-    return (
-      <p className="text-center text-red-500 text-xl">
-        Can't check your tickets
-      </p>
-    );
-
   const ticketCount = tickets.length;
+  if (!canCheckRedeemStatus) {
+    return (
+      <div className="w-full">
+        <Button
+          className="w-full"
+          disabled={hasPassed || isSigning}
+          onClick={async () => {
+            await signToShowQr();
+            setOpen(true);
+          }}
+        >
+          {isSigning ? "Signing..." : "Show tickets"}
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent
+            className="w-screen h-screen max-w-screen flex flex-col sm:max-w-screen z-1000 border-black overflow-y-auto"
+            aria-describedby={undefined}
+          >
+            <DialogTitle className="text-center">
+              Your Tickets ({ticketCount}){anyPending && <br />}
+              {anyPending && "(redeem pending)"}
+            </DialogTitle>
+            {!proofToken ? (
+              <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6 text-center">
+                <p className="text-muted-foreground">
+                  To prevent QR screenshot reuse, tickets use rotating nonces.
+                  Sign a message to prove wallet ownership and show your QR
+                  codes.
+                </p>
+                <Button
+                  className="w-full max-w-sm"
+                  onClick={signToShowQr}
+                  disabled={isSigning}
+                >
+                  {isSigning ? "Signing..." : "Sign to show QR codes"}
+                </Button>
+              </div>
+            ) : (
+              <Suspense fallback={null}>
+                <div
+                  className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
+                >
+                  {tickets.map((ticket) => (
+                    <TicketCard
+                      key={ticket.id}
+                      ticket={ticket}
+                      proofToken={proofToken}
+                    />
+                  ))}
+                </div>
+              </Suspense>
+            )}
+            <div className="p-4 border-t border-border">
+              <Button
+                className="w-full"
+                onClick={handleBuyMoreClick}
+                disabled={hasPassed}
+              >
+                Buy more tickets
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -117,15 +231,35 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
           Your Tickets ({ticketCount}){anyPending && <br />}
           {anyPending && "(redeem pending)"}
         </DialogTitle>
-        <Suspense fallback={<Loader />}>
-          <div
-            className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
-          >
-            {tickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
+        {!isTrusted ? (
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6 text-center">
+            <p className="text-muted-foreground">
+              To prevent QR screenshot reuse, tickets use rotating nonces. Sign a
+              message to prove wallet ownership and show your QR codes.
+            </p>
+            <Button
+              className="w-full max-w-sm"
+              onClick={signToShowQr}
+              disabled={isSigning}
+            >
+              {isSigning ? "Signing..." : "Sign to show QR codes"}
+            </Button>
           </div>
-        </Suspense>
+        ) : (
+          <Suspense fallback={null}>
+            <div
+              className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
+            >
+              {tickets.map((ticket) => (
+                <TicketCard
+                  key={ticket.id}
+                  ticket={ticket}
+                  proofToken={proofToken}
+                />
+              ))}
+            </div>
+          </Suspense>
+        )}
         <div className="p-4 border-t border-border">
           <Button
             className="w-full"

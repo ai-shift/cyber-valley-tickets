@@ -12,9 +12,11 @@ from drf_spectacular.utils import (
 )
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from cyber_valley.common.request_address import get_or_create_user_by_address, require_address
 
 from .models import Notification
 from .serializers import NotificationSerializer
@@ -55,18 +57,17 @@ from .serializers import NotificationSerializer
 )
 class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
     serializer_class = NotificationSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     lookup_field = "notification_id"
 
     def retrieve(self, request: Request, pk: int | None = None) -> Response:
-        user = request.user
+        user = get_or_create_user_by_address(require_address(request))
         notification = get_object_or_404(Notification, notification_id=pk, user=user)
         serializer = self.get_serializer(notification)
         return Response(serializer.data)
 
     def get_queryset(self) -> QuerySet[Notification, Notification]:
-        user = self.request.user
-        assert user.is_authenticated  # XXX: Required for the MyPy check
+        user = get_or_create_user_by_address(require_address(self.request))
         queryset = Notification.objects.filter(user=user).order_by("-created_at")
         search_query = self.request.query_params.get("search", "")
         if search_query:
@@ -88,7 +89,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
     )
     @action(detail=False, methods=["post"], url_path="seen/(?P<notification_id>[^/.]+)")
     def seen(self, request: Request, notification_id: str) -> Response:
-        user = request.user
+        user = get_or_create_user_by_address(require_address(request))
         notification = get_object_or_404(
             Notification, notification_id=notification_id, user=user
         )

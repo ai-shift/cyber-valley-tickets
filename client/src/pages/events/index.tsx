@@ -7,7 +7,7 @@ const SEARCH_PARAM_NAME = "search";
 export const EventsListPage: React.FC = () => {
   return (
     <PageContainer name="Events">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 pb-24">
         <SearchBar
           paramName={SEARCH_PARAM_NAME}
           placeholder="Search events by title, place, or creator..."

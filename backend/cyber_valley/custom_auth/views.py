@@ -6,12 +6,11 @@ import time
 from typing import Any, assert_never
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -176,10 +175,11 @@ def generate_auth_payload(phone_number: str) -> dict[str, Any]:
 )
 @api_view(["POST"])
 @parser_classes([MultiPartParser])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def submit_application(request: Request) -> Response:
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
+    from cyber_valley.common.request_address import get_or_create_user_by_address, require_address
+
+    user = get_or_create_user_by_address(require_address(request))
 
     if not UserSocials.objects.filter(
         user=user, network=UserSocials.Network.TELEGRAM

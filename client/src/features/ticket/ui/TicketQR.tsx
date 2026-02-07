@@ -5,10 +5,13 @@ import type { Ticket } from "../model/types";
 
 type TicketQRProps = {
   ticket: Ticket;
+  proofToken: string | null;
 };
 
-export const TicketQR: React.FC<TicketQRProps> = ({ ticket }) => {
-  const { data } = useSuspenseQuery(useGetNonce(ticket.eventId, ticket.id));
+export const TicketQR: React.FC<TicketQRProps> = ({ ticket, proofToken }) => {
+  const { data } = useSuspenseQuery(
+    useGetNonce(ticket.eventId, ticket.id, proofToken),
+  );
 
   // NOTE: Looks weird
   if (data == null) return;

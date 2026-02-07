@@ -7,7 +7,6 @@ from typing import Any
 import ipfshttpclient
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.db.models import Case, Count, IntegerField, Q, When
 from django.db.models.query import QuerySet
@@ -26,9 +25,12 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from cyber_valley.common.request_address import get_or_create_user_by_address, require_address
+from cyber_valley.siwe.trust_cookie import maybe_refresh_cookie, require_trusted_address
 
 from .models import DistributionProfile, Event, EventPlace, Ticket
 from .serializers import (
@@ -166,14 +168,18 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
 
         # Get owners with ticket count annotation
         owners = User.objects.filter(address__in=owner_addresses).annotate(
-            tickets_count=Count("tickets", filter=Q(tickets__event=event))
+            # When filtering by socials, joins can duplicate ticket rows. `distinct=True`
+            # makes the count stable.
+            tickets_count=Count(
+                "tickets", filter=Q(tickets__event=event), distinct=True
+            )
         )
 
         if search_query:
             owners = owners.filter(
                 Q(address__icontains=search_query)
                 | Q(socials__value__icontains=search_query)
-            )
+            ).distinct()
 
         serializer = AttendeeSerializer(owners, many=True)
         return Response(serializer.data)
@@ -222,14 +228,14 @@ def event_categories(_request: Request, event_id: int) -> Response:
 )
 @api_view(["PUT"])
 @parser_classes([MultiPartParser])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def upload_event_meta_to_ipfs(request: Request) -> Response:
     meta = UploadEventMetaToIpfsSerializer(data=request.data)
     meta.is_valid(raise_exception=True)
     meta = meta.save()
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
-    target_base_path = settings.IPFS_DATA_PATH / "users" / user.address / "events"
+    target_base_path = (
+        settings.IPFS_DATA_PATH / "users" / meta.address.lower() / "events"
+    )
     target_base_path.mkdir(exist_ok=True, parents=True)
 
     # Handle file extension safely
@@ -270,7 +276,7 @@ def upload_event_meta_to_ipfs(request: Request) -> Response:
 )
 @api_view(["PUT"])
 @parser_classes([MultiPartParser])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def upload_place_meta_to_ipfs(request: Request) -> Response:
     meta = UploadPlaceMetaToIpfsSerializer(data=request.data)
     meta.is_valid(raise_exception=True)
@@ -297,13 +303,11 @@ def upload_place_meta_to_ipfs(request: Request) -> Response:
     },
 )
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     meta = UploadTicketMetaToIpfsSerializer(data=request.data)
     meta.is_valid(raise_exception=True)
     meta = meta.save()
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
     # TODO: Fetch event's img url
     try:
         event = Event.objects.get(id=meta.eventid)
@@ -346,14 +350,11 @@ def upload_ticket_meta_to_ipfs(request: Request) -> Response:
     },
 )
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def upload_order_meta_to_ipfs(request: Request) -> Response:
     serializer = UploadOrderMetaToIpfsSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     order_data = serializer.save()
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
-
     try:
         event = Event.objects.get(id=order_data.event_id)
         event_image = event.image_url
@@ -403,12 +404,17 @@ def upload_order_meta_to_ipfs(request: Request) -> Response:
     },
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
     from cyber_valley.users.models import CyberValleyUser
 
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
+    address = require_address(request)
+    cookie = require_trusted_address(
+        request,
+        address=address,
+        required_scopes=["ticket:nonce"],
+    )
+    user = get_or_create_user_by_address(address)
 
     # Get the ticket and verify ownership
     ticket = get_object_or_404(Ticket, id=ticket_id, event__id=event_id)
@@ -423,7 +429,9 @@ def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
     nonce = user.address + secrets.token_hex(16)
     key = f"{nonce}:{event_id}:{ticket_id}"
     cache.set(key, "nonce", timeout=60 * 5)
-    return Response({"nonce": nonce})
+    response = Response({"nonce": nonce})
+    maybe_refresh_cookie(response, cookie)
+    return response
 
 
 @extend_schema(responses=TicketSerializer)
@@ -451,14 +459,19 @@ def ticket_info(_: Request, event_id: int, ticket_id: str) -> Response:
     },
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def verify_ticket(
     request: Request, event_id: int, ticket_id: str, nonce: str
 ) -> Response:
     from cyber_valley.users.models import CyberValleyUser
 
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
+    address = require_address(request)
+    cookie = require_trusted_address(
+        request,
+        address=address,
+        required_scopes=["ticket:verify"],
+    )
+    user = get_or_create_user_by_address(address)
 
     # Only staff or master can verify tickets
     if not user.has_role(CyberValleyUser.STAFF, CyberValleyUser.MASTER):
@@ -477,7 +490,9 @@ def verify_ticket(
     ticket.pending_is_redeemed = True
     ticket.save()
 
-    return Response("no redeem", status=200)
+    response = Response("no redeem", status=200)
+    maybe_refresh_cookie(response, cookie)
+    return response
 
 
 @extend_schema(
@@ -497,7 +512,7 @@ def verify_ticket(
     }
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def event_status(_: Request, event_id: int) -> Response:
     event = get_object_or_404(Event, id=event_id)
     redeemed = Ticket.objects.filter(event_id=event_id, is_redeemed=True).count()
@@ -534,7 +549,7 @@ def event_status(_: Request, event_id: int) -> Response:
     }
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def lifetime_revenue(_: Request, event_id: int) -> Response:
     event = get_object_or_404(Event, id=event_id)
     return Response(
@@ -706,7 +721,7 @@ def total_revenue(_: Request) -> Response:
     }
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def verification_stats(_request: Request) -> Response:
     """Get verification statistics per local provider."""
     from datetime import timedelta
@@ -927,14 +942,13 @@ class DistributionProfileViewSet(viewsets.ReadOnlyModelViewSet[DistributionProfi
     """
 
     serializer_class = DistributionProfileSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     lookup_field = "id"
 
     def get_queryset(self) -> QuerySet[DistributionProfile]:
         from cyber_valley.users.models import CyberValleyUser
 
-        user = self.request.user
-        assert isinstance(user, CyberValleyUser)
+        user = get_or_create_user_by_address(require_address(self.request))
         # Master can see all profiles
         if user.is_staff or user.has_role(CyberValleyUser.MASTER):
             return DistributionProfile.objects.all()

@@ -2,7 +2,7 @@ import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { DisplayUser } from "@/features/display-user";
 import { EventsList, myEventsFilter } from "@/features/events-list";
-import { apiClient } from "@/shared/api";
+import { useLogin } from "@/features/login/hooks/useLogin";
 import { useTokenBalance } from "@/shared/hooks";
 import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
@@ -16,7 +16,7 @@ import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
-import { useActiveAccount } from "thirdweb/react";
+import { useActiveAccount, useActiveWallet, useDisconnect } from "thirdweb/react";
 
 const getRoleDisplayName = (user: User | null): string | null => {
   if (!user) return null;
@@ -39,8 +39,11 @@ const getRoleDisplayName = (user: User | null): string | null => {
 
 export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
-  const { logout: signOut, user } = useAuthSlice();
+  const { clear, user, address: storedAddress } = useAuthSlice();
   const account = useActiveAccount();
+  const activeWallet = useActiveWallet();
+  const { disconnect } = useDisconnect();
+  const { login, buttonProps } = useLogin();
   const { data: tokenBalance, isLoading: isLoadingBalance } = useTokenBalance();
   const queryClient = useQueryClient();
   const [isMinting, setIsMinting] = useState(false);
@@ -49,26 +52,15 @@ export const AccountPage: React.FC = () => {
     if (!confirm("Logout?")) {
       return;
     }
-    await apiClient.GET("/api/auth/logout");
-    signOut();
+    if (activeWallet) {
+      disconnect(activeWallet);
+    }
+    clear();
   };
 
-  // Check both thirdweb account and authSlice user to handle page refresh
-  // thirdweb account can be null briefly while reconnecting, but user persists
-  if (!account && !user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-        <h2 className="text-2xl font-semibold text-primary">Account</h2>
-        <p className="text-lg text-gray-400">
-          Please login to view your account
-        </p>
-        <Button onClick={() => navigate("/login")}>Login</Button>
-      </div>
-    );
-  }
-
   // Use account address if available, otherwise fallback to user address from auth
-  const address = account?.address ?? user?.address ?? "";
+  const address = account?.address ?? user?.address ?? storedAddress ?? "";
+  const isConnected = !!account;
 
   return (
     <div>
@@ -76,21 +68,35 @@ export const AccountPage: React.FC = () => {
         <h2 className="text-2xl font-semibold text-primary text-shadow-primary text-shadow-xs">
           Account
         </h2>
-        <Button className="ml-auto" variant="destructive" onClick={logout}>
-          <LogOut />
-        </Button>
+        <div className="ml-auto flex gap-2">
+          {isConnected && (
+            <Button variant="destructive" onClick={logout}>
+              <LogOut />
+            </Button>
+          )}
+        </div>
       </header>
       <div className="flex flex-col">
         <div className="flex gap-5 self-center py-5 px-10 sm:px-20">
           <div className="flex md:flex-row md:gap-3 flex-col items-center">
-            <img
-              className="rounded-full h-14 md:h-20 aspect-square"
-              src={`https://effigy.im/a/${address}.svg`}
-              alt="User"
-            />
+            {address ? (
+              <img
+                className="rounded-full h-14 md:h-20 aspect-square"
+                src={`https://effigy.im/a/${address}.svg`}
+                alt="User"
+              />
+            ) : (
+              <div className="rounded-full h-14 md:h-20 aspect-square bg-primary/10" />
+            )}
             <div className="flex flex-col items-center md:items-start gap-1">
               <p className="text-lg">
-                <DisplayUser address={address} className="text-lg" />
+                {address ? (
+                  <DisplayUser address={address} className="text-lg" />
+                ) : (
+                  <span className="text-muted-foreground">
+                    Connect a wallet to continue
+                  </span>
+                )}
               </p>
               {getRoleDisplayName(user) && (
                 <p className="text-sm font-semibold text-primary">
@@ -115,6 +121,19 @@ export const AccountPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {!isConnected ? (
+          <div className="flex items-center justify-center min-h-[50vh] px-6">
+            <Button
+              className="w-full max-w-sm"
+              disabled={buttonProps.isConnecting}
+              onClick={() => login()}
+            >
+              {buttonProps.isConnecting ? "Connecting..." : "Connect"}
+            </Button>
+          </div>
+        ) : (
+          <>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <div className="flex flex-col gap-4">
             {(() => {
@@ -261,6 +280,8 @@ export const AccountPage: React.FC = () => {
             </ExpandableContent>
           </Expandable>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

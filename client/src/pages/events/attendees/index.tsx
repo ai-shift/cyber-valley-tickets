@@ -13,7 +13,7 @@ export const EventAttendeesPage: React.FC = () => {
       <div className="flex flex-col gap-4 px-3">
         <SearchBar
           paramName={SEARCH_PARAM_NAME}
-          placeholder="Search attendees by address, ENS, or socials..."
+          placeholder="Search attendees by address or socials..."
         />
         <EventAttendees
           eventId={Number(eventId)}

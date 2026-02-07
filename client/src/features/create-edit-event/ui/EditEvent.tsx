@@ -2,6 +2,9 @@ import type { Event, EventDto } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { EventForm } from "@/features/event-form";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
+import { Loader } from "@/shared/ui/Loader";
+import { eventQueries } from "@/entities/event";
+import { useQuery } from "@tanstack/react-query";
 import { EventDataProvider } from "./EventDataProvider";
 
 type EditEventProps = {
@@ -24,6 +27,15 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
 }) => {
   const foundEvent = events.find((event) => event.id === editEventId);
 
+  const {
+    data: existingCategories,
+    isLoading: isCategoriesLoading,
+    error: categoriesError,
+  } = useQuery({
+    ...eventQueries.categories(editEventId),
+    enabled: !!foundEvent,
+  });
+
   if (!foundEvent) {
     return (
       <ErrorMessage
@@ -40,9 +52,20 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
     );
   }
 
+  if (isCategoriesLoading) return <Loader />;
+  if (categoriesError) return <ErrorMessage errors={categoriesError} />;
+  if (!existingCategories) return <ErrorMessage errors={categoriesError} />;
+
   return (
     <EventForm
       existingEvent={foundEvent}
+      existingCategories={existingCategories.map((c) => ({
+        id: crypto.randomUUID(),
+        name: c.name,
+        // Backend stores discount in basis points. Form uses percent.
+        discount: Math.round((c.discount / 100) * 100) / 100,
+        quota: c.hasQuota ? c.quota : 0,
+      }))}
       events={events}
       places={places}
       onSumbit={onSubmit}
