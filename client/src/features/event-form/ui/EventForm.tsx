@@ -43,6 +43,7 @@ import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace"
 import { getPlaceDefaults } from "../lib/getPlaceDefaults";
 import { mapEventFormToEventDto, mapEventToEventForm } from "../lib/mapEvent";
 import { createFormSchema } from "../model/formSchema";
+import type { CategoryDraft } from "../model/types";
 import { CategorySection } from "./CategorySection";
 import { PlaceCard } from "./PlaceCard";
 
@@ -51,6 +52,7 @@ type EventFormProps = {
   places: EventPlace[];
   onSumbit: (values: EventDto, maybeSocials?: Socials) => void;
   existingEvent?: Event;
+  existingCategories?: CategoryDraft[];
 };
 
 export const EventForm: React.FC<EventFormProps> = ({
@@ -58,6 +60,7 @@ export const EventForm: React.FC<EventFormProps> = ({
   places,
   onSumbit: submitHandler,
   existingEvent,
+  existingCategories,
 }) => {
   if (!places[0])
     return (
@@ -67,7 +70,7 @@ export const EventForm: React.FC<EventFormProps> = ({
   const { WithSubmitCheck, props } = useCheckSubmit();
 
   const eventForEdit = existingEvent
-    ? mapEventToEventForm(existingEvent)
+    ? mapEventToEventForm(existingEvent, existingCategories)
     : undefined;
 
   const eventIdsToExclude = useMemo(
