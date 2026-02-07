@@ -6,7 +6,7 @@ import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
 import { ExpandableTrigger } from "@/shared/ui/expandable/ui/ExpandableTrigger";
 import { useMap } from "@vis.gl/react-google-maps";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { getPlacemarkPosition } from "../lib/getCenterPosition.ts";
 import { getThumbUrl } from "../lib/getThumbUrl.ts";
@@ -25,7 +25,7 @@ export const LayerControl: React.FC<LayerControlProps> = ({
 }) => {
   const map = useMap();
   const { toggleGroup, displayedGroups } = useMapState();
-  const [, setIsExpanded] = useState(true);
+  const [isListExpanded, setIsListExpanded] = useState(false);
 
   // Use TanStack Query to get layer data from cache
   // This will be instant if data was preloaded by usePreloadGeodataLayers
@@ -35,11 +35,6 @@ export const LayerControl: React.FC<LayerControlProps> = ({
   const layerData = rawLayerData as Placemark[] | undefined;
 
   const isDisplayed = displayedGroups.includes(value);
-
-  // Auto-expand when visibility is toggled on, collapse when off
-  useEffect(() => {
-    setIsExpanded(isDisplayed);
-  }, [isDisplayed]);
 
   const handleClick = (placemark: Placemark) => {
     if (!map) {
@@ -59,8 +54,8 @@ export const LayerControl: React.FC<LayerControlProps> = ({
 
   return (
     <Expandable
-      expanded={isDisplayed}
-      setExpanded={setIsExpanded}
+      expanded={isListExpanded}
+      setExpanded={setIsListExpanded}
       className="mb-2"
     >
       <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors group">

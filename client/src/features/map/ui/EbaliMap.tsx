@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import { type LatLng, usePreloadGeodataLayers } from "@/entities/geodata";
+
 import { debounce } from "@/shared/lib/debounce.ts";
 import {
   Sheet,
@@ -138,16 +139,16 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
               </div>
             )}
 
-            {layerTitles.map((title) => {
-              return (
+            {layerTitles
+              .filter((title) => ["trails", "places"].includes(title))
+              .map((title) => (
                 <LayerControl
                   key={title}
                   layerName={title}
                   showInfo={setSelectedPlacemark}
                   closeGroups={() => setShowGroups(false)}
                 />
-              );
-            })}
+              ))}
           </div>
         </SheetContent>
       </Sheet>
