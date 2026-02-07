@@ -19,7 +19,7 @@ export const CustomSMSLogin: React.FC = () => {
 
   const { connect, isConnecting } = useConnect();
   const account = useActiveAccount();
-  const { login } = useAuthSlice();
+  const { setUser, setStatus } = useAuthSlice();
 
   const handleSendCode = async () => {
     try {
@@ -82,7 +82,8 @@ export const CustomSMSLogin: React.FC = () => {
       try {
         const userData = await apiClient.GET("/api/users/current/");
         if (userData.data) {
-          login(userData.data as User);
+          setUser(userData.data as User);
+          setStatus("connected");
         }
       } catch (authError) {
         console.error(

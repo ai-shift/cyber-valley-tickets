@@ -679,4 +679,3 @@ export async function isProfileOwner(
     params: [profileId, address],
   });
 }
-
