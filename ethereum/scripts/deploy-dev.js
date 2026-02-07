@@ -17,7 +17,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const bs58 = require("bs58");
+const bs58 = reqDefault("bs58");
 const namehash = require("eth-ens-namehash");
 
 function reqDefault(p) {
