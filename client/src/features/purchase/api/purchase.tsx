@@ -203,7 +203,8 @@ const createEvent = async (
   const contractCategories: CategoryInput[] = order.event.categories.map(
     (cat) => ({
       name: cat.name,
-      discountPercentage: cat.discount,
+      // Form stores discount in percent; contract expects basis points.
+      discountPercentage: Math.round(cat.discount * 100),
       quota: cat.quota,
       hasQuota: cat.quota > 0, // quota === 0 means unlimited
     }),

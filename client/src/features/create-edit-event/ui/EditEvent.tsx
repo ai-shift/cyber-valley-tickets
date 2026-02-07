@@ -62,7 +62,8 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
       existingCategories={existingCategories.map((c) => ({
         id: crypto.randomUUID(),
         name: c.name,
-        discount: c.discount,
+        // Backend stores discount in basis points. Form uses percent.
+        discount: Math.round((c.discount / 100) * 100) / 100,
         quota: c.hasQuota ? c.quota : 0,
       }))}
       events={events}
