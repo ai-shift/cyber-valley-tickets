@@ -18,15 +18,27 @@ export const useCheckSubmit = (eventDepositSize?: number) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (account == null) return;
+    if (account == null) {
+      setIsLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setIsLoading(true);
+
     hasEnoughtTokens(account, BigInt(eventDepositSize ?? 0)).then(
       ({ enoughTokens, balanceAfterPayment }) => {
+        if (cancelled) return;
         console.log("Balance after payment", balanceAfterPayment);
         setCanCreate(enoughTokens);
         setRequiredTokens(balanceAfterPayment);
         setIsLoading(false);
       },
     );
+
+    return () => {
+      cancelled = true;
+    };
   }, [account, eventDepositSize]);
 
   const props: WithCheckProps = {
