@@ -41,26 +41,28 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   const [proofToken, setProofToken] = useState<string | null>(null);
   const [isSigning, setIsSigning] = useState(false);
 
+  const shouldPollRedeemStatus = open && !!proofToken;
+
   const ticketQueries = useQueries({
     queries: tickets.map((ticket) => ({
       queryFn: () =>
         apiClient.GET("/api/events/{event_id}/tickets/{ticket_id}", {
           params: {
             path: {
-              eventId: ticket.eventId,
-              ticketId: Number(ticket.id),
+              event_id: ticket.eventId,
+              ticket_id: Number(ticket.id),
             },
-          },
+          } as any,
         }),
       select: (data: {
         data?: { isRedeemed: boolean; pendingIsRedeemed: boolean };
       }) => data.data,
       queryKey: ["redeemed", ticket.eventId, ticket.id],
-      refetchInterval: open ? 1000 : -1,
+      enabled: shouldPollRedeemStatus,
+      refetchInterval: shouldPollRedeemStatus ? 1000 : -1,
     })),
   });
 
-  const isLoading = ticketQueries.some((query) => query.isLoading);
   const hasError = ticketQueries.some((query) => query.error);
   const allData = ticketQueries.map((query) => query.data);
   const canCheckRedeemStatus = !hasError && !allData.some((data) => !data);
@@ -130,8 +132,6 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   }
 
   const ticketCount = tickets.length;
-
-  if (isLoading) return <Loader className="h-8" containerClassName="h-20" />;
   if (!canCheckRedeemStatus) {
     return (
       <div className="w-full">

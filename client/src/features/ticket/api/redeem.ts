@@ -9,8 +9,8 @@ export const useEventStatus = (eventId: number) =>
     queryFn: async () => {
       return await apiClient.GET("/api/events/{event_id}/status", {
         params: {
-          path: { eventId },
-        },
+          path: { event_id: eventId },
+        } as any,
       });
     },
     select: (resp) => resp?.data,
@@ -42,8 +42,12 @@ export const redeem = async (
     {
       headers: { Authorization: `Bearer ${proofToken}` },
       params: {
-        path: { nonce, eventId, ticketId: ticketId.toString() },
-      },
+        path: {
+          nonce,
+          event_id: eventId,
+          ticket_id: ticketId.toString(),
+        },
+      } as any,
     },
   );
 

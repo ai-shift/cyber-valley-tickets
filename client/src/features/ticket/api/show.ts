@@ -14,8 +14,8 @@ export const useGetNonce = (
         {
           headers: proofToken ? { Authorization: `Bearer ${proofToken}` } : {},
           params: {
-            path: { eventId, ticketId: Number(ticketId) },
-          },
+            path: { event_id: eventId, ticket_id: Number(ticketId) },
+          } as any,
         },
       );
     },
