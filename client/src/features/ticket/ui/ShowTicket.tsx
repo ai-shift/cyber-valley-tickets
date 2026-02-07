@@ -41,6 +41,10 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   const [isTrusted, setIsTrusted] = useState(false);
 
   const shouldPollRedeemStatus = open && !!proofToken;
+  const dialogFullscreenClass =
+    "top-0 left-0 translate-x-0 translate-y-0 w-screen max-w-screen sm:max-w-screen " +
+    "h-[calc(100dvh-var(--app-tabbar-h,0px))] max-h-[calc(100dvh-var(--app-tabbar-h,0px))] " +
+    "flex flex-col z-50 border-black overflow-y-auto";
 
   const ticketQueries = useQueries({
     queries: tickets.map((ticket) => ({
@@ -156,7 +160,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         </Button>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent
-            className="w-screen h-screen max-w-screen flex flex-col sm:max-w-screen z-1000 border-black overflow-y-auto"
+            className={dialogFullscreenClass}
             aria-describedby={undefined}
           >
             <DialogTitle className="text-center">
@@ -224,7 +228,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         )}
       </DialogTrigger>
       <DialogContent
-        className="w-screen h-screen max-w-screen flex flex-col sm:max-w-screen z-1000 border-black overflow-y-auto"
+        className={dialogFullscreenClass}
         aria-describedby={undefined}
       >
         <DialogTitle className="text-center">
