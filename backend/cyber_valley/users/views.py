@@ -2,7 +2,6 @@ from typing import Any
 
 import ipfshttpclient
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 from django.db.models import Q
 from drf_spectacular.utils import (
     OpenApiParameter,
@@ -16,9 +15,11 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework.parsers import JSONParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from cyber_valley.common.request_address import extract_address, get_or_create_user_by_address, require_address
 
 from .models import CyberValleyUser, UserSocials
 from .serializers import (
@@ -32,13 +33,14 @@ User = get_user_model()
 
 
 class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     @extend_schema(responses=CurrentUserSerializer)
     @action(detail=False, methods=["get"], name="Current user")
     def current(self, request: Request) -> Response:
-        assert request.user.is_authenticated
-        serializer = CurrentUserSerializer(request.user)
+        address = require_address(request)
+        user = get_or_create_user_by_address(address)
+        serializer = CurrentUserSerializer(user)
         return Response(serializer.data)
 
     @extend_schema(
@@ -55,8 +57,9 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     )
     @action(detail=False, methods=["get"], name="Current user")
     def staff(self, request: Request) -> Response:
-        assert request.user.is_authenticated
-        if not request.user.has_role(
+        address = require_address(request)
+        requester = get_or_create_user_by_address(address)
+        if not requester.has_role(
             CyberValleyUser.LOCAL_PROVIDER,
             CyberValleyUser.MASTER,
         ):
@@ -85,8 +88,9 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     )
     @action(detail=False, methods=["get"], name="Local Providers")
     def local_providers(self, request: Request) -> Response:
-        assert request.user.is_authenticated
-        if not request.user.has_role(CyberValleyUser.MASTER):
+        address = require_address(request)
+        requester = get_or_create_user_by_address(address)
+        if not requester.has_role(CyberValleyUser.MASTER):
             return Response("Available only to master", status=401)
         local_providers = User.objects.filter(
             roles__name=CyberValleyUser.LOCAL_PROVIDER
@@ -114,8 +118,9 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
     )
     @action(detail=False, methods=["get"], name="Verified Shamans")
     def verified_shamans(self, request: Request) -> Response:
-        assert request.user.is_authenticated
-        if not request.user.has_role(
+        address = require_address(request)
+        requester = get_or_create_user_by_address(address)
+        if not requester.has_role(
             CyberValleyUser.LOCAL_PROVIDER,
             CyberValleyUser.MASTER,
         ):
@@ -145,12 +150,11 @@ class CurrentUserViewSet(viewsets.GenericViewSet[CyberValleyUser]):
 )
 @api_view(["PUT"])
 @parser_classes([JSONParser])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def upload_user_socials_to_ipfs(request: Request) -> Response:
     socials = UploadSocialsSerializer(data=request.data)
     socials.is_valid(raise_exception=True)
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
+    user = get_or_create_user_by_address(require_address(request))
     with ipfshttpclient.connect() as client:  # type: ignore[attr-defined]
         socials_hash = client.add_json(socials.data)
     return Response({"cid": socials_hash})
@@ -162,10 +166,9 @@ def upload_user_socials_to_ipfs(request: Request) -> Response:
 )
 @api_view(["POST"])
 @parser_classes([JSONParser])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def save_user_socials(request: Request) -> Response:
-    user = request.user
-    assert not isinstance(user, AnonymousUser)
+    user = get_or_create_user_by_address(require_address(request))
 
     serializer = SaveSocialsSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -198,7 +201,7 @@ def save_user_socials(request: Request) -> Response:
     },
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_user_socials(_request: Request, address: str) -> Response:
     """Get social media handles for a user by address."""
     try:
@@ -234,7 +237,7 @@ def get_user_socials(_request: Request, address: str) -> Response:
     },
 )
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_user_profile(request: Request, address: str) -> Response:
     """Get user profile info.
 
@@ -243,18 +246,24 @@ def get_user_profile(request: Request, address: str) -> Response:
     """
     try:
         target_user = CyberValleyUser.objects.get(address=address.lower())
-        current_user = request.user
-        assert isinstance(current_user, CyberValleyUser)
+        requester_address = extract_address(request)
+        current_user = (
+            get_or_create_user_by_address(requester_address)
+            if requester_address
+            else None
+        )
 
         # Determine if socials should be visible.
         # Visible if: requester is the user OR has localprovider/master role.
-        can_view_socials = (
-            current_user.address.lower() == address.lower()
-            or current_user.has_role(
-                CyberValleyUser.LOCAL_PROVIDER,
-                CyberValleyUser.MASTER,
+        can_view_socials = False
+        if isinstance(current_user, CyberValleyUser):
+            can_view_socials = (
+                current_user.address.lower() == address.lower()
+                or current_user.has_role(
+                    CyberValleyUser.LOCAL_PROVIDER,
+                    CyberValleyUser.MASTER,
+                )
             )
-        )
 
         # Build response data
         data: dict[str, Any] = {
