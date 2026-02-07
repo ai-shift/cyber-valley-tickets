@@ -20,6 +20,7 @@ export const wallets = [
   }),
   // On mobile, deep link flows tend to be more reliable than relying on injected providers.
   createWallet("io.metamask", { preferDeepLink: true }),
+  createWallet("so.onekey.app.wallet", { preferDeepLink: true }),
   createWallet("com.coinbase.wallet"),
   createWallet("me.rainbow"),
   createWallet("io.rabby"),
