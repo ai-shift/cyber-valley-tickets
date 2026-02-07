@@ -146,7 +146,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               <div>
                 <span className="font-medium">{field.name}</span>
                 <span className="text-sm text-muted-foreground ml-2">
-                  ({field.discount}% off)
+                  ({Number(field.discount).toFixed(2)}% off)
                 </span>
                 <span className="text-sm text-muted-foreground ml-2">
                   {field.quota !== 0 ? pluralTickets(field.quota) : "Unlimited"}
@@ -227,6 +227,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               type="number"
               min="0"
               max="100"
+              step="0.01"
               value={newCategory.discount}
               onChange={(e) =>
                 setNewCategory({ ...newCategory, discount: e.target.value })
