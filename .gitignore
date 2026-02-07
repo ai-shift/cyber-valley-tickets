@@ -6,3 +6,4 @@
 /ethereum/ignition/deployments
 /.opencode
 tasks/
+/.pnpm-store/
