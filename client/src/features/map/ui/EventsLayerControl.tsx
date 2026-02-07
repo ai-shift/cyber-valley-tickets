@@ -24,7 +24,7 @@ export const EventsLayerControl: React.FC<EventsLayerControlProps> = memo(
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-lg text-primary flex items-center gap-2">
               Events
-              <span className="text-xs font-normal bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+              <span className="text-xs font-normal bg-primary/10 text-black px-2 py-0.5 rounded-full">
                 {events.length}
               </span>
             </h3>
