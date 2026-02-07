@@ -14,6 +14,7 @@ import { getPlaceById } from "@/entities/place";
 import type { Socials } from "@/entities/user";
 import { cleanEventLocal } from "@/features/event-form";
 import { clearReferral } from "@/features/referral";
+import { useAuthSlice } from "@/app/providers";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
 
@@ -283,12 +284,17 @@ const getOrderCid = async (
 
 const getEventCid = async (event: EventDto, cid: string) => {
   const { title, description, image, website } = event;
+  const address = useAuthSlice.getState().address;
+  if (!address) {
+    throw new Error("Wallet address is required to upload event metadata");
+  }
 
   if (import.meta.env.DEV) {
     console.log(image);
   }
 
   const formData = new FormData();
+  formData.set("address", address);
   formData.set("title", title);
   formData.set("description", description);
   formData.set("website", website || "");

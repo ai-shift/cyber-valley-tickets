@@ -15,48 +15,38 @@ export const apiClient = createClient<paths>({
   baseUrl: import.meta.env.PUBLIC_API_HOST,
 });
 
-let refreshPromise: Promise<Response> | null = null;
+const addressMiddleware: Middleware = {
+  async onRequest({ request }) {
+    const address = useAuthSlice.getState().address;
+    if (!address) return request;
 
-const refreshSessionIfNeeded = async (request: Request) => {
-  if (request.url.includes("/api/auth/refresh")) {
-    return;
-  }
-  const { hasJWT, signatureExpiresAt, signatureRefreshAt, logout } =
-    useAuthSlice.getState();
-  if (!hasJWT) return;
-
-  const now = Math.floor(Date.now() / 1000);
-  if (signatureExpiresAt && now > signatureExpiresAt) {
-    logout();
-    return;
-  }
-  if (signatureRefreshAt && now >= signatureRefreshAt) {
-    if (!refreshPromise) {
-      const refreshUrl = new URL(
-        "/api/auth/refresh",
-        import.meta.env.PUBLIC_API_HOST,
-      ).toString();
-      refreshPromise = fetch(refreshUrl, {
-        credentials: "include",
-      }).finally(() => {
-        refreshPromise = null;
-      });
-    }
-    await refreshPromise;
-  }
+    const headers = new Headers(request.headers);
+    headers.set("X-User-Address", address);
+    return new Request(request, { headers });
+  },
 };
 
 const errorMiddleware: Middleware = {
-  async onRequest({ request }) {
-    await refreshSessionIfNeeded(request);
-    return request;
-  },
   async onResponse({ response }) {
     if (!response.ok) {
-      const errorData = await response.json();
-      throw errorData as ApiError;
+      try {
+        const errorData = (await response.json()) as ApiError;
+        throw errorData;
+      } catch {
+        throw ({
+          type: "parse_error",
+          errors: [
+            {
+              code: "parse_error",
+              detail: `HTTP ${response.status}`,
+              attr: null,
+            },
+          ],
+        } as unknown) as ApiError;
+      }
     }
   },
 };
 
+apiClient.use(addressMiddleware);
 apiClient.use(errorMiddleware);
