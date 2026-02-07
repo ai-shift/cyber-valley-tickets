@@ -29,7 +29,17 @@ export const EventsList: React.FC<EventsListProps> = ({
   } = useQuery(eventQueries.list(searchQuery));
   const { user } = useAuthSlice();
 
-  const maybeUser = user ?? ({ roles: ["customer"] } as User);
+  // Some filters (e.g. `myEventsFilter`) expect `tickets`/`address` to exist.
+  // Provide safe defaults when wallet is not connected yet.
+  const maybeUser: User =
+    user ??
+    ({
+      address: "",
+      roles: ["customer"],
+      tickets: [],
+      socials: [],
+      profileManagerBps: 0,
+    } as User);
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage errors={error} />;
