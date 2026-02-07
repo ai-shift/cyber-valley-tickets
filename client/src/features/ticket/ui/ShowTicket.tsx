@@ -63,8 +63,10 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   const isLoading = ticketQueries.some((query) => query.isLoading);
   const hasError = ticketQueries.some((query) => query.error);
   const allData = ticketQueries.map((query) => query.data);
+  const canCheckRedeemStatus = !hasError && !allData.some((data) => !data);
 
   useEffect(() => {
+    if (!canCheckRedeemStatus) return;
     const anyPendingRedeemed = allData.some(
       (data) => data?.pendingIsRedeemed && !data?.isRedeemed,
     );
@@ -72,7 +74,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
       setOpen(false);
       wasClosed.current = true;
     }
-  }, [allData]);
+  }, [allData, canCheckRedeemStatus]);
 
   useEffect(() => {
     if (!open) return;
@@ -109,10 +111,12 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
     }
   };
 
-  const allRedeemed = allData.every((data) => data?.isRedeemed);
-  const anyPending = allData.some(
-    (data) => data?.pendingIsRedeemed && !data?.isRedeemed,
-  );
+  const allRedeemed = canCheckRedeemStatus
+    ? allData.every((data) => data?.isRedeemed)
+    : tickets.every((t) => t.isRedeemed);
+  const anyPending = canCheckRedeemStatus
+    ? allData.some((data) => data?.pendingIsRedeemed && !data?.isRedeemed)
+    : tickets.some((t) => t.pendingIsRedeemed && !t.isRedeemed);
 
   function handleBuyMoreClick() {
     setTicketOrder({
@@ -125,15 +129,75 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
     navigate("/purchase");
   }
 
-  if (isLoading) return <Loader className="h-8" containerClassName="h-20" />;
-  if (hasError || allData.some((data) => !data))
-    return (
-      <p className="text-center text-red-500 text-xl">
-        Can't check your tickets
-      </p>
-    );
-
   const ticketCount = tickets.length;
+
+  if (isLoading) return <Loader className="h-8" containerClassName="h-20" />;
+  if (!canCheckRedeemStatus) {
+    return (
+      <div className="w-full">
+        <Button
+          className="w-full"
+          disabled={hasPassed || isSigning}
+          onClick={async () => {
+            await signToShowQr();
+            setOpen(true);
+          }}
+        >
+          {isSigning ? "Signing..." : "Show tickets"}
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent
+            className="w-screen h-screen max-w-screen flex flex-col sm:max-w-screen z-1000 border-black overflow-y-auto"
+            aria-describedby={undefined}
+          >
+            <DialogTitle className="text-center">
+              Your Tickets ({ticketCount}){anyPending && <br />}
+              {anyPending && "(redeem pending)"}
+            </DialogTitle>
+            {!proofToken ? (
+              <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6 text-center">
+                <p className="text-muted-foreground">
+                  To prevent QR screenshot reuse, tickets use rotating nonces.
+                  Sign a message to prove wallet ownership and show your QR
+                  codes.
+                </p>
+                <Button
+                  className="w-full max-w-sm"
+                  onClick={signToShowQr}
+                  disabled={isSigning}
+                >
+                  {isSigning ? "Signing..." : "Sign to show QR codes"}
+                </Button>
+              </div>
+            ) : (
+              <Suspense fallback={<Loader />}>
+                <div
+                  className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
+                >
+                  {tickets.map((ticket) => (
+                    <TicketCard
+                      key={ticket.id}
+                      ticket={ticket}
+                      proofToken={proofToken}
+                    />
+                  ))}
+                </div>
+              </Suspense>
+            )}
+            <div className="p-4 border-t border-border">
+              <Button
+                className="w-full"
+                onClick={handleBuyMoreClick}
+                disabled={hasPassed}
+              >
+                Buy more tickets
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
