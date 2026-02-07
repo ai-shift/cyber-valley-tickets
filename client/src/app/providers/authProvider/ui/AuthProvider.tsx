@@ -1,32 +1,24 @@
-// TODO: Investigate thirdweb/react/web/ui/ConnectWallet/screens/SignatureScreen.tsx
-// to find a way of only signing in message on account switch instead of
-// complete login flow
 import type { User } from "@/entities/user";
-import { apiClient } from "@/shared/api";
 import { client, wallets } from "@/shared/lib/web3";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import type React from "react";
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
-import { useActiveWallet, useAutoConnect } from "thirdweb/react";
-import { refresh } from "../api/refresh";
+import { Outlet } from "react-router";
+import {
+  useActiveAccount,
+  useActiveWallet,
+  useActiveWalletConnectionStatus,
+  useAutoConnect,
+} from "thirdweb/react";
 import { useAuthSlice } from "../model/authSlice";
 
 export const AuthProvider: React.FC = () => {
-  const navigate = useNavigate();
-  const { login, logout, hasJWT, signatureExpiresAt, signatureRefreshAt } =
-    useAuthSlice();
+  const { setAddress, setStatus, setUser, clear } = useAuthSlice();
   const [walletChanged, setWalletChanged] = useState(false);
-  const { isError, isFetching, refetch } = useQuery({
-    queryFn: refresh,
-    queryKey: ["refresh"],
-    enabled: hasJWT,
-    refetchInterval: 1000 * 60 * 60 * 12,
-    refetchOnWindowFocus: true,
-  });
 
   const wallet = useActiveWallet();
+  const account = useActiveAccount();
+  const walletConnectionStatus = useActiveWalletConnectionStatus();
   useEffect(() => {
     if (wallet == null) {
       return;
@@ -37,7 +29,6 @@ export const AuthProvider: React.FC = () => {
     });
   }, [wallet]);
 
-  const hasError = !isFetching && isError;
   useAutoConnect({
     client,
     wallets,
@@ -46,43 +37,45 @@ export const AuthProvider: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!hasJWT) return;
-    const now = Math.floor(Date.now() / 1000);
-    if (signatureExpiresAt && now > signatureExpiresAt) {
-      apiClient.GET("/api/auth/logout").finally(() => {
-        logout();
-        navigate("/login");
-      });
+    const address = account?.address?.toLowerCase() ?? null;
+    if (!address) {
+      // Avoid treating transient disconnects/reconnects (common during WalletConnect flows)
+      // as an app logout.
+      if (
+        walletConnectionStatus === "connecting" ||
+        walletConnectionStatus === "unknown"
+      ) {
+        return;
+      }
+      if (walletConnectionStatus === "disconnected") clear();
       return;
     }
-  }, [hasJWT, logout, navigate, signatureExpiresAt]);
 
-  useEffect(() => {
-    if (!hasJWT) return;
-    const maybeRefresh = () => {
-      const now = Math.floor(Date.now() / 1000);
-      if (signatureRefreshAt && now >= signatureRefreshAt) {
-        refetch();
+    const syncUser = async () => {
+      setAddress(address);
+      setStatus("connected");
+      setWalletChanged(false);
+
+      const url = new URL("/api/users/current/", import.meta.env.PUBLIC_API_HOST);
+      url.searchParams.set("address", address);
+      const resp = await fetch(url.toString(), { credentials: "include" });
+      if (!resp.ok) {
+        setUser(null);
+        return;
       }
+      setUser((await resp.json()) as User);
     };
-    maybeRefresh();
-    const interval = setInterval(maybeRefresh, 1000 * 60 * 60);
-    return () => clearInterval(interval);
-  }, [hasJWT, refetch, signatureRefreshAt]);
 
-  useEffect(() => {
-    if (hasError || walletChanged) {
-      apiClient.GET("/api/auth/logout").finally(() => {
-        logout();
-        navigate("/login");
-      });
-    } else if (hasJWT) {
-      apiClient.GET("/api/users/current/").then((resp) => {
-        login(resp.data as User);
-        setWalletChanged(false);
-      });
-    }
-  }, [hasError, navigate, hasJWT, login, logout, walletChanged]);
+    void syncUser();
+  }, [
+    account?.address,
+    clear,
+    setAddress,
+    setStatus,
+    setUser,
+    walletChanged,
+    walletConnectionStatus,
+  ]);
 
   return <Outlet />;
 };

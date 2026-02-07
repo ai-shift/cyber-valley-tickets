@@ -9,8 +9,8 @@ export const useEventStatus = (eventId: number) =>
     queryFn: async () => {
       return await apiClient.GET("/api/events/{event_id}/status", {
         params: {
-          path: { eventId },
-        },
+          path: { event_id: eventId },
+        } as any,
       });
     },
     select: (resp) => resp?.data,
@@ -20,8 +20,10 @@ export const useEventStatus = (eventId: number) =>
 export const redeem = async (
   account: Account | undefined,
   QRCodeValue: string,
+  proofToken: string | null,
 ) => {
   if (!account) throw new Error("No account");
+  if (!proofToken) throw new Error("Missing SIWE proof");
 
   const parts = QRCodeValue.split(",");
   const eventId = Number(parts[0]);
@@ -38,9 +40,15 @@ export const redeem = async (
   const { response, error } = await apiClient.GET(
     "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}",
     {
+      // SIWE device trust is proven via HttpOnly cookie.
+      // Keep the `proofToken` param to preserve UX flow, but do not send it.
       params: {
-        path: { nonce, eventId, ticketId: ticketId.toString() },
-      },
+        path: {
+          nonce,
+          event_id: eventId,
+          ticket_id: ticketId.toString(),
+        },
+      } as any,
     },
   );
 

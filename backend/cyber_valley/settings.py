@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "cyber_valley.events",
-    "cyber_valley.web3_auth",
     "cyber_valley.users",
     "cyber_valley.notifications.apps.NotificationsConfig",
     "cyber_valley.scripts",
@@ -83,10 +82,8 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_standardized_errors.openapi.AutoSchema",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "cyber_valley.web3_auth.authenticate.CookieJWTAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-    ),
+    # No server-side auth/session. Endpoints derive identity from request-provided address.
+    "DEFAULT_AUTHENTICATION_CLASSES": (),
     "DEFAULT_RENDERER_CLASSES": (
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
         "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",

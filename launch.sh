@@ -430,25 +430,40 @@ log_info "Resetting indexer state for full re-index" "resetting"
 cd backend
 .venv/bin/python manage.py shell -c "
 from cyber_valley.indexer.models import LastProcessedBlock, LogProcessingError
-LastProcessedBlock.objects.all().delete()
+# Force the daemon indexer to start from block 0 on this relaunch.
+# (Deleting the row would also work, but being explicit is clearer and survives
+# any future changes to the indexer defaulting logic.)
+LastProcessedBlock.objects.update_or_create(id=1, defaults={\"block_number\": 0})
 LogProcessingError.objects.all().delete()
-print('Indexer state cleared')
+print('Indexer state reset (last_processed_block=0)')
 "
 cd ..
 log_success "Indexer state reset" "done"
 
-# Run oneshot indexer first to properly index all historical events
-# This must be done BEFORE starting the daemon indexer to ensure proper ordering
-# Events can be processed out of order (e.g., TicketCategoryCreated before NewEventRequest)
+# Run oneshot indexer first to build DB deterministically (no websocket listener).
+# This prevents startup races where realtime events could be enqueued before
+# their dependencies are indexed.
 log_info "Running oneshot indexer to index all historical events" "indexing"
 if ! run_buf_command "make -C backend/ run-indexer-oneshot"; then
     log_warning "Oneshot indexer had some errors (may be expected for duplicate events)" "warning"
 fi
 log_success "Oneshot indexer completed" "done"
 
+# The oneshot run advances LastProcessedBlock to the latest block. Force it back to 0
+# so the daemon indexer replays from genesis as requested.
+log_info "Forcing indexer last processed block back to 0" "resetting"
+cd backend
+.venv/bin/python manage.py shell -c "
+from cyber_valley.indexer.models import LastProcessedBlock
+LastProcessedBlock.objects.update_or_create(id=1, defaults={\"block_number\": 0})
+print('LastProcessedBlock set to 0')
+"
+cd ..
+log_success "Indexer last processed block forced to 0" "done"
+
 log_info "Starting blockchain indexer" "starting"
 create_tmux_window "indexer" "/tmp/indexer.log"
-tmux send-keys -t "$SESSION_NAME:indexer" "make -C backend/ run-indexer" Enter
+tmux send-keys -t "$SESSION_NAME:indexer" "make -C backend/ run-indexer-from-zero" Enter
 sleep 2
 if ! tmux list-windows -t "$SESSION_NAME" | grep -q "indexer"; then
     log_error "Failed to create indexer window" "failed"

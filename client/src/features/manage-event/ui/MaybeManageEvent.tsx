@@ -6,6 +6,7 @@ import {
   cancelEvent,
   closeEvent,
   declineEvent,
+  formatTxError,
 } from "@/shared/lib/web3";
 import { AcceptDialog } from "@/shared/ui/AcceptDialog";
 import { Loader } from "@/shared/ui/Loader";
@@ -162,20 +163,7 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
           raw: e,
         });
 
-        // Extract meaningful error message
-        let errorMessage = "Failed to send transaction";
-        if (e instanceof Error) {
-          if (e.message.includes("revert")) {
-            errorMessage =
-              "Transaction reverted by contract. You may not have permission to perform this action or the event is not in the correct state.";
-          } else if (e.message.includes("insufficient funds")) {
-            errorMessage = "Insufficient funds to complete transaction";
-          } else if (e.message.includes("user rejected")) {
-            errorMessage = "Transaction was rejected";
-          } else {
-            errorMessage = `Transaction failed: ${e.message.substring(0, 100)}`;
-          }
-        }
+        const errorMessage = formatTxError(e);
 
         setModalInfo({
           title: "Failure",

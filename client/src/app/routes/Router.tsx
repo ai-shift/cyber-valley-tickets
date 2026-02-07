@@ -12,7 +12,6 @@ import {
   EventsDetailsPage,
   EventsListPage,
   HomePage,
-  LoginPage,
   ManageLocalprovidersPage,
   ManagePlacesPage,
   ManageStaffPage,
@@ -74,6 +73,16 @@ export const Router = () => {
                   element={<CreatePlaceUnifiedPage />}
                 />
 
+                <Route path="/account">
+                  <Route index element={<AccountPage />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route
+                      path="distribution-profiles/create"
+                      element={<CreateDistributionProfilePage />}
+                    />
+                  </Route>
+                </Route>
+
                 <Route element={<ProtectedRoute />}>
                   <Route
                     path="/manage/place"
@@ -117,13 +126,6 @@ export const Router = () => {
                     path="/notifications"
                     element={<NotificationsPage />}
                   />
-                  <Route path="/account">
-                    <Route index element={<AccountPage />} />
-                    <Route
-                      path="/account/distribution-profiles/create"
-                      element={<CreateDistributionProfilePage />}
-                    />
-                  </Route>
                 </Route>
                 <Route path="/purchase" element={<PurchasePage />} />
                 <Route
@@ -135,7 +137,6 @@ export const Router = () => {
               </Route>
               <Route path="verify" element={<ShamanVerificationPage />} />
             </Route>
-            <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<Page404 />} />
           </Routes>
         </GoogleMapsProvider>

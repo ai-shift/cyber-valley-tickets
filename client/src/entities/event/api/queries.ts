@@ -33,7 +33,10 @@ export const getEventCategories = async (eventId: number) =>
   await apiClient.GET("/api/events/{event_id}/categories", {
     params: {
       path: {
+        // OpenAPI types use `eventId` but our route template is `{event_id}`.
+        // Provide both to keep the runtime URL interpolation correct.
         event_id: eventId,
+        eventId,
       },
-    } as unknown as { path: { eventId: number } },
+    } as any,
   });

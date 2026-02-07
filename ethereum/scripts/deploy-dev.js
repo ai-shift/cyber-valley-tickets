@@ -263,7 +263,7 @@ async function createPlaces(
     const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
       method: "PUT",
-      headers: { Authorization: `Token ${master.address}` },
+      headers: { "X-User-Address": master.address },
     });
 
     if (!resp.ok) {
@@ -380,7 +380,8 @@ async function createEvents(eventManager, erc20, places, signers) {
       website: "https://example.com/other",
       placeIndex: 1,
       price: 50,
-      startDate: new Date(currentWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000),
+      // Keep this event visible in the public list (non-past) for a bit longer.
+      startDate: new Date(currentWeekStart.getTime() + 8 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
       cover: "seed-data/event-covers/event-2-game.jpg",
       creator: creatorSlave,
@@ -467,7 +468,7 @@ async function createSingleEvent(
       body: JSON.stringify(cfg.socials),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Token ${cfg.creator.address}`,
+        "X-User-Address": cfg.creator.address,
       },
     },
   );
@@ -488,13 +489,14 @@ async function createSingleEvent(
   body.set("website", cfg.website || "");
   body.set("cover", imgBlob, "image.jpg");
   body.set("socials_cid", socials.cid);
+  body.set("address", cfg.creator.address);
 
   const eventMetaResponse = await fetch(
     `${BACKEND_HOST}/api/ipfs/events/meta`,
     {
       body,
       method: "PUT",
-      headers: { Authorization: `Token ${cfg.creator.address}` },
+      headers: { "X-User-Address": cfg.creator.address },
     },
   );
   if (!eventMetaResponse.ok) {

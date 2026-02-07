@@ -20,7 +20,6 @@ export { AccountPage } from "./account";
 export { CreateDistributionProfilePage } from "./account/distribution-profiles/create";
 export { PurchasePage } from "./purchase";
 export { SocialsPage } from "./socials";
-export { LoginPage } from "./login";
 export { Page404 } from "./404";
 export { TxHashPlaceholderPage } from "./txhash";
 export { UserPage } from "./user";

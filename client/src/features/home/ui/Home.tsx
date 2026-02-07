@@ -14,7 +14,7 @@ export const Home = () => {
   const { data: revenue } = useQuery(eventQueries.totalRevenue());
 
   return (
-    <div>
+    <div className="pb-24">
       <div className="px-6 flex justify-between items-center">
         <h1 className="text-shadow-md text-shadow-primary text-primary text-5xl py-4">
           Events

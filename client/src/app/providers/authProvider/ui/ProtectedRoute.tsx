@@ -1,28 +1,14 @@
-import { useLogin } from "@/features/login/hooks/useLogin";
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, Navigate } from "react-router";
+import { useActiveAccount } from "thirdweb/react";
 import { useAuthSlice } from "../model/authSlice";
 
 export const ProtectedRoute: React.FC = () => {
-  const { hasJWT } = useAuthSlice();
-  const { login } = useLogin();
-  const navigate = useNavigate();
+  const { status } = useAuthSlice();
+  const account = useActiveAccount();
 
-  useEffect(() => {
-    if (!hasJWT) {
-      login()
-        .then((data) => {
-          console.log("LOGIN DATA", data);
-        })
-        .catch((error) => {
-          console.log("LOGIN ERROR +++++++++++++++++++++++", error);
-          return navigate("/");
-        });
-    }
-  }, [hasJWT, login]);
-
-  if (!hasJWT) {
-    return null;
+  if (status === "boot") return null;
+  if (!account || status !== "connected") {
+    return <Navigate to="/account" state={{ goBack: true }} replace />;
   }
 
   return <Outlet />;

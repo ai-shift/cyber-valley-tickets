@@ -103,6 +103,8 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
               const soldOut = isSoldOut(category);
               const price = getCategoryPrice(category);
               const discountPercent = category.discount / 100;
+              const discountLabel =
+                discountPercent > 0 ? `-${discountPercent.toFixed(2)}%` : "";
 
               return (
                 <SelectItem
@@ -113,7 +115,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
                   <div className="flex items-center justify-between w-full gap-4 text-sm">
                     <span className="font-medium">{category.name}</span>
                     <span className="text-green-500">
-                      {discountPercent > 0 ? `-${discountPercent}%` : ""}
+                      {discountLabel}
                     </span>
                     <span
                       className={category.discount > 0 ? "text-green-500" : ""}
