@@ -9,7 +9,7 @@ import { useActiveAccount } from "thirdweb/react";
 
 import type { User } from "@/entities/user";
 
-export const useCheckSubmit = () => {
+export const useCheckSubmit = (eventDepositSize?: number) => {
   const { user } = useAuthSlice();
 
   const account = useActiveAccount();
@@ -19,13 +19,15 @@ export const useCheckSubmit = () => {
 
   useEffect(() => {
     if (account == null) return;
-    hasEnoughtTokens(account).then(({ enoughTokens, balanceAfterPayment }) => {
-      console.log("Balance after payment", balanceAfterPayment);
-      setCanCreate(enoughTokens);
-      setRequiredTokens(balanceAfterPayment);
-      setIsLoading(false);
-    });
-  }, [account]);
+    hasEnoughtTokens(account, BigInt(eventDepositSize ?? 0)).then(
+      ({ enoughTokens, balanceAfterPayment }) => {
+        console.log("Balance after payment", balanceAfterPayment);
+        setCanCreate(enoughTokens);
+        setRequiredTokens(balanceAfterPayment);
+        setIsLoading(false);
+      },
+    );
+  }, [account, eventDepositSize]);
 
   const props: WithCheckProps = {
     user,

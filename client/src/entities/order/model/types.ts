@@ -35,6 +35,7 @@ interface UpdateEventOrder extends BaseOrder {
 interface CreateEventOrder extends BaseOrder {
   type: "create_event";
   event: EventDto;
+  placeDepositSize: number;
   ticket?: never;
 }
 

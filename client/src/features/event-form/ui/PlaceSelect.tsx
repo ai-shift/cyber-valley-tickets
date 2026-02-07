@@ -1,5 +1,6 @@
 import type { EventPlace } from "@/entities/place";
 import { pluralDays } from "@/shared/lib/pluralDays";
+import { getCurrencySymbol } from "@/shared/lib/web3";
 
 import {
   Select,
@@ -49,13 +50,28 @@ type PlaceCardProps = {
 };
 
 const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
-  const { title, minTickets, maxTickets, daysBeforeCancel, minPrice, minDays } =
-    place;
+  const {
+    title,
+    minTickets,
+    maxTickets,
+    daysBeforeCancel,
+    minPrice,
+    minDays,
+    eventDepositSize,
+  } = place;
   return (
     <div className=" space-y-3 p-3 rounded">
       <h2 className="text-xl">{title}</h2>
       <p className="text-muted text-md">
         {minTickets} &lt;&lt; tickets &lt;&lt; {maxTickets}
+      </p>
+      <p className="text-muted text-md">
+        Deposit: {eventDepositSize}{" "}
+        <img
+          src={getCurrencySymbol()}
+          className="h-5 aspect-square inline"
+          alt="currency"
+        />
       </p>
       <p className="text-muted text-md">Min price: {minPrice}</p>
       <p className="text-muted text-md">

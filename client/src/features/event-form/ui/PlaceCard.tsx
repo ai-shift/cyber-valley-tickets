@@ -15,6 +15,14 @@ export const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
           <li>Min Tickets: {place.minTickets}</li>
           <li>Max Tickets: {place.maxTickets}</li>
           <li>
+            Event deposit: {place.eventDepositSize}{" "}
+            <img
+              src={getCurrencySymbol()}
+              className="h-6 aspect-square inline"
+              alt="currency"
+            />
+          </li>
+          <li>
             Min Ticket Price: {place.minPrice}{" "}
             <img
               src={getCurrencySymbol()}

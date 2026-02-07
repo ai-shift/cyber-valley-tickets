@@ -9,8 +9,8 @@ export const CreateEventPage: React.FC = () => {
   const navigate = useNavigate();
   const { setEventOrder } = useOrderStore();
 
-  function initOrderPurchase(order: EventDto) {
-    setEventOrder(order);
+  function initOrderPurchase(order: EventDto, placeDepositSize: number) {
+    setEventOrder(order, placeDepositSize);
     navigate("/purchase");
   }
 
