@@ -21,12 +21,14 @@ _BYTES_TO_ROLE[HexBytes(b"\x00" * 32)] = _ROLES[0]
 
 
 def validate_role(value: HexBytes) -> str:
-    try:
-        return _BYTES_TO_ROLE[value]
-    except KeyError as e:
-        print("unexpected role bytes")
-        log.exception("unexpected role bytes %s", value)
-        raise ValueError from e
+    role = _BYTES_TO_ROLE.get(value)
+    if role is not None:
+        return role
+
+    # Indexer should be forward-compatible with new roles. Keep indexing and
+    # let the role sync decide whether it's relevant.
+    log.warning("Unknown role bytes %s", value.hex())
+    return value.hex()
 
 
 def validate_digest(value: HexBytes | bytes | str) -> str:
