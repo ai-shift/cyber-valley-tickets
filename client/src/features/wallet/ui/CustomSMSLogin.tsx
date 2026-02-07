@@ -1,7 +1,7 @@
 import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { apiClient } from "@/shared/api";
-import { client } from "@/shared/lib/web3";
+import { client, cvlandChain } from "@/shared/lib/web3";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { useState } from "react";
@@ -72,6 +72,7 @@ export const CustomSMSLogin: React.FC = () => {
       await connect(async () => {
         await wallet.connect({
           client,
+          chain: cvlandChain,
           strategy: "auth_endpoint",
           payload: JSON.stringify(data.payload),
         });
