@@ -2,7 +2,10 @@ import type { Event, EventDto } from "@/entities/event/";
 import { getUnixTime } from "date-fns";
 import type { EventFormInput, EventFormOutput } from "../model/types";
 
-export function mapEventToEventForm(event: Event): EventFormInput {
+export function mapEventToEventForm(
+  event: Event,
+  categories: EventFormInput["categories"] = [],
+): EventFormInput {
   return {
     title: event.title,
     description: event.description,
@@ -12,7 +15,7 @@ export function mapEventToEventForm(event: Event): EventFormInput {
     ticketPrice: event.ticketPrice,
     startDate: new Date(event.startDateTimestamp),
     daysAmount: event.daysAmount,
-    categories: [],
+    categories,
   };
 }
 
