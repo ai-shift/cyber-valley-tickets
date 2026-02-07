@@ -35,7 +35,7 @@ const errorMiddleware: Middleware = {
         const errorData = (await response.json()) as ApiError;
         throw errorData;
       } catch {
-        throw ({
+        throw {
           type: "parse_error",
           errors: [
             {
@@ -44,7 +44,7 @@ const errorMiddleware: Middleware = {
               attr: null,
             },
           ],
-        } as unknown) as ApiError;
+        } as unknown as ApiError;
       }
     }
   },

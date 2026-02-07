@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { createDistributionProfile } from "@/shared/lib/web3";
+import { revenueSplitter } from "@/shared/lib/web3";
 
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
@@ -9,6 +10,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 // @ts-expect-error Loader is used in JSX but TS doesn't detect it through conditional
 import { AlertCircle, Loader, Plus, Trash2 } from "lucide-react";
+import { readContract } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
 import { isAddress } from "thirdweb/utils";
 
@@ -41,19 +43,63 @@ export const CreateDistributionProfilePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [expectedTotalShares, setExpectedTotalShares] = useState<number | null>(
+    null,
+  );
+  const [ownerBps, setOwnerBps] = useState<number>(0);
   const [recipients, setRecipients] = useState<Recipient[]>([
     {
       id: crypto.randomUUID(),
-      address: account?.address || "",
-      share: "10000",
+      address: "",
+      share: "0",
     },
   ]);
+
+  // Compute expected share sum based on current splitter constants and caller's manager bps.
+  // The contract expects recipients' shares to sum to:
+  //   BASIS_POINTS - CYBERIA_DAO_SHARE - CVE_PT_PMA_SHARE - profileManagerBps(msg.sender)
+  // and automatically adds msg.sender as a recipient if profileManagerBps > 0.
+  // Also, msg.sender is NOT allowed in the recipients list.
+  async function refreshExpectedShares(): Promise<void> {
+    if (!account) return;
+    const [basis, dao, pma, bps] = await Promise.all([
+      readContract({
+        contract: revenueSplitter,
+        method: "BASIS_POINTS",
+        params: [],
+      }),
+      readContract({
+        contract: revenueSplitter,
+        method: "CYBERIA_DAO_SHARE",
+        params: [],
+      }),
+      readContract({
+        contract: revenueSplitter,
+        method: "CVE_PT_PMA_SHARE",
+        params: [],
+      }),
+      readContract({
+        contract: revenueSplitter,
+        method: "profileManagerBps",
+        params: [account.address],
+      }),
+    ]);
+
+    const expected = Number(basis) - Number(dao) - Number(pma) - Number(bps);
+    setOwnerBps(Number(bps));
+    setExpectedTotalShares(expected);
+  }
+
+  useEffect(() => {
+    void refreshExpectedShares();
+    // refresh when the connected account changes
+  }, [account?.address]);
 
   const totalShares = recipients.reduce(
     (sum, r) => sum + (Number.parseInt(r.share) || 0),
     0,
   );
-  const remainingShares = BASIS_POINTS - totalShares;
+  const remainingShares = (expectedTotalShares ?? BASIS_POINTS) - totalShares;
 
   function addRecipient() {
     setRecipients([
@@ -67,9 +113,6 @@ export const CreateDistributionProfilePage: React.FC = () => {
   }
 
   function removeRecipient(id: string) {
-    if (recipients.length <= 1) {
-      return; // Keep at least one recipient
-    }
     setRecipients(recipients.filter((r) => r.id !== id));
   }
 
@@ -84,18 +127,20 @@ export const CreateDistributionProfilePage: React.FC = () => {
   }
 
   function validateForm(): string | null {
-    if (recipients.length === 0) {
-      return "At least one recipient is required";
-    }
-
     const addresses = new Set<string>();
 
     for (const recipient of recipients) {
       if (!recipient.address.trim()) {
-        return "All recipients must have an address";
+        return "All recipients must have an address (or remove empty rows)";
       }
       if (!isAddress(recipient.address)) {
         return `Invalid address: ${recipient.address}`;
+      }
+      if (
+        account &&
+        recipient.address.toLowerCase() === account.address.toLowerCase()
+      ) {
+        return "You cannot add yourself as a recipient (the contract adds you automatically if applicable)";
       }
       const normalizedAddress = recipient.address.toLowerCase();
       if (addresses.has(normalizedAddress)) {
@@ -108,8 +153,12 @@ export const CreateDistributionProfilePage: React.FC = () => {
       }
     }
 
-    if (totalShares !== BASIS_POINTS) {
-      return `Total shares must equal 10000 (currently ${totalShares})`;
+    if (expectedTotalShares == null) {
+      return "Loading revenue splitter settings...";
+    }
+
+    if (totalShares !== expectedTotalShares) {
+      return `Total shares must equal ${expectedTotalShares} (currently ${totalShares})`;
     }
 
     return null;
@@ -168,12 +217,25 @@ export const CreateDistributionProfilePage: React.FC = () => {
         {/* Info Section */}
         <div className="mb-6">
           <p className="text-sm text-muted-foreground mb-2">
-            <strong>Distribution Profile</strong> defines how the 80% flexible
+            <strong>Distribution Profile</strong> defines how the flexible
             revenue share is distributed among recipients.
           </p>
           <p className="text-sm text-muted-foreground">
             Platform fees are fixed: CyberiaDAO (10%) + CVE PT PMA (5%).
           </p>
+          {expectedTotalShares != null && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Your profile recipients must sum to{" "}
+              <strong>{expectedTotalShares}</strong> bps.
+              {ownerBps > 0 && (
+                <>
+                  {" "}
+                  You also receive <strong>{ownerBps}</strong> bps automatically
+                  as profile manager.
+                </>
+              )}
+            </p>
+          )}
         </div>
 
         {/* Recipients List */}

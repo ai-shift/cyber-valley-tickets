@@ -327,14 +327,14 @@ export const EventForm: React.FC<EventFormProps> = ({
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormLabel>Start date</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    daysBeforeCancel={selectedPlace.daysBeforeCancel}
-                    selectedDuration={watchedDaysAmount}
-                    date={field.value}
-                    setDate={field.onChange}
-                    disabled={placeRanges}
-                  />
+              <FormControl>
+                <DatePicker
+                  daysBeforeCancel={selectedPlace.daysBeforeCancel}
+                  selectedDuration={watchedDaysAmount}
+                  date={field.value}
+                  setDate={field.onChange}
+                  disabled={placeRanges}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

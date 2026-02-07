@@ -16,4 +16,3 @@ export const connectTheme = darkTheme({
   },
   fontFamily: "var(--font-chakra-petch)",
 });
-

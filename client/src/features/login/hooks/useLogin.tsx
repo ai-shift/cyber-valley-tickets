@@ -36,7 +36,10 @@ export const useLogin = () => {
       setAddress(address);
       setStatus("connected");
 
-      const url = new URL("/api/users/current/", import.meta.env.PUBLIC_API_HOST);
+      const url = new URL(
+        "/api/users/current/",
+        import.meta.env.PUBLIC_API_HOST,
+      );
       url.searchParams.set("address", address);
       const resp = await fetch(url.toString(), { credentials: "include" });
       if (!resp.ok) {

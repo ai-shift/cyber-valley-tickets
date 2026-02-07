@@ -1,5 +1,6 @@
 import type { EventStatus } from "@/entities/event";
 import { DisplayUser } from "@/features/display-user";
+import { apiClient } from "@/shared/api";
 import { type Role, checkPermission } from "@/shared/lib/RBAC";
 import {
   approveEvent,
@@ -8,7 +9,6 @@ import {
   declineEvent,
   formatTxError,
 } from "@/shared/lib/web3";
-import { apiClient } from "@/shared/api";
 import { AcceptDialog } from "@/shared/ui/AcceptDialog";
 import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
@@ -246,7 +246,11 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               confirmDisabled={isPending}
               confirmText={isPending ? "Sending..." : "Confirm"}
             >
-              <Button className="w-full" variant="destructive" disabled={isPending}>
+              <Button
+                className="w-full"
+                variant="destructive"
+                disabled={isPending}
+              >
                 Decline
               </Button>
             </AcceptDialog>
@@ -261,7 +265,11 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               confirmDisabled={isPending}
               confirmText={isPending ? "Sending..." : "Confirm"}
             >
-              <Button className="w-full" variant="secondary" disabled={isPending}>
+              <Button
+                className="w-full"
+                variant="secondary"
+                disabled={isPending}
+              >
                 Finalize
               </Button>
             </AcceptDialog>
@@ -272,7 +280,11 @@ export const MaybeManageEvent: React.FC<MaybeManageEventProps> = ({
               confirmDisabled={isPending}
               confirmText={isPending ? "Sending..." : "Confirm"}
             >
-              <Button className="w-full" variant="destructive" disabled={isPending}>
+              <Button
+                className="w-full"
+                variant="destructive"
+                disabled={isPending}
+              >
                 Fuck up
               </Button>
             </AcceptDialog>

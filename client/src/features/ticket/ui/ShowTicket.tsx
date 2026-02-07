@@ -1,6 +1,11 @@
 import { useOrderStore } from "@/entities/order";
 import { apiClient } from "@/shared/api";
 import { pluralTickets } from "@/shared/lib/pluralDays";
+import {
+  fetchSiwePayload,
+  fetchSiweStatus,
+  fetchSiweVerify,
+} from "@/shared/lib/siwe/api";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -14,7 +19,6 @@ import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import type { Ticket } from "../model/types";
 import { TicketCard } from "./TicketCard";
-import { fetchSiwePayload, fetchSiweStatus, fetchSiweVerify } from "@/shared/lib/siwe/api";
 
 type ShowTicketProps = {
   tickets: Ticket[];
@@ -175,8 +179,8 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         {!isTrusted ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6 text-center">
             <p className="text-muted-foreground">
-              To prevent QR screenshot reuse, tickets use rotating nonces. Sign a
-              message to prove wallet ownership and show your QR codes.
+              To prevent QR screenshot reuse, tickets use rotating nonces. Sign
+              a message to prove wallet ownership and show your QR codes.
             </p>
             <Button
               className="w-full max-w-sm"

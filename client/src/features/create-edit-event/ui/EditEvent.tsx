@@ -1,9 +1,9 @@
 import type { Event, EventDto } from "@/entities/event";
+import { eventQueries } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { EventForm } from "@/features/event-form";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import { Loader } from "@/shared/ui/Loader";
-import { eventQueries } from "@/entities/event";
 import { useQuery } from "@tanstack/react-query";
 import { EventDataProvider } from "./EventDataProvider";
 

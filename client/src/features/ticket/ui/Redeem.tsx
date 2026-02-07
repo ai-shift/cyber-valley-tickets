@@ -1,12 +1,16 @@
 import { Button } from "@/shared/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/shared/ui/dialog";
 
+import {
+  fetchSiwePayload,
+  fetchSiweStatus,
+  fetchSiweVerify,
+} from "@/shared/lib/siwe/api";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
-import { useActiveAccount } from "thirdweb/react";
 import { useEffect, useState } from "react";
-import { fetchSiwePayload, fetchSiweStatus, fetchSiweVerify } from "@/shared/lib/siwe/api";
+import { useActiveAccount } from "thirdweb/react";
 import { redeem, useEventStatus } from "../api/redeem";
 
 export type RedeemProps = {
@@ -86,7 +90,11 @@ export const Redeem: React.FC<RedeemProps> = ({ eventId }) => {
             <p className="text-muted-foreground text-center">
               Staff verification requires a signed message.
             </p>
-            <Button onClick={signToVerify} disabled={isSigning} className="w-full">
+            <Button
+              onClick={signToVerify}
+              disabled={isSigning}
+              className="w-full"
+            >
               {isSigning ? "Signing..." : "Sign to start scanning"}
             </Button>
           </div>
