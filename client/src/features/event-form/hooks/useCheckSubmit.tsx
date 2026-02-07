@@ -87,7 +87,7 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
           className="h-6 aspect-square inline"
           alt="currency"
         />
-        <span>to submit</span>
+        <span>more to submit</span>
       </p>
     </Button>
   );
