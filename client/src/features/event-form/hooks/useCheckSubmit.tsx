@@ -79,7 +79,6 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
       className="w-full h-20 flex flex-col"
       onClick={() => alert("Suda swap widget")}
     >
-      <span>Need more tokens</span>
       <p className="flex gap-1">
         <span>Need {requriedTokens}</span>
         <img
