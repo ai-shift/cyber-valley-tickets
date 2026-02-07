@@ -168,14 +168,18 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet[Event]):
 
         # Get owners with ticket count annotation
         owners = User.objects.filter(address__in=owner_addresses).annotate(
-            tickets_count=Count("tickets", filter=Q(tickets__event=event))
+            # When filtering by socials, joins can duplicate ticket rows. `distinct=True`
+            # makes the count stable.
+            tickets_count=Count(
+                "tickets", filter=Q(tickets__event=event), distinct=True
+            )
         )
 
         if search_query:
             owners = owners.filter(
                 Q(address__icontains=search_query)
                 | Q(socials__value__icontains=search_query)
-            )
+            ).distinct()
 
         serializer = AttendeeSerializer(owners, many=True)
         return Response(serializer.data)
