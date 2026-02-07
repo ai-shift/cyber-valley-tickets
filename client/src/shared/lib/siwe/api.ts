@@ -25,6 +25,11 @@ export type SiweVerifyResponse = {
   expires_at: number;
 };
 
+export type SiweStatusResponse = {
+  trusted: boolean;
+  expires_at: number;
+};
+
 export async function fetchSiwePayload(opts: {
   address: string;
   purpose: SiwePurpose;
@@ -57,3 +62,16 @@ export async function fetchSiweVerify(opts: {
   return (await resp.json()) as SiweVerifyResponse;
 }
 
+export async function fetchSiweStatus(opts: {
+  address: string;
+  scope: "ticket:nonce" | "ticket:verify";
+}): Promise<SiweStatusResponse> {
+  const url = new URL("/api/siwe/status", import.meta.env.PUBLIC_API_HOST);
+  url.searchParams.set("address", opts.address);
+  url.searchParams.set("scope", opts.scope);
+  const resp = await fetch(url.toString(), { credentials: "include" });
+  if (!resp.ok) {
+    throw new Error(`SIWE status failed: HTTP ${resp.status}`);
+  }
+  return (await resp.json()) as SiweStatusResponse;
+}

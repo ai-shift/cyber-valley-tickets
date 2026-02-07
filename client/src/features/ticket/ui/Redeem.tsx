@@ -6,8 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import { useActiveAccount } from "thirdweb/react";
 import { useEffect, useState } from "react";
-import { fetchSiwePayload, fetchSiweVerify } from "@/shared/lib/siwe/api";
-import { getStoredProof, setStoredProof } from "@/shared/lib/siwe/proofStorage";
+import { fetchSiwePayload, fetchSiweStatus, fetchSiweVerify } from "@/shared/lib/siwe/api";
 import { redeem, useEventStatus } from "../api/redeem";
 
 export type RedeemProps = {
@@ -20,14 +19,25 @@ export const Redeem: React.FC<RedeemProps> = ({ eventId }) => {
   const { data } = useQuery(useEventStatus(eventId));
   const [proofToken, setProofToken] = useState<string | null>(null);
   const [isSigning, setIsSigning] = useState(false);
+  const [isTrusted, setIsTrusted] = useState(false);
 
   useEffect(() => {
     const addr = account?.address;
     if (!addr) {
       setProofToken(null);
+      setIsTrusted(false);
       return;
     }
-    setProofToken(getStoredProof(addr, "staff_verify")?.token ?? null);
+
+    fetchSiweStatus({ address: addr, scope: "ticket:verify" })
+      .then((s) => {
+        setIsTrusted(s.trusted);
+        setProofToken(s.trusted ? "cookie" : null);
+      })
+      .catch(() => {
+        setIsTrusted(false);
+        setProofToken(null);
+      });
   }, [account?.address]);
 
   const signToVerify = async () => {
@@ -43,12 +53,9 @@ export const Redeem: React.FC<RedeemProps> = ({ eventId }) => {
         purpose: "staff_verify",
       });
       const signature = await account.signMessage({ message });
-      const verified = await fetchSiweVerify({ payload, signature });
-      setStoredProof(addr, "staff_verify", {
-        token: verified.proof_token,
-        expiresAt: verified.expires_at,
-      });
-      setProofToken(verified.proof_token);
+      await fetchSiweVerify({ payload, signature });
+      setIsTrusted(true);
+      setProofToken("cookie");
     } catch (e) {
       console.error(e);
       alert("Failed to sign");
@@ -74,7 +81,7 @@ export const Redeem: React.FC<RedeemProps> = ({ eventId }) => {
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} className="p-16">
         <DialogTitle className="text-center text-3xl">Scan ticket</DialogTitle>
-        {!proofToken ? (
+        {!isTrusted ? (
           <div className="flex flex-col items-center gap-4">
             <p className="text-muted-foreground text-center">
               Staff verification requires a signed message.

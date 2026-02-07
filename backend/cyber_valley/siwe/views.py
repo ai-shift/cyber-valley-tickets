@@ -20,6 +20,13 @@ from cyber_valley.siwe.serializers import (
     SiweVerifyRequestSerializer,
     SiweVerifyResponseSerializer,
 )
+from cyber_valley.siwe.trust_cookie import (
+    is_trusted,
+    maybe_refresh_cookie,
+    read_trust_cookie,
+    set_trust_cookie,
+    upsert_trusted_address,
+)
 from cyber_valley.web3_auth.serializers import SIWEModel
 from cyber_valley.web3_auth.service import create_login_message, verify_signature
 
@@ -117,8 +124,49 @@ def siwe_verify(request: Request) -> Response:
     token = issue_proof_token(address=model.address, scopes=purpose_scopes)
     expires_at = int((datetime.now(tz=UTC) + timedelta(seconds=PROOF_TTL_SECONDS)).timestamp())
 
+    # Persist device trust via HttpOnly cookie (supports one-click account switching).
+    cookie = upsert_trusted_address(
+        read_trust_cookie(request),
+        address=model.address,
+        scopes=purpose_scopes,
+    )
+
     resp = SiweVerifyResponseSerializer(
-        data={"proof_token": token, "address": model.address.lower(), "expires_at": expires_at}
+        data={
+            "proof_token": token,
+            "address": model.address.lower(),
+            "expires_at": cookie.expires_at,
+        }
     )
     resp.is_valid(raise_exception=True)
-    return Response(resp.validated_data, status=200)
+    response = Response(resp.validated_data, status=200)
+    set_trust_cookie(response, cookie)
+    return response
+
+
+@extend_schema(
+    parameters=[],
+    responses={
+        200: {
+            "type": "object",
+            "properties": {
+                "trusted": {"type": "boolean"},
+                "expires_at": {"type": "integer"},
+            },
+        }
+    },
+)
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def siwe_status(request: Request) -> Response:
+    address = (request.query_params.get("address") or "").lower()
+    scope = request.query_params.get("scope") or ""
+    cookie = read_trust_cookie(request)
+
+    trusted = bool(address and scope and is_trusted(cookie, address=address, required_scopes=[scope]))
+    expires_at = cookie.expires_at if cookie else 0
+
+    response = Response({"trusted": trusted, "expires_at": expires_at}, status=200)
+    if cookie:
+        maybe_refresh_cookie(response, cookie)
+    return response
