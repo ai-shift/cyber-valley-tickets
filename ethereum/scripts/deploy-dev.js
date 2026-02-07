@@ -15,15 +15,22 @@
  * Tickets can be minted immediately after events are created on-chain.
  */
 
-import fs from "node:fs";
-import path from "node:path";
-import bs58 from "bs58";
-import ERC20Module from "../ignition/modules/ERC20";
-import EventManagerModule from "../ignition/modules/EventManager";
-import EventTicketModule from "../ignition/modules/EventTicket";
-import ReferralRewardsModule from "../ignition/modules/ReferralRewards";
-import RevenueSplitterModule from "../ignition/modules/RevenueSplitter";
-import { deployENS } from "./deploy-ens";
+const fs = require("node:fs");
+const path = require("node:path");
+const bs58 = require("bs58");
+const namehash = require("eth-ens-namehash");
+
+function reqDefault(p) {
+  const m = require(p);
+  return m?.default ?? m;
+}
+
+const ERC20Module = reqDefault("../ignition/modules/ERC20");
+const EventManagerModule = reqDefault("../ignition/modules/EventManager");
+const EventTicketModule = reqDefault("../ignition/modules/EventTicket");
+const ReferralRewardsModule = reqDefault("../ignition/modules/ReferralRewards");
+const RevenueSplitterModule = reqDefault("../ignition/modules/RevenueSplitter");
+const { deployENS } = require("./deploy-ens");
 
 const MASTER_EOA = "0x2789023F36933E208675889869c7d3914A422921";
 const DEV_TEAM_EOA = MASTER_EOA;
@@ -63,6 +70,78 @@ function getBytes32FromMultiash(multihash) {
     hashFunction: decoded[0],
     size: decoded[1],
   };
+}
+
+async function registerEnsNames({
+  ensRegistry,
+  publicResolver,
+  reverseRegistrar,
+  signers,
+}) {
+  const { ethers } = hre;
+
+  console.log("\nRegistering ENS names...");
+  const ensNames = [
+    { name: "master.eth", signer: signers.master },
+    { name: "creator.eth", signer: signers.creatorSlave },
+    { name: "customer1.eth", signer: signers.completeSlave },
+    { name: "verifiedshaman.eth", signer: signers.verifiedShaman },
+    { name: "localprovider.eth", signer: signers.localProvider },
+    { name: "backend.eth", signer: signers.backend },
+  ];
+
+  const ethNode = namehash.hash("eth");
+  const resolverAddress = await publicResolver.getAddress();
+  const addrReverseNode = await reverseRegistrar.ADDR_REVERSE_NODE();
+
+  for (const { name, signer } of ensNames) {
+    const owner = signer.address;
+    const label = name.split(".")[0];
+    const node = namehash.hash(name);
+
+    // Register forward record (name -> address) if needed.
+    const currentOwner = await ensRegistry.owner(node);
+    if (currentOwner === ethers.ZeroAddress) {
+      await (
+        await ensRegistry
+          .connect(signers.master)
+          .setSubnodeRecord(
+            ethNode,
+            ethers.keccak256(ethers.toUtf8Bytes(label)),
+            owner,
+            resolverAddress,
+            0,
+          )
+      ).wait();
+      await (await publicResolver.connect(signer).setAddr(node, owner)).wait();
+      console.log(`  Registered ${name} -> ${owner}`);
+    } else {
+      console.log(`  ${name} already registered to ${currentOwner}`);
+    }
+
+    // Register reverse record (address -> name) if needed.
+    const addrHex = owner.slice(2).toLowerCase();
+    const addrHash = ethers.keccak256(ethers.toUtf8Bytes(addrHex));
+    const reverseNode = ethers.keccak256(
+      ethers.solidityPacked(
+        ["bytes32", "bytes32"],
+        [addrReverseNode, addrHash],
+      ),
+    );
+
+    const currentReverseName = await publicResolver.name(reverseNode);
+    if (currentReverseName && currentReverseName.length > 0) {
+      console.log(`  Reverse already set: ${owner} -> ${currentReverseName}`);
+      continue;
+    }
+
+    // Claim the reverse node for this EOA, then set the name on the resolver.
+    await (await reverseRegistrar.connect(signer).setName(name)).wait();
+    await (
+      await publicResolver.connect(signer).setName(reverseNode, name)
+    ).wait();
+    console.log(`  Set reverse: ${owner} -> ${name}`);
+  }
 }
 
 // ============================================================================
@@ -116,6 +195,20 @@ async function deployContracts() {
     localProvider,
     backend,
   ] = await hre.ethers.getSigners();
+
+  await registerEnsNames({
+    ensRegistry,
+    publicResolver,
+    reverseRegistrar,
+    signers: {
+      master,
+      creatorSlave,
+      completeSlave,
+      verifiedShaman,
+      localProvider,
+      backend,
+    },
+  });
 
   await eventManager
     .connect(master)
