@@ -12,8 +12,11 @@ import {
 import { useQueries } from "@tanstack/react-query";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { useActiveAccount } from "thirdweb/react";
 import type { Ticket } from "../model/types";
 import { TicketCard } from "./TicketCard";
+import { fetchSiwePayload, fetchSiweVerify } from "@/shared/lib/siwe/api";
+import { getStoredProof, setStoredProof } from "@/shared/lib/siwe/proofStorage";
 
 type ShowTicketProps = {
   tickets: Ticket[];
@@ -34,6 +37,9 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   const { setTicketOrder } = useOrderStore();
   const [open, setOpen] = useState(false);
   const wasClosed = useRef<boolean>(false);
+  const account = useActiveAccount();
+  const [proofToken, setProofToken] = useState<string | null>(null);
+  const [isSigning, setIsSigning] = useState(false);
 
   const ticketQueries = useQueries({
     queries: tickets.map((ticket) => ({
@@ -67,6 +73,41 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
       wasClosed.current = true;
     }
   }, [allData]);
+
+  useEffect(() => {
+    if (!open) return;
+    const addr = account?.address;
+    if (!addr) return;
+    const stored = getStoredProof(addr, "ticket_qr");
+    setProofToken(stored?.token ?? null);
+  }, [open, account?.address]);
+
+  const signToShowQr = async () => {
+    if (!account) {
+      alert("No active wallet");
+      return;
+    }
+    setIsSigning(true);
+    try {
+      const addr = account.address;
+      const { payload, message } = await fetchSiwePayload({
+        address: addr,
+        purpose: "ticket_qr",
+      });
+      const signature = await account.signMessage({ message });
+      const verified = await fetchSiweVerify({ payload, signature });
+      setStoredProof(addr, "ticket_qr", {
+        token: verified.proof_token,
+        expiresAt: verified.expires_at,
+      });
+      setProofToken(verified.proof_token);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to sign");
+    } finally {
+      setIsSigning(false);
+    }
+  };
 
   const allRedeemed = allData.every((data) => data?.isRedeemed);
   const anyPending = allData.some(
@@ -117,15 +158,31 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
           Your Tickets ({ticketCount}){anyPending && <br />}
           {anyPending && "(redeem pending)"}
         </DialogTitle>
-        <Suspense fallback={<Loader />}>
-          <div
-            className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
-          >
-            {tickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
+        {!proofToken ? (
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6 text-center">
+            <p className="text-muted-foreground">
+              To prevent QR screenshot reuse, tickets use rotating nonces. Sign a
+              message to prove wallet ownership and show your QR codes.
+            </p>
+            <Button className="w-full max-w-sm" onClick={signToShowQr} disabled={isSigning}>
+              {isSigning ? "Signing..." : "Sign to show QR codes"}
+            </Button>
           </div>
-        </Suspense>
+        ) : (
+          <Suspense fallback={<Loader />}>
+            <div
+              className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
+            >
+              {tickets.map((ticket) => (
+                <TicketCard
+                  key={ticket.id}
+                  ticket={ticket}
+                  proofToken={proofToken}
+                />
+              ))}
+            </div>
+          </Suspense>
+        )}
         <div className="p-4 border-t border-border">
           <Button
             className="w-full"

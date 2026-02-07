@@ -38,6 +38,7 @@ from .events.views import (
 from .geodata.views import GeodataViewSet
 from .health.views import health_check
 from .notifications.views import NotificationViewSet
+from .siwe.views import siwe_payload, siwe_verify
 from .users.views import (
     CurrentUserViewSet,
     get_user_profile,
@@ -98,6 +99,11 @@ urlpatterns = [
     path("api/users/socials", save_user_socials, name="save-socials"),
     path("api/users/<str:address>/socials", get_user_socials, name="get-user-socials"),
     path("api/users/<str:address>/profile", get_user_profile, name="get-user-profile"),
+
+    # Stateless SIWE proof tokens (used for ticket QR + staff verification).
+    path("api/siwe/payload", siwe_payload, name="siwe-payload"),
+    path("api/siwe/verify", siwe_verify, name="siwe-verify"),
+
     path("api/auth/custom/", include("cyber_valley.custom_auth.urls")),
     path("api/shaman/verify/", include("cyber_valley.shaman_verification.urls")),
     path("api/telegram/", include("cyber_valley.telegram_bot.urls")),
