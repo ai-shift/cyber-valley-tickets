@@ -9,7 +9,7 @@ export const ApplyEventButton = () => {
 
   function handleApplyEventPlace() {
     if (user == null) {
-      navigate("/login");
+      navigate("/account");
     } else if (user.socials.find((s) => s.network === "telegram")) {
       navigate("/verify");
     } else {

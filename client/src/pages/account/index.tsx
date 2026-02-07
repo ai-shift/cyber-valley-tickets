@@ -2,10 +2,11 @@ import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { DisplayUser } from "@/features/display-user";
 import { EventsList, myEventsFilter } from "@/features/events-list";
-import { apiClient } from "@/shared/api";
 import { useTokenBalance } from "@/shared/hooks";
 import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
-import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
+import { client, getCurrencySymbol, mintERC20, wallets } from "@/shared/lib/web3";
+import { connectTheme } from "@/shared/lib/web3/connectTheme";
+import { walletConnectConfig } from "@/shared/lib/web3/walletConnect";
 import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
@@ -16,7 +17,12 @@ import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
-import { useActiveAccount } from "thirdweb/react";
+import {
+  ConnectButton,
+  useActiveAccount,
+  useActiveWallet,
+  useDisconnect,
+} from "thirdweb/react";
 
 const getRoleDisplayName = (user: User | null): string | null => {
   if (!user) return null;
@@ -39,8 +45,10 @@ const getRoleDisplayName = (user: User | null): string | null => {
 
 export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
-  const { logout: signOut, user } = useAuthSlice();
+  const { clear, user, address: storedAddress } = useAuthSlice();
   const account = useActiveAccount();
+  const activeWallet = useActiveWallet();
+  const { disconnect } = useDisconnect();
   const { data: tokenBalance, isLoading: isLoadingBalance } = useTokenBalance();
   const queryClient = useQueryClient();
   const [isMinting, setIsMinting] = useState(false);
@@ -49,26 +57,14 @@ export const AccountPage: React.FC = () => {
     if (!confirm("Logout?")) {
       return;
     }
-    await apiClient.GET("/api/auth/logout");
-    signOut();
+    if (activeWallet) {
+      disconnect(activeWallet);
+    }
+    clear();
   };
 
-  // Check both thirdweb account and authSlice user to handle page refresh
-  // thirdweb account can be null briefly while reconnecting, but user persists
-  if (!account && !user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-        <h2 className="text-2xl font-semibold text-primary">Account</h2>
-        <p className="text-lg text-gray-400">
-          Please login to view your account
-        </p>
-        <Button onClick={() => navigate("/login")}>Login</Button>
-      </div>
-    );
-  }
-
   // Use account address if available, otherwise fallback to user address from auth
-  const address = account?.address ?? user?.address ?? "";
+  const address = account?.address ?? user?.address ?? storedAddress ?? "";
 
   return (
     <div>
@@ -76,21 +72,57 @@ export const AccountPage: React.FC = () => {
         <h2 className="text-2xl font-semibold text-primary text-shadow-primary text-shadow-xs">
           Account
         </h2>
-        <Button className="ml-auto" variant="destructive" onClick={logout}>
-          <LogOut />
-        </Button>
+        <div className="ml-auto flex gap-2">
+          <ConnectButton
+            client={client}
+            wallets={wallets}
+            theme={connectTheme}
+            connectButton={{
+              label: "Connect / Switch",
+            }}
+            detailsButton={{
+              style: {
+                maxWidth: 220,
+              },
+            }}
+            walletConnect={walletConnectConfig}
+            connectModal={{
+              title: "Wallet",
+              size: "compact",
+            }}
+            detailsModal={{
+              // Show thirdweb's wallet/account manager UI.
+              hideSwitchWallet: false,
+            }}
+          />
+          {account && (
+            <Button variant="destructive" onClick={logout}>
+              <LogOut />
+            </Button>
+          )}
+        </div>
       </header>
       <div className="flex flex-col">
         <div className="flex gap-5 self-center py-5 px-10 sm:px-20">
           <div className="flex md:flex-row md:gap-3 flex-col items-center">
-            <img
-              className="rounded-full h-14 md:h-20 aspect-square"
-              src={`https://effigy.im/a/${address}.svg`}
-              alt="User"
-            />
+            {address ? (
+              <img
+                className="rounded-full h-14 md:h-20 aspect-square"
+                src={`https://effigy.im/a/${address}.svg`}
+                alt="User"
+              />
+            ) : (
+              <div className="rounded-full h-14 md:h-20 aspect-square bg-primary/10" />
+            )}
             <div className="flex flex-col items-center md:items-start gap-1">
               <p className="text-lg">
-                <DisplayUser address={address} className="text-lg" />
+                {address ? (
+                  <DisplayUser address={address} className="text-lg" />
+                ) : (
+                  <span className="text-muted-foreground">
+                    Connect a wallet to continue
+                  </span>
+                )}
               </p>
               {getRoleDisplayName(user) && (
                 <p className="text-sm font-semibold text-primary">

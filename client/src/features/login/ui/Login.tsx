@@ -7,7 +7,7 @@ export const Login: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-3">
-      <p>Login to access the resource</p>
+      <p>Connect your wallet to access the resource</p>
       {!user && <LoginBtn {...buttonProps} />}
     </div>
   );
