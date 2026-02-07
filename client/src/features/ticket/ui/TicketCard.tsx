@@ -6,10 +6,15 @@ import { TicketQR } from "./TicketQR";
 
 type TicketCardProps = {
   ticket: Ticket;
-  proofToken: string | null;
+  userAddress: string;
+  nonceEnabled: boolean;
 };
 
-export const TicketCard: React.FC<TicketCardProps> = ({ ticket, proofToken }) => {
+export const TicketCard: React.FC<TicketCardProps> = ({
+  ticket,
+  userAddress,
+  nonceEnabled,
+}) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleFlip = () => {
@@ -105,7 +110,11 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, proofToken }) =>
             ) : (
               <>
                 <div className="bg-black p-4 rounded-lg">
-                  <TicketQR ticket={ticket} proofToken={proofToken} />
+                  <TicketQR
+                    ticket={ticket}
+                    userAddress={userAddress}
+                    enabled={nonceEnabled}
+                  />
                 </div>
                 <div className="absolute bottom-4 left-4 right-4 flex justify-between text-xs text-primary/40">
                   <span>ID</span>
