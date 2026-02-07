@@ -13,6 +13,8 @@ type AcceptDialogProps = {
   title: string;
   children: React.ReactNode;
   option: "accept" | "decline";
+  confirmDisabled?: boolean;
+  confirmText?: string;
 };
 
 export const AcceptDialog: React.FC<AcceptDialogProps> = ({
@@ -20,6 +22,8 @@ export const AcceptDialog: React.FC<AcceptDialogProps> = ({
   title,
   children,
   option,
+  confirmDisabled = false,
+  confirmText,
 }) => {
   const [timer, setTimer] = useState(5);
 
@@ -51,11 +55,14 @@ export const AcceptDialog: React.FC<AcceptDialogProps> = ({
         <DialogClose className="flex justify-center items-center" asChild>
           <span>
             <Button
-              disabled={timer !== 0 && option === "decline"}
+              disabled={
+                confirmDisabled || (timer !== 0 && option === "decline")
+              }
               variant={option === "decline" ? "destructive" : "secondary"}
               onClick={confirmFn}
             >
-              Confirm {(option === "decline" && timer) || ""}
+              {confirmText ?? "Confirm"}{" "}
+              {(option === "decline" && timer) || ""}
             </Button>
           </span>
         </DialogClose>
