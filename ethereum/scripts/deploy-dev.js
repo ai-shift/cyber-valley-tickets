@@ -739,6 +739,7 @@ async function main() {
     erc20,
     splitter,
     referralRewards,
+    publicResolver,
     signers,
   } = await deployContracts();
 
@@ -771,6 +772,9 @@ async function main() {
   );
   console.log(
     `export PUBLIC_REFERRAL_REWARDS_ADDRESS=${await referralRewards.getAddress()}`,
+  );
+  console.log(
+    `export PUBLIC_ENS_RESOLVER_ADDRESS=${await publicResolver.getAddress()}`,
   );
   console.log(
     "\nNext step: Start the indexer to sync on-chain state to database",
