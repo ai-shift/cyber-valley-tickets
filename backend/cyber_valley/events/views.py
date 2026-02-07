@@ -17,7 +17,7 @@ from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
 )
-from rest_framework import exceptions, viewsets
+from rest_framework import viewsets
 from rest_framework.decorators import (
     action,
     api_view,
@@ -30,7 +30,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from cyber_valley.common.request_address import get_or_create_user_by_address, require_address
-from cyber_valley.common.proof_token import require_proof_claims
+from cyber_valley.siwe.trust_cookie import maybe_refresh_cookie, require_trusted_address
 
 from .models import DistributionProfile, Event, EventPlace, Ticket
 from .serializers import (
@@ -404,22 +404,13 @@ def upload_order_meta_to_ipfs(request: Request) -> Response:
 def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
     from cyber_valley.users.models import CyberValleyUser
 
-    # Require SIWE proof for nonce generation. This prevents spoofing `X-User-Address`
-    # to mint valid rotating QR codes for someone else's ticket.
-    try:
-        claims = require_proof_claims(
-            request,
-            required_scopes=["ticket:nonce"],
-            max_age_seconds=60 * 60,
-        )
-    except exceptions.PermissionDenied:
-        # Staff may generate nonce for debugging/assistance flows.
-        claims = require_proof_claims(
-            request,
-            required_scopes=["ticket:verify"],
-            max_age_seconds=60 * 60,
-        )
-    user = get_or_create_user_by_address(claims.address)
+    address = require_address(request)
+    cookie = require_trusted_address(
+        request,
+        address=address,
+        required_scopes=["ticket:nonce"],
+    )
+    user = get_or_create_user_by_address(address)
 
     # Get the ticket and verify ownership
     ticket = get_object_or_404(Ticket, id=ticket_id, event__id=event_id)
@@ -434,7 +425,9 @@ def ticket_nonce(request: Request, event_id: int, ticket_id: str) -> Response:
     nonce = user.address + secrets.token_hex(16)
     key = f"{nonce}:{event_id}:{ticket_id}"
     cache.set(key, "nonce", timeout=60 * 5)
-    return Response({"nonce": nonce})
+    response = Response({"nonce": nonce})
+    maybe_refresh_cookie(response, cookie)
+    return response
 
 
 @extend_schema(responses=TicketSerializer)
@@ -468,13 +461,13 @@ def verify_ticket(
 ) -> Response:
     from cyber_valley.users.models import CyberValleyUser
 
-    # Require SIWE proof for staff verification.
-    claims = require_proof_claims(
+    address = require_address(request)
+    cookie = require_trusted_address(
         request,
+        address=address,
         required_scopes=["ticket:verify"],
-        max_age_seconds=60 * 60,
     )
-    user = get_or_create_user_by_address(claims.address)
+    user = get_or_create_user_by_address(address)
 
     # Only staff or master can verify tickets
     if not user.has_role(CyberValleyUser.STAFF, CyberValleyUser.MASTER):
@@ -493,7 +486,9 @@ def verify_ticket(
     ticket.pending_is_redeemed = True
     ticket.save()
 
-    return Response("no redeem", status=200)
+    response = Response("no redeem", status=200)
+    maybe_refresh_cookie(response, cookie)
+    return response
 
 
 @extend_schema(

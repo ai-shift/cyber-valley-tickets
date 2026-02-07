@@ -40,7 +40,8 @@ export const redeem = async (
   const { response, error } = await apiClient.GET(
     "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}",
     {
-      headers: { Authorization: `Bearer ${proofToken}` },
+      // SIWE device trust is proven via HttpOnly cookie.
+      // Keep the `proofToken` param to preserve UX flow, but do not send it.
       params: {
         path: {
           nonce,

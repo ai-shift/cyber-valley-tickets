@@ -18,11 +18,13 @@ export const apiClient = createClient<paths>({
 const addressMiddleware: Middleware = {
   async onRequest({ request }) {
     const address = useAuthSlice.getState().address;
-    if (!address) return request;
+    // Always include cookies (trusted-wallet cookie) on API requests.
+    const reqWithCreds = new Request(request, { credentials: "include" });
+    if (!address) return reqWithCreds;
 
-    const headers = new Headers(request.headers);
+    const headers = new Headers(reqWithCreds.headers);
     headers.set("X-User-Address", address);
-    return new Request(request, { headers });
+    return new Request(reqWithCreds, { headers });
   },
 };
 

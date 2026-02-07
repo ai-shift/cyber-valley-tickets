@@ -1,7 +1,6 @@
 import { useOrderStore } from "@/entities/order";
 import { apiClient } from "@/shared/api";
 import { pluralTickets } from "@/shared/lib/pluralDays";
-import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -15,8 +14,7 @@ import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import type { Ticket } from "../model/types";
 import { TicketCard } from "./TicketCard";
-import { fetchSiwePayload, fetchSiweVerify } from "@/shared/lib/siwe/api";
-import { getStoredProof, setStoredProof } from "@/shared/lib/siwe/proofStorage";
+import { fetchSiwePayload, fetchSiweStatus, fetchSiweVerify } from "@/shared/lib/siwe/api";
 
 type ShowTicketProps = {
   tickets: Ticket[];
@@ -40,6 +38,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   const account = useActiveAccount();
   const [proofToken, setProofToken] = useState<string | null>(null);
   const [isSigning, setIsSigning] = useState(false);
+  const [isTrusted, setIsTrusted] = useState(false);
 
   const shouldPollRedeemStatus = open && !!proofToken;
 
@@ -81,9 +80,22 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
   useEffect(() => {
     if (!open) return;
     const addr = account?.address;
-    if (!addr) return;
-    const stored = getStoredProof(addr, "ticket_qr");
-    setProofToken(stored?.token ?? null);
+    if (!addr) {
+      setIsTrusted(false);
+      setProofToken(null);
+      return;
+    }
+
+    // Check server-side trust cookie; avoid forcing SIWE each time.
+    fetchSiweStatus({ address: addr, scope: "ticket:nonce" })
+      .then((s) => {
+        setIsTrusted(s.trusted);
+        setProofToken(s.trusted ? "cookie" : null);
+      })
+      .catch(() => {
+        setIsTrusted(false);
+        setProofToken(null);
+      });
   }, [open, account?.address]);
 
   const signToShowQr = async () => {
@@ -99,12 +111,9 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
         purpose: "ticket_qr",
       });
       const signature = await account.signMessage({ message });
-      const verified = await fetchSiweVerify({ payload, signature });
-      setStoredProof(addr, "ticket_qr", {
-        token: verified.proof_token,
-        expiresAt: verified.expires_at,
-      });
-      setProofToken(verified.proof_token);
+      await fetchSiweVerify({ payload, signature });
+      setIsTrusted(true);
+      setProofToken("cookie");
     } catch (e) {
       console.error(e);
       alert("Failed to sign");
@@ -170,7 +179,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
                 </Button>
               </div>
             ) : (
-              <Suspense fallback={<Loader />}>
+              <Suspense fallback={null}>
                 <div
                   className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
                 >
@@ -222,18 +231,22 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
           Your Tickets ({ticketCount}){anyPending && <br />}
           {anyPending && "(redeem pending)"}
         </DialogTitle>
-        {!proofToken ? (
+        {!isTrusted ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6 text-center">
             <p className="text-muted-foreground">
               To prevent QR screenshot reuse, tickets use rotating nonces. Sign a
               message to prove wallet ownership and show your QR codes.
             </p>
-            <Button className="w-full max-w-sm" onClick={signToShowQr} disabled={isSigning}>
+            <Button
+              className="w-full max-w-sm"
+              onClick={signToShowQr}
+              disabled={isSigning}
+            >
               {isSigning ? "Signing..." : "Sign to show QR codes"}
             </Button>
           </div>
         ) : (
-          <Suspense fallback={<Loader />}>
+          <Suspense fallback={null}>
             <div
               className={`flex-1 grid ${ticketCount === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2"} items-center justify-center justify-items-center gap-5 py-4`}
             >
