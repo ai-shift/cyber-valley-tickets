@@ -2,11 +2,10 @@ import { useAuthSlice } from "@/app/providers";
 import type { User } from "@/entities/user";
 import { DisplayUser } from "@/features/display-user";
 import { EventsList, myEventsFilter } from "@/features/events-list";
+import { useLogin } from "@/features/login/hooks/useLogin";
 import { useTokenBalance } from "@/shared/hooks";
 import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
-import { client, getCurrencySymbol, mintERC20, wallets } from "@/shared/lib/web3";
-import { connectTheme } from "@/shared/lib/web3/connectTheme";
-import { walletConnectConfig } from "@/shared/lib/web3/walletConnect";
+import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
 import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
@@ -17,12 +16,7 @@ import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { twMerge } from "tailwind-merge";
-import {
-  ConnectButton,
-  useActiveAccount,
-  useActiveWallet,
-  useDisconnect,
-} from "thirdweb/react";
+import { useActiveAccount, useActiveWallet, useDisconnect } from "thirdweb/react";
 
 const getRoleDisplayName = (user: User | null): string | null => {
   if (!user) return null;
@@ -49,6 +43,7 @@ export const AccountPage: React.FC = () => {
   const account = useActiveAccount();
   const activeWallet = useActiveWallet();
   const { disconnect } = useDisconnect();
+  const { login, buttonProps } = useLogin();
   const { data: tokenBalance, isLoading: isLoadingBalance } = useTokenBalance();
   const queryClient = useQueryClient();
   const [isMinting, setIsMinting] = useState(false);
@@ -65,6 +60,7 @@ export const AccountPage: React.FC = () => {
 
   // Use account address if available, otherwise fallback to user address from auth
   const address = account?.address ?? user?.address ?? storedAddress ?? "";
+  const isConnected = !!account;
 
   return (
     <div>
@@ -73,29 +69,7 @@ export const AccountPage: React.FC = () => {
           Account
         </h2>
         <div className="ml-auto flex gap-2">
-          <ConnectButton
-            client={client}
-            wallets={wallets}
-            theme={connectTheme}
-            connectButton={{
-              label: "Connect / Switch",
-            }}
-            detailsButton={{
-              style: {
-                maxWidth: 220,
-              },
-            }}
-            walletConnect={walletConnectConfig}
-            connectModal={{
-              title: "Wallet",
-              size: "compact",
-            }}
-            detailsModal={{
-              // Show thirdweb's wallet/account manager UI.
-              hideSwitchWallet: false,
-            }}
-          />
-          {account && (
+          {isConnected && (
             <Button variant="destructive" onClick={logout}>
               <LogOut />
             </Button>
@@ -147,6 +121,19 @@ export const AccountPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {!isConnected ? (
+          <div className="flex items-center justify-center min-h-[50vh] px-6">
+            <Button
+              className="w-full max-w-sm"
+              disabled={buttonProps.isConnecting}
+              onClick={() => login()}
+            >
+              {buttonProps.isConnecting ? "Connecting..." : "Connect"}
+            </Button>
+          </div>
+        ) : (
+          <>
         <div className="w-1/2 h-full self-center flex flex-col justify-between gap-20">
           <div className="flex flex-col gap-4">
             {(() => {
@@ -293,6 +280,8 @@ export const AccountPage: React.FC = () => {
             </ExpandableContent>
           </Expandable>
         </div>
+          </>
+        )}
       </div>
     </div>
   );
