@@ -8,7 +8,7 @@ export const NavContainer: React.FC = () => {
 
   return (
     <div className="h-full relative flex flex-col justify-between">
-      <div className="overflow-y-auto flex-1 ">
+      <div className="overflow-y-auto flex-1 pb-24">
         <Outlet />
       </div>
       {isFormNavVisible && (
