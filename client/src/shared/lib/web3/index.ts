@@ -7,6 +7,7 @@ import {
 import { balanceOf } from "thirdweb/extensions/erc20";
 import type { Account } from "thirdweb/wallets";
 import { getBytes32FromMultiash } from "./multihash";
+export { formatTxError } from "./formatTxError";
 import {
   LOCAL_PROVIDER_ROLE,
   STAFF_ROLE,
