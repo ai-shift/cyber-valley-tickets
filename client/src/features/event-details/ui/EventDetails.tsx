@@ -51,8 +51,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     website,
   } = event;
 
-  const priceRangeDisplay = getTicketPriceRangeDisplay(ticketPriceRange);
-  const priceMinDisplay = priceRangeDisplay?.replace(/^from\s+/, "");
+  const priceMinDisplay = getTicketPriceRangeDisplay(ticketPriceRange);
 
   function placeClickHandler() {
     const location = place.geometry.coordinates[0] as LatLng;
