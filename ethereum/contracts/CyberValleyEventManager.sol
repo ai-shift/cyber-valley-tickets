@@ -823,7 +823,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventId
     ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
-        ensureEventBelongsToProvider(evt.eventPlaceId);
+        ensureEventBelongsToProviderOrMaster(evt.eventPlaceId);
         require(
             evt.status == EventStatus.Approved,
             "Only event in approved state can be closed"
@@ -851,7 +851,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventId
     ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
-        ensureEventBelongsToProvider(evt.eventPlaceId);
+        ensureEventBelongsToProviderOrMaster(evt.eventPlaceId);
         require(
             evt.status == EventStatus.Approved,
             "Only event in approved state can be cancelled"
@@ -870,7 +870,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         // Ticket revenue goes to local provider
         if (evt.networth > 0) {
             require(
-                usdtTokenContract.transfer(msg.sender, evt.networth),
+                usdtTokenContract.transfer(place.provider, evt.networth),
                 "Failed to transfer ticket revenue to provider"
             );
         }
@@ -925,6 +925,13 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             eventPlaces[eventPlaceId].provider == msg.sender,
            "Given event belongs to another provider"
         );
+    }
+
+    function ensureEventBelongsToProviderOrMaster(uint256 eventPlaceId) internal view {
+        if (hasRole(MASTER_ROLE, msg.sender)) {
+            return;
+        }
+        ensureEventBelongsToProvider(eventPlaceId);
     }
 
     // Internal helper to create a category for an event
