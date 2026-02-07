@@ -36,6 +36,9 @@ tests:
 run-indexer: migrate
 	$(python) manage.py indexer
 
+run-indexer-from-zero: migrate
+	$(python) manage.py indexer --from-block 0
+
 run-indexer-oneshot: migrate
 	$(python) manage.py indexer --oneshot --from-block 0
 
