@@ -136,6 +136,14 @@ class Command(BaseCommand):
                         metadata={"username": "first_customer"},
                     )
                     self.stdout.write("  Added 1 social for first customer")
+                elif address.lower() == "0xa84036a18ecd8f4f3d21ca7f85becc033571b15e":
+                    # Add a human-searchable social to test attendee search.
+                    UserSocials.objects.create(
+                        user=u,
+                        network=UserSocials.Network.DISCORD,
+                        value="customer1_search_test",
+                    )
+                    self.stdout.write("  Added 1 social for customer1 (search test)")
 
         # ============================================================================
         # SECTION 2: Shaman Verification Requests
