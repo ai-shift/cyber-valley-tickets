@@ -20,8 +20,10 @@ export const useEventStatus = (eventId: number) =>
 export const redeem = async (
   account: Account | undefined,
   QRCodeValue: string,
+  proofToken: string | null,
 ) => {
   if (!account) throw new Error("No account");
+  if (!proofToken) throw new Error("Missing SIWE proof");
 
   const parts = QRCodeValue.split(",");
   const eventId = Number(parts[0]);
@@ -38,6 +40,7 @@ export const redeem = async (
   const { response, error } = await apiClient.GET(
     "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}",
     {
+      headers: { Authorization: `Bearer ${proofToken}` },
       params: {
         path: { nonce, eventId, ticketId: ticketId.toString() },
       },
