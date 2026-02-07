@@ -23,6 +23,9 @@ async function deployENS(hre) {
     "Public Resolver deployed to:",
     await publicResolver.getAddress(),
   );
+  console.log(
+    `export PUBLIC_ENS_RESOLVER_ADDRESS=${await publicResolver.getAddress()}`,
+  );
 
   // Deploy Reverse Registrar
   const ReverseRegistrar = await ethers.getContractFactory("ReverseRegistrar");
