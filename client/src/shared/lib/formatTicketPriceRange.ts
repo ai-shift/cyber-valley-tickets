@@ -10,7 +10,7 @@ type ApiTicketPriceRange = {
 
 /**
  * Formats the ticket price range for display.
- * Shows "from <min>" format.
+ * Shows "<min>" format.
  * Returns null if no tickets are available (all categories sold out).
  *
  * @param priceRange - Object containing min and max prices from API
@@ -32,8 +32,7 @@ export function formatTicketPriceRange(
 
   const currencySymbol = getCurrencySymbol();
 
-  // Always show "from <min>" format
-  return `from ${min} ${currencySymbol}`;
+  return `${min} ${currencySymbol}`;
 }
 
 /**
@@ -41,7 +40,7 @@ export function formatTicketPriceRange(
  * Used when the currency symbol is displayed separately.
  *
  * @param priceRange - Object containing min and max prices from API
- * @returns Formatted price string (e.g., "from 50"), or null if unavailable
+ * @returns Formatted price string (e.g., "50"), or null if unavailable
  */
 export function getTicketPriceRangeDisplay(
   priceRange: ApiTicketPriceRange | undefined,
@@ -57,6 +56,5 @@ export function getTicketPriceRangeDisplay(
     return null;
   }
 
-  // Always show "from <min>" format
-  return `from ${min}`;
+  return `${min}`;
 }
