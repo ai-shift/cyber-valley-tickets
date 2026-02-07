@@ -380,7 +380,8 @@ async function createEvents(eventManager, erc20, places, signers) {
       website: "https://example.com/other",
       placeIndex: 1,
       price: 50,
-      startDate: new Date(currentWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000),
+      // Keep this event visible in the public list (non-past) for a bit longer.
+      startDate: new Date(currentWeekStart.getTime() + 8 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
       cover: "seed-data/event-covers/event-2-game.jpg",
       creator: creatorSlave,
