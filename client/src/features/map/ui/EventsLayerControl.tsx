@@ -65,7 +65,7 @@ export const EventsLayerControl: React.FC<EventsLayerControlProps> = memo(
                     </div>
                   )}
                   {/* Index badge */}
-                  <div className="absolute top-0 left-0 h-4 w-4 bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center rounded-br">
+                  <div className="absolute top-0 left-0 h-4 w-4 bg-primary text-black text-[10px] font-bold flex items-center justify-center rounded-br">
                     {index + 1}
                   </div>
                 </div>
