@@ -6,3 +6,6 @@ export const readNotification = async (id: number) =>
       path: { notificationId: `${id}` },
     },
   });
+
+export const readAllNotifications = async () =>
+  await apiClient.POST("/api/notifications/seen-all/");

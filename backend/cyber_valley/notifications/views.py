@@ -99,3 +99,14 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet[Notification]):
         notification.seen_at = datetime.now(tz=UTC)
         notification.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @extend_schema(
+        responses={204: OpenApiResponse()},
+    )
+    @action(detail=False, methods=["post"], url_path="seen-all")
+    def seen_all(self, request: Request) -> Response:
+        user = get_or_create_user_by_address(require_address(request))
+        Notification.objects.filter(user=user, seen_at__isnull=True).update(
+            seen_at=datetime.now(tz=UTC)
+        )
+        return Response(status=status.HTTP_204_NO_CONTENT)

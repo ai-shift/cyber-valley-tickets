@@ -4,7 +4,6 @@ import type { components, paths } from "./apiTypes";
 
 export type ApiError = components["schemas"][
   | "ParseErrorResponse"
-  | "ErrorResponse401"
   | "ErrorResponse404"
   | "ErrorResponse405"
   | "ErrorResponse406"

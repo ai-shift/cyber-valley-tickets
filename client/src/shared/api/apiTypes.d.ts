@@ -4,5734 +4,5105 @@
  */
 
 export interface paths {
-  "/api/auth/custom/send-sms/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/custom/send-sms/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Send SMS verification code (mocked) */
+        post: operations["api_auth_custom_send_sms_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** @description Send SMS verification code (mocked) */
-    post: operations["api_auth_custom_send_sms_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/custom/submit-application/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/custom/submit-application/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_auth_custom_submit_application_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["api_auth_custom_submit_application_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/custom/verify-code/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/custom/verify-code/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Verify SMS code and return custom auth payload */
+        post: operations["api_auth_custom_verify_code_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** @description Verify SMS code and return custom auth payload */
-    post: operations["api_auth_custom_verify_code_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/logout": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/distribution-profiles/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get distribution profiles owned by the current user */
+        get: operations["api_distribution_profiles_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_auth_logout_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/refresh": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/distribution-profiles/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a specific distribution profile */
+        get: operations["api_distribution_profiles_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_auth_refresh_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/verify": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Available events in the system */
+        get: operations["api_events_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_auth_verify_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/web3/login/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{event_id}/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_categories_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_auth_web3_login_retrieve"];
-    put?: never;
-    post: operations["api_auth_web3_login_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/auth/web3/nonce/{address}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{event_id}/lifetime_revenue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_lifetime_revenue_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_auth_web3_nonce_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/distribution-profiles/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{event_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_status_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Get distribution profiles owned by the current user */
-    get: operations["api_distribution_profiles_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/distribution-profiles/{id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{event_id}/tickets/{ticket_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_tickets_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Get a specific distribution profile */
-    get: operations["api_distribution_profiles_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{event_id}/tickets/{ticket_id}/nonce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_tickets_nonce_generate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Available events in the system */
-    get: operations["api_events_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{event_id}/categories": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_tickets_verify"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_categories_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{event_id}/lifetime_revenue": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_lifetime_revenue_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{event_id}/status": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/{id}/attendees/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_attendees_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_status_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{event_id}/tickets/{ticket_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/by-tx-hash/{tx_hash}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get an event by its creation transaction hash */
+        get: operations["api_events_by_tx_hash_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_tickets_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{event_id}/tickets/{ticket_id}/nonce": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/total_revenue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_events_total_revenue_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_tickets_nonce_generate"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{event_id}/tickets/{ticket_id}/nonce/{nonce}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/events/verification-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get verification statistics per local provider. */
+        get: operations["api_events_verification_stats_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_tickets_verify"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/geodata/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List available geodata layers
+         * @description Returns a list of available geodata layer names
+         */
+        get: operations["api_geodata_layers_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/{id}/attendees/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/geodata/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get geodata layer by name
+         * @description Returns the geodata features for a specific layer. Each feature represents a geographical area with coordinates, name, type, and optional styling information.
+         */
+        get: operations["api_geodata_layer_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_attendees_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/by-tx-hash/{tx_hash}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ipfs/events/meta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["api_ipfs_events_meta_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Get an event by its creation transaction hash */
-    get: operations["api_events_by_tx_hash_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/total_revenue": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ipfs/orders/meta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["api_ipfs_orders_meta_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_events_total_revenue_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/events/verification-stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ipfs/places/meta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upload place metadata to IPFS
+         * @description Upload event place metadata to IPFS. The metadata includes the place title and GeoJSON Point geometry with coordinates.
+         */
+        put: operations["api_ipfs_places_meta_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Get verification statistics per local provider. */
-    get: operations["api_events_verification_stats_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/geodata/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/ipfs/users/socials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["api_ipfs_users_socials_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List available geodata layers
-     * @description Returns a list of available geodata layer names
-     */
-    get: operations["api_geodata_layers_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/geodata/{id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/notifications/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get geodata layer by name
-     * @description Returns the geodata features for a specific layer. Each feature represents a geographical area with coordinates, name, type, and optional styling information.
-     */
-    get: operations["api_geodata_layer_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ipfs/events/meta": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/notifications/{notification_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_notifications_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put: operations["api_ipfs_events_meta_update"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ipfs/orders/meta": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/notifications/seen-all/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_notifications_seen_all_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put: operations["api_ipfs_orders_meta_update"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ipfs/places/meta": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/notifications/seen/{notification_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_notifications_seen_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Upload place metadata to IPFS
-     * @description Upload event place metadata to IPFS. The metadata includes the place title and GeoJSON Point geometry with coordinates.
-     */
-    put: operations["api_ipfs_places_meta_update"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/ipfs/users/socials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/places/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_places_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put: operations["api_ipfs_users_socials_update"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/notifications/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/places/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_places_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_notifications_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/notifications/{notification_id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/shaman/verify/company": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_shaman_verify_company_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_notifications_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/notifications/seen/{notification_id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/shaman/verify/individual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_shaman_verify_individual_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["api_notifications_seen_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/places/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/siwe/payload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_siwe_payload_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_places_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/places/{id}/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/siwe/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_siwe_status_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_places_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/shaman/verify/company": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/siwe/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_siwe_verify_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["api_shaman_verify_company_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/shaman/verify/individual": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/telegram/schema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_telegram_schema_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["api_shaman_verify_individual_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/telegram/schema": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/telegram/updates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_telegram_updates_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_telegram_schema_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/telegram/updates": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/{address}/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get user profile info.
+         *
+         *     Socials are only returned if requester is the user or has
+         *     localprovider/master role. */
+        get: operations["api_users_profile_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["api_telegram_updates_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/{address}/profile": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/{address}/socials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get social media handles for a user by address. */
+        get: operations["api_users_socials_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Get user profile info.
-     *
-     *     Socials are only returned if requester is the user or has
-     *     localprovider/master role. */
-    get: operations["api_users_profile_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/{address}/socials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/current/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_users_current_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** @description Get social media handles for a user by address. */
-    get: operations["api_users_socials_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/current/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/local_providers/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_users_local_providers_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_users_current_retrieve"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/local_providers/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/socials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_users_socials_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_users_local_providers_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/socials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/staff/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_users_staff_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["api_users_socials_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/staff/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/users/verified_shamans/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_users_verified_shamans_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["api_users_staff_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/users/verified_shamans/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["api_users_verified_shamans_list"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    ApiAuthLogoutRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiAuthVerifyRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiAuthWeb3LoginCreateAddressErrorComponent: {
-      /**
-       * @description * `address` - address (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "address";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateChainIdErrorComponent: {
-      /**
-       * @description * `chain_id` - chain_id (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "chain_id";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateDomainErrorComponent: {
-      /**
-       * @description * `domain` - domain (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "domain";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateError:
-      | components["schemas"]["ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateAddressErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateChainIdErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateDomainErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateExpirationTimeErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateInvalidBeforeErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateIssuedAtErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateNonceErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateResourcesErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateResourcesINDEXErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateStatementErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateUriErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateVersionErrorComponent"]
-      | components["schemas"]["ApiAuthWeb3LoginCreateSignatureErrorComponent"];
-    ApiAuthWeb3LoginCreateErrorResponse400:
-      | components["schemas"]["ApiAuthWeb3LoginCreateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiAuthWeb3LoginCreateExpirationTimeErrorComponent: {
-      /**
-       * @description * `expiration_time` - expiration_time (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "expiration_time";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateInvalidBeforeErrorComponent: {
-      /**
-       * @description * `invalid_before` - invalid_before (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "invalid_before";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateIssuedAtErrorComponent: {
-      /**
-       * @description * `issued_at` - issued_at (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "issued_at";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateNonceErrorComponent: {
-      /**
-       * @description * `nonce` - nonce (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "nonce";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateResourcesErrorComponent: {
-      /**
-       * @description * `resources` - resources (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "resources";
-      /**
-       * @description * `not_a_list` - not_a_list
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "not_a_list" | "null" | "required";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateResourcesINDEXErrorComponent: {
-      /**
-       * @description * `resources.INDEX` - resources.INDEX (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "resources.INDEX";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateSignatureErrorComponent: {
-      /**
-       * @description * `signature` - signature (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "signature";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateStatementErrorComponent: {
-      /**
-       * @description * `statement` - statement (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "statement";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateUriErrorComponent: {
-      /**
-       * @description * `uri` - uri (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "uri";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginCreateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiAuthWeb3LoginCreateError"][];
-    };
-    ApiAuthWeb3LoginCreateVersionErrorComponent: {
-      /**
-       * @description * `version` - version (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "version";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiAuthWeb3LoginRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiAuthWeb3NonceRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiDistributionProfilesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiDistributionProfilesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsAttendeesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsByTxHashRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsCategoriesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsLifetimeRevenueRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsStatusRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsTicketsNonceGenerateErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsTicketsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsTicketsVerifyErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsTotalRevenueRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiEventsVerificationStatsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiGeodataLayerRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiGeodataLayersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiIpfsEventsMetaUpdateCoverErrorComponent: {
-      /**
-       * @description * `cover` - cover (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "cover";
-      /**
-       * @description * `empty` - empty
-       *     * `invalid` - invalid
-       *     * `no_name` - no_name
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "empty" | "invalid" | "no_name" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsEventsMetaUpdateDescriptionErrorComponent: {
-      /**
-       * @description * `description` - description (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "description";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsEventsMetaUpdateError:
-      | components["schemas"]["ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiIpfsEventsMetaUpdateCoverErrorComponent"]
-      | components["schemas"]["ApiIpfsEventsMetaUpdateTitleErrorComponent"]
-      | components["schemas"]["ApiIpfsEventsMetaUpdateDescriptionErrorComponent"]
-      | components["schemas"]["ApiIpfsEventsMetaUpdateWebsiteErrorComponent"]
-      | components["schemas"]["ApiIpfsEventsMetaUpdateSocialsCidErrorComponent"];
-    ApiIpfsEventsMetaUpdateErrorResponse400:
-      | components["schemas"]["ApiIpfsEventsMetaUpdateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiIpfsEventsMetaUpdateSocialsCidErrorComponent: {
-      /**
-       * @description * `socials_cid` - socials_cid (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "socials_cid";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsEventsMetaUpdateTitleErrorComponent: {
-      /**
-       * @description * `title` - title (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "title";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsEventsMetaUpdateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiIpfsEventsMetaUpdateError"][];
-    };
-    ApiIpfsEventsMetaUpdateWebsiteErrorComponent: {
-      /**
-       * @description * `website` - website (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "website";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateBuyerAddressErrorComponent: {
-      /**
-       * @description * `buyer_address` - buyer_address (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "buyer_address";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateCurrencyErrorComponent: {
-      /**
-       * @description * `currency` - currency (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "currency";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateError:
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateEventIdErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateBuyerAddressErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateSocialsNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateSocialsNetworkErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateSocialsValueErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryIdErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryNameErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXPriceErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXQuantityErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTotalTicketsErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateTotalPriceErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateCurrencyErrorComponent"]
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateReferralDataErrorComponent"];
-    ApiIpfsOrdersMetaUpdateErrorResponse400:
-      | components["schemas"]["ApiIpfsOrdersMetaUpdateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiIpfsOrdersMetaUpdateEventIdErrorComponent: {
-      /**
-       * @description * `event_id` - event_id (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "event_id";
-      /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "max_string_length" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateReferralDataErrorComponent: {
-      /**
-       * @description * `referral_data` - referral_data (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "referral_data";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateSocialsNetworkErrorComponent: {
-      /**
-       * @description * `socials.network` - socials.network (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "socials.network";
-      /**
-       * @description * `invalid_choice` - invalid_choice
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid_choice" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateSocialsNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `socials.non_field_errors` - socials.non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "socials.non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateSocialsValueErrorComponent: {
-      /**
-       * @description * `socials.value` - socials.value (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "socials.value";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryIdErrorComponent: {
-      /**
-       * @description * `tickets.INDEX.category_id` - tickets.INDEX.category_id (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "tickets.INDEX.category_id";
-      /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "max_string_length" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryNameErrorComponent: {
-      /**
-       * @description * `tickets.INDEX.category_name` - tickets.INDEX.category_name (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "tickets.INDEX.category_name";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTicketsINDEXNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `tickets.INDEX.non_field_errors` - tickets.INDEX.non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "tickets.INDEX.non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTicketsINDEXPriceErrorComponent: {
-      /**
-       * @description * `tickets.INDEX.price` - tickets.INDEX.price (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "tickets.INDEX.price";
-      /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "max_string_length" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTicketsINDEXQuantityErrorComponent: {
-      /**
-       * @description * `tickets.INDEX.quantity` - tickets.INDEX.quantity (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "tickets.INDEX.quantity";
-      /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `min_value` - min_value
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "max_string_length" | "min_value" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTicketsNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `tickets.non_field_errors` - tickets.non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "tickets.non_field_errors";
-      /**
-       * @description * `not_a_list` - not_a_list
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "not_a_list" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTotalPriceErrorComponent: {
-      /**
-       * @description * `total_price` - total_price (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "total_price";
-      /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `min_value` - min_value
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "max_string_length" | "min_value" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateTotalTicketsErrorComponent: {
-      /**
-       * @description * `total_tickets` - total_tickets (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "total_tickets";
-      /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `min_value` - min_value
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "max_string_length" | "min_value" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsOrdersMetaUpdateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiIpfsOrdersMetaUpdateError"][];
-    };
-    ApiIpfsPlacesMetaUpdateError:
-      | components["schemas"]["ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiIpfsPlacesMetaUpdateTitleErrorComponent"]
-      | components["schemas"]["ApiIpfsPlacesMetaUpdateGeometryErrorComponent"]
-      | components["schemas"]["ApiIpfsPlacesMetaUpdateEventDepositSizeErrorComponent"];
-    ApiIpfsPlacesMetaUpdateErrorResponse400:
-      | components["schemas"]["ApiIpfsPlacesMetaUpdateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiIpfsPlacesMetaUpdateEventDepositSizeErrorComponent: {
-      /**
-       * @description * `event_deposit_size` - event_deposit_size (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "event_deposit_size";
-      /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `min_value` - min_value
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "max_string_length" | "min_value" | "null";
-      detail: string;
-    };
-    ApiIpfsPlacesMetaUpdateGeometryErrorComponent: {
-      /**
-       * @description * `geometry` - geometry (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "geometry";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiIpfsPlacesMetaUpdateTitleErrorComponent: {
-      /**
-       * @description * `title` - title (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "title";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiIpfsPlacesMetaUpdateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiIpfsPlacesMetaUpdateError"][];
-    };
-    ApiIpfsUsersSocialsUpdateError:
-      | components["schemas"]["ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiIpfsUsersSocialsUpdateNetworkErrorComponent"]
-      | components["schemas"]["ApiIpfsUsersSocialsUpdateValueErrorComponent"];
-    ApiIpfsUsersSocialsUpdateErrorResponse400:
-      | components["schemas"]["ApiIpfsUsersSocialsUpdateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiIpfsUsersSocialsUpdateNetworkErrorComponent: {
-      /**
-       * @description * `network` - network (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "network";
-      /**
-       * @description * `invalid_choice` - invalid_choice
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid_choice" | "null" | "required";
-      detail: string;
-    };
-    ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiIpfsUsersSocialsUpdateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiIpfsUsersSocialsUpdateError"][];
-    };
-    ApiIpfsUsersSocialsUpdateValueErrorComponent: {
-      /**
-       * @description * `value` - value (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "value";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiNotificationsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiNotificationsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiNotificationsSeenCreateError: components["schemas"]["ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"];
-    ApiNotificationsSeenCreateErrorResponse400:
-      | components["schemas"]["ApiNotificationsSeenCreateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiNotificationsSeenCreateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiNotificationsSeenCreateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiNotificationsSeenCreateError"][];
-    };
-    ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiTelegramSchemaRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiUsersLocalProvidersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiUsersProfileRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiUsersSocialsCreateError:
-      | components["schemas"]["ApiUsersSocialsCreateNonFieldErrorsErrorComponent"]
-      | components["schemas"]["ApiUsersSocialsCreateNetworkErrorComponent"]
-      | components["schemas"]["ApiUsersSocialsCreateValueErrorComponent"];
-    ApiUsersSocialsCreateErrorResponse400:
-      | components["schemas"]["ApiUsersSocialsCreateValidationError"]
-      | components["schemas"]["ParseErrorResponse"];
-    ApiUsersSocialsCreateNetworkErrorComponent: {
-      /**
-       * @description * `network` - network (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "network";
-      /**
-       * @description * `invalid_choice` - invalid_choice
-       *     * `null` - null
-       *     * `required` - required
-       * @enum {string}
-       */
-      code: "invalid_choice" | "null" | "required";
-      detail: string;
-    };
-    ApiUsersSocialsCreateNonFieldErrorsErrorComponent: {
-      /**
-       * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "non_field_errors";
-      /**
-       * @description * `invalid` - invalid
-       *     * `null` - null
-       * @enum {string}
-       */
-      code: "invalid" | "null";
-      detail: string;
-    };
-    ApiUsersSocialsCreateValidationError: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "validation_error";
-      errors: components["schemas"]["ApiUsersSocialsCreateError"][];
-    };
-    ApiUsersSocialsCreateValueErrorComponent: {
-      /**
-       * @description * `value` - value (enum property replaced by openapi-typescript)
-       * @enum {string}
-       */
-      attr: "value";
-      /**
-       * @description * `blank` - blank
-       *     * `invalid` - invalid
-       *     * `null` - null
-       *     * `null_characters_not_allowed` - null_characters_not_allowed
-       *     * `required` - required
-       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
-       * @enum {string}
-       */
-      code:
-        | "blank"
-        | "invalid"
-        | "null"
-        | "null_characters_not_allowed"
-        | "required"
-        | "surrogate_characters_not_allowed";
-      detail: string;
-    };
-    ApiUsersSocialsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiUsersStaffListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApiUsersVerifiedShamansListErrorResponse400: components["schemas"]["ParseErrorResponse"];
-    ApplicationRequestRequest:
-      | components["schemas"]["IndividualApplicationRequest"]
-      | components["schemas"]["BusinessApplicationRequest"];
-    Attendee: {
-      address: string;
-      readonly socials: components["schemas"]["UploadSocials"];
-      readonly ticketsCount: number;
-    };
-    BusinessApplicationRequest: {
-      directorId: string;
-      /** Format: binary */
-      akta: string;
-      /** Format: binary */
-      skKemenkumham: string;
-    };
-    /**
-     * @description * `client_error` - Client Error
-     * @enum {string}
-     */
-    ClientErrorEnum: "client_error";
-    CompanyVerificationRequest: {
-      /** Format: binary */
-      ktp: string;
-      /** Format: binary */
-      akta: string;
-      /** Format: binary */
-      sk: string;
-    };
-    Coordinate: {
-      /**
-       * Format: double
-       * @description Latitude coordinate
-       */
-      lat: number;
-      /**
-       * Format: double
-       * @description Longitude coordinate
-       */
-      lng: number;
-    };
-    Creator: {
-      address: string;
-      readonly socials: components["schemas"]["UploadSocials"];
-    };
-    CreatorEvent: {
-      readonly id: number;
-      creator: components["schemas"]["Creator"];
-      status?: components["schemas"]["EventStatusEnum"];
-      title: string;
-      description: string;
-      place: components["schemas"]["EventPlace"];
-      readonly placeId: number;
-      /** Format: int64 */
-      ticketPrice: number;
-      /** @description Calculate the min and max available ticket prices from categories.
-       *     Excludes categories that are sold out (quota exceeded).
-       *     Returns None for min/max if no categories are available. */
-      readonly ticketPriceRange: {
-        [key: string]: number | null;
-      };
-      daysAmount: number;
-      /** Format: uri */
-      imageUrl?: string | null;
-      /** Format: uri */
-      website?: string | null;
-      readonly startDateTimestamp: number;
-      ticketsBought: number | null;
-      readonly totalRevenue: number;
-      readonly paidDeposit: number;
-      readonly ticketsRequiredUntilCancel: number | null;
-      readonly cancelDateTimestamp: number | null;
-    };
-    CurrentUser: {
-      readonly address: string;
-      readonly roles: string[];
-      readonly tickets: components["schemas"]["Ticket"][];
-      readonly socials: components["schemas"]["Social"][];
-      readonly profileManagerBps: number;
-    };
-    /** @description Serializer for DistributionProfile model. */
-    DistributionProfile: {
-      readonly id: number;
-      readonly owner: string;
-      readonly ownerAddress: string;
-      readonly recipients: unknown;
-      readonly isActive: boolean;
-      /** Format: date-time */
-      readonly createdAt: string;
-      /** Format: date-time */
-      readonly updatedAt: string;
-    };
-    Error401: {
-      code: components["schemas"]["ErrorCode401Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error404: {
-      code: components["schemas"]["ErrorCode404Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error405: {
-      code: components["schemas"]["ErrorCode405Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error406: {
-      code: components["schemas"]["ErrorCode406Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error415: {
-      code: components["schemas"]["ErrorCode415Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    Error500: {
-      code: components["schemas"]["ErrorCode500Enum"];
-      detail: string;
-      attr: string | null;
-    };
-    /**
-     * @description * `authentication_failed` - Authentication Failed
-     *     * `not_authenticated` - Not Authenticated
-     * @enum {string}
-     */
-    ErrorCode401Enum: "authentication_failed" | "not_authenticated";
-    /**
-     * @description * `not_found` - Not Found
-     * @enum {string}
-     */
-    ErrorCode404Enum: "not_found";
-    /**
-     * @description * `method_not_allowed` - Method Not Allowed
-     * @enum {string}
-     */
-    ErrorCode405Enum: "method_not_allowed";
-    /**
-     * @description * `not_acceptable` - Not Acceptable
-     * @enum {string}
-     */
-    ErrorCode406Enum: "not_acceptable";
-    /**
-     * @description * `unsupported_media_type` - Unsupported Media Type
-     * @enum {string}
-     */
-    ErrorCode415Enum: "unsupported_media_type";
-    /**
-     * @description * `error` - Error
-     * @enum {string}
-     */
-    ErrorCode500Enum: "error";
-    ErrorResponse: {
-      error: string;
-    };
-    ErrorResponse401: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error401"][];
-    };
-    ErrorResponse404: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error404"][];
-    };
-    ErrorResponse405: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error405"][];
-    };
-    ErrorResponse406: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error406"][];
-    };
-    ErrorResponse415: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error415"][];
-    };
-    ErrorResponse500: {
-      type: components["schemas"]["ServerErrorEnum"];
-      errors: components["schemas"]["Error500"][];
-    };
-    EventPlace: {
-      id: number;
-      title: string;
-      maxTickets: number;
-      minTickets: number;
-      /** Format: int64 */
-      minPrice: number;
-      minDays: number;
-      geometry: components["schemas"]["GeoFeature"];
-      daysBeforeCancel: number;
-      eventDepositSize?: number;
-      available?: boolean;
-      status?: components["schemas"]["EventPlaceStatusEnum"];
-      readonly isUsed: boolean;
-    };
-    /**
-     * @description * `submitted` - submitted
-     *     * `approved` - approved
-     *     * `declined` - declined
-     * @enum {string}
-     */
-    EventPlaceStatusEnum: "submitted" | "approved" | "declined";
-    /**
-     * @description * `submitted` - submitted
-     *     * `approved` - approved
-     *     * `declined` - declined
-     *     * `cancelled` - cancelled
-     *     * `closed` - closed
-     * @enum {string}
-     */
-    EventStatusEnum:
-      | "submitted"
-      | "approved"
-      | "declined"
-      | "cancelled"
-      | "closed";
-    GeoFeature: {
-      /** @description Name of the geographical feature */
-      name: string;
-      /** @description Type of the feature (e.g., polygon, point) */
-      type: string;
-      /** @description List of coordinate points defining the feature */
-      coordinates: components["schemas"]["Coordinate"][];
-      /** @description RGBA hex color for the polygon fill (e.g., 24589d0f) */
-      polygonColor?: string;
-      /** @description RGBA hex color for the polygon border (e.g., ff589d0f) */
-      lineColor?: string;
-      /** @description Additional feature attributes from KML ExtendedData */
-      attributes?: {
-        [key: string]: string;
-      };
-    };
-    IndividualApplicationRequest: {
-      ktp: string;
-    };
-    IndividualVerificationRequest: {
-      /** Format: binary */
-      ktp: string;
-    };
-    /**
-     * @description * `telegram` - Telegram
-     *     * `instagram` - Instagram
-     *     * `discord` - Discord
-     *     * `whatsapp` - Whatsapp
-     * @enum {string}
-     */
-    NetworkEnum: "telegram" | "instagram" | "discord" | "whatsapp";
-    Notification: {
-      readonly id: number;
-      readonly title: string;
-      readonly body: string;
-      /** Format: date-time */
-      readonly seenAt: string | null;
-      readonly createdAtTimestamp: number;
-    };
-    OrderTicketItemRequest: {
-      categoryId: number;
-      categoryName: string;
-      price: number;
-      quantity: number;
-    };
-    ParseError: {
-      code: components["schemas"]["ParseErrorCodeEnum"];
-      detail: string;
-      attr: string | null;
-    };
-    /**
-     * @description * `parse_error` - Parse Error
-     * @enum {string}
-     */
-    ParseErrorCodeEnum: "parse_error";
-    ParseErrorResponse: {
-      /**
-       * @description discriminator enum property added by openapi-typescript
-       * @enum {string}
-       */
-      type: "client_error";
-      errors: components["schemas"]["ParseError"][];
-    };
-    RoleBasedEvent:
-      | components["schemas"]["CreatorEvent"]
-      | components["schemas"]["StaffEvent"];
-    SIWELogin: {
-      address: string;
-      chain_id: string;
-      domain: string;
-      expiration_time: string;
-      invalid_before: string;
-      issued_at: string;
-      nonce: string;
-      resources: string[];
-      statement: string;
-      uri: string;
-      version: string;
-    };
-    SIWEModelRequest: {
-      address: string;
-      chain_id: string;
-      domain: string;
-      expiration_time: string;
-      invalid_before: string;
-      issued_at: string;
-      nonce: string;
-      resources: string[];
-      statement: string;
-      uri: string;
-      version: string;
-      /** @description Message signed with user's private key */
-      signature: string;
-    };
-    SaveSocials: {
-      network: components["schemas"]["NetworkEnum"];
-      value: string;
-    };
-    SaveSocialsRequest: {
-      network: components["schemas"]["NetworkEnum"];
-      value: string;
-    };
-    SendSMSRequest: {
-      phoneNumber: string;
-    };
-    SendSMSResponse: {
-      success: boolean;
-      message: string;
-      developmentNote?: string;
-    };
-    /**
-     * @description * `server_error` - Server Error
-     * @enum {string}
-     */
-    ServerErrorEnum: "server_error";
-    Social: {
-      network: components["schemas"]["NetworkEnum"];
-      value: string;
-    };
-    Staff: {
-      readonly address: string;
-      readonly socials: components["schemas"]["Social"][];
-    };
-    StaffEvent: {
-      readonly id: number;
-      creator: components["schemas"]["Creator"];
-      status?: components["schemas"]["EventStatusEnum"];
-      title: string;
-      description: string;
-      place: components["schemas"]["EventPlace"];
-      readonly placeId: number;
-      /** Format: int64 */
-      ticketPrice: number;
-      /** @description Calculate the min and max available ticket prices from categories.
-       *     Excludes categories that are sold out (quota exceeded).
-       *     Returns None for min/max if no categories are available. */
-      readonly ticketPriceRange: {
-        [key: string]: number | null;
-      };
-      daysAmount: number;
-      /** Format: uri */
-      imageUrl?: string | null;
-      /** Format: uri */
-      website?: string | null;
-      readonly startDateTimestamp: number;
-      ticketsBought: number;
-      readonly totalRevenue: number;
-      readonly paidDeposit: number;
-      readonly ticketsRequiredUntilCancel: number;
-      readonly cancelDateTimestamp: number;
-    };
-    SubmitApplicationResponse: {
-      message: string;
-      applicationType: string;
-    };
-    Ticket: {
-      readonly id: string;
-      readonly eventId: number;
-      readonly isRedeemed: boolean;
-      readonly pendingIsRedeemed: boolean;
-    };
-    TicketCategory: {
-      readonly categoryId: number;
-      readonly name: string;
-      readonly discount: number;
-      readonly quota: number;
-      readonly hasQuota: boolean;
-      readonly ticketsBought: number;
-    };
-    UploadEventMetaToIpfsRequest: {
-      /** Format: binary */
-      cover: string;
-      title: string;
-      description: string;
-      website: string;
-      socialsCid: string;
-    };
-    UploadOrderMetaToIpfsRequest: {
-      eventId: number;
-      buyerAddress: string;
-      socials: components["schemas"]["UploadSocialsRequest"];
-      tickets: components["schemas"]["OrderTicketItemRequest"][];
-      totalTickets: number;
-      totalPrice: number;
-      /** @default USDC */
-      currency: string;
-      /** @default  */
-      referralData: string;
-    };
-    UploadPlaceMetaToIpfsRequest: {
-      /** @description Title of the event place */
-      title: string;
-      /** @description Geometry with type and coordinates */
-      geometry: unknown;
-      /**
-       * @description Suggested deposit size for events at this place (in USDT)
-       * @default 0
-       */
-      eventDepositSize: number;
-    };
-    UploadSocials: {
-      network: components["schemas"]["NetworkEnum"];
-      value: string;
-    };
-    UploadSocialsRequest: {
-      network: components["schemas"]["NetworkEnum"];
-      value: string;
-    };
-    /**
-     * @description * `validation_error` - Validation Error
-     * @enum {string}
-     */
-    ValidationErrorEnum: "validation_error";
-    VerifyCodeRequest: {
-      phoneNumber: string;
-      verificationCode: string;
-    };
-    VerifyCodeResponse: {
-      success: boolean;
-      payload: {
-        [key: string]: unknown;
-      };
-      message: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    schemas: {
+        ApiDistributionProfilesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiDistributionProfilesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsAttendeesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsByTxHashRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsCategoriesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsLifetimeRevenueRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsStatusRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsTicketsNonceGenerateErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsTicketsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsTicketsVerifyErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsTotalRevenueRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiEventsVerificationStatsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiGeodataLayerRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiGeodataLayersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiIpfsEventsMetaUpdateAddressErrorComponent: {
+            /**
+             * @description * `address` - address (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "address";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateCoverErrorComponent: {
+            /**
+             * @description * `cover` - cover (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "cover";
+            /**
+             * @description * `empty` - empty
+             *     * `invalid` - invalid
+             *     * `no_name` - no_name
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "empty" | "invalid" | "no_name" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateDescriptionErrorComponent: {
+            /**
+             * @description * `description` - description (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "description";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateError: components["schemas"]["ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateAddressErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateCoverErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateTitleErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateDescriptionErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateWebsiteErrorComponent"] | components["schemas"]["ApiIpfsEventsMetaUpdateSocialsCidErrorComponent"];
+        ApiIpfsEventsMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsEventsMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsEventsMetaUpdateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateSocialsCidErrorComponent: {
+            /**
+             * @description * `socials_cid` - socials_cid (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "socials_cid";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateTitleErrorComponent: {
+            /**
+             * @description * `title` - title (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "title";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsEventsMetaUpdateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiIpfsEventsMetaUpdateError"][];
+        };
+        ApiIpfsEventsMetaUpdateWebsiteErrorComponent: {
+            /**
+             * @description * `website` - website (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "website";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateBuyerAddressErrorComponent: {
+            /**
+             * @description * `buyer_address` - buyer_address (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "buyer_address";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateCurrencyErrorComponent: {
+            /**
+             * @description * `currency` - currency (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "currency";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateError: components["schemas"]["ApiIpfsOrdersMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateEventIdErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateBuyerAddressErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateSocialsNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateSocialsNetworkErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateSocialsValueErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryIdErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryNameErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXPriceErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTicketsINDEXQuantityErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTotalTicketsErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateTotalPriceErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateCurrencyErrorComponent"] | components["schemas"]["ApiIpfsOrdersMetaUpdateReferralDataErrorComponent"];
+        ApiIpfsOrdersMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsOrdersMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsOrdersMetaUpdateEventIdErrorComponent: {
+            /**
+             * @description * `event_id` - event_id (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "event_id";
+            /**
+             * @description * `invalid` - invalid
+             *     * `max_string_length` - max_string_length
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "max_string_length" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateReferralDataErrorComponent: {
+            /**
+             * @description * `referral_data` - referral_data (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "referral_data";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "invalid" | "null" | "null_characters_not_allowed" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateSocialsNetworkErrorComponent: {
+            /**
+             * @description * `socials.network` - socials.network (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "socials.network";
+            /**
+             * @description * `invalid_choice` - invalid_choice
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid_choice" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateSocialsNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `socials.non_field_errors` - socials.non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "socials.non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateSocialsValueErrorComponent: {
+            /**
+             * @description * `socials.value` - socials.value (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "socials.value";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryIdErrorComponent: {
+            /**
+             * @description * `tickets.INDEX.category_id` - tickets.INDEX.category_id (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "tickets.INDEX.category_id";
+            /**
+             * @description * `invalid` - invalid
+             *     * `max_string_length` - max_string_length
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "max_string_length" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTicketsINDEXCategoryNameErrorComponent: {
+            /**
+             * @description * `tickets.INDEX.category_name` - tickets.INDEX.category_name (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "tickets.INDEX.category_name";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTicketsINDEXNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `tickets.INDEX.non_field_errors` - tickets.INDEX.non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "tickets.INDEX.non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTicketsINDEXPriceErrorComponent: {
+            /**
+             * @description * `tickets.INDEX.price` - tickets.INDEX.price (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "tickets.INDEX.price";
+            /**
+             * @description * `invalid` - invalid
+             *     * `max_string_length` - max_string_length
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "max_string_length" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTicketsINDEXQuantityErrorComponent: {
+            /**
+             * @description * `tickets.INDEX.quantity` - tickets.INDEX.quantity (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "tickets.INDEX.quantity";
+            /**
+             * @description * `invalid` - invalid
+             *     * `max_string_length` - max_string_length
+             *     * `min_value` - min_value
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "max_string_length" | "min_value" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTicketsNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `tickets.non_field_errors` - tickets.non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "tickets.non_field_errors";
+            /**
+             * @description * `not_a_list` - not_a_list
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "not_a_list" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTotalPriceErrorComponent: {
+            /**
+             * @description * `total_price` - total_price (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "total_price";
+            /**
+             * @description * `invalid` - invalid
+             *     * `max_string_length` - max_string_length
+             *     * `min_value` - min_value
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "max_string_length" | "min_value" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateTotalTicketsErrorComponent: {
+            /**
+             * @description * `total_tickets` - total_tickets (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "total_tickets";
+            /**
+             * @description * `invalid` - invalid
+             *     * `max_string_length` - max_string_length
+             *     * `min_value` - min_value
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "max_string_length" | "min_value" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsOrdersMetaUpdateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiIpfsOrdersMetaUpdateError"][];
+        };
+        ApiIpfsPlacesMetaUpdateError: components["schemas"]["ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateTitleErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateGeometryErrorComponent"] | components["schemas"]["ApiIpfsPlacesMetaUpdateEventDepositSizeErrorComponent"];
+        ApiIpfsPlacesMetaUpdateErrorResponse400: components["schemas"]["ApiIpfsPlacesMetaUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsPlacesMetaUpdateEventDepositSizeErrorComponent: {
+            /**
+             * @description * `event_deposit_size` - event_deposit_size (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "event_deposit_size";
+            /**
+             * @description * `invalid` - invalid
+             *     * `max_string_length` - max_string_length
+             *     * `min_value` - min_value
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "max_string_length" | "min_value" | "null";
+            detail: string;
+        };
+        ApiIpfsPlacesMetaUpdateGeometryErrorComponent: {
+            /**
+             * @description * `geometry` - geometry (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "geometry";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsPlacesMetaUpdateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiIpfsPlacesMetaUpdateTitleErrorComponent: {
+            /**
+             * @description * `title` - title (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "title";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiIpfsPlacesMetaUpdateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiIpfsPlacesMetaUpdateError"][];
+        };
+        ApiIpfsUsersSocialsUpdateError: components["schemas"]["ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiIpfsUsersSocialsUpdateNetworkErrorComponent"] | components["schemas"]["ApiIpfsUsersSocialsUpdateValueErrorComponent"];
+        ApiIpfsUsersSocialsUpdateErrorResponse400: components["schemas"]["ApiIpfsUsersSocialsUpdateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiIpfsUsersSocialsUpdateNetworkErrorComponent: {
+            /**
+             * @description * `network` - network (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "network";
+            /**
+             * @description * `invalid_choice` - invalid_choice
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid_choice" | "null" | "required";
+            detail: string;
+        };
+        ApiIpfsUsersSocialsUpdateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiIpfsUsersSocialsUpdateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiIpfsUsersSocialsUpdateError"][];
+        };
+        ApiIpfsUsersSocialsUpdateValueErrorComponent: {
+            /**
+             * @description * `value` - value (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "value";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiNotificationsListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsSeenAllCreateError: components["schemas"]["ApiNotificationsSeenAllCreateNonFieldErrorsErrorComponent"];
+        ApiNotificationsSeenAllCreateErrorResponse400: components["schemas"]["ApiNotificationsSeenAllCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsSeenAllCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiNotificationsSeenAllCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiNotificationsSeenAllCreateError"][];
+        };
+        ApiNotificationsSeenCreateError: components["schemas"]["ApiNotificationsSeenCreateNonFieldErrorsErrorComponent"];
+        ApiNotificationsSeenCreateErrorResponse400: components["schemas"]["ApiNotificationsSeenCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiNotificationsSeenCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiNotificationsSeenCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiNotificationsSeenCreateError"][];
+        };
+        ApiPlacesListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiPlacesRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiSiwePayloadCreateAddressErrorComponent: {
+            /**
+             * @description * `address` - address (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "address";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiwePayloadCreateError: components["schemas"]["ApiSiwePayloadCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiSiwePayloadCreateAddressErrorComponent"] | components["schemas"]["ApiSiwePayloadCreatePurposeErrorComponent"];
+        ApiSiwePayloadCreateErrorResponse400: components["schemas"]["ApiSiwePayloadCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiSiwePayloadCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiSiwePayloadCreatePurposeErrorComponent: {
+            /**
+             * @description * `purpose` - purpose (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "purpose";
+            /**
+             * @description * `invalid_choice` - invalid_choice
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid_choice" | "null" | "required";
+            detail: string;
+        };
+        ApiSiwePayloadCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiSiwePayloadCreateError"][];
+        };
+        ApiSiweStatusRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiSiweVerifyCreateError: components["schemas"]["ApiSiweVerifyCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadNonFieldErrorsErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadAddressErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadChainIdErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadDomainErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadExpirationTimeErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadInvalidBeforeErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadIssuedAtErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadNonceErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadResourcesErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadResourcesINDEXErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadStatementErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadUriErrorComponent"] | components["schemas"]["ApiSiweVerifyCreatePayloadVersionErrorComponent"] | components["schemas"]["ApiSiweVerifyCreateSignatureErrorComponent"];
+        ApiSiweVerifyCreateErrorResponse400: components["schemas"]["ApiSiweVerifyCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiSiweVerifyCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadAddressErrorComponent: {
+            /**
+             * @description * `payload.address` - payload.address (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.address";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadChainIdErrorComponent: {
+            /**
+             * @description * `payload.chain_id` - payload.chain_id (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.chain_id";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadDomainErrorComponent: {
+            /**
+             * @description * `payload.domain` - payload.domain (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.domain";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadExpirationTimeErrorComponent: {
+            /**
+             * @description * `payload.expiration_time` - payload.expiration_time (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.expiration_time";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadInvalidBeforeErrorComponent: {
+            /**
+             * @description * `payload.invalid_before` - payload.invalid_before (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.invalid_before";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadIssuedAtErrorComponent: {
+            /**
+             * @description * `payload.issued_at` - payload.issued_at (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.issued_at";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `payload.non_field_errors` - payload.non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid" | "null" | "required";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadNonceErrorComponent: {
+            /**
+             * @description * `payload.nonce` - payload.nonce (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.nonce";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadResourcesErrorComponent: {
+            /**
+             * @description * `payload.resources` - payload.resources (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.resources";
+            /**
+             * @description * `not_a_list` - not_a_list
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "not_a_list" | "null" | "required";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadResourcesINDEXErrorComponent: {
+            /**
+             * @description * `payload.resources.INDEX` - payload.resources.INDEX (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.resources.INDEX";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadStatementErrorComponent: {
+            /**
+             * @description * `payload.statement` - payload.statement (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.statement";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadUriErrorComponent: {
+            /**
+             * @description * `payload.uri` - payload.uri (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.uri";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreatePayloadVersionErrorComponent: {
+            /**
+             * @description * `payload.version` - payload.version (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "payload.version";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreateSignatureErrorComponent: {
+            /**
+             * @description * `signature` - signature (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "signature";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiSiweVerifyCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiSiweVerifyCreateError"][];
+        };
+        ApiTelegramSchemaRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiUsersCurrentRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiUsersLocalProvidersListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiUsersProfileRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiUsersSocialsCreateError: components["schemas"]["ApiUsersSocialsCreateNonFieldErrorsErrorComponent"] | components["schemas"]["ApiUsersSocialsCreateNetworkErrorComponent"] | components["schemas"]["ApiUsersSocialsCreateValueErrorComponent"];
+        ApiUsersSocialsCreateErrorResponse400: components["schemas"]["ApiUsersSocialsCreateValidationError"] | components["schemas"]["ParseErrorResponse"];
+        ApiUsersSocialsCreateNetworkErrorComponent: {
+            /**
+             * @description * `network` - network (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "network";
+            /**
+             * @description * `invalid_choice` - invalid_choice
+             *     * `null` - null
+             *     * `required` - required
+             * @enum {string}
+             */
+            code: "invalid_choice" | "null" | "required";
+            detail: string;
+        };
+        ApiUsersSocialsCreateNonFieldErrorsErrorComponent: {
+            /**
+             * @description * `non_field_errors` - non_field_errors (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "non_field_errors";
+            /**
+             * @description * `invalid` - invalid
+             *     * `null` - null
+             * @enum {string}
+             */
+            code: "invalid" | "null";
+            detail: string;
+        };
+        ApiUsersSocialsCreateValidationError: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "validation_error";
+            errors: components["schemas"]["ApiUsersSocialsCreateError"][];
+        };
+        ApiUsersSocialsCreateValueErrorComponent: {
+            /**
+             * @description * `value` - value (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            attr: "value";
+            /**
+             * @description * `blank` - blank
+             *     * `invalid` - invalid
+             *     * `null` - null
+             *     * `null_characters_not_allowed` - null_characters_not_allowed
+             *     * `required` - required
+             *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
+             * @enum {string}
+             */
+            code: "blank" | "invalid" | "null" | "null_characters_not_allowed" | "required" | "surrogate_characters_not_allowed";
+            detail: string;
+        };
+        ApiUsersSocialsRetrieveErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiUsersStaffListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApiUsersVerifiedShamansListErrorResponse400: components["schemas"]["ParseErrorResponse"];
+        ApplicationRequestRequest: components["schemas"]["IndividualApplicationRequest"] | components["schemas"]["BusinessApplicationRequest"];
+        Attendee: {
+            address: string;
+            readonly socials: components["schemas"]["UploadSocials"];
+            readonly ticketsCount: number;
+        };
+        BusinessApplicationRequest: {
+            directorId: string;
+            /** Format: binary */
+            akta: string;
+            /** Format: binary */
+            skKemenkumham: string;
+        };
+        /**
+         * @description * `client_error` - Client Error
+         * @enum {string}
+         */
+        ClientErrorEnum: "client_error";
+        CompanyVerificationRequest: {
+            /** Format: binary */
+            ktp: string;
+            /** Format: binary */
+            akta: string;
+            /** Format: binary */
+            sk: string;
+        };
+        Coordinate: {
+            /**
+             * Format: double
+             * @description Latitude coordinate
+             */
+            lat: number;
+            /**
+             * Format: double
+             * @description Longitude coordinate
+             */
+            lng: number;
+        };
+        Creator: {
+            address: string;
+            readonly socials: components["schemas"]["UploadSocials"];
+        };
+        CreatorEvent: {
+            readonly id: number;
+            creator: components["schemas"]["Creator"];
+            status?: components["schemas"]["EventStatusEnum"];
+            title: string;
+            description: string;
+            place: components["schemas"]["EventPlace"];
+            readonly placeId: number;
+            /** Format: int64 */
+            ticketPrice: number;
+            /** @description Calculate the min and max available ticket prices from categories.
+             *     Excludes categories that are sold out (quota exceeded).
+             *     Returns None for min/max if no categories are available. */
+            readonly ticketPriceRange: {
+                [key: string]: number | null;
+            };
+            daysAmount: number;
+            /** Format: uri */
+            imageUrl?: string | null;
+            /** Format: uri */
+            website?: string | null;
+            readonly startDateTimestamp: number;
+            ticketsBought: number | null;
+            readonly totalRevenue: number;
+            readonly paidDeposit: number;
+            readonly ticketsRequiredUntilCancel: number | null;
+            readonly cancelDateTimestamp: number | null;
+        };
+        CurrentUser: {
+            readonly address: string;
+            readonly roles: string[];
+            readonly tickets: components["schemas"]["Ticket"][];
+            readonly socials: components["schemas"]["Social"][];
+            readonly profileManagerBps: number;
+        };
+        /** @description Serializer for DistributionProfile model. */
+        DistributionProfile: {
+            readonly id: number;
+            readonly owner: string;
+            readonly ownerAddress: string;
+            readonly recipients: unknown;
+            readonly isActive: boolean;
+            /** Format: date-time */
+            readonly createdAt: string;
+            /** Format: date-time */
+            readonly updatedAt: string;
+        };
+        Error404: {
+            code: components["schemas"]["ErrorCode404Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error405: {
+            code: components["schemas"]["ErrorCode405Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error406: {
+            code: components["schemas"]["ErrorCode406Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error415: {
+            code: components["schemas"]["ErrorCode415Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        Error500: {
+            code: components["schemas"]["ErrorCode500Enum"];
+            detail: string;
+            attr: string | null;
+        };
+        /**
+         * @description * `not_found` - Not Found
+         * @enum {string}
+         */
+        ErrorCode404Enum: "not_found";
+        /**
+         * @description * `method_not_allowed` - Method Not Allowed
+         * @enum {string}
+         */
+        ErrorCode405Enum: "method_not_allowed";
+        /**
+         * @description * `not_acceptable` - Not Acceptable
+         * @enum {string}
+         */
+        ErrorCode406Enum: "not_acceptable";
+        /**
+         * @description * `unsupported_media_type` - Unsupported Media Type
+         * @enum {string}
+         */
+        ErrorCode415Enum: "unsupported_media_type";
+        /**
+         * @description * `error` - Error
+         * @enum {string}
+         */
+        ErrorCode500Enum: "error";
+        ErrorResponse: {
+            error: string;
+        };
+        ErrorResponse404: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error404"][];
+        };
+        ErrorResponse405: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error405"][];
+        };
+        ErrorResponse406: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error406"][];
+        };
+        ErrorResponse415: {
+            type: components["schemas"]["ClientErrorEnum"];
+            errors: components["schemas"]["Error415"][];
+        };
+        ErrorResponse500: {
+            type: components["schemas"]["ServerErrorEnum"];
+            errors: components["schemas"]["Error500"][];
+        };
+        EventPlace: {
+            id: number;
+            title: string;
+            maxTickets: number;
+            minTickets: number;
+            /** Format: int64 */
+            minPrice: number;
+            minDays: number;
+            geometry: components["schemas"]["GeoFeature"];
+            daysBeforeCancel: number;
+            eventDepositSize?: number;
+            available?: boolean;
+            status?: components["schemas"]["EventPlaceStatusEnum"];
+            readonly isUsed: boolean;
+        };
+        /**
+         * @description * `submitted` - submitted
+         *     * `approved` - approved
+         *     * `declined` - declined
+         * @enum {string}
+         */
+        EventPlaceStatusEnum: "submitted" | "approved" | "declined";
+        /**
+         * @description * `submitted` - submitted
+         *     * `approved` - approved
+         *     * `declined` - declined
+         *     * `cancelled` - cancelled
+         *     * `closed` - closed
+         * @enum {string}
+         */
+        EventStatusEnum: "submitted" | "approved" | "declined" | "cancelled" | "closed";
+        GeoFeature: {
+            /** @description Name of the geographical feature */
+            name: string;
+            /** @description Type of the feature (e.g., polygon, point) */
+            type: string;
+            /** @description List of coordinate points defining the feature */
+            coordinates: components["schemas"]["Coordinate"][];
+            /** @description RGBA hex color for the polygon fill (e.g., 24589d0f) */
+            polygonColor?: string;
+            /** @description RGBA hex color for the polygon border (e.g., ff589d0f) */
+            lineColor?: string;
+            /** @description Additional feature attributes from KML ExtendedData */
+            attributes?: {
+                [key: string]: string;
+            };
+        };
+        IndividualApplicationRequest: {
+            ktp: string;
+        };
+        IndividualVerificationRequest: {
+            /** Format: binary */
+            ktp: string;
+        };
+        /**
+         * @description * `telegram` - Telegram
+         *     * `instagram` - Instagram
+         *     * `discord` - Discord
+         *     * `whatsapp` - Whatsapp
+         * @enum {string}
+         */
+        NetworkEnum: "telegram" | "instagram" | "discord" | "whatsapp";
+        Notification: {
+            readonly id: number;
+            readonly title: string;
+            readonly body: string;
+            /** Format: date-time */
+            readonly seenAt: string | null;
+            readonly createdAtTimestamp: number;
+        };
+        OrderTicketItemRequest: {
+            categoryId: number;
+            categoryName: string;
+            price: number;
+            quantity: number;
+        };
+        ParseError: {
+            code: components["schemas"]["ParseErrorCodeEnum"];
+            detail: string;
+            attr: string | null;
+        };
+        /**
+         * @description * `parse_error` - Parse Error
+         * @enum {string}
+         */
+        ParseErrorCodeEnum: "parse_error";
+        ParseErrorResponse: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "client_error";
+            errors: components["schemas"]["ParseError"][];
+        };
+        /**
+         * @description * `ticket_qr` - ticket_qr
+         *     * `staff_verify` - staff_verify
+         * @enum {string}
+         */
+        PurposeEnum: "ticket_qr" | "staff_verify";
+        RoleBasedEvent: components["schemas"]["CreatorEvent"] | components["schemas"]["StaffEvent"];
+        SaveSocials: {
+            network: components["schemas"]["NetworkEnum"];
+            value: string;
+        };
+        SaveSocialsRequest: {
+            network: components["schemas"]["NetworkEnum"];
+            value: string;
+        };
+        SendSMSRequest: {
+            phoneNumber: string;
+        };
+        SendSMSResponse: {
+            success: boolean;
+            message: string;
+            developmentNote?: string;
+        };
+        /**
+         * @description * `server_error` - Server Error
+         * @enum {string}
+         */
+        ServerErrorEnum: "server_error";
+        SiwePayload: {
+            address: string;
+            chain_id: string;
+            domain: string;
+            expiration_time: string;
+            invalid_before: string;
+            issued_at: string;
+            nonce: string;
+            resources: string[];
+            statement: string;
+            uri: string;
+            version: string;
+        };
+        SiwePayloadRequest: {
+            address: string;
+            chain_id: string;
+            domain: string;
+            expiration_time: string;
+            invalid_before: string;
+            issued_at: string;
+            nonce: string;
+            resources: string[];
+            statement: string;
+            uri: string;
+            version: string;
+        };
+        SiwePayloadRequestRequest: {
+            address: string;
+            purpose: components["schemas"]["PurposeEnum"];
+        };
+        SiwePayloadResponse: {
+            payload: components["schemas"]["SiwePayload"];
+            message: string;
+        };
+        SiweVerifyRequestRequest: {
+            payload: components["schemas"]["SiwePayloadRequest"];
+            signature: string;
+        };
+        SiweVerifyResponse: {
+            proofToken: string;
+            address: string;
+            expiresAt: number;
+        };
+        Social: {
+            network: components["schemas"]["NetworkEnum"];
+            value: string;
+        };
+        Staff: {
+            readonly address: string;
+            readonly socials: components["schemas"]["Social"][];
+        };
+        StaffEvent: {
+            readonly id: number;
+            creator: components["schemas"]["Creator"];
+            status?: components["schemas"]["EventStatusEnum"];
+            title: string;
+            description: string;
+            place: components["schemas"]["EventPlace"];
+            readonly placeId: number;
+            /** Format: int64 */
+            ticketPrice: number;
+            /** @description Calculate the min and max available ticket prices from categories.
+             *     Excludes categories that are sold out (quota exceeded).
+             *     Returns None for min/max if no categories are available. */
+            readonly ticketPriceRange: {
+                [key: string]: number | null;
+            };
+            daysAmount: number;
+            /** Format: uri */
+            imageUrl?: string | null;
+            /** Format: uri */
+            website?: string | null;
+            readonly startDateTimestamp: number;
+            ticketsBought: number;
+            readonly totalRevenue: number;
+            readonly paidDeposit: number;
+            readonly ticketsRequiredUntilCancel: number;
+            readonly cancelDateTimestamp: number;
+        };
+        SubmitApplicationResponse: {
+            message: string;
+            applicationType: string;
+        };
+        Ticket: {
+            readonly id: string;
+            readonly eventId: number;
+            readonly isRedeemed: boolean;
+            readonly pendingIsRedeemed: boolean;
+        };
+        TicketCategory: {
+            readonly categoryId: number;
+            readonly name: string;
+            readonly discount: number;
+            readonly quota: number;
+            readonly hasQuota: boolean;
+            readonly ticketsBought: number;
+        };
+        UploadEventMetaToIpfsRequest: {
+            address: string;
+            /** Format: binary */
+            cover: string;
+            title: string;
+            description: string;
+            website: string;
+            socialsCid: string;
+        };
+        UploadOrderMetaToIpfsRequest: {
+            eventId: number;
+            buyerAddress: string;
+            socials: components["schemas"]["UploadSocialsRequest"];
+            tickets: components["schemas"]["OrderTicketItemRequest"][];
+            totalTickets: number;
+            totalPrice: number;
+            /** @default USDC */
+            currency: string;
+            /** @default  */
+            referralData: string;
+        };
+        UploadPlaceMetaToIpfsRequest: {
+            /** @description Title of the event place */
+            title: string;
+            /** @description Geometry with type and coordinates */
+            geometry: unknown;
+            /**
+             * @description Suggested deposit size for events at this place (in USDT)
+             * @default 0
+             */
+            eventDepositSize: number;
+        };
+        UploadSocials: {
+            network: components["schemas"]["NetworkEnum"];
+            value: string;
+        };
+        UploadSocialsRequest: {
+            network: components["schemas"]["NetworkEnum"];
+            value: string;
+        };
+        /**
+         * @description * `validation_error` - Validation Error
+         * @enum {string}
+         */
+        ValidationErrorEnum: "validation_error";
+        VerifyCodeRequest: {
+            phoneNumber: string;
+            verificationCode: string;
+        };
+        VerifyCodeResponse: {
+            success: boolean;
+            payload: {
+                [key: string]: unknown;
+            };
+            message: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  api_auth_custom_send_sms_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/x-www-form-urlencoded": components["schemas"]["SendSMSRequest"];
-        "multipart/form-data": components["schemas"]["SendSMSRequest"];
-        "application/json": components["schemas"]["SendSMSRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SendSMSResponse"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SendSMSResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_auth_custom_submit_application_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        "multipart/form-data": components["schemas"]["ApplicationRequestRequest"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SubmitApplicationResponse"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SubmitApplicationResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_auth_custom_verify_code_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/x-www-form-urlencoded": components["schemas"]["VerifyCodeRequest"];
-        "multipart/form-data": components["schemas"]["VerifyCodeRequest"];
-        "application/json": components["schemas"]["VerifyCodeRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["VerifyCodeResponse"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["VerifyCodeResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["VerifyCodeResponse"];
-        };
-      };
-    };
-  };
-  api_auth_logout_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            detail?: string;
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiAuthLogoutRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_auth_refresh_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No response body */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            detail?: string;
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      /** @description No response body */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_auth_verify_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No response body */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiAuthVerifyRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            detail?: string;
-          };
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_auth_web3_login_retrieve: {
-    parameters: {
-      query?: {
-        format?: "html" | "json";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "text/html": string;
-        };
-      };
-      /** @description No response body */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
-          "text/html": components["schemas"]["ApiAuthWeb3LoginRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-          "text/html": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-          "text/html": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-          "text/html": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-          "text/html": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-          "text/html": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_auth_web3_login_create: {
-    parameters: {
-      query?: {
-        format?: "html" | "json";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/x-www-form-urlencoded": components["schemas"]["SIWEModelRequest"];
-        "multipart/form-data": components["schemas"]["SIWEModelRequest"];
-        "application/json": components["schemas"]["SIWEModelRequest"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "text/html": string;
-        };
-      };
-      /** @description No response body */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
-          "text/html": components["schemas"]["ApiAuthWeb3LoginCreateErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-          "text/html": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-          "text/html": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-          "text/html": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-          "text/html": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-          "text/html": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_auth_web3_nonce_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        address: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SIWELogin"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiAuthWeb3NonceRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_distribution_profiles_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DistributionProfile"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiDistributionProfilesListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_distribution_profiles_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Distribution profile ID */
-        id: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DistributionProfile"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiDistributionProfilesRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_list: {
-    parameters: {
-      query?: {
-        /** @description Search events by title, place name, or creator address */
-        search?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["RoleBasedEvent"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_categories_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        eventId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TicketCategory"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsCategoriesListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_lifetime_revenue_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        eventId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Total revenue in USDT (6 decimals) */
-            total_revenue?: number;
-            /** @description Revenue from ticket sales */
-            ticket_revenue?: number;
-            /** @description Event request deposit */
-            deposit?: number;
-            /** @description Number of tickets sold */
-            tickets_sold?: number;
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsLifetimeRevenueRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_status_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        eventId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            tickets?: {
-              total?: number;
-              redeemed?: number;
+    api_auth_custom_send_sms_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["SendSMSRequest"];
+                "multipart/form-data": components["schemas"]["SendSMSRequest"];
+                "application/json": components["schemas"]["SendSMSRequest"];
             };
-          };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsStatusRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_tickets_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        eventId: number;
-        ticketId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Ticket"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsTicketsRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_tickets_nonce_generate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        eventId: number;
-        ticketId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            nonce?: string;
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsTicketsNonceGenerateErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_tickets_verify: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        eventId: number;
-        nonce: string;
-        ticketId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      202: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsTicketsVerifyErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description A unique integer value identifying this event. */
-        id: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreatorEvent"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_attendees_list: {
-    parameters: {
-      query?: {
-        /** @description Search attendees by address or social media handles */
-        search?: string;
-      };
-      header?: never;
-      path: {
-        /** @description A unique integer value identifying this event. */
-        id: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Attendee"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsAttendeesListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_by_tx_hash_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        txHash: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["StaffEvent"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsByTxHashRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            detail?: string;
-          };
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_total_revenue_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** @description Total revenue across all events in USDT (6 decimals) */
-            totalRevenue?: number;
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsTotalRevenueRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_events_verification_stats_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            places?: {
-              providers?: {
-                address?: string;
-                currentWeek?: {
-                  pending?: number;
-                  verified?: number;
-                  averageVerificationTime?: number;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
                 };
-                previousWeek?: {
-                  pending?: number;
-                  verified?: number;
-                  averageVerificationTime?: number;
+                content: {
+                    "application/json": components["schemas"]["SendSMSResponse"];
                 };
-                diff?: {
-                  pending?: number;
-                  verified?: number;
-                };
-              }[];
             };
-            events?: {
-              providers?: {
-                address?: string;
-                currentWeek?: {
-                  pending?: number;
-                  verified?: number;
-                  averageVerificationTime?: number;
+            400: {
+                headers: {
+                    [name: string]: unknown;
                 };
-                previousWeek?: {
-                  pending?: number;
-                  verified?: number;
-                  averageVerificationTime?: number;
+                content: {
+                    "application/json": components["schemas"]["SendSMSResponse"];
                 };
-                diff?: {
-                  pending?: number;
-                  verified?: number;
-                };
-              }[];
             };
-            shamans?: {
-              providers?: {
-                address?: string;
-                currentWeek?: {
-                  pending?: number;
-                  verified?: number;
-                  averageVerificationTime?: number;
+            405: {
+                headers: {
+                    [name: string]: unknown;
                 };
-                previousWeek?: {
-                  pending?: number;
-                  verified?: number;
-                  averageVerificationTime?: number;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
                 };
-                diff?: {
-                  pending?: number;
-                  verified?: number;
-                };
-              }[];
             };
-          };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiEventsVerificationStatsRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_geodata_layers_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_auth_custom_submit_application_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": components["schemas"]["ApplicationRequestRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitApplicationResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitApplicationResponse"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_auth_custom_verify_code_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": string[];
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["VerifyCodeRequest"];
+                "multipart/form-data": components["schemas"]["VerifyCodeRequest"];
+                "application/json": components["schemas"]["VerifyCodeRequest"];
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyCodeResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyCodeResponse"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerifyCodeResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ApiGeodataLayersListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_geodata_layer_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Geodata layer name */
-        id: string;
-      };
-      cookie?: never;
+    api_distribution_profiles_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DistributionProfile"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiDistributionProfilesListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_distribution_profiles_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Distribution profile ID */
+                id: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["GeoFeature"][];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DistributionProfile"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiDistributionProfilesRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiGeodataLayerRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_ipfs_events_meta_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_events_list: {
+        parameters: {
+            query?: {
+                /** @description Search events by title, place name, or creator address */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleBasedEvent"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["UploadEventMetaToIpfsRequest"];
-      };
+    api_events_categories_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                eventId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TicketCategory"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsCategoriesListErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_events_lifetime_revenue_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                eventId: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            cid?: string;
-            cover?: string;
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Total revenue in USDT (6 decimals) */
+                        total_revenue?: number;
+                        /** @description Revenue from ticket sales */
+                        ticket_revenue?: number;
+                        /** @description Event request deposit */
+                        deposit?: number;
+                        /** @description Number of tickets sold */
+                        tickets_sold?: number;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsLifetimeRevenueRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiIpfsEventsMetaUpdateErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_ipfs_orders_meta_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_events_status_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                eventId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        tickets?: {
+                            total?: number;
+                            redeemed?: number;
+                        };
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsStatusRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/x-www-form-urlencoded": components["schemas"]["UploadOrderMetaToIpfsRequest"];
-        "multipart/form-data": components["schemas"]["UploadOrderMetaToIpfsRequest"];
-        "application/json": components["schemas"]["UploadOrderMetaToIpfsRequest"];
-      };
+    api_events_tickets_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                eventId: number;
+                ticketId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Ticket"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsTicketsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    api_events_tickets_nonce_generate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                eventId: number;
+                ticketId: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            cid?: string;
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        nonce?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsTicketsNonceGenerateErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiIpfsOrdersMetaUpdateErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_ipfs_places_meta_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_events_tickets_verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                eventId: number;
+                nonce: string;
+                ticketId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsTicketsVerifyErrorResponse400"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["UploadPlaceMetaToIpfsRequest"];
-      };
+    api_events_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this event. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatorEvent"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_events_attendees_list: {
+        parameters: {
+            query?: {
+                /** @description Search attendees by address or social media handles */
+                search?: string;
+            };
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this event. */
+                id: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            cid?: string;
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Attendee"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsAttendeesListErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiIpfsPlacesMetaUpdateErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_ipfs_users_socials_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_events_by_tx_hash_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                txHash: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffEvent"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsByTxHashRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        detail?: string;
+                    };
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UploadSocialsRequest"];
-      };
+    api_events_total_revenue_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Total revenue across all events in USDT (6 decimals) */
+                        totalRevenue?: number;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsTotalRevenueRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_events_verification_stats_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            cid?: string;
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        places?: {
+                            providers?: {
+                                address?: string;
+                                currentWeek?: {
+                                    pending?: number;
+                                    verified?: number;
+                                    averageVerificationTime?: number;
+                                };
+                                previousWeek?: {
+                                    pending?: number;
+                                    verified?: number;
+                                    averageVerificationTime?: number;
+                                };
+                                diff?: {
+                                    pending?: number;
+                                    verified?: number;
+                                };
+                            }[];
+                        };
+                        events?: {
+                            providers?: {
+                                address?: string;
+                                currentWeek?: {
+                                    pending?: number;
+                                    verified?: number;
+                                    averageVerificationTime?: number;
+                                };
+                                previousWeek?: {
+                                    pending?: number;
+                                    verified?: number;
+                                    averageVerificationTime?: number;
+                                };
+                                diff?: {
+                                    pending?: number;
+                                    verified?: number;
+                                };
+                            }[];
+                        };
+                        shamans?: {
+                            providers?: {
+                                address?: string;
+                                currentWeek?: {
+                                    pending?: number;
+                                    verified?: number;
+                                    averageVerificationTime?: number;
+                                };
+                                previousWeek?: {
+                                    pending?: number;
+                                    verified?: number;
+                                    averageVerificationTime?: number;
+                                };
+                                diff?: {
+                                    pending?: number;
+                                    verified?: number;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiEventsVerificationStatsRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiIpfsUsersSocialsUpdateErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_notifications_list: {
-    parameters: {
-      query?: {
-        /** @description Search notifications by title or body */
-        search?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_geodata_layers_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string[];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiGeodataLayersListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_geodata_layer_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Geodata layer name */
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Notification"][];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeoFeature"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiGeodataLayerRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiNotificationsListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_notifications_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Notification ID */
-        id: string;
-        notificationId: string;
-      };
-      cookie?: never;
+    api_ipfs_events_meta_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadEventMetaToIpfsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                        cover?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiIpfsEventsMetaUpdateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_ipfs_orders_meta_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Notification"];
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["UploadOrderMetaToIpfsRequest"];
+                "multipart/form-data": components["schemas"]["UploadOrderMetaToIpfsRequest"];
+                "application/json": components["schemas"]["UploadOrderMetaToIpfsRequest"];
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiIpfsOrdersMetaUpdateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ApiNotificationsRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_notifications_seen_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Notification ID */
-        notificationId: string;
-      };
-      cookie?: never;
+    api_ipfs_places_meta_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadPlaceMetaToIpfsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiIpfsPlacesMetaUpdateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No response body */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    api_ipfs_users_socials_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadSocialsRequest"];
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ApiNotificationsSeenCreateErrorResponse400"];
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiIpfsUsersSocialsUpdateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_places_list: {
-    parameters: {
-      query?: {
-        /** @description Search places by name or provider address */
-        search?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_notifications_list: {
+        parameters: {
+            query?: {
+                /** @description Search notifications by title or body */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Notification"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_notifications_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification ID */
+                id: string;
+                notificationId: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["EventPlace"][];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Notification"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiPlacesListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_places_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description A unique value identifying this event place. */
-        id: number;
-      };
-      cookie?: never;
+    api_notifications_seen_all_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsSeenAllCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_notifications_seen_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification ID */
+                notificationId: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["EventPlace"];
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiNotificationsSeenCreateErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiPlacesRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_shaman_verify_company_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_places_list: {
+        parameters: {
+            query?: {
+                /** @description Search places by name or provider address */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPlace"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiPlacesListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["CompanyVerificationRequest"];
-      };
+    api_places_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique value identifying this event place. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventPlace"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiPlacesRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_shaman_verify_company_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            cid?: string;
-            ktp?: string;
-            akta?: string;
-            sk?: string;
-          };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CompanyVerificationRequest"];
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                        ktp?: string;
+                        akta?: string;
+                        sk?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error?: string;
+                    };
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-        content: {
-          "application/json": {
-            error?: string;
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_shaman_verify_individual_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_shaman_verify_individual_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["IndividualVerificationRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cid?: string;
+                        ktp?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error?: string;
+                    };
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["IndividualVerificationRequest"];
-      };
+    api_siwe_payload_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["SiwePayloadRequestRequest"];
+                "multipart/form-data": components["schemas"]["SiwePayloadRequestRequest"];
+                "application/json": components["schemas"]["SiwePayloadRequestRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiwePayloadResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSiwePayloadCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_siwe_status_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            cid?: string;
-            ktp?: string;
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        trusted?: boolean;
+                        expires_at?: number;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSiweStatusRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            error?: string;
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_telegram_schema_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_siwe_verify_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["SiweVerifyRequestRequest"];
+                "multipart/form-data": components["schemas"]["SiweVerifyRequestRequest"];
+                "application/json": components["schemas"]["SiweVerifyRequestRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiweVerifyResponse"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSiweVerifyCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_telegram_schema_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            version?: number;
-            schema_ttl_seconds?: number;
-            forward_to?: string;
-            matches?: unknown[];
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        version?: number;
+                        schema_ttl_seconds?: number;
+                        forward_to?: string;
+                        matches?: unknown[];
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiTelegramSchemaRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiTelegramSchemaRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_telegram_updates_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_telegram_updates_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                type: {
+                    [key: string]: unknown;
+                };
+                description: {
+                    [key: string]: unknown;
+                };
+                additionalProperties: {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        status?: string;
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        detail?: string;
+                    };
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        detail?: string;
+                    };
+                };
+            };
+        };
     };
-    requestBody?: {
-      content: {
-        type: {
-          [key: string]: unknown;
+    api_users_profile_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                address: string;
+            };
+            cookie?: never;
         };
-        description: {
-          [key: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        address?: string;
+                        ens?: string | null;
+                        avatar_url?: string;
+                        socials?: {
+                            network?: string;
+                            value?: string;
+                        }[];
+                        roles?: string[];
+                    };
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersProfileRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-        additionalProperties: {
-          [key: string]: unknown;
-        };
-      };
     };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_users_socials_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                address: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            status?: string;
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        network?: string;
+                        value?: string;
+                    }[];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersSocialsRetrieveErrorResponse400"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse404"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            detail?: string;
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            detail?: string;
-          };
-        };
-      };
     };
-  };
-  api_users_profile_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        address: string;
-      };
-      cookie?: never;
+    api_users_current_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrentUser"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersCurrentRetrieveErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_users_local_providers_list: {
+        parameters: {
+            query?: {
+                /** @description Search local providers by address or social media handles */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            address?: string;
-            ens?: string | null;
-            avatar_url?: string;
-            socials?: {
-              network?: string;
-              value?: string;
-            }[];
-            roles?: string[];
-          };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrentUser"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersLocalProvidersListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersProfileRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_users_socials_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        address: string;
-      };
-      cookie?: never;
+    api_users_socials_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveSocialsRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaveSocials"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersSocialsCreateErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    api_users_staff_list: {
+        parameters: {
+            query?: {
+                /** @description Search staff by address or social media handles */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            network?: string;
-            value?: string;
-          }[];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Staff"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersStaffListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
         };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersSocialsRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse404"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
     };
-  };
-  api_users_current_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    api_users_verified_shamans_list: {
+        parameters: {
+            query?: {
+                /** @description Search verified shamans by address or socials */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrentUser"][];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiUsersVerifiedShamansListErrorResponse400"];
+                };
+            };
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse405"];
+                };
+            };
+            406: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse406"];
+                };
+            };
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse415"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse500"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CurrentUser"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersCurrentRetrieveErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_users_local_providers_list: {
-    parameters: {
-      query?: {
-        /** @description Search local providers by address or social media handles */
-        search?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CurrentUser"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersLocalProvidersListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_users_socials_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SaveSocialsRequest"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SaveSocials"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersSocialsCreateErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_users_staff_list: {
-    parameters: {
-      query?: {
-        /** @description Search staff by address or social media handles */
-        search?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Staff"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersStaffListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
-  api_users_verified_shamans_list: {
-    parameters: {
-      query?: {
-        /** @description Search verified shamans by address or socials */
-        search?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CurrentUser"][];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiUsersVerifiedShamansListErrorResponse400"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse401"];
-        };
-      };
-      405: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse405"];
-        };
-      };
-      406: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse406"];
-        };
-      };
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse415"];
-        };
-      };
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse500"];
-        };
-      };
-    };
-  };
 }

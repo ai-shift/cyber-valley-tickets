@@ -1,10 +1,10 @@
-import { readNotification } from "@/entities/notification";
+import { readAllNotifications } from "@/entities/notification";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useReadNotification = (id: number) => {
+export const useReadAllNotifications = () => {
   const queryClient = useQueryClient();
   const mutate = useMutation({
-    mutationFn: () => readNotification(id),
+    mutationFn: () => readAllNotifications(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications", "list"] });
     },
