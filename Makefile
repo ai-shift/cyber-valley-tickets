@@ -27,3 +27,15 @@ pre-commit:
 dev:
 	./launch.sh --stop
 	./launch.sh $(ARGS)
+
+dev-systemd:
+	./run.sh
+
+stop-systemd:
+	./cvland stop
+
+status-systemd:
+	./cvland status
+
+logs-systemd:
+	./cvland logs -f

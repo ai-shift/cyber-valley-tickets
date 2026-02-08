@@ -1,0 +1,15 @@
+[Unit]
+Description=Cyber Valley Tickets - Vite Frontend
+After=network.target
+
+[Service]
+Type=exec
+WorkingDirectory=%h/code/aishift/tickets
+EnvironmentFile=%h/code/aishift/tickets/.env
+Environment="PATH=%h/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin"
+ExecStart=make -C client/ dev
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

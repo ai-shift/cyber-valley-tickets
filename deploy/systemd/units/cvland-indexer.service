@@ -1,0 +1,15 @@
+[Unit]
+Description=Cyber Valley Tickets - Blockchain Indexer
+After=network.target
+
+[Service]
+Type=exec
+WorkingDirectory=%h/code/aishift/tickets
+EnvironmentFile=%h/code/aishift/tickets/.env
+Environment="PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=make -C backend/ run-indexer-from-zero
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
