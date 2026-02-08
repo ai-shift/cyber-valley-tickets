@@ -166,8 +166,7 @@ class StartLinkHandler:
                 chat_id,
                 (
                     "Your Telegram account is already linked to "
-                    f"address {address[:6]}...{address[-4:]}.\n\n"
-                    "Use /start if you want to link a different address."
+                    f"address {address[:6]}...{address[-4:]}."
                 ),
             )
             return
