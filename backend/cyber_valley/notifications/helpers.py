@@ -25,9 +25,9 @@ def send_notification(
     """
     notification = None
     try:
-        # Always create a new notification rather than using get_or_create
-        # to avoid issues with the auto-generated notification_id
-        notification = Notification.objects.create(
+        # Use create_and_notify to explicitly handle both creation and external
+        # notification delivery, avoiding the need for Django signals
+        notification = Notification.objects.create_and_notify(
             user=user,
             title=title,
             body=body,
