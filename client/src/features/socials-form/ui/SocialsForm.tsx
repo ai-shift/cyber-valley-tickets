@@ -73,7 +73,7 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
 
   function handleTelegramConnect() {
     window.open(
-      `https://t.me/cyberia_tickets_bot?start=${userAddress}`,
+      `https://t.me/MimiThePresidentBot?start=${userAddress}`,
       "_blank",
     );
     setIsTelegramAwaiting(true);
