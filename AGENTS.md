@@ -99,10 +99,14 @@ tickets/
 ├── deploy/                     # Production deployment
 │   ├── scripts/               # Deployment bash scripts
 │   ├── templates/             # systemd/Caddy templates
+│   ├── systemd/               # Development systemd service units
+│   │   └── units/             # Service files for dev environment
 │   └── Makefile
 ├── ansible/                    # Legacy Ansible playbooks
 ├── docs/                       # Additional documentation
-└── launch.sh                   # Development environment launcher
+├── launch.sh                   # Tmux-based dev environment launcher
+├── run.sh                      # Systemd-based dev environment launcher
+└── cvland                      # CLI for managing systemd dev services
 ```
 
 ## Build/Lint/Test Commands
@@ -111,7 +115,11 @@ tickets/
 ```bash
 make install          # Install all dependencies (uv + pnpm)
 make pre-commit       # Run all linting across projects
-make dev              # Start full development environment
+make dev              # Start full development environment (tmux-based)
+make dev-systemd      # Start development environment (systemd-based)
+make stop-systemd     # Stop systemd development services
+make status-systemd   # Check systemd service status
+make logs-systemd     # View systemd service logs
 ```
 
 ### Client (client/)
@@ -222,7 +230,8 @@ No test runner configured. Tests should be run manually via browser.
 - Node.js 20+ with pnpm
 - Python 3.13+ with uv
 - Podman (or Docker)
-- tmux
+- tmux (for tmux-based workflow)
+- systemd (for systemd-based workflow)
 
 ### Environment Setup
 ```bash
@@ -232,19 +241,50 @@ cp .env.example .env
 
 # Install dependencies
 make install
+```
 
+### Development Environment Options
+
+We support two development environment approaches:
+
+#### Option 1: systemd-based (Recommended)
+Uses systemd user services for better process management and logging.
+
+```bash
+# Start all services
+make dev-systemd
+
+# Or use the cvland CLI directly
+./cvland start
+
+# Check status
+./cvland status
+
+# View logs
+./cvland logs -f
+
+# Stop all services
+./cvland stop
+```
+
+The `run.sh` script sets up:
+1. Ganache blockchain node (local Ethereum) - Podman container
+2. IPFS node (for metadata storage) - Podman container
+3. Valkey cache - Podman container
+4. Django backend server - systemd user service
+5. Vite frontend dev server - systemd user service
+6. Blockchain indexer - systemd user service
+7. Telegram bot - systemd user service
+
+#### Option 2: tmux-based (Legacy)
+Uses tmux windows for running services in a single session.
+
+```bash
 # Start development environment
 make dev
 ```
 
-The `launch.sh` script sets up:
-1. Ganache blockchain node (local Ethereum)
-2. Django backend server
-3. Vite frontend dev server
-4. IPFS node (for metadata storage)
-5. Valkey cache
-6. Blockchain indexer
-7. Telegram bot
+The `launch.sh` script sets up the same services but in tmux windows.
 
 Access via tmux: `tmux attach -t cyber-valley-dev`
 
@@ -302,7 +342,9 @@ See `deploy/README.md` for detailed deployment documentation.
 | `client/tsconfig.json` | TypeScript compiler options |
 | `backend/pyproject.toml` | Python dependencies, ruff, mypy, pytest config |
 | `ethereum/hardhat.config.ts` | Hardhat network and compiler settings |
-| `launch.sh` | Development environment orchestration |
+| `launch.sh` | Tmux-based development environment orchestration |
+| `run.sh` | Systemd-based development environment launcher |
+| `cvland` | CLI tool for managing systemd dev services |
 
 ## Security Considerations
 
@@ -315,10 +357,19 @@ See `deploy/README.md` for detailed deployment documentation.
 ## Common Development Tasks
 
 ### Reset Everything (Clean Start)
+
+**systemd-based:**
+```bash
+./cvland stop       # Stop all services
+rm backend/db.sqlite3  # Remove database
+./cvland start      # Full restart
+```
+
+**tmux-based:**
 ```bash
 ./launch.sh --stop  # Stop all services
 rm backend/db.sqlite3  # Remove database
-./launch.sh  # Full restart
+./launch.sh         # Full restart
 ```
 
 ### Regenerate Contract Types

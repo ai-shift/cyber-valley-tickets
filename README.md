@@ -987,20 +987,6 @@ It requires additional UI and flows to properly update ticket's meta data, so th
 
 TBD
 
-## How to run
-
-```bash
-make -C ethereum/ ganache
-make -C backend/ run # New terminal
-make -C client/ dev # New terminal
-make -C backend/ seed-db
-make -C ethereum/ deploy-dev # Copy new contract addresses from the stdout to .env
-make -C backend/ run-indexer # New terminal
-# Rerun backend & frontend
-make -C backend/ run # New terminal
-make -C client/ dev # New terminal
-```
-
 **Emits** `EventPlaceUpdated`
 
 ```mermaid
@@ -1864,9 +1850,31 @@ TBD
 
 ## How to run
 
-Use `./launch.sh`, it works like a charm
+### Quick Start (systemd-based, recommended)
 
-If it didn't, here is a documented way of starting all the things manually
+```bash
+# Start all services
+./cvland start
+
+# Check status
+./cvland status
+
+# View logs
+./cvland logs -f
+
+# Stop all services
+./cvland stop
+```
+
+### Alternative: Tmux-based
+
+```bash
+./launch.sh
+```
+
+Access via: `tmux attach -t cyber-valley-dev`
+
+### Manual setup (if automated scripts don't work)
 
 ```bash
 make -C ethereum/ ganache
