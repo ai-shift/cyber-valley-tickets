@@ -9,6 +9,9 @@ from rest_framework.response import Response
 
 from cyber_valley.telegram_bot.inbound import ETH_ADDRESS_PATTERN, handle_update
 
+# Header sent by mimi when forwarding updates
+MIMI_FORWARD_HEADER = "HTTP_X_MIMI_FORWARD_SECRET"
+
 
 def _schema_payload() -> dict[str, Any]:
     return {
@@ -70,7 +73,8 @@ def telegram_updates(request: Request) -> Response:
     if not isinstance(data, dict):
         return Response({"detail": "Invalid update payload"}, status=400)
 
-    token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    # Check for forwarded token from mimi first, then fall back to env
+    token = request.META.get(MIMI_FORWARD_HEADER, "") or os.environ.get("TELEGRAM_BOT_TOKEN", "")
     if not token:
         return Response({"detail": "TELEGRAM_BOT_TOKEN is not set"}, status=500)
     bot = telebot.TeleBot(token)
