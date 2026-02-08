@@ -14,7 +14,7 @@ export const LOCAL_PROVIDER_ROLE = keccak256(
 export const wallets = [
   createWallet("inApp", {
     auth: {
-      options: ["phone", "email"],
+      options: ["phone", "email", "telegram"],
       mode: "popup",
     },
   }),
