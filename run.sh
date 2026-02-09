@@ -52,7 +52,7 @@ stop_services() {
     log_section "Stopping Services"
     
     log_info "Stopping systemd user services" "stopping"
-    systemctl --user stop cvland-backend cvland-frontend cvland-indexer cvland-telegram-bot 2>/dev/null || true
+    systemctl --user stop cvland-backend cvland-indexer 2>/dev/null || true
     log_success "Systemd services stopped" "done"
 
     log_info "Stopping podman containers" "stopping"
@@ -74,7 +74,7 @@ install_units() {
     
     log_info "Installing systemd user units" "installing"
 
-    for unit in cvland-backend cvland-frontend cvland-indexer cvland-telegram-bot; do
+    for unit in cvland-backend cvland-indexer; do
         cp "$SCRIPT_DIR/deploy/systemd/units/${unit}.service" "$user_dir/"
         # Replace WorkingDirectory and EnvironmentFile with actual paths
         sed -i "s|%h/code/aishift/tickets|$SCRIPT_DIR|g" "$user_dir/${unit}.service"
@@ -302,21 +302,11 @@ start_systemd_services() {
     systemctl --user start cvland-backend
     log_success "Backend started" "done"
     
-    log_info "Starting frontend" "starting"
-    systemctl --user start cvland-frontend
-    log_success "Frontend started" "done"
-    
     log_info "Starting indexer" "starting"
     systemctl --user start cvland-indexer
     log_success "Indexer started" "done"
     
-    if [[ -n "${TELEGRAM_BOT_API_TOKEN:-}" ]]; then
-        log_info "Starting telegram bot" "starting"
-        systemctl --user start cvland-telegram-bot
-        log_success "Telegram bot started" "done"
-    else
-        log_warning "Skipping telegram bot (TELEGRAM_BOT_API_TOKEN not set)" "skipped"
-    fi
+
 }
 
 # Show status
@@ -324,7 +314,7 @@ show_status() {
     log_section "Service Status"
     
     echo -e "${BOLD}Systemd Services:${NC}"
-    systemctl --user status cvland-backend cvland-frontend cvland-indexer --no-pager 2>/dev/null || true
+    systemctl --user status cvland-backend cvland-indexer --no-pager 2>/dev/null || true
     
     echo -e "\n${BOLD}Podman Containers:${NC}"
     podman ps --filter name=cvland --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"

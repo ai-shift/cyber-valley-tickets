@@ -16,7 +16,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-SERVICES="cvland-backend cvland-frontend cvland-indexer cvland-telegram-bot"
+SERVICES="cvland-backend cvland-indexer"
 CONTAINERS="cvland-ganache cvland-ipfs cvland-valkey"
 
 usage() {
@@ -79,7 +79,7 @@ show_logs() {
     # Create a temp script to show both
     (
         # Systemd services logs
-        journalctl --user -u cvland-backend -u cvland-frontend -u cvland-indexer -u cvland-telegram-bot $follow 2>/dev/null &
+        journalctl --user -u cvland-backend -u cvland-indexer $follow 2>/dev/null &
         JOURNAL_PID=$!
         
         # Podman container logs
@@ -98,9 +98,6 @@ show_service_logs() {
     case "$service" in
         backend)
             journalctl --user -u cvland-backend -f
-            ;;
-        frontend)
-            journalctl --user -u cvland-frontend -f
             ;;
         indexer)
             journalctl --user -u cvland-indexer -f
