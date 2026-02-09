@@ -31,3 +31,12 @@ export const upsertUserSocials = async (socials: Socials) =>
       ...socials,
     },
   });
+
+export const createTelegramLinkToken = async (
+  purpose: "link" | "verifyshaman" = "link",
+) =>
+  await apiClient.POST("/api/telegram/link-token", {
+    body: {
+      purpose,
+    },
+  });

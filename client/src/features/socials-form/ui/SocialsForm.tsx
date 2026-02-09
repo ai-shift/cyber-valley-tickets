@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { userQueries } from "@/entities/user";
+import { createTelegramLinkToken, userQueries } from "@/entities/user";
 import animationData from "@/lotties/vagina.json";
 import { CustomModal, CustomModalWindow } from "@/shared/ui/CustomModal";
 import { Button } from "@/shared/ui/button";
@@ -35,12 +35,14 @@ const POLLING_INTERVAL_MS = 2000; // 2 seconds
 export const SocialsForm: React.FC<SocialsFormProps> = ({
   onSubmit: submitHandler,
   existingSocials,
-  userAddress,
+  userAddress: _userAddress,
 }) => {
   const [isTelegramAwaiting, setIsTelegramAwaiting] = useState(false);
   const [isTelegramLinked, setIsTelegramLinked] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [pollingElapsed, setPollingElapsed] = useState(0);
+  const [isGeneratingToken, setIsGeneratingToken] = useState(false);
+  const [tokenError, setTokenError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: existingSocials
@@ -105,13 +107,25 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
     submitHandler({ network: values.network, value: values.value || "" });
   }
 
-  function handleTelegramConnect() {
-    window.open(
-      `https://t.me/MimiThePresidentBot?start=${userAddress}`,
-      "_blank",
-    );
-    setIsTelegramAwaiting(true);
-    setPollingElapsed(0);
+  async function handleTelegramConnect() {
+    setTokenError(null);
+    setIsGeneratingToken(true);
+
+    try {
+      const response = await createTelegramLinkToken("link");
+      if (response.error) {
+        setTokenError("Failed to generate Telegram link. Please try again.");
+        return;
+      }
+      const { hash } = response.data;
+      window.open(`https://t.me/MimiThePresidentBot?start=${hash}`, "_blank");
+      setIsTelegramAwaiting(true);
+      setPollingElapsed(0);
+    } catch {
+      setTokenError("Failed to generate Telegram link. Please try again.");
+    } finally {
+      setIsGeneratingToken(false);
+    }
   }
 
   function handleSuccessModalClose() {
@@ -148,12 +162,17 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
                 type="button"
                 onClick={handleTelegramConnect}
                 className="w-full"
-                disabled={isTelegramLinked}
+                disabled={isTelegramLinked || isGeneratingToken}
               >
-                {isTelegramLinked
-                  ? "Telegram connected"
-                  : "Verify via Telegram bot"}
+                {isGeneratingToken
+                  ? "Generating secure link..."
+                  : isTelegramLinked
+                    ? "Telegram connected"
+                    : "Verify via Telegram bot"}
               </Button>
+              {tokenError && (
+                <p className="text-sm text-red-500 text-center">{tokenError}</p>
+              )}
               {isTelegramAwaiting && !isTelegramLinked && (
                 <div className="space-y-2">
                   <p className="text-sm text-muted text-center">
