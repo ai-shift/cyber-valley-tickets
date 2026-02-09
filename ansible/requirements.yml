@@ -1,5 +1,0 @@
----
-collections:
-  - name: community.postgresql
-  - name: containers.podman
-  - name: ansible.posix
