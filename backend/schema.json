@@ -4568,8 +4568,9 @@
                         "name": "id",
                         "schema": {
                             "type": "integer",
-                            "maximum": 2147483647,
-                            "minimum": -2147483648
+                            "maximum": 9223372036854775807,
+                            "minimum": -9223372036854775808,
+                            "format": "int64"
                         },
                         "description": "A unique value identifying this event place.",
                         "required": true
@@ -5462,6 +5463,217 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SiweVerifyResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/telegram/link-token": {
+            "post": {
+                "operationId": "api_telegram_link_token_create",
+                "description": "Create a secure token for linking Telegram account.\n\nGenerates a one-time use token that expires in 15 minutes.\nThe token is used in the Telegram bot start command to verify\nthat the user linking their Telegram account is the actual\nowner of the Ethereum address.",
+                "tags": [
+                    "api"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TelegramLinkTokenRequestRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TelegramLinkTokenRequestRequest"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TelegramLinkTokenRequestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiTelegramLinkTokenCreateErrorResponse400"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse403"
+                                },
+                                "examples": {
+                                    "PermissionDenied": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "permission_denied",
+                                                    "detail": "You do not have permission to perform this action.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "405": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse405"
+                                },
+                                "examples": {
+                                    "MethodNotAllowed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "method_not_allowed",
+                                                    "detail": "Method \"get\" not allowed.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "406": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse406"
+                                },
+                                "examples": {
+                                    "NotAcceptable": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_acceptable",
+                                                    "detail": "Could not satisfy the request Accept header.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "415": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse415"
+                                },
+                                "examples": {
+                                    "UnsupportedMediaType": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "unsupported_media_type",
+                                                    "detail": "Unsupported media type \"application/json\" in request.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse500"
+                                },
+                                "examples": {
+                                    "APIException": {
+                                        "value": {
+                                            "type": "server_error",
+                                            "errors": [
+                                                {
+                                                    "code": "error",
+                                                    "detail": "A server error occurred.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TelegramLinkTokenResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "detail": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "AuthenticationFailed": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "authentication_failed",
+                                                    "detail": "Incorrect authentication credentials.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "NotAuthenticated": {
+                                        "value": {
+                                            "type": "client_error",
+                                            "errors": [
+                                                {
+                                                    "code": "not_authenticated",
+                                                    "detail": "Authentication credentials were not provided.",
+                                                    "attr": null
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         },
@@ -9201,6 +9413,114 @@
                     "type"
                 ]
             },
+            "ApiTelegramLinkTokenCreateError": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiTelegramLinkTokenCreateNonFieldErrorsErrorComponent"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ApiTelegramLinkTokenCreatePurposeErrorComponent"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "attr",
+                    "mapping": {
+                        "non_field_errors": "#/components/schemas/ApiTelegramLinkTokenCreateNonFieldErrorsErrorComponent",
+                        "purpose": "#/components/schemas/ApiTelegramLinkTokenCreatePurposeErrorComponent"
+                    }
+                }
+            },
+            "ApiTelegramLinkTokenCreateErrorResponse400": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ApiTelegramLinkTokenCreateValidationError"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ParseErrorResponse"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "validation_error": "#/components/schemas/ApiTelegramLinkTokenCreateValidationError",
+                        "client_error": "#/components/schemas/ParseErrorResponse"
+                    }
+                }
+            },
+            "ApiTelegramLinkTokenCreateNonFieldErrorsErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "non_field_errors"
+                        ],
+                        "type": "string",
+                        "description": "* `non_field_errors` - non_field_errors"
+                    },
+                    "code": {
+                        "enum": [
+                            "invalid",
+                            "null"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid` - invalid\n* `null` - null"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiTelegramLinkTokenCreatePurposeErrorComponent": {
+                "type": "object",
+                "properties": {
+                    "attr": {
+                        "enum": [
+                            "purpose"
+                        ],
+                        "type": "string",
+                        "description": "* `purpose` - purpose"
+                    },
+                    "code": {
+                        "enum": [
+                            "invalid_choice",
+                            "null"
+                        ],
+                        "type": "string",
+                        "description": "* `invalid_choice` - invalid_choice\n* `null` - null"
+                    },
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
+            "ApiTelegramLinkTokenCreateValidationError": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ValidationErrorEnum"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ApiTelegramLinkTokenCreateError"
+                        }
+                    }
+                },
+                "required": [
+                    "errors",
+                    "type"
+                ]
+            },
             "ApiTelegramSchemaRetrieveErrorResponse400": {
                 "oneOf": [
                     {
@@ -9590,8 +9910,9 @@
                     },
                     "placeId": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64",
                         "readOnly": true
                     },
                     "ticketPrice": {
@@ -9611,8 +9932,9 @@
                     },
                     "daysAmount": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "imageUrl": {
                         "type": "string",
@@ -9756,6 +10078,26 @@
                     "updatedAt"
                 ]
             },
+            "Error403": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "$ref": "#/components/schemas/ErrorCode403Enum"
+                    },
+                    "detail": {
+                        "type": "string"
+                    },
+                    "attr": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "attr",
+                    "code",
+                    "detail"
+                ]
+            },
             "Error404": {
                 "type": "object",
                 "properties": {
@@ -9856,6 +10198,13 @@
                     "detail"
                 ]
             },
+            "ErrorCode403Enum": {
+                "enum": [
+                    "permission_denied"
+                ],
+                "type": "string",
+                "description": "* `permission_denied` - Permission Denied"
+            },
             "ErrorCode404Enum": {
                 "enum": [
                     "not_found"
@@ -9900,6 +10249,24 @@
                 },
                 "required": [
                     "error"
+                ]
+            },
+            "ErrorResponse403": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ClientErrorEnum"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Error403"
+                        }
+                    }
+                },
+                "required": [
+                    "errors",
+                    "type"
                 ]
             },
             "ErrorResponse404": {
@@ -9997,8 +10364,9 @@
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64"
                     },
                     "title": {
                         "type": "string",
@@ -10006,13 +10374,15 @@
                     },
                     "maxTickets": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "minTickets": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "minPrice": {
                         "type": "integer",
@@ -10022,21 +10392,24 @@
                     },
                     "minDays": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "geometry": {
                         "$ref": "#/components/schemas/GeoFeature"
                     },
                     "daysBeforeCancel": {
                         "type": "integer",
-                        "maximum": 32767,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "eventDepositSize": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "available": {
                         "type": "boolean"
@@ -10260,14 +10633,6 @@
                     "type"
                 ]
             },
-            "PurposeEnum": {
-                "enum": [
-                    "ticket_qr",
-                    "staff_verify"
-                ],
-                "type": "string",
-                "description": "* `ticket_qr` - ticket_qr\n* `staff_verify` - staff_verify"
-            },
             "RoleBasedEvent": {
                 "oneOf": [
                     {
@@ -10466,6 +10831,14 @@
                     "version"
                 ]
             },
+            "SiwePayloadRequestPurposeEnum": {
+                "enum": [
+                    "ticket_qr",
+                    "staff_verify"
+                ],
+                "type": "string",
+                "description": "* `ticket_qr` - ticket_qr\n* `staff_verify` - staff_verify"
+            },
             "SiwePayloadRequestRequest": {
                 "type": "object",
                 "properties": {
@@ -10474,7 +10847,7 @@
                         "minLength": 1
                     },
                     "purpose": {
-                        "$ref": "#/components/schemas/PurposeEnum"
+                        "$ref": "#/components/schemas/SiwePayloadRequestPurposeEnum"
                     }
                 },
                 "required": [
@@ -10592,8 +10965,9 @@
                     },
                     "placeId": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64",
                         "readOnly": true
                     },
                     "ticketPrice": {
@@ -10613,8 +10987,9 @@
                     },
                     "daysAmount": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "imageUrl": {
                         "type": "string",
@@ -10634,8 +11009,9 @@
                     },
                     "ticketsBought": {
                         "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "maximum": 9223372036854775807,
+                        "minimum": 0,
+                        "format": "int64"
                     },
                     "totalRevenue": {
                         "type": "integer",
@@ -10685,6 +11061,47 @@
                 "required": [
                     "applicationType",
                     "message"
+                ]
+            },
+            "TelegramLinkTokenRequestPurposeEnum": {
+                "enum": [
+                    "link",
+                    "verifyshaman"
+                ],
+                "type": "string",
+                "description": "* `link` - Link Telegram\n* `verifyshaman` - Verify Shaman"
+            },
+            "TelegramLinkTokenRequestRequest": {
+                "type": "object",
+                "description": "Serializer for requesting a Telegram link token.\n\nThe user must be authenticated. The token will be used to link\ntheir Telegram account to their Ethereum address securely.",
+                "properties": {
+                    "purpose": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TelegramLinkTokenRequestPurposeEnum"
+                            }
+                        ],
+                        "default": "link",
+                        "description": "Purpose of the linking token\n\n* `link` - Link Telegram\n* `verifyshaman` - Verify Shaman"
+                    }
+                }
+            },
+            "TelegramLinkTokenResponse": {
+                "type": "object",
+                "description": "Serializer for Telegram link token response.",
+                "properties": {
+                    "hash": {
+                        "type": "string",
+                        "description": "The token hash to use in Telegram link"
+                    },
+                    "expiresIn": {
+                        "type": "integer",
+                        "description": "Token validity in seconds"
+                    }
+                },
+                "required": [
+                    "expiresIn",
+                    "hash"
                 ]
             },
             "Ticket": {

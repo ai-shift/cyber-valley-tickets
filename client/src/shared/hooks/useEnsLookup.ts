@@ -1,8 +1,8 @@
 import { client, cvlandChain } from "@/shared/lib/web3/state";
-import { useQuery } from "@tanstack/react-query";
-import { getContract, readContract } from "thirdweb";
 import { keccak256 } from "@ethersproject/keccak256";
 import { toUtf8Bytes } from "@ethersproject/strings";
+import { useQuery } from "@tanstack/react-query";
+import { getContract, readContract } from "thirdweb";
 
 // namehash("addr.reverse") from our ENS deployment scripts.
 const ADDR_REVERSE_NODE =
