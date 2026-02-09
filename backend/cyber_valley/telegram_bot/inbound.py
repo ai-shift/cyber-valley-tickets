@@ -4,6 +4,7 @@ import re
 from typing import Any, Literal, Protocol
 
 import telebot
+from django.core.cache import cache
 from web3 import Web3
 
 from cyber_valley.shaman_verification.contract_service import ContractService
@@ -18,6 +19,12 @@ from cyber_valley.users.models import CyberValleyUser, UserSocials
 log = logging.getLogger(__name__)
 
 ETH_ADDRESS_PATTERN = re.compile(r"0x[a-fA-F0-9]{40}")
+
+# Token pattern for secure linking (base64url-like)
+TOKEN_PATTERN = re.compile(r"[A-Za-z0-9_-]{32,64}")
+
+# Cache key prefix for link tokens
+LINK_TOKEN_PREFIX = "tg:link:"  # noqa: S105
 
 PUBLIC_API_HOST = os.environ.get("PUBLIC_API_HOST", "")
 
@@ -114,6 +121,20 @@ def _parse_start_parts(text: str) -> list[str]:
     return text.split()
 
 
+def _resolve_link_token(token: str) -> str | None:
+    """Resolve a link token to an address using cache.
+
+    Returns the address if found, None if expired or invalid.
+    Also deletes the token from cache (single-use).
+    """
+    cache_key = f"{LINK_TOKEN_PREFIX}{token}"
+    address = cache.get(cache_key)
+    if address is not None:
+        # Delete after use (single-use token)
+        cache.delete(cache_key)
+    return address if isinstance(address, str) else None
+
+
 class StartLinkHandler:
     def matches(self, update: dict[str, Any]) -> bool:
         message = _get_message(update)
@@ -124,7 +145,7 @@ class StartLinkHandler:
         return (
             len(parts) == 2
             and parts[0] == "/start"
-            and bool(ETH_ADDRESS_PATTERN.fullmatch(parts[1]))
+            and bool(TOKEN_PATTERN.fullmatch(parts[1]))
         )
 
     def handle(self, bot: telebot.TeleBot, update: dict[str, Any]) -> None:
@@ -135,11 +156,23 @@ class StartLinkHandler:
         parts = _parse_start_parts(text)
         if len(parts) != 2:
             return
-        address = parts[1].lower()
+        token = parts[1]
+
+        # Resolve token to address
+        address = _resolve_link_token(token)
+        if address is None:
+            chat_id = _get_chat_id(message)
+            if chat_id is not None:
+                bot.send_message(
+                    chat_id,
+                    "⚠️ This link has expired or was already used.\n\n"
+                    "Please generate a new link from the web app.",
+                )
+            return
 
         from_user = _get_from_user(message)
         if not from_user or not from_user.get("username"):
-            handle_no_username(bot, message, address)
+            handle_no_username(bot, message, token)
             return
 
         chat_id = from_user.get("id")
@@ -201,7 +234,7 @@ class StartVerifyShamanHandler:
         start_parts = parts[1].split("_")
         return (
             len(start_parts) == 2
-            and bool(ETH_ADDRESS_PATTERN.fullmatch(start_parts[0]))
+            and bool(TOKEN_PATTERN.fullmatch(start_parts[0]))
             and start_parts[1] == "verifyshaman"
         )
 
@@ -213,11 +246,23 @@ class StartVerifyShamanHandler:
         parts = _parse_start_parts(text)
         if len(parts) != 2:
             return
-        address = parts[1].split("_")[0].lower()
+        token = parts[1].split("_")[0]
+
+        # Resolve token to address
+        address = _resolve_link_token(token)
+        if address is None:
+            chat_id = _get_chat_id(message)
+            if chat_id is not None:
+                bot.send_message(
+                    chat_id,
+                    "⚠️ This link has expired or was already used.\n\n"
+                    "Please generate a new link from the web app.",
+                )
+            return
 
         from_user = _get_from_user(message)
         if not from_user or not from_user.get("username"):
-            handle_no_username(bot, message, address, "verifyshaman")
+            handle_no_username(bot, message, token, "verifyshaman")
             return
 
         chat_id = from_user.get("id")
