@@ -3,14 +3,18 @@ from typing import Any
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from cyber_valley.users.models import CyberValleyUser as UserType
+
 User = get_user_model()
 
 
 class NotificationManager(models.Manager["Notification"]):
-    """Custom manager for Notification that handles creation and external notifications."""
+    """Custom manager for Notification that handles creation and external
+    notifications.
+    """
 
     def create_and_notify(
-        self, user: "Notification.user", title: str, body: str
+        self, user: UserType, title: str, body: str
     ) -> "Notification":
         """
         Create a notification and send it via Telegram if the user has a linked account.

@@ -1,8 +1,8 @@
 import logging
-import os
 
 import telebot
 
+from cyber_valley.common.telegram import require_telegram_bot_token
 from cyber_valley.notifications.models import Notification
 from cyber_valley.users.models import CyberValleyUser, UserSocials
 
@@ -46,15 +46,7 @@ def send_notification_to_telegram(notification: Notification) -> None:
     if not telegram_social:
         return
 
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    if not token:
-        # In many dev/staging setups we don't run the telegram bot.
-        # Don't spam ERROR logs.
-        logger.info(
-            "Skipping Telegram notification for user %s: TELEGRAM_BOT_TOKEN is not set",
-            notification.user.address,
-        )
-        return
+    token = require_telegram_bot_token()
 
     try:
         bot = telebot.TeleBot(token)

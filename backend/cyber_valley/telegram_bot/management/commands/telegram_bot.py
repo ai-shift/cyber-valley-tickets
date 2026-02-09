@@ -7,6 +7,7 @@ import telebot
 from django.core.management.base import BaseCommand
 from web3 import Web3
 
+from cyber_valley.common.telegram import require_telegram_bot_token
 from cyber_valley.shaman_verification.contract_service import ContractService
 from cyber_valley.shaman_verification.models import VerificationRequest
 from cyber_valley.telegram_bot.verification_helpers import (
@@ -31,7 +32,7 @@ class Command(BaseCommand):
     help = "Start Telegram bot using telebot library."
 
     def handle(self, *_args: list[Any], **_options: dict[str, Any]) -> None:
-        token = os.environ["TELEGRAM_BOT_TOKEN"]
+        token = require_telegram_bot_token()
         bot = telebot.TeleBot(token)
 
         strategies: tuple[StartCommandStrategy, ...] = (

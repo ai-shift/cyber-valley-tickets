@@ -1,11 +1,11 @@
 import logging
-import os
 from pathlib import Path
 from typing import Literal, assert_never, cast
 
 import telebot
 from django.conf import settings
 
+from cyber_valley.common.telegram import require_telegram_bot_token
 from cyber_valley.notifications.helpers import send_notification
 from cyber_valley.shaman_verification.models import VerificationRequest
 from cyber_valley.users.models import UserSocials
@@ -57,15 +57,7 @@ def send_verification_request_to_provider(
     chat_id: int, verification_request_id: int, username: str | None = None
 ) -> None:
     """Send a single verification request to a local provider via Telegram."""
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    if not token:
-        log.info(
-            "Skipping sending verification request %s to provider %s: "
-            "TELEGRAM_BOT_TOKEN is not set",
-            verification_request_id,
-            username or chat_id,
-        )
-        return
+    token = require_telegram_bot_token()
     bot = telebot.TeleBot(token)
 
     try:

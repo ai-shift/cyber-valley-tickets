@@ -60,41 +60,34 @@ def link_user_telegram(
 ) -> tuple[CyberValleyUser, bool, bool]:
     """
     Link a user's Telegram account to their Ethereum address.
-    
+
     Returns:
         tuple: (user, user_created, already_linked)
     """
     user, user_created = CyberValleyUser.objects.get_or_create(
         address=address, defaults={"role": CyberValleyUser.CUSTOMER}
     )
-    
+
     defaults: dict[str, Any] = {"value": str(chat_id)}
     if telegram_username:
         defaults["metadata"] = {"username": telegram_username}
-    
+
     # Check if already linked to this chat_id
     already_linked = UserSocials.objects.filter(
-        user=user,
-        network=UserSocials.Network.TELEGRAM,
-        value=str(chat_id)
+        user=user, network=UserSocials.Network.TELEGRAM, value=str(chat_id)
     ).exists()
-    
+
     if already_linked:
         return user, user_created, True
-    
+
     # Delete any existing telegram links for this user (clean up duplicates)
-    UserSocials.objects.filter(
-        user=user,
-        network=UserSocials.Network.TELEGRAM
-    ).delete()
-    
+    UserSocials.objects.filter(user=user, network=UserSocials.Network.TELEGRAM).delete()
+
     # Create new link
     UserSocials.objects.create(
-        user=user,
-        network=UserSocials.Network.TELEGRAM,
-        **defaults
+        user=user, network=UserSocials.Network.TELEGRAM, **defaults
     )
-    
+
     return user, user_created, False
 
 
@@ -154,8 +147,10 @@ class StartLinkHandler:
             return
 
         telegram_username = from_user.get("username")
-        user, user_created, already_linked = link_user_telegram(address, chat_id, telegram_username)
-        
+        user, user_created, already_linked = link_user_telegram(
+            address, chat_id, telegram_username
+        )
+
         if already_linked:
             log.info(
                 "User already linked with telegram @%s (chat_id: %s)",
@@ -170,7 +165,7 @@ class StartLinkHandler:
                 ),
             )
             return
-        
+
         action = "created and linked" if user_created else "linked"
         log.info(
             "User %s with telegram @%s (chat_id: %s)",
@@ -230,15 +225,18 @@ class StartVerifyShamanHandler:
             return
 
         telegram_username = from_user.get("username")
-        _user, _user_created, already_linked = link_user_telegram(address, chat_id, telegram_username)
-        
+        _user, _user_created, already_linked = link_user_telegram(
+            address, chat_id, telegram_username
+        )
+
         if already_linked:
             log.info(
-                "User already linked with telegram @%s (chat_id: %s) for shaman verification",
+                "User already linked with telegram @%s (chat_id: %s) "
+                "for shaman verification",
                 telegram_username,
                 chat_id,
             )
-        
+
         action = "created and linked" if _user_created else "linked"
         log.info(
             "User %s with telegram @%s (chat_id: %s) for shaman verification",

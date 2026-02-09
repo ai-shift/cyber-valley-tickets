@@ -73,10 +73,19 @@ def telegram_updates(request: Request) -> Response:
     if not isinstance(data, dict):
         return Response({"detail": "Invalid update payload"}, status=400)
 
-    # Check for forwarded token from mimi first, then fall back to env
-    token = request.META.get(MIMI_FORWARD_HEADER, "") or os.environ.get("TELEGRAM_BOT_TOKEN", "")
-    if not token:
-        return Response({"detail": "TELEGRAM_BOT_TOKEN is not set"}, status=500)
-    bot = telebot.TeleBot(token)
+    # Updates are forwarded by mimi. It includes the bot token in a header.
+    # We validate it matches our configured token to keep a single source of truth.
+    configured_token = os.environ.get("TELEGRAM_BOT_API_TOKEN", "")
+    if not configured_token:
+        return Response({"detail": "TELEGRAM_BOT_API_TOKEN is not set"}, status=500)
+
+    forwarded_token = request.META.get(MIMI_FORWARD_HEADER, "")
+    if not forwarded_token:
+        return Response({"detail": "Missing X-Mimi-Forward-Secret header"}, status=403)
+
+    if forwarded_token != configured_token:
+        return Response({"detail": "Invalid X-Mimi-Forward-Secret header"}, status=403)
+
+    bot = telebot.TeleBot(configured_token)
     handle_update(bot, data)
     return Response({"status": "ok"})
