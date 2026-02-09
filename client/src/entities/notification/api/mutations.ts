@@ -1,13 +1,16 @@
 import { apiClient } from "@/shared/api";
 
 export const readNotification = async (id: number) =>
-  await apiClient.POST("/api/notifications/seen/{notification_id}/", {
-    params: {
-      // OpenAPI types use `notificationId` but our route template is `{notification_id}`.
-      // Provide both to keep the runtime URL interpolation correct.
-      path: { notificationId: `${id}`, notification_id: `${id}` },
+  // Use explicit URL construction to avoid OpenAPI spec mismatch
+  // The spec uses notificationId (camelCase) but URL template uses {notification_id} (snake_case)
+  await apiClient.POST(
+    `/api/notifications/seen/${id}/` as "/api/notifications/seen/{notification_id}/",
+    {
+      params: {
+        path: { notificationId: `${id}` },
+      },
     },
-  });
+  );
 
 export const readAllNotifications = async () =>
   await apiClient.POST("/api/notifications/seen-all/");
