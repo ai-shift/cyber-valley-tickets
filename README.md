@@ -1879,14 +1879,14 @@ Access via: `tmux attach -t cyber-valley-dev`
 ```bash
 make -C ethereum/ ganache
 make -C backend/ run # New terminal
-make -C client/ dev # New terminal
+FRONTEND_MODE=dev make -C client/ run # New terminal
 make -C backend/ seed-db
 make -C backend/ sync-geodata
 make -C ethereum/ deploy-dev # Copy new contract addresses from the stdout to .env
 make -C backend/ run-indexer # New terminal
 # Rerun backend & frontend
 make -C backend/ run # New terminal
-make -C client/ dev # New terminal
+FRONTEND_MODE=dev make -C client/ run # New terminal
 ```
 
 ## How to test shaman verification flow
