@@ -3,7 +3,9 @@ import { apiClient } from "@/shared/api";
 export const readNotification = async (id: number) =>
   await apiClient.POST("/api/notifications/seen/{notification_id}/", {
     params: {
-      path: { notificationId: `${id}` },
+      // OpenAPI types use `notificationId` but our route template is `{notification_id}`.
+      // Provide both to keep the runtime URL interpolation correct.
+      path: { notificationId: `${id}`, notification_id: `${id}` },
     },
   });
 
