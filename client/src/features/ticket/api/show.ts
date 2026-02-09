@@ -15,6 +15,7 @@ export const useGetNonce = (
         {
           params: {
             path: { event_id: eventId, ticket_id: Number(ticketId) },
+            // biome-ignore lint/suspicious/noExplicitAny: OpenAPI types mismatch - runtime uses snake_case, types use camelCase
           } as any,
           headers: userAddress ? { "X-User-Address": userAddress } : undefined,
         },

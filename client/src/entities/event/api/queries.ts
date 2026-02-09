@@ -38,5 +38,6 @@ export const getEventCategories = async (eventId: number) =>
         event_id: eventId,
         eventId,
       },
+      // biome-ignore lint/suspicious/noExplicitAny: OpenAPI types mismatch - runtime uses snake_case, types use camelCase
     } as any,
   });

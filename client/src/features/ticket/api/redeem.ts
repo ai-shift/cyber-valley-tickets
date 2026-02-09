@@ -10,6 +10,8 @@ export const useEventStatus = (eventId: number) =>
       return await apiClient.GET("/api/events/{event_id}/status", {
         params: {
           path: { event_id: eventId },
+          // biome-ignore lint/suspicious/noExplicitAny: OpenAPI types mismatch - runtime uses snake_case, types use camelCase
+          // biome-ignore lint/suspicious/noExplicitAny: OpenAPI types mismatch - runtime uses snake_case, types use camelCase
         } as any,
       });
     },
@@ -48,6 +50,7 @@ export const redeem = async (
           event_id: eventId,
           ticket_id: ticketId.toString(),
         },
+        // biome-ignore lint/suspicious/noExplicitAny: OpenAPI types mismatch - runtime uses snake_case, types use camelCase
       } as any,
     },
   );

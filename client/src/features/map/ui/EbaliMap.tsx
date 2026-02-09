@@ -5,7 +5,7 @@ import {
   Pin,
   useMap,
 } from "@vis.gl/react-google-maps";
-import { Layers, Map, RotateCcw, X } from "lucide-react";
+import { Layers, Map as MapIcon, RotateCcw, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -109,7 +109,7 @@ export const EbaliMap: React.FC<EbaliMapProps> = ({
           {/* Header */}
           <div className="border-b bg-background px-4 py-4">
             <SheetTitle className="flex items-center gap-2 text-xl font-semibold text-primary">
-              <Map className="h-5 w-5 text-primary" />
+              <MapIcon className="h-5 w-5 text-primary" />
               Map Layers
             </SheetTitle>
             <p className="text-sm text-muted-foreground mt-1">

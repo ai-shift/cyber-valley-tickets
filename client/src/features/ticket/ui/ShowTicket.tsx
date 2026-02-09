@@ -62,6 +62,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
               event_id: ticket.eventId,
               ticket_id: Number(ticket.id),
             },
+            // biome-ignore lint/suspicious/noExplicitAny: OpenAPI types mismatch - runtime uses snake_case, types use camelCase
           } as any,
         }),
       select: (data: {
