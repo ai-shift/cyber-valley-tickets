@@ -291,7 +291,7 @@ tmux send-keys -t "$SESSION_NAME:backend" "make -C backend/ run" Enter
 if [[ "$PRODUCTION_FRONTEND" == false ]]; then
     log_info "Starting Vite frontend server" "starting"
     create_tmux_window "frontend" "/tmp/frontend.log"
-    tmux send-keys -t "$SESSION_NAME:frontend" "make -C client/ dev" Enter
+    tmux send-keys -t "$SESSION_NAME:frontend" "FRONTEND_MODE=dev make -C client/ run" Enter
 fi
 
 log_info "Waiting for services to initialize" "waiting"
@@ -472,8 +472,8 @@ fi
 log_success "Blockchain indexer started" "started"
 
 log_info "Starting telegram bot" "starting"
-if [[ -z "${TELEGRAM_BOT_TOKEN:-}" ]]; then
-    log_warning "Skipping telegram bot (TELEGRAM_BOT_TOKEN not set)" "skipped"
+if [[ -z "${TELEGRAM_BOT_API_TOKEN:-}" ]]; then
+    log_warning "Skipping telegram bot (TELEGRAM_BOT_API_TOKEN not set)" "skipped"
 else
     create_tmux_window "telegram-bot" "/tmp/telegram-bot.log"
     tmux send-keys -t "$SESSION_NAME:telegram-bot" "make -C backend/ run-telegram-bot" Enter
@@ -495,7 +495,7 @@ if [[ "$PRODUCTION_FRONTEND" == true ]]; then
     fi
     log_success "Frontend build" "done"
 else
-    restart_service "Frontend" "frontend" "/tmp/frontend.log" "make -C client/ dev"
+    restart_service "Frontend" "frontend" "/tmp/frontend.log" "FRONTEND_MODE=dev make -C client/ run"
 fi
 
 # Note: Tickets are now minted during deploy-dev phase

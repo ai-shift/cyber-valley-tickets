@@ -73,19 +73,11 @@ install_units() {
     mkdir -p "$user_dir"
     
     log_info "Installing systemd user units" "installing"
-    
-    # Create systemd-compatible env file (strip 'export' keywords)
-    local systemd_env_file="$SCRIPT_DIR/.env.systemd"
-    if [[ -f "$SCRIPT_DIR/.env" ]]; then
-        sed 's/^export //' "$SCRIPT_DIR/.env" > "$systemd_env_file"
-    fi
-    
+
     for unit in cvland-backend cvland-frontend cvland-indexer cvland-telegram-bot; do
         cp "$SCRIPT_DIR/deploy/systemd/units/${unit}.service" "$user_dir/"
         # Replace WorkingDirectory and EnvironmentFile with actual paths
         sed -i "s|%h/code/aishift/tickets|$SCRIPT_DIR|g" "$user_dir/${unit}.service"
-        # Replace .env with .env.systemd for systemd compatibility
-        sed -i "s|\.env$|\.env.systemd|g" "$user_dir/${unit}.service"
         # Replace %h with home directory in PATH
         sed -i "s|%h|$HOME|g" "$user_dir/${unit}.service"
     done
@@ -129,14 +121,6 @@ start_containers() {
     sed -i "s|^export HTTP_ETH_NODE_HOST=.*|export HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" "$SCRIPT_DIR/.env"
     sed -i "s|^export PUBLIC_HTTP_ETH_NODE_HOST=.*|export PUBLIC_HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" "$SCRIPT_DIR/.env"
     sed -i "s|^export PUBLIC_WS_ETH_NODE_HOST=.*|export PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" "$SCRIPT_DIR/.env" 2>/dev/null || true
-    
-    # Also update .env.systemd (strip 'export' keywords)
-    if [[ -f "$SCRIPT_DIR/.env.systemd" ]]; then
-        sed -i "s|^WS_ETH_NODE_HOST=.*|WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" "$SCRIPT_DIR/.env.systemd"
-        sed -i "s|^HTTP_ETH_NODE_HOST=.*|HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" "$SCRIPT_DIR/.env.systemd"
-        sed -i "s|^PUBLIC_HTTP_ETH_NODE_HOST=.*|PUBLIC_HTTP_ETH_NODE_HOST=http://127.0.0.1:${GANACHE_PORT}|" "$SCRIPT_DIR/.env.systemd"
-        sed -i "s|^PUBLIC_WS_ETH_NODE_HOST=.*|PUBLIC_WS_ETH_NODE_HOST=ws://127.0.0.1:${GANACHE_PORT}|" "$SCRIPT_DIR/.env.systemd" 2>/dev/null || true
-    fi
     
     # IPFS
     log_info "Starting IPFS" "starting"
@@ -263,11 +247,6 @@ try:
     
     env_file.write_text("\n".join(updated))
     print(f"Processed {len(splitted)} contract addresses")
-    
-    # Also update .env.systemd (strip 'export' keywords)
-    systemd_env_file = Path(".env.systemd")
-    systemd_env_file.write_text("\n".join(line.replace("export ", "", 1) if line.startswith("export ") else line for line in updated))
-    print(f"Updated .env.systemd")
 except Exception as e:
     print(f"ERROR: {e}", file=sys.stderr)
     sys.exit(1)
@@ -331,12 +310,12 @@ start_systemd_services() {
     systemctl --user start cvland-indexer
     log_success "Indexer started" "done"
     
-    if [[ -n "${TELEGRAM_BOT_TOKEN:-}" ]]; then
+    if [[ -n "${TELEGRAM_BOT_API_TOKEN:-}" ]]; then
         log_info "Starting telegram bot" "starting"
         systemctl --user start cvland-telegram-bot
         log_success "Telegram bot started" "done"
     else
-        log_warning "Skipping telegram bot (TELEGRAM_BOT_TOKEN not set)" "skipped"
+        log_warning "Skipping telegram bot (TELEGRAM_BOT_API_TOKEN not set)" "skipped"
     fi
 }
 

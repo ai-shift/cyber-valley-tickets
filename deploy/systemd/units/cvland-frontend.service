@@ -5,9 +5,8 @@ After=network.target
 [Service]
 Type=exec
 WorkingDirectory=%h/code/aishift/tickets
-EnvironmentFile=%h/code/aishift/tickets/.env
 Environment="PATH=%h/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin"
-ExecStart=make -C client/ dev
+ExecStart=make -C client/ run
 Restart=on-failure
 RestartSec=5
 
