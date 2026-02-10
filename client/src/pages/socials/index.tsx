@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -17,6 +18,7 @@ export const SocialsPage: React.FC = () => {
   const { user } = useAuthSlice();
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const account = useActiveAccount();
   const [isTrusted, setIsTrusted] = useState(false);
   const [isSigning, setIsSigning] = useState(false);
@@ -48,7 +50,10 @@ export const SocialsPage: React.FC = () => {
     if (!response.ok) {
       setError(true);
       console.error("Failed to set socials");
+      return;
     }
+    // Invalidate user query to refresh socials data
+    await queryClient.invalidateQueries({ queryKey: ["user", "current"] });
     navigate(-1);
   }
 
