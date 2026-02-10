@@ -15,7 +15,7 @@ export const extractBookedRangesForPlace = (
     (event) =>
       event.place.id === place.id &&
       !excludedEventsId?.includes(event.id) &&
-      ["submited", "approved"].includes(event.status ?? ""),
+      ["submitted", "approved"].includes(event.status ?? ""),
   );
 
   for (const event of placeEvents) {
