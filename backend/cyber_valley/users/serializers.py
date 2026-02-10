@@ -36,8 +36,8 @@ class CurrentUserSerializer(serializers.ModelSerializer[CyberValleyUser]):
     @extend_schema_field(SocialSerializer(many=True))
     def get_socials(self, obj: CyberValleyUser) -> list[dict[str, str]]:
         socials = []
-        # Order by id to ensure latest socials are last (for frontend display)
-        for s in obj.socials.all().order_by("id"):
+        # Order by updated_at to ensure latest updated socials are last
+        for s in obj.socials.all().order_by("updated_at"):
             value: str = s.value
             # For telegram, use username from metadata or "no username"
             if s.network == UserSocials.Network.TELEGRAM:
