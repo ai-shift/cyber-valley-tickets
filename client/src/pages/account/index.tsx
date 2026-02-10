@@ -6,7 +6,7 @@ import { useLogin } from "@/features/login/hooks/useLogin";
 import { useTokenBalance } from "@/shared/hooks";
 import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
-import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
+// import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
 import { Expandable } from "@/shared/ui/expandable/ui/Expandable";
 import { ExpandableContent } from "@/shared/ui/expandable/ui/ExpandableContent";
@@ -210,7 +210,7 @@ export const AccountPage: React.FC = () => {
                 >
                   {isMinting ? "Minting..." : "Mint ERC20"}
                 </Button>
-                <BridgeWidget />
+                {/* <BridgeWidget /> */}
               </div>
             </div>
             {user && manageView(user)}
