@@ -90,7 +90,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
       </div>
       <div className="bg-secondary py-10 px-4 text-black space-y-8">
         <h2 className="font-semibold text-3xl">{title}</h2>
-        <p className="text-xl">{description}</p>
+        <p className="text-xl break-words">{description}</p>
       </div>
 
       <div className="px-4 pt-5">
