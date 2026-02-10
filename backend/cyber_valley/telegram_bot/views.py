@@ -1,3 +1,4 @@
+import logging
 import os
 import secrets
 from typing import Any
@@ -19,6 +20,8 @@ from cyber_valley.telegram_bot.serializers import (
     TelegramLinkTokenRequestSerializer,
     TelegramLinkTokenResponseSerializer,
 )
+
+log = logging.getLogger(__name__)
 
 # Header sent by mimi when forwarding updates
 MIMI_FORWARD_HEADER = "HTTP_X_MIMI_FORWARD_SECRET"
@@ -136,21 +139,42 @@ def create_link_token(request: Request) -> Response:
 def telegram_updates(request: Request) -> Response:
     data: Any = request.data
     if not isinstance(data, dict):
+        log.warning("Invalid telegram update payload: %s", type(data))
         return Response({"detail": "Invalid update payload"}, status=400)
 
     # Updates are forwarded by mimi. It includes the bot token in a header.
     # We validate it matches our configured token to keep a single source of truth.
     configured_token = os.environ.get("TELEGRAM_BOT_API_TOKEN", "")
     if not configured_token:
+        log.error("TELEGRAM_BOT_API_TOKEN is not set")
         return Response({"detail": "TELEGRAM_BOT_API_TOKEN is not set"}, status=500)
 
     forwarded_token = request.META.get(MIMI_FORWARD_HEADER, "")
     if not forwarded_token:
+        log.warning("Missing X-Mimi-Forward-Secret header")
         return Response({"detail": "Missing X-Mimi-Forward-Secret header"}, status=403)
 
     if forwarded_token != configured_token:
+        log.warning("Invalid X-Mimi-Forward-Secret header")
         return Response({"detail": "Invalid X-Mimi-Forward-Secret header"}, status=403)
 
+    # Log the incoming update for debugging
+    update_id = data.get("update_id", "unknown")
+    message = data.get("message", {})
+    callback = data.get("callback_query", {})
+    if message:
+        chat_id = message.get("chat", {}).get("id", "unknown")
+        text = message.get("text", "")
+        log.info("Processing update %s from chat %s: %s", update_id, chat_id, text[:50])
+    elif callback:
+        callback_id = callback.get("id", "unknown")
+        log.info("Processing callback query %s: %s", update_id, callback_id)
+
     bot = telebot.TeleBot(configured_token)
-    handle_update(bot, data)
+    try:
+        handle_update(bot, data)
+    except Exception:
+        log.exception("Failed to handle telegram update %s: %s", update_id, data)
+        return Response({"detail": "Failed to process update"}, status=500)
+
     return Response({"status": "ok"})
