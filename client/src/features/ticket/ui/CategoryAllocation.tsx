@@ -54,13 +54,6 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
     );
   };
 
-  const getRemainingQuota = (category: CategoryOption): number => {
-    const globalRemaining = getGlobalRemaining();
-    if (!category.hasQuota) return globalRemaining;
-    const byQuota = category.quota - category.ticketsBought;
-    return Math.max(0, Math.min(byQuota, globalRemaining));
-  };
-
   const isSoldOut = (category: CategoryOption | undefined): boolean => {
     if (!category) return true;
     if (getGlobalRemaining() <= 0) return true;
@@ -148,7 +141,6 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
     <div className="space-y-2">
       {categories.map((category) => {
         const price = getCategoryPrice(category);
-        const remaining = getRemainingQuota(category);
         const count = getAllocationCount(category.categoryId);
         const soldOut = isSoldOut(category);
         const otherSelected = totalSelected - count;
@@ -158,6 +150,9 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
           : null;
         const maxAllowed =
           quotaRemaining !== null ? Math.min(quotaRemaining, maxByGlobal) : maxByGlobal;
+        // "Available" in the UI means how many more can be added right now,
+        // considering both global event capacity and per-category quota.
+        const availableToAdd = Math.max(0, maxAllowed - count);
 
         return (
           <div
@@ -177,10 +172,10 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
                 </span>
                 <span
                   className={
-                    remaining < 5 ? "text-red-500" : ""
+                    availableToAdd < 5 ? "text-red-500" : ""
                   }
                 >
-                  {`${remaining} left`}
+                  {`${availableToAdd} left`}
                 </span>
               </div>
             </div>
