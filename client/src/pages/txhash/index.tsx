@@ -36,7 +36,7 @@ export const TxHashPlaceholderPage: React.FC = () => {
           {
             params: {
               path: {
-                txHash: normalizedTxHash,
+                tx_hash: normalizedTxHash,
               },
             },
           },
