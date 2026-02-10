@@ -27,7 +27,7 @@ export const DetailsBlock: React.FC<DetailsBlockProps> = ({
       </div>
       <p className="text-muted">
         {information}{" "}
-        {title === "Price" && (
+        {(title === "Price" || title === "Price from") && (
           <>
             {" "}
             <img
