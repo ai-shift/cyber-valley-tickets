@@ -1,5 +1,6 @@
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
+import { addDays } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { type ZodType, z } from "zod";
 import { extractBookedRangesForPlace } from "../lib/extractBookedRangesForPlace";
@@ -131,11 +132,6 @@ export const isDateAvailable = (
       if (hasOverlap(addDays(startDate, i), range)) return true;
     }
   });
-};
-
-export const addDays = (date: Date, days: number): Date => {
-  const copyDate = new Date(date);
-  return new Date(copyDate.setDate(date.getDate() + days));
 };
 
 export const setToMidday = (date: Date): Date => {

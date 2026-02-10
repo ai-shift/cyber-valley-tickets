@@ -1,13 +1,13 @@
 import type { DateRange } from "react-day-picker";
 
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { useState } from "react";
-import { addDays, isDateAvailable } from "../model/formSchema";
+import { isDateAvailable } from "../model/formSchema";
 
 type DatePickerProps = {
   date: Date;

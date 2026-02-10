@@ -1,7 +1,7 @@
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
 import { addDays } from "date-fns";
-import { isDateAvailable } from "../model/formSchema";
+import { isDateAvailable, setToMidday } from "../model/formSchema";
 import type { EventFormOutput } from "../model/types";
 import { extractBookedRangesForPlace } from "./extractBookedRangesForPlace";
 
@@ -25,7 +25,7 @@ export const getPlaceDefaults = (
   );
 
   const getFirstAvailableDate = (): Date => {
-    let initial = new Date();
+    let initial = setToMidday(new Date());
     while (
       !isDateAvailable(initial, daysAmount, daysBeforedCancel, currentRanges)
     ) {
