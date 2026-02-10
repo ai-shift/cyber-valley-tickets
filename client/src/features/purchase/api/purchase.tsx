@@ -262,8 +262,8 @@ const getOrderCid = async (
 
   return await apiClient.PUT("/api/ipfs/orders/meta", {
     body: {
-      event_id: ticket.eventId,
-      buyer_address: buyerAddress,
+      eventId: ticket.eventId,
+      buyerAddress: buyerAddress,
       socials: {
         //@ts-ignore
         network: socials.network.toLocaleLowerCase(),
@@ -275,10 +275,10 @@ const getOrderCid = async (
         price: a.finalPricePerTicket,
         quantity: a.count,
       })),
-      total_tickets: totalTickets,
-      total_price: totalPrice,
+      totalTickets: totalTickets,
+      totalPrice: totalPrice,
       currency: "USDT",
-      referral_data: "",
+      referralData: "",
     },
   });
 };

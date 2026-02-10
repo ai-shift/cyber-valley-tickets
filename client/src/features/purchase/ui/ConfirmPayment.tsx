@@ -29,6 +29,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
   const account = useActiveAccount();
   const { user } = useAuthSlice();
   const { sendTx, data: txHash, error } = useSendTx();
+  const [hasStartedPayment, setHasStartedPayment] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [redirectEventId, setRedirectEventId] = useState<number | null>(null);
   const [createEventTxHash, setCreateEventTxHash] = useState<string | null>(
@@ -101,6 +102,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
       }
     },
     onError: (e) => {
+      setHasStartedPayment(false);
       onStageChange?.("error");
       console.error(e);
     },
@@ -170,7 +172,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
   return (
     <article className="card border-primary/30">
       {error && <PaymentFailed cause={error} />}
-      {isPending ? (
+      {isPending || hasStartedPayment ? (
         <div className="flex flex-col items-center gap-3 py-10">
           <Loader />
           <p className="text-sm text-muted-foreground text-center">
@@ -182,6 +184,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
           <span>
             <Button
               onClick={() => {
+                setHasStartedPayment(true);
                 onStageChange?.("pending");
                 mutate(order);
               }}
