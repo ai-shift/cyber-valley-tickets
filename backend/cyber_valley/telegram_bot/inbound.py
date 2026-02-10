@@ -235,7 +235,6 @@ class StartLinkHandler:
             bot.send_message(
                 chat_id,
                 (
-                    "Welcome to Cyber Valley Tickets Bot!\n\n"
                     f"Your address {address[:6]}...{address[-4:]} has been {action} "
                     f"to your Telegram account @{telegram_username}."
                 ),
@@ -594,14 +593,9 @@ class FallbackWelcomeHandler:
         text = _get_text(message)
         return text.strip().startswith("/start")
 
-    def handle(self, bot: telebot.TeleBot, update: dict[str, Any]) -> None:
-        message = _get_message(update)
-        if not message:
-            return
-        chat_id = _get_chat_id(message)
-        if chat_id is None:
-            return
-        bot.send_message(chat_id, "Welcome to Cyber Valley Tickets Bot!")
+    def handle(self, _bot: telebot.TeleBot, _update: dict[str, Any]) -> None:
+        # No action for unmatched handlers - this is a fallback handler
+        pass
 
 
 HANDLERS: tuple[InboundHandler, ...] = (

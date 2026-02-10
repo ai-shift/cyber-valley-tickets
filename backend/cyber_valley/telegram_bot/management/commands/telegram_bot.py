@@ -48,7 +48,6 @@ class Command(BaseCommand):
             matched_strategies = [s for s in strategies if s.matches(text)]
 
             if len(matched_strategies) == 0:
-                bot.reply_to(message, "Welcome to Cyber Valley Tickets Bot!")
                 return
 
             assert len(matched_strategies) == 1, (
@@ -301,7 +300,6 @@ class AddressLinkingStrategy:
 
         bot.reply_to(
             message,
-            f"Welcome to Cyber Valley Tickets Bot!\n\n"
             f"Your address {address[:6]}...{address[-4:]} has been {action} "
             f"to your Telegram account @{telegram_username}.",
         )
