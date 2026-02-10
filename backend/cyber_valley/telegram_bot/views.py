@@ -5,11 +5,16 @@ from typing import Any
 import telebot
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.parsers import JSONParser
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from cyber_valley.common.request_address import (
+    get_or_create_user_by_address,
+    require_address,
+)
 from cyber_valley.telegram_bot.inbound import handle_update
 from cyber_valley.telegram_bot.serializers import (
     TelegramLinkTokenRequestSerializer,
@@ -77,7 +82,8 @@ def telegram_schema(_request: Request) -> Response:
     },
 )
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@parser_classes([JSONParser])
+@permission_classes([AllowAny])
 def create_link_token(request: Request) -> Response:
     """Create a secure token for linking Telegram account.
 
@@ -86,6 +92,10 @@ def create_link_token(request: Request) -> Response:
     that the user linking their Telegram account is the actual
     owner of the Ethereum address.
     """
+    # Extract address from Web3 auth (X-User-Address header or trusted wallet cookie)
+    address = require_address(request)
+    user = get_or_create_user_by_address(address)
+
     serializer = TelegramLinkTokenRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
@@ -93,9 +103,8 @@ def create_link_token(request: Request) -> Response:
     token_hash = secrets.token_urlsafe(32)
 
     # Store in cache with the user's address
-    # Note: IsAuthenticated permission ensures user is not AnonymousUser
     cache_key = f"{LINK_TOKEN_PREFIX}{token_hash}"
-    cache.set(cache_key, request.user.address, timeout=LINK_TOKEN_TTL_SECONDS)  # type: ignore[union-attr]
+    cache.set(cache_key, user.address, timeout=LINK_TOKEN_TTL_SECONDS)
 
     return Response(
         {
