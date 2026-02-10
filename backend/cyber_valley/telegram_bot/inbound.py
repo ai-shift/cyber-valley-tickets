@@ -101,7 +101,12 @@ def link_user_telegram(
 def handle_no_username(
     bot: telebot.TeleBot, message: dict[str, Any], *start_params: str
 ) -> None:
-    bot_username = bot.get_me().username
+    try:
+        bot_username = bot.get_me().username
+    except Exception:
+        log.exception("Failed to get bot username")
+        return
+
     start_param = "_".join(start_params)
     link_url = f"https://t.me/{bot_username}?start={start_param}"
     markup = telebot.types.InlineKeyboardMarkup()
@@ -109,12 +114,16 @@ def handle_no_username(
     chat_id = _get_chat_id(message)
     if chat_id is None:
         return
-    bot.send_message(
-        chat_id,
-        "Please set a Telegram username first to link your account.\n\n"
-        "After setting your username, click the button below:",
-        reply_markup=markup,
-    )
+
+    try:
+        bot.send_message(
+            chat_id,
+            "Please set a Telegram username first to link your account.\n\n"
+            "After setting your username, click the button below:",
+            reply_markup=markup,
+        )
+    except Exception:
+        log.exception("Failed to send 'no username' message to chat_id: %s", chat_id)
 
 
 def _parse_start_parts(text: str) -> list[str]:
@@ -606,7 +615,20 @@ HANDLERS: tuple[InboundHandler, ...] = (
 
 
 def handle_update(bot: telebot.TeleBot, update: dict[str, Any]) -> None:
+    update_id = update.get("update_id", "unknown")
     for handler in HANDLERS:
         if handler.matches(update):
-            handler.handle(bot, update)
+            handler_name = type(handler).__name__
+            try:
+                handler.handle(bot, update)
+                log.debug("Update %s handled by %s", update_id, handler_name)
+            except Exception:
+                log.exception(
+                    "Handler %s failed for update %s: %s",
+                    handler_name,
+                    update_id,
+                    update,
+                )
+                raise
             return
+    log.debug("No handler matched for update %s", update_id)
