@@ -28,6 +28,9 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
   allocations,
   onAllocationsChange,
 }) => {
+  const { data: event, isLoading: isEventLoading } = useQuery(
+    eventQueries.detail(eventId),
+  );
   const { data: categories, isLoading } = useQuery(
     eventQueries.categories(eventId),
   );
@@ -43,13 +46,24 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
     return ticketPrice - discount;
   };
 
-  const getRemainingQuota = (category: CategoryOption): number | null => {
-    if (!category.hasQuota) return null;
-    return category.quota - category.ticketsBought;
+  const getGlobalRemaining = (): number => {
+    if (!event) return 0;
+    return Math.max(
+      0,
+      event.place.maxTickets - Number(event.ticketsBought ?? 0),
+    );
+  };
+
+  const getRemainingQuota = (category: CategoryOption): number => {
+    const globalRemaining = getGlobalRemaining();
+    if (!category.hasQuota) return globalRemaining;
+    const byQuota = category.quota - category.ticketsBought;
+    return Math.max(0, Math.min(byQuota, globalRemaining));
   };
 
   const isSoldOut = (category: CategoryOption | undefined): boolean => {
     if (!category) return true;
+    if (getGlobalRemaining() <= 0) return true;
     if (!category.hasQuota) return false;
     return category.ticketsBought >= category.quota;
   };
@@ -64,10 +78,17 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
     if (!category) return;
 
     const currentCount = getAllocationCount(categoryId);
-    const remainingQuota = getRemainingQuota(category);
-    // For unlimited categories (no quota), allow up to 100 tickets
-    // For limited categories, respect the remaining quota
-    const maxAllowed = remainingQuota !== null ? remainingQuota : 100;
+    const globalRemaining = getGlobalRemaining();
+    const totalSelected = allocations.reduce((sum, a) => sum + a.count, 0);
+    const otherSelected = totalSelected - currentCount;
+    const maxByGlobal = Math.max(0, globalRemaining - otherSelected);
+
+    const quotaRemaining = category.hasQuota
+      ? Math.max(0, category.quota - category.ticketsBought)
+      : null;
+
+    const maxAllowed =
+      quotaRemaining !== null ? Math.min(quotaRemaining, maxByGlobal) : maxByGlobal;
 
     const newCount = Math.max(0, Math.min(currentCount + delta, maxAllowed));
 
@@ -107,7 +128,7 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
     }
   }, [categories]);
 
-  if (isLoading) {
+  if (isLoading || isEventLoading) {
     return (
       <div className="flex items-center gap-2 py-3">
         <Loader />
@@ -116,9 +137,12 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
     );
   }
 
-  if (!categories || categories.length === 0) {
+  if (!event || !categories || categories.length === 0) {
     return null;
   }
+
+  const globalRemaining = getGlobalRemaining();
+  const totalSelected = allocations.reduce((sum, a) => sum + a.count, 0);
 
   return (
     <div className="space-y-2">
@@ -127,6 +151,13 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
         const remaining = getRemainingQuota(category);
         const count = getAllocationCount(category.categoryId);
         const soldOut = isSoldOut(category);
+        const otherSelected = totalSelected - count;
+        const maxByGlobal = Math.max(0, globalRemaining - otherSelected);
+        const quotaRemaining = category.hasQuota
+          ? Math.max(0, category.quota - category.ticketsBought)
+          : null;
+        const maxAllowed =
+          quotaRemaining !== null ? Math.min(quotaRemaining, maxByGlobal) : maxByGlobal;
 
         return (
           <div
@@ -146,10 +177,10 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
                 </span>
                 <span
                   className={
-                    remaining !== null && remaining < 5 ? "text-red-500" : ""
+                    remaining < 5 ? "text-red-500" : ""
                   }
                 >
-                  {remaining !== null ? `${remaining} left` : "∞"}
+                  {`${remaining} left`}
                 </span>
               </div>
             </div>
@@ -160,7 +191,7 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
                 size="icon"
                 className="h-8 w-8"
                 onClick={() => updateCategoryCount(category.categoryId, 1)}
-                disabled={soldOut || (remaining !== null && remaining <= count)}
+                disabled={soldOut || count >= maxAllowed}
               >
                 +
               </Button>

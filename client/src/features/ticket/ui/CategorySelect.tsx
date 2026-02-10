@@ -32,11 +32,14 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
   selectedCategoryId,
   onCategorySelect,
 }) => {
+  const { data: event, isLoading: isEventLoading } = useQuery(
+    eventQueries.detail(eventId),
+  );
   const { data: categories, isLoading } = useQuery(
     eventQueries.categories(eventId),
   );
 
-  if (isLoading) {
+  if (isLoading || isEventLoading) {
     return (
       <div className="flex items-center gap-2 py-3">
         <Loader />
@@ -45,9 +48,15 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
     );
   }
 
-  if (!categories || categories.length === 0) {
+  if (!event || !categories || categories.length === 0) {
     return null;
   }
+
+  const maxTickets = event.place.maxTickets;
+  const globalRemaining = Math.max(
+    0,
+    maxTickets - Number(event.ticketsBought ?? 0),
+  );
 
   const getCategoryPrice = (category: CategoryOption): number => {
     if (category.discount === 0) return ticketPrice;
@@ -55,12 +64,14 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
     return ticketPrice - discount;
   };
 
-  const getRemainingQuota = (category: CategoryOption): number | null => {
-    if (!category.hasQuota) return null;
-    return category.quota - category.ticketsBought;
+  const getRemainingQuota = (category: CategoryOption): number => {
+    if (!category.hasQuota) return globalRemaining;
+    const byQuota = category.quota - category.ticketsBought;
+    return Math.max(0, Math.min(byQuota, globalRemaining));
   };
 
   const isSoldOut = (category: CategoryOption): boolean => {
+    if (globalRemaining <= 0) return true;
     if (!category.hasQuota) return false;
     return category.ticketsBought >= category.quota;
   };
@@ -127,12 +138,12 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
                     </span>
                     <span
                       className={
-                        remaining !== null && remaining < 5
+                        remaining < 5
                           ? "text-red-500"
                           : "text-muted-foreground"
                       }
                     >
-                      {remaining !== null ? `${remaining} left` : "∞"}
+                      {`${remaining} left`}
                     </span>
                   </div>
                 </SelectItem>
