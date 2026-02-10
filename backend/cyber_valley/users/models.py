@@ -122,8 +122,8 @@ class UserSocials(models.Model):
     network = models.CharField(choices=Network)
     value = models.CharField()
     metadata = models.JSONField(null=True, blank=True, default=dict)
-    created_at = models.DateTimeField(auto_now_add=True, default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ("user", "network", "value")
