@@ -1,8 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useAuthSlice } from "@/app/providers";
+import type { User } from "@/entities/user";
 import { type Socials, upsertUserSocials } from "@/entities/user";
 import { SocialsForm } from "@/features/socials-form";
 import {
@@ -15,10 +15,9 @@ import { Button } from "@/shared/ui/button";
 import { useActiveAccount } from "thirdweb/react";
 
 export const SocialsPage: React.FC = () => {
-  const { user } = useAuthSlice();
+  const { user, setUser } = useAuthSlice();
   const [error, setError] = useState(false);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const account = useActiveAccount();
   const [isTrusted, setIsTrusted] = useState(false);
   const [isSigning, setIsSigning] = useState(false);
@@ -52,8 +51,18 @@ export const SocialsPage: React.FC = () => {
       console.error("Failed to set socials");
       return;
     }
-    // Invalidate user query to refresh socials data
-    await queryClient.invalidateQueries({ queryKey: ["user", "current"] });
+    // Refetch user data to get updated socials
+    if (account?.address) {
+      const url = new URL(
+        "/api/users/current/",
+        import.meta.env.PUBLIC_API_HOST,
+      );
+      url.searchParams.set("address", account.address);
+      const resp = await fetch(url.toString(), { credentials: "include" });
+      if (resp.ok) {
+        setUser((await resp.json()) as User);
+      }
+    }
     navigate(-1);
   }
 
