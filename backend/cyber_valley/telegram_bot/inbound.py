@@ -163,11 +163,15 @@ class StartLinkHandler:
         if address is None:
             chat_id = _get_chat_id(message)
             if chat_id is not None:
-                bot.send_message(
-                    chat_id,
-                    "⚠️ This link has expired or was already used.\n\n"
-                    "Please generate a new link from the web app.",
-                )
+                try:
+                    bot.send_message(
+                        chat_id,
+                        "⚠️ This link has expired or was already used.\n\n"
+                        "Please generate a new link from the web app.",
+                    )
+                    log.info("Sent expired token message to chat_id: %s", chat_id)
+                except Exception:
+                    log.exception("Failed to send expired token message")
             return
 
         from_user = _get_from_user(message)
@@ -190,13 +194,24 @@ class StartLinkHandler:
                 telegram_username,
                 chat_id,
             )
-            bot.send_message(
-                chat_id,
-                (
-                    "Your Telegram account is already linked to "
-                    f"address {address[:6]}...{address[-4:]}."
-                ),
-            )
+            try:
+                bot.send_message(
+                    chat_id,
+                    (
+                        "Your Telegram account is already linked to "
+                        f"address {address[:6]}...{address[-4:]}."
+                    ),
+                )
+                log.info(
+                    "Sent 'already linked' message to @%s (chat_id: %s)",
+                    telegram_username,
+                    chat_id,
+                )
+            except Exception:
+                log.exception(
+                    "Failed to send 'already linked' message to @%s",
+                    telegram_username,
+                )
             return
 
         action = "created and linked" if user_created else "linked"
@@ -207,19 +222,31 @@ class StartLinkHandler:
             chat_id,
         )
 
-        bot.send_message(
-            chat_id,
-            (
-                "Welcome to Cyber Valley Tickets Bot!\n\n"
-                f"Your address {address[:6]}...{address[-4:]} has been {action} "
-                f"to your Telegram account @{telegram_username}."
-            ),
-        )
+        try:
+            bot.send_message(
+                chat_id,
+                (
+                    "Welcome to Cyber Valley Tickets Bot!\n\n"
+                    f"Your address {address[:6]}...{address[-4:]} has been {action} "
+                    f"to your Telegram account @{telegram_username}."
+                ),
+            )
+            log.info(
+                "Sent welcome message to @%s (chat_id: %s)", telegram_username, chat_id
+            )
+        except Exception:
+            log.exception("Failed to send welcome message to @%s", telegram_username)
 
         if user.has_role(CyberValleyUser.LOCAL_PROVIDER):
-            send_all_pending_verifications_to_provider(
-                chat_id=chat_id, username=telegram_username
-            )
+            try:
+                send_all_pending_verifications_to_provider(
+                    chat_id=chat_id, username=telegram_username
+                )
+            except Exception:
+                log.exception(
+                    "Failed to send pending verifications to @%s",
+                    telegram_username,
+                )
 
 
 class StartVerifyShamanHandler:
@@ -253,11 +280,18 @@ class StartVerifyShamanHandler:
         if address is None:
             chat_id = _get_chat_id(message)
             if chat_id is not None:
-                bot.send_message(
-                    chat_id,
-                    "⚠️ This link has expired or was already used.\n\n"
-                    "Please generate a new link from the web app.",
-                )
+                try:
+                    bot.send_message(
+                        chat_id,
+                        "⚠️ This link has expired or was already used.\n\n"
+                        "Please generate a new link from the web app.",
+                    )
+                    log.info(
+                        "Sent expired token message (verifyshaman) to chat_id: %s",
+                        chat_id,
+                    )
+                except Exception:
+                    log.exception("Failed to send expired token message (verifyshaman)")
             return
 
         from_user = _get_from_user(message)
@@ -296,15 +330,26 @@ class StartVerifyShamanHandler:
             telebot.types.InlineKeyboardButton("Verify as Shaman", url=verify_url)
         )
 
-        bot.send_message(
-            chat_id,
-            (
-                f"Your address {address[:6]}...{address[-4:]} has been {action} "
-                f"to your Telegram account @{telegram_username}.\n\n"
-                "Click the button below to verify your Shaman status:"
-            ),
-            reply_markup=markup,
-        )
+        try:
+            bot.send_message(
+                chat_id,
+                (
+                    f"Your address {address[:6]}...{address[-4:]} has been {action} "
+                    f"to your Telegram account @{telegram_username}.\n\n"
+                    "Click the button below to verify your Shaman status:"
+                ),
+                reply_markup=markup,
+            )
+            log.info(
+                "Sent shaman verification message to @%s (chat_id: %s)",
+                telegram_username,
+                chat_id,
+            )
+        except Exception:
+            log.exception(
+                "Failed to send shaman verification message to @%s",
+                telegram_username,
+            )
 
 
 class CallbackApproveDeclineHandler:
