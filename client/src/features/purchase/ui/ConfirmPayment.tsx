@@ -17,11 +17,13 @@ import { purchase } from "../api/purchase";
 export type ConfirmPaymentProps = {
   order: Order;
   referralAddress?: string;
+  onStageChange?: (stage: "checkout" | "pending" | "success" | "error") => void;
 };
 
 export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
   order,
   referralAddress,
+  onStageChange,
 }) => {
   const navigate = useNavigate();
   const account = useActiveAccount();
@@ -79,6 +81,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
     onSuccess: async (returnedTxHash: string | undefined) => {
       // Show success modal for all order types
       setIsSuccess(true);
+      onStageChange?.("success");
 
       if (order.type === "buy_ticket") {
         setRedirectEventId(order.ticket.eventId);
@@ -97,7 +100,10 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         return;
       }
     },
-    onError: console.error,
+    onError: (e) => {
+      onStageChange?.("error");
+      console.error(e);
+    },
   });
 
   if (!user) return null;
@@ -165,11 +171,22 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
     <article className="card border-primary/30">
       {error && <PaymentFailed cause={error} />}
       {isPending ? (
-        <Loader />
+        <div className="flex flex-col items-center gap-3 py-10">
+          <Loader />
+          <p className="text-sm text-muted-foreground text-center">
+            Processing transaction. Confirm in your wallet if prompted.
+          </p>
+        </div>
       ) : (
         <div className="flex justify-center py-6">
           <span>
-            <Button onClick={() => mutate(order)} className="mx-auto">
+            <Button
+              onClick={() => {
+                onStageChange?.("pending");
+                mutate(order);
+              }}
+              className="mx-auto"
+            >
               {error
                 ? "Try again"
                 : totalPrice !== null

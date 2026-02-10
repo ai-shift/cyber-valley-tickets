@@ -3,6 +3,7 @@ import type { TicketAllocation } from "@/entities/order";
 import { useReferralStorage } from "@/features/referral";
 import { ReferralManager } from "@/features/referral/ui/ReferralManager";
 import { CategoryAllocation } from "@/features/ticket/ui/CategoryAllocation";
+import { useEffect, useState } from "react";
 import { ConfirmPayment } from "./ConfirmPayment";
 import { PurchaseEvent } from "./PurchaseEvent";
 import { PurchaseTicket } from "./PurchaseTicket";
@@ -10,10 +11,51 @@ import { PurchaseTicket } from "./PurchaseTicket";
 export const Purchase: React.FC = () => {
   const { order, updateTicketAllocations } = useOrderStore();
   const { address: referralAddress } = useReferralStorage();
+  const [paymentStage, setPaymentStage] = useState<
+    "checkout" | "pending" | "success" | "error"
+  >("checkout");
+
+  useEffect(() => {
+    // New order should always start from the full checkout view.
+    setPaymentStage("checkout");
+  }, [order?.type]);
 
   const handleAllocationsChange = (allocations: TicketAllocation[]) => {
     updateTicketAllocations(allocations);
   };
+
+  if (order && paymentStage !== "checkout") {
+    return (
+      <div className="flex flex-col py-5 px-4 gap-5">
+        <div className="text-center">
+          <h2 className="text-lg font-semibold">Payment</h2>
+          <p className="text-sm text-muted-foreground">
+            {paymentStage === "pending"
+              ? "Processing your transaction"
+              : paymentStage === "success"
+                ? "Payment successful"
+                : "Payment failed"}
+          </p>
+        </div>
+
+        {paymentStage === "error" && (
+          <button
+            type="button"
+            className="text-sm underline underline-offset-2 mx-auto"
+            onClick={() => setPaymentStage("checkout")}
+          >
+            Back to checkout
+          </button>
+        )}
+
+        <ConfirmPayment
+          order={order}
+          referralAddress={referralAddress || undefined}
+          onStageChange={setPaymentStage}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col py-5 px-4 gap-5">
@@ -48,6 +90,7 @@ export const Purchase: React.FC = () => {
         <ConfirmPayment
           order={order}
           referralAddress={referralAddress || undefined}
+          onStageChange={setPaymentStage}
         />
       )}
     </div>
