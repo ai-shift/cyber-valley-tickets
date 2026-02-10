@@ -173,7 +173,13 @@ export const EventForm: React.FC<EventFormProps> = ({
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
+          render={({ field }) => {
+            const previewUrl = useMemo(() => {
+              if (!field.value) return null;
+              return URL.createObjectURL(field.value);
+            }, [field.value]);
+
+            return(
             <FormItem>
               <p className="uppercase text-lg font-bold text-start mb-1">
                 Event image
@@ -188,7 +194,7 @@ export const EventForm: React.FC<EventFormProps> = ({
                   {field.value ? (
                     <img
                       className="w-full aspect-video object-contain"
-                      src={URL.createObjectURL(field.value)}
+                      src={previewUrl ?? ""}
                       alt="event-thumb"
                     />
                   ) : (
@@ -243,7 +249,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               </FormControl>
               <FormMessage />
             </FormItem>
-          )}
+          )}}
         />
         <FormField
           control={form.control}
