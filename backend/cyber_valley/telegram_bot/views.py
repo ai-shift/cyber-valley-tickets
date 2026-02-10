@@ -5,16 +5,15 @@ from typing import Any
 import telebot
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
+from rest_framework import exceptions
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from cyber_valley.common.request_address import (
-    get_or_create_user_by_address,
-    require_address,
-)
+from cyber_valley.common.request_address import get_or_create_user_by_address
+from cyber_valley.siwe.trust_cookie import require_trusted_address
 from cyber_valley.telegram_bot.inbound import handle_update
 from cyber_valley.telegram_bot.serializers import (
     TelegramLinkTokenRequestSerializer,
@@ -92,8 +91,15 @@ def create_link_token(request: Request) -> Response:
     that the user linking their Telegram account is the actual
     owner of the Ethereum address.
     """
-    # Extract address from Web3 auth (X-User-Address header or trusted wallet cookie)
-    address = require_address(request)
+    # Get address from header and verify it's in the trusted cookie
+    # This ensures the user has properly authenticated with SIWE
+    address = request.headers.get("X-User-Address", "").strip().lower()
+    if not address:
+        raise exceptions.NotAuthenticated("X-User-Address header is required")
+
+    # Verify the address is in the trusted wallet cookie (signed by server)
+    require_trusted_address(request, address=address, required_scopes=["ticket:nonce"])
+
     user = get_or_create_user_by_address(address)
 
     serializer = TelegramLinkTokenRequestSerializer(data=request.data)
