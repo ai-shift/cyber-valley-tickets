@@ -623,6 +623,20 @@ def _sync_event_status_changed(
             body=body,
         )
 
+    # Notify all master users (excluding creator and provider to avoid duplicates)
+    master_users = CyberValleyUser.objects.filter(
+        roles__name=CyberValleyUser.MASTER
+    ).exclude(address=event.creator.address)
+    if event.place.provider:
+        master_users = master_users.exclude(address=event.place.provider.address)
+
+    for master in master_users.distinct():
+        send_notification(
+            user=master,
+            title="Event status updated",
+            body=f"Event {event.title}. New status: {new_status}",
+        )
+
 
 @transaction.atomic
 def _sync_ticket_redeemed(event_data: CyberValleyEventTicket.TicketRedeemed) -> None:
