@@ -566,9 +566,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     function approveEvent(
         uint256 eventId,
         uint256 distributionProfileId
-    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
+    ) external onlyLocalProviderOrMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
-        ensureEventBelongsToProvider(evt.eventPlaceId);
+        ensureEventBelongsToProviderOrMaster(evt.eventPlaceId);
         require(
             evt.status == EventStatus.Submitted,
             "Event status differs from submitted"
@@ -604,9 +604,9 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function declineEvent(
         uint256 eventId
-    ) external onlyRole(LOCAL_PROVIDER_ROLE) onlyExistingEvent(eventId) {
+    ) external onlyLocalProviderOrMaster onlyExistingEvent(eventId) {
         Event storage evt = events[eventId];
-        ensureEventBelongsToProvider(evt.eventPlaceId);
+        ensureEventBelongsToProviderOrMaster(evt.eventPlaceId);
         require(
             evt.status == EventStatus.Submitted,
             "Event status differs from submitted"

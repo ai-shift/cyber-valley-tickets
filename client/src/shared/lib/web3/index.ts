@@ -10,6 +10,7 @@ import { getBytes32FromMultiash } from "./multihash";
 export { formatTxError } from "./formatTxError";
 import {
   LOCAL_PROVIDER_ROLE,
+  MASTER_ROLE,
   STAFF_ROLE,
   erc20,
   eventManager,
@@ -234,6 +235,42 @@ async function validateEventApproval(
   eventId: bigint,
 ): Promise<{ valid: boolean; reason?: string }> {
   try {
+    // Check if user has MASTER_ROLE - master can approve any event
+    const hasMasterRole = await readContract({
+      contract: eventManager,
+      method: "hasRole",
+      params: [MASTER_ROLE, account.address],
+    });
+    console.log("User has MASTER_ROLE:", hasMasterRole);
+
+    // If master, skip ownership checks
+    if (hasMasterRole) {
+      // Still check event status for master
+      const event = await readContract({
+        contract: eventManager,
+        method: "events",
+        params: [eventId],
+      });
+      console.log("Event details:", event);
+
+      // Check event status (should be Submitted = 0)
+      if (event[5] !== 0) {
+        const statusNames = [
+          "Submitted",
+          "Approved",
+          "Declined",
+          "Cancelled",
+          "Closed",
+        ];
+        return {
+          valid: false,
+          reason: `Event status is ${statusNames[event[5]]} but must be Submitted`,
+        };
+      }
+
+      return { valid: true };
+    }
+
     // Check if user has LOCAL_PROVIDER_ROLE
     const hasRole = await readContract({
       contract: eventManager,

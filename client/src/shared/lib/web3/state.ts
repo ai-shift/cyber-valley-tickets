@@ -10,6 +10,7 @@ export const VERIFIED_SHAMAN_ROLE = keccak256(
 export const LOCAL_PROVIDER_ROLE = keccak256(
   toUtf8Bytes("LOCAL_PROVIDER_ROLE"),
 ) as `0x${string}`;
+export const MASTER_ROLE = keccak256(toUtf8Bytes("MASTER_ROLE")) as `0x${string}`;
 
 export const wallets = [
   createWallet("inApp", {
