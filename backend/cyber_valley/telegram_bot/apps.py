@@ -1,3 +1,5 @@
+import sys
+
 from django.apps import AppConfig
 
 from cyber_valley.common.telegram import require_telegram_bot_token
@@ -9,6 +11,7 @@ class TelegramBotConfig(AppConfig):
 
     def ready(self) -> None:
         # Validate that the Telegram bot API token is configured.
-        # This will raise RuntimeError if the token is missing, causing
-        # the backend to fail at startup.
-        require_telegram_bot_token()
+        # Only validate when running the server or telegram bot, not for
+        # management commands like migrate, makemigrations, etc.
+        if len(sys.argv) > 1 and sys.argv[1] in ("runserver", "telegram_bot"):
+            require_telegram_bot_token()
