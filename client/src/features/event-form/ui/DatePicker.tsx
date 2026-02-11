@@ -68,8 +68,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             selected={date}
             onSelect={(day) => {
               if (day == null) return;
-              day?.setHours(date.getHours());
-              day?.setMinutes(date.getMinutes());
+              day?.setUTCHours(date.getUTCHours());
+              day?.setUTCMinutes(date.getUTCMinutes());
               setDate(day);
               setOpen(false);
             }}

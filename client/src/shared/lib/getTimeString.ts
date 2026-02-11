@@ -1,13 +1,17 @@
 import { fromUnixTime } from "date-fns";
 
-export function getTimeString(date: Date | number) {
-  let actualDate: Date;
-  if (date instanceof Date) {
-    actualDate = date;
-    return `${actualDate.getHours()}:${actualDate.getMinutes() >= 10 ? actualDate.getMinutes() : `0${actualDate.getMinutes()}`}`;
-  }
-  if (typeof date === "number") {
-    actualDate = fromUnixTime(date);
-    return `${actualDate.getHours()}:${actualDate.getMinutes() >= 10 ? actualDate.getMinutes() : `0${actualDate.getMinutes()}`}`;
-  }
+type TimeStringOptions = {
+  utc?: boolean;
+};
+
+export function getTimeString(
+  date: Date | number,
+  options?: TimeStringOptions,
+): string {
+  const actualDate = date instanceof Date ? date : fromUnixTime(date);
+  const useUtc = options?.utc === true;
+  const hours = useUtc ? actualDate.getUTCHours() : actualDate.getHours();
+  const minutes = useUtc ? actualDate.getUTCMinutes() : actualDate.getMinutes();
+  const minutesString = minutes >= 10 ? `${minutes}` : `0${minutes}`;
+  return `${hours}:${minutesString}`;
 }

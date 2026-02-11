@@ -355,7 +355,7 @@ export const EventForm: React.FC<EventFormProps> = ({
             </p>
             <div className="border-2 border-secondary px-3 py-2">
               <h2 className="text-xl text-white text-center">
-                {getTimeString(currentDate)}
+                {getTimeString(currentDate, { utc: true })}
               </h2>
             </div>
           </DialogTrigger>
@@ -368,14 +368,14 @@ export const EventForm: React.FC<EventFormProps> = ({
             <TimePicker
               setValue={(data) => {
                 const date = currentDate;
-                date.setHours(data.hours);
-                date.setMinutes(data.minutes);
+                date.setUTCHours(data.hours);
+                date.setUTCMinutes(data.minutes);
                 form.setValue("startDate", date);
                 setTimeOpen(false);
               }}
               initialValue={{
-                hours: currentDate.getHours(),
-                minutes: currentDate.getMinutes(),
+                hours: currentDate.getUTCHours(),
+                minutes: currentDate.getUTCMinutes(),
               }}
             />
           </DialogContent>
