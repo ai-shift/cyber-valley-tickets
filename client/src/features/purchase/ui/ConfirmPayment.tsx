@@ -9,7 +9,7 @@ import { Loader } from "@/shared/ui/Loader";
 import { ResultDialog } from "@/shared/ui/ResultDialog";
 import { Button } from "@/shared/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 import { purchase } from "../api/purchase";
@@ -36,6 +36,10 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
     null,
   );
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setHasStartedPayment(false);
+  }, [order.type]);
 
   const resolveCreatedEventId = useCallback(async () => {
     if (!user || order.type !== "create_event") return null;
