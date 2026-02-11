@@ -1,4 +1,5 @@
 import type { EventPlace } from "@/entities/place";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { pluralDays } from "@/shared/lib/pluralDays";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 
@@ -15,7 +16,7 @@ export const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
           <li>Min Tickets: {place.minTickets}</li>
           <li>Max Tickets: {place.maxTickets}</li>
           <li>
-            Event deposit: {place.eventDepositSize}{" "}
+            Event deposit: {formatUsdt(BigInt(place.eventDepositSize))}{" "}
             <img
               src={getCurrencySymbol()}
               className="h-6 aspect-square inline"
@@ -23,7 +24,7 @@ export const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
             />
           </li>
           <li>
-            Min Ticket Price: {place.minPrice}{" "}
+            Min Ticket Price: {formatUsdt(BigInt(place.minPrice))}{" "}
             <img
               src={getCurrencySymbol()}
               className="h-6 aspect-square inline"

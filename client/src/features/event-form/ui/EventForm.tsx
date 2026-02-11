@@ -25,6 +25,7 @@ import { assertIsDefined } from "@/shared/lib/assert";
 import { getTimeString } from "@/shared/lib/getTimeString";
 import { getTimezoneOffset } from "@/shared/lib/getTimezoneOffset";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { ErrorMessage } from "@/shared/ui/ErrorMessage";
 import {
@@ -385,7 +386,9 @@ export const EventForm: React.FC<EventFormProps> = ({
           control={form.control}
           name="ticketPrice"
           render={({ field }) => {
-            const minimumPrice = selectedPlace?.minPrice ?? 0;
+            const minimumPrice = formatUsdt(
+              BigInt(selectedPlace?.minPrice ?? 0),
+            );
             return (
               <FormItem>
                 <FormLabel>

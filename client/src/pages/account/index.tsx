@@ -5,6 +5,7 @@ import { EventsList, myEventsFilter } from "@/features/events-list";
 import { useLogin } from "@/features/login/hooks/useLogin";
 import { useTokenBalance } from "@/shared/hooks";
 import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
 // import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
@@ -117,9 +118,9 @@ export const AccountPage: React.FC = () => {
                   {isLoadingBalance
                     ? "Loading..."
                     : tokenBalance
-                      ? tokenBalance.toString()
+                      ? formatUsdt(tokenBalance)
                       : "0"}{" "}
-                  tokens
+                  USDT
                 </p>
               </div>
             </div>
