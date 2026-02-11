@@ -1,6 +1,7 @@
 import type { Point } from "@/entities/geodata";
 import type { EventPlaceForm } from "@/features/place-form";
 import { apiClient } from "@/shared/api";
+import { parseUsdt } from "@/shared/lib/money/usdt";
 import { submitEventPlaceRequest } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
@@ -32,7 +33,8 @@ export const requestPlace = async (account: Account, place: EventPlaceForm) => {
   placeForm.append("title", title);
   placeForm.append("description", "foo");
   placeForm.append("geometry", JSON.stringify(formatedGeodata));
-  placeForm.append("eventDepositSize", eventDepositSize.toString());
+  const depositUnits = parseUsdt(eventDepositSize);
+  placeForm.append("eventDepositSize", depositUnits.toString());
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
     // @ts-ignore
@@ -41,16 +43,17 @@ export const requestPlace = async (account: Account, place: EventPlaceForm) => {
 
   if (!data || !data.cid) throw new Error("No cid was recieved");
 
+  const minPriceUnits = parseUsdt(minPrice);
   const txHash = await submitEventPlaceRequest(
     account,
     maxTickets,
     minTickets,
-    minPrice,
+    minPriceUnits,
     daysBeforeCancel,
     minDays,
     available,
     data.cid,
-    eventDepositSize,
+    depositUnits,
   );
   return txHash;
 };

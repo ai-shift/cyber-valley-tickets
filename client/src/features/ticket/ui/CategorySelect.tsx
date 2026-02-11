@@ -1,4 +1,5 @@
 import { eventQueries } from "@/entities/event";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import {
@@ -21,7 +22,7 @@ export interface CategoryOption {
 
 interface CategorySelectProps {
   eventId: number;
-  ticketPrice: number;
+  ticketPrice: bigint;
   selectedCategoryId: number | null;
   onCategorySelect: (category: CategoryOption | null) => void;
 }
@@ -58,10 +59,10 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
     maxTickets - Number(event.ticketsBought ?? 0),
   );
 
-  const getCategoryPrice = (category: CategoryOption): number => {
+  const getCategoryPrice = (category: CategoryOption): bigint => {
     if (category.discount === 0) return ticketPrice;
     // Contract amounts are integer token units. Keep this integer to avoid validation issues.
-    const discount = Math.floor((ticketPrice * category.discount) / 10000);
+    const discount = (ticketPrice * BigInt(category.discount)) / 10000n;
     return ticketPrice - discount;
   };
 
@@ -130,7 +131,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
                     <span
                       className={category.discount > 0 ? "text-green-500" : ""}
                     >
-                      {price}{" "}
+                      {formatUsdt(price)}{" "}
                       <img
                         src={getCurrencySymbol()}
                         className="h-4 aspect-square inline"
@@ -156,7 +157,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
         <div className="flex justify-between items-center text-sm bg-green-500/10 p-2">
           <span className="text-green-600">You save:</span>
           <span className="text-green-600 font-medium">
-            {ticketPrice - finalPrice}{" "}
+            {formatUsdt(ticketPrice - finalPrice)}{" "}
             <img
               src={getCurrencySymbol()}
               className="h-4 aspect-square inline"

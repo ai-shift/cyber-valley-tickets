@@ -1,7 +1,9 @@
+import { formatUsdt } from "@/shared/lib/money/usdt";
+
 type ManageItemProps = {
   title: React.ReactNode;
   isRequested?: boolean;
-  eventDepositSize?: number;
+  eventDepositSize?: string;
   render: () => React.ReactNode[];
 };
 
@@ -20,9 +22,9 @@ export const ManageItem: React.FC<ManageItemProps> = ({
             requested
           </p>
         )}
-        {eventDepositSize !== undefined && eventDepositSize > 0 && (
+        {eventDepositSize !== undefined && BigInt(eventDepositSize) > 0n && (
           <p className="text-sm text-muted-foreground">
-            Deposit: {eventDepositSize} USDT
+            Deposit: {formatUsdt(BigInt(eventDepositSize))} USDT
           </p>
         )}
       </div>

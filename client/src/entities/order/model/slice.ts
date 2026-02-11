@@ -7,7 +7,7 @@ interface OrderState {
   order: Order | null;
   setEventOrder: (
     event: EventDto | EventDtoWithId,
-    placeDepositSize?: number,
+    placeDepositSize?: string,
   ) => void;
   setTicketOrder: (order: OrderTicket) => void;
   updateTicketAllocations: (allocations: TicketAllocation[]) => void;
@@ -38,7 +38,7 @@ export const useOrderStore = create<OrderState>()(
               order: {
                 type: "create_event",
                 event: event,
-                placeDepositSize: placeDepositSize ?? 0,
+                placeDepositSize: placeDepositSize ?? "0",
               },
             },
             undefined,

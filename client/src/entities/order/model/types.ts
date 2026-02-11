@@ -6,13 +6,13 @@ export interface TicketAllocation {
   categoryName: string;
   discount: number;
   count: number;
-  finalPricePerTicket: number;
+  finalPricePerTicket: bigint;
 }
 
 export interface OrderTicket {
   eventId: number;
   eventTitle: string;
-  ticketPrice: number;
+  ticketPrice: bigint;
   totalTickets: number;
   allocations: TicketAllocation[];
   // Legacy single-ticket fields kept for backward compatibility
@@ -35,7 +35,7 @@ interface UpdateEventOrder extends BaseOrder {
 interface CreateEventOrder extends BaseOrder {
   type: "create_event";
   event: EventDto;
-  placeDepositSize: number;
+  placeDepositSize: string;
   ticket?: never;
 }
 

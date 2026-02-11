@@ -1,5 +1,6 @@
 import { useAuthSlice } from "@/app/providers";
 import { useLogin } from "@/features/login/hooks/useLogin";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { getCurrencySymbol, hasEnoughtTokens } from "@/shared/lib/web3";
 import { Button } from "@/shared/ui/button";
 import { Loader } from "lucide-react";
@@ -9,7 +10,7 @@ import { useActiveAccount } from "thirdweb/react";
 
 import type { User } from "@/entities/user";
 
-export const useCheckSubmit = (eventDepositSize?: number) => {
+export const useCheckSubmit = (eventDepositSize?: string) => {
   const { user } = useAuthSlice();
 
   const account = useActiveAccount();
@@ -26,7 +27,7 @@ export const useCheckSubmit = (eventDepositSize?: number) => {
     let cancelled = false;
     setIsLoading(true);
 
-    hasEnoughtTokens(account, BigInt(eventDepositSize ?? 0)).then(
+    hasEnoughtTokens(account, BigInt(eventDepositSize ?? "0")).then(
       ({ enoughTokens, balanceAfterPayment }) => {
         if (cancelled) return;
         console.log("Balance after payment", balanceAfterPayment);
@@ -94,7 +95,7 @@ const WithSubmitCheck: React.FC<WithCheckProps> = ({
       onClick={() => alert("Suda swap widget")}
     >
       <p className="flex gap-1">
-        <span>Need {requriedTokens}</span>
+        <span>Need {formatUsdt(requriedTokens)}</span>
         <img
           src={getCurrencySymbol()}
           className="h-6 aspect-square inline"

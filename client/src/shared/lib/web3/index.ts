@@ -42,12 +42,12 @@ export async function submitEventPlaceRequest(
   account: Account,
   maxTickets: number,
   minTickets: number,
-  minPrice: number,
+  minPrice: bigint,
   daysBeforeCancel: number,
   minDays: number,
   available: boolean,
   metaCID: string,
-  eventDepositSize: number,
+  eventDepositSize: bigint,
 ): Promise<TxHash> {
   const multihash = getBytes32FromMultiash(metaCID);
   const transaction = prepareContractCall({
@@ -63,7 +63,7 @@ export async function submitEventPlaceRequest(
       multihash.digest,
       multihash.hashFunction,
       multihash.size,
-      BigInt(eventDepositSize),
+      eventDepositSize,
     ],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
@@ -102,12 +102,12 @@ export async function updatePlace(
   placeId: bigint,
   maxTickets: number,
   minTickets: number,
-  minPrice: number,
+  minPrice: bigint,
   daysBeforeCancel: number,
   minDays: number,
   available: boolean,
   metaCID: string,
-  eventDepositSize: number,
+  eventDepositSize: bigint,
 ): Promise<TxHash> {
   const multihash = getBytes32FromMultiash(metaCID);
   const transaction = prepareContractCall({
@@ -124,7 +124,7 @@ export async function updatePlace(
       multihash.digest,
       multihash.hashFunction,
       multihash.size,
-      BigInt(eventDepositSize),
+      eventDepositSize,
     ],
   });
   const { transactionHash } = await sendTransaction({ account, transaction });
@@ -158,7 +158,7 @@ export interface SubmitEventResult {
 export async function submitEventRequest(
   account: Account,
   eventPlaceId: bigint,
-  ticketPrice: number,
+  ticketPrice: bigint,
   startDate: bigint,
   daysAmount: number,
   metaCID: string,
@@ -206,7 +206,7 @@ export async function updateEvent(
   account: Account,
   eventId: bigint,
   eventPlaceId: bigint,
-  ticketPrice: number,
+  ticketPrice: bigint,
   startDate: bigint,
   daysAmount: number,
   metaCID: string,

@@ -3,6 +3,7 @@ import { eventQueries } from "@/entities/event";
 import type { Order } from "@/entities/order";
 import type { Socials } from "@/entities/user";
 import { useSendTx } from "@/shared/hooks/sendTx";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { pluralTickets } from "@/shared/lib/pluralDays";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
@@ -27,7 +28,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
 }) => {
   const navigate = useNavigate();
   const account = useActiveAccount();
-  const { user } = useAuthSlice();
+  const { user, startTicketPoll } = useAuthSlice();
   const { sendTx, data: txHash, error } = useSendTx();
   const [hasStartedPayment, setHasStartedPayment] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -53,7 +54,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
         title: string;
         startDateTimestamp: number;
         place: { id: number };
-        ticketPrice: number;
+        ticketPrice: string;
         daysAmount: number;
         id?: number;
       }) => {
@@ -89,6 +90,19 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
       onStageChange?.("success");
 
       if (order.type === "buy_ticket") {
+        // Ticket becomes visible only after the backend indexer syncs it to DB.
+        // Start polling current user until ticket(s) show up (or timeout).
+        const boughtCount = order.ticket.allocations.reduce(
+          (sum, a) => sum + a.count,
+          0,
+        );
+        const baseline = (user?.tickets ?? []).filter(
+          (t) => t.eventId === order.ticket.eventId,
+        ).length;
+        startTicketPoll({
+          eventId: order.ticket.eventId,
+          targetCount: baseline + boughtCount,
+        });
         setRedirectEventId(order.ticket.eventId);
         return;
       }
@@ -162,10 +176,9 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
   const { totalPrice, totalTickets } =
     order.type === "buy_ticket"
       ? {
-          totalPrice: order.ticket.allocations.reduce(
-            (sum, a) => sum + a.count * a.finalPricePerTicket,
-            0,
-          ),
+          totalPrice: order.ticket.allocations.reduce((sum, a) => {
+            return sum + BigInt(a.count) * a.finalPricePerTicket;
+          }, 0n),
           totalTickets: order.ticket.allocations.reduce(
             (sum, a) => sum + a.count,
             0,
@@ -197,7 +210,7 @@ export const ConfirmPayment: React.FC<ConfirmPaymentProps> = ({
               {error
                 ? "Try again"
                 : totalPrice !== null
-                  ? `Pay ${totalPrice} (${pluralTickets(totalTickets)})`
+                  ? `Pay ${formatUsdt(totalPrice)} (${pluralTickets(totalTickets)})`
                   : "Confirm"}
               {totalPrice !== null && (
                 <img

@@ -1,5 +1,6 @@
 import { eventQueries } from "@/entities/event";
 import type { TicketAllocation } from "@/entities/order";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 import { Loader } from "@/shared/ui/Loader";
 import { Button } from "@/shared/ui/button";
@@ -17,7 +18,7 @@ export interface CategoryOption {
 
 interface CategoryAllocationProps {
   eventId: number;
-  ticketPrice: number;
+  ticketPrice: bigint;
   allocations: TicketAllocation[];
   onAllocationsChange: (allocations: TicketAllocation[]) => void;
 }
@@ -40,10 +41,10 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
     return new Map(categories.map((c) => [c.categoryId, c]));
   }, [categories]);
 
-  const getCategoryPrice = (category: CategoryOption): number => {
+  const getCategoryPrice = (category: CategoryOption): bigint => {
     if (category.discount === 0) return ticketPrice;
     // Contract amounts are integer token units. Keep this integer to avoid validation issues.
-    const discount = Math.floor((ticketPrice * category.discount) / 10000);
+    const discount = (ticketPrice * BigInt(category.discount)) / 10000n;
     return ticketPrice - discount;
   };
 
@@ -168,7 +169,7 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
               <span className="font-medium">{category.name}</span>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <span>
-                  {price}{" "}
+                  {formatUsdt(price)}{" "}
                   <img
                     src={getCurrencySymbol()}
                     className="h-4 aspect-square inline"

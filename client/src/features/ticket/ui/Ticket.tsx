@@ -41,7 +41,7 @@ export const Ticket: React.FC<TicketProps> = ({ user, event }) => {
     setTicketOrder({
       eventId: event.id,
       eventTitle: event.title,
-      ticketPrice: event.ticketPrice,
+      ticketPrice: BigInt(event.ticketPrice),
       totalTickets: 1,
       allocations: [],
     });

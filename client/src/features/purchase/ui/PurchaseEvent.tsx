@@ -1,10 +1,11 @@
 import type { EventDto } from "@/entities/event";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { getCurrencySymbol } from "@/shared/lib/web3";
 
 type PurchaseEventProps = {
   event: EventDto;
   type: "create_event" | "update_event";
-  placeDepositSize?: number;
+  placeDepositSize?: string;
 };
 export const PurchaseEvent: React.FC<PurchaseEventProps> = ({
   event,
@@ -19,7 +20,7 @@ export const PurchaseEvent: React.FC<PurchaseEventProps> = ({
         <div className="flex justify-between items-center text-lg">
           <p>Total:</p>
           <p>
-            {placeDepositSize ?? 0}{" "}
+            {formatUsdt(BigInt(placeDepositSize ?? "0"))}{" "}
             <img
               src={getCurrencySymbol()}
               className="h-6 aspect-square inline"

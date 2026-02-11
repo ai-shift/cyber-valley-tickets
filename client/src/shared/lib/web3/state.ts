@@ -10,7 +10,9 @@ export const VERIFIED_SHAMAN_ROLE = keccak256(
 export const LOCAL_PROVIDER_ROLE = keccak256(
   toUtf8Bytes("LOCAL_PROVIDER_ROLE"),
 ) as `0x${string}`;
-export const MASTER_ROLE = keccak256(toUtf8Bytes("MASTER_ROLE")) as `0x${string}`;
+export const MASTER_ROLE = keccak256(
+  toUtf8Bytes("MASTER_ROLE"),
+) as `0x${string}`;
 
 export const wallets = [
   createWallet("inApp", {
@@ -58,11 +60,6 @@ export const eventManager = getContract({
           internalType: "address",
           name: "_master",
           type: "address",
-        },
-        {
-          internalType: "uint256",
-          name: "_eventRequestPrice",
-          type: "uint256",
         },
         {
           internalType: "uint256",
@@ -123,9 +120,9 @@ export const eventManager = getContract({
         },
         {
           indexed: false,
-          internalType: "uint16",
+          internalType: "uint256",
           name: "minPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           indexed: false,
@@ -228,9 +225,9 @@ export const eventManager = getContract({
         },
         {
           indexed: false,
-          internalType: "uint16",
+          internalType: "uint256",
           name: "ticketPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           indexed: false,
@@ -326,9 +323,9 @@ export const eventManager = getContract({
         },
         {
           indexed: false,
-          internalType: "uint16",
+          internalType: "uint256",
           name: "minPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           indexed: false,
@@ -393,9 +390,9 @@ export const eventManager = getContract({
         },
         {
           indexed: false,
-          internalType: "uint16",
+          internalType: "uint256",
           name: "ticketPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           indexed: false,
@@ -716,9 +713,9 @@ export const eventManager = getContract({
           type: "uint16",
         },
         {
-          internalType: "uint16",
+          internalType: "uint256",
           name: "minPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           internalType: "uint8",
@@ -773,19 +770,6 @@ export const eventManager = getContract({
     },
     {
       inputs: [],
-      name: "eventRequestPrice",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
       name: "eventTicketContract",
       outputs: [
         {
@@ -818,9 +802,9 @@ export const eventManager = getContract({
           type: "uint256",
         },
         {
-          internalType: "uint16",
+          internalType: "uint256",
           name: "ticketPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           internalType: "uint256",
@@ -1247,9 +1231,9 @@ export const eventManager = getContract({
           type: "uint16",
         },
         {
-          internalType: "uint16",
+          internalType: "uint256",
           name: "_minPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           internalType: "uint8",
@@ -1300,9 +1284,9 @@ export const eventManager = getContract({
           type: "uint256",
         },
         {
-          internalType: "uint16",
+          internalType: "uint256",
           name: "ticketPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           internalType: "uint256",
@@ -1394,9 +1378,9 @@ export const eventManager = getContract({
           type: "uint256",
         },
         {
-          internalType: "uint16",
+          internalType: "uint256",
           name: "ticketPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           internalType: "uint256",
@@ -1447,9 +1431,9 @@ export const eventManager = getContract({
           type: "uint16",
         },
         {
-          internalType: "uint16",
+          internalType: "uint256",
           name: "_minPrice",
-          type: "uint16",
+          type: "uint256",
         },
         {
           internalType: "uint8",

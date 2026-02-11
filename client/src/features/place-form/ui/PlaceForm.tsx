@@ -18,6 +18,7 @@ import { Input } from "@/shared/ui/input";
 
 import { type EventPlace, placesQueries } from "@/entities/place";
 import { handleNumericInput } from "@/shared/lib/handleNumericInput";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { Switch } from "@/shared/ui/switch";
 import { useCheckSubmit } from "../hooks/useCheckSubmit";
 import { usePlacePersist } from "../hooks/usePlacePersist";
@@ -55,9 +56,15 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: existingPlace
       ? {
-          ...existingPlace,
+          title: existingPlace.title,
           geometry: existingPlace.geometry.coordinates[0] as LatLng,
-          eventDepositSize: existingPlace.eventDepositSize || 0,
+          maxTickets: existingPlace.maxTickets,
+          minTickets: existingPlace.minTickets,
+          minPrice: formatUsdt(BigInt(existingPlace.minPrice)),
+          minDays: existingPlace.minDays,
+          daysBeforeCancel: existingPlace.daysBeforeCancel,
+          eventDepositSize: formatUsdt(BigInt(existingPlace.eventDepositSize)),
+          available: existingPlace.available ?? true,
         }
       : {
           title: "",
@@ -66,8 +73,8 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
           maxTickets: 100,
           daysBeforeCancel: 1,
           minDays: 1,
-          minPrice: 1,
-          eventDepositSize: 0,
+          minPrice: "1",
+          eventDepositSize: "1",
           available: true,
         },
   });
@@ -251,12 +258,10 @@ export const PlaceForm: React.FC<PlaceFormProps> = ({
               <FormControl>
                 <Input
                   placeholder="Deposit required for events"
-                  inputMode="numeric"
+                  inputMode="decimal"
                   {...field}
                   value={field.value || ""}
-                  onChange={(e) =>
-                    field.onChange(handleNumericInput(e.target.value))
-                  }
+                  onChange={(e) => field.onChange(e.target.value)}
                   disabled={disableFields || !canEditDeposit}
                 />
               </FormControl>
@@ -321,6 +326,7 @@ const CustomFormComponent = ({
   title,
   fieldDisabled,
 }: CustomFormComponentProps) => {
+  const isMoney = fieldName === "minPrice";
   return (
     <FormField
       control={control}
@@ -332,10 +338,17 @@ const CustomFormComponent = ({
           <FormControl>
             <Input
               placeholder=""
-              inputMode="numeric"
+              inputMode={isMoney ? "decimal" : "numeric"}
               {...field}
+              value={
+                isMoney
+                  ? ((field.value as string | undefined) ?? "")
+                  : field.value
+              }
               onChange={(e) =>
-                field.onChange(handleNumericInput(e.target.value))
+                field.onChange(
+                  isMoney ? e.target.value : handleNumericInput(e.target.value),
+                )
               }
             />
           </FormControl>

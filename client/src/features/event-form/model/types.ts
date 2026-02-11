@@ -3,7 +3,7 @@ type EventFormType = {
   description: string;
   website: string | undefined;
   place: string;
-  ticketPrice: number;
+  ticketPrice: string;
   startDate: Date;
   daysAmount: number;
   categories: CategoryDraft[];

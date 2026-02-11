@@ -1160,13 +1160,21 @@ export interface components {
        */
       attr: "tickets.INDEX.price";
       /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
+       * @description * `blank` - blank
+       *     * `invalid` - invalid
        *     * `null` - null
+       *     * `null_characters_not_allowed` - null_characters_not_allowed
        *     * `required` - required
+       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
        * @enum {string}
        */
-      code: "invalid" | "max_string_length" | "null" | "required";
+      code:
+        | "blank"
+        | "invalid"
+        | "null"
+        | "null_characters_not_allowed"
+        | "required"
+        | "surrogate_characters_not_allowed";
       detail: string;
     };
     ApiIpfsOrdersMetaUpdateTicketsINDEXQuantityErrorComponent: {
@@ -1208,14 +1216,21 @@ export interface components {
        */
       attr: "total_price";
       /**
-       * @description * `invalid` - invalid
-       *     * `max_string_length` - max_string_length
-       *     * `min_value` - min_value
+       * @description * `blank` - blank
+       *     * `invalid` - invalid
        *     * `null` - null
+       *     * `null_characters_not_allowed` - null_characters_not_allowed
        *     * `required` - required
+       *     * `surrogate_characters_not_allowed` - surrogate_characters_not_allowed
        * @enum {string}
        */
-      code: "invalid" | "max_string_length" | "min_value" | "null" | "required";
+      code:
+        | "blank"
+        | "invalid"
+        | "null"
+        | "null_characters_not_allowed"
+        | "required"
+        | "surrogate_characters_not_allowed";
       detail: string;
     };
     ApiIpfsOrdersMetaUpdateTotalTicketsErrorComponent: {
@@ -2050,13 +2065,12 @@ export interface components {
       place: components["schemas"]["EventPlace"];
       /** Format: int64 */
       readonly placeId: number;
-      /** Format: int64 */
-      ticketPrice: number;
+      readonly ticketPrice: string;
       /** @description Calculate the min and max available ticket prices from categories.
        *     Excludes categories that are sold out (quota exceeded).
        *     Returns None for min/max if no categories are available. */
       readonly ticketPriceRange: {
-        [key: string]: number | null;
+        [key: string]: string | null;
       };
       /** Format: int64 */
       daysAmount: number;
@@ -2066,8 +2080,8 @@ export interface components {
       website?: string | null;
       readonly startDateTimestamp: number;
       ticketsBought: number | null;
-      readonly totalRevenue: number;
-      readonly paidDeposit: number;
+      readonly totalRevenue: string;
+      readonly paidDeposit: string;
       readonly ticketsRequiredUntilCancel: number | null;
       readonly cancelDateTimestamp: number | null;
     };
@@ -2089,11 +2103,6 @@ export interface components {
       readonly createdAt: string;
       /** Format: date-time */
       readonly updatedAt: string;
-    };
-    Error403: {
-      code: components["schemas"]["ErrorCode403Enum"];
-      detail: string;
-      attr: string | null;
     };
     Error404: {
       code: components["schemas"]["ErrorCode404Enum"];
@@ -2121,11 +2130,6 @@ export interface components {
       attr: string | null;
     };
     /**
-     * @description * `permission_denied` - Permission Denied
-     * @enum {string}
-     */
-    ErrorCode403Enum: "permission_denied";
-    /**
      * @description * `not_found` - Not Found
      * @enum {string}
      */
@@ -2152,10 +2156,6 @@ export interface components {
     ErrorCode500Enum: "error";
     ErrorResponse: {
       error: string;
-    };
-    ErrorResponse403: {
-      type: components["schemas"]["ClientErrorEnum"];
-      errors: components["schemas"]["Error403"][];
     };
     ErrorResponse404: {
       type: components["schemas"]["ClientErrorEnum"];
@@ -2185,15 +2185,13 @@ export interface components {
       maxTickets: number;
       /** Format: int64 */
       minTickets: number;
-      /** Format: int64 */
-      minPrice: number;
+      readonly minPrice: string;
       /** Format: int64 */
       minDays: number;
       geometry: components["schemas"]["GeoFeature"];
       /** Format: int64 */
       daysBeforeCancel: number;
-      /** Format: int64 */
-      eventDepositSize?: number;
+      readonly eventDepositSize: string;
       available?: boolean;
       status?: components["schemas"]["EventPlaceStatusEnum"];
       readonly isUsed: boolean;
@@ -2261,7 +2259,8 @@ export interface components {
     OrderTicketItemRequest: {
       categoryId: number;
       categoryName: string;
-      price: number;
+      /** @description Token amount in micro-units (USDT 6 decimals), as a string. */
+      price: string;
       quantity: number;
     };
     ParseError: {
@@ -2372,13 +2371,12 @@ export interface components {
       place: components["schemas"]["EventPlace"];
       /** Format: int64 */
       readonly placeId: number;
-      /** Format: int64 */
-      ticketPrice: number;
+      readonly ticketPrice: string;
       /** @description Calculate the min and max available ticket prices from categories.
        *     Excludes categories that are sold out (quota exceeded).
        *     Returns None for min/max if no categories are available. */
       readonly ticketPriceRange: {
-        [key: string]: number | null;
+        [key: string]: string | null;
       };
       /** Format: int64 */
       daysAmount: number;
@@ -2389,8 +2387,8 @@ export interface components {
       readonly startDateTimestamp: number;
       /** Format: int64 */
       ticketsBought: number;
-      readonly totalRevenue: number;
-      readonly paidDeposit: number;
+      readonly totalRevenue: string;
+      readonly paidDeposit: string;
       readonly ticketsRequiredUntilCancel: number;
       readonly cancelDateTimestamp: number;
     };
@@ -2454,7 +2452,8 @@ export interface components {
       socials: components["schemas"]["UploadSocialsRequest"];
       tickets: components["schemas"]["OrderTicketItemRequest"][];
       totalTickets: number;
-      totalPrice: number;
+      /** @description Token amount in micro-units (USDT 6 decimals), as a string. */
+      totalPrice: string;
       /** @default USDC */
       currency: string;
       /** @default  */
@@ -2974,12 +2973,12 @@ export interface operations {
         };
         content: {
           "application/json": {
-            /** @description Total revenue in USDT (6 decimals) */
-            total_revenue?: number;
-            /** @description Revenue from ticket sales */
-            ticket_revenue?: number;
-            /** @description Event request deposit */
-            deposit?: number;
+            /** @description Total revenue in USDT micro-units (6 decimals) as a string */
+            total_revenue?: string;
+            /** @description Ticket revenue in USDT micro-units (6 decimals) as a string */
+            ticket_revenue?: string;
+            /** @description Event request deposit in USDT micro-units (6 decimals) as a string */
+            deposit?: string;
             /** @description Number of tickets sold */
             tickets_sold?: number;
           };
@@ -3575,8 +3574,8 @@ export interface operations {
         };
         content: {
           "application/json": {
-            /** @description Total revenue across all events in USDT (6 decimals) */
-            totalRevenue?: number;
+            /** @description Total revenue across all events in USDT micro-units (6 decimals) as a string */
+            totalRevenue?: string;
           };
         };
       };
@@ -4862,8 +4861,6 @@ export interface operations {
     };
     requestBody?: {
       content: {
-        "application/x-www-form-urlencoded": components["schemas"]["TelegramLinkTokenRequestRequest"];
-        "multipart/form-data": components["schemas"]["TelegramLinkTokenRequestRequest"];
         "application/json": components["schemas"]["TelegramLinkTokenRequestRequest"];
       };
     };
@@ -4892,14 +4889,6 @@ export interface operations {
           "application/json": {
             detail?: string;
           };
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse403"];
         };
       };
       405: {

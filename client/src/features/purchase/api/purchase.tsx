@@ -72,13 +72,12 @@ const purchaseTicket = async (
   }
 
   // Calculate total price from allocations
-  const totalPrice = order.ticket.allocations.reduce(
-    (sum, a) => sum + a.count * a.finalPricePerTicket,
-    0,
-  );
+  const totalPrice = order.ticket.allocations.reduce((sum, a) => {
+    return sum + BigInt(a.count) * a.finalPricePerTicket;
+  }, 0n);
 
   // Approve total price once
-  const approve = approveMintTicket(account, BigInt(totalPrice));
+  const approve = approveMintTicket(account, totalPrice);
   sendTx(approve);
   await approve;
   await new Promise((r) => setTimeout(r, 1000));
@@ -133,7 +132,7 @@ const updateEvent = async (
     account,
     BigInt(id),
     BigInt(place),
-    ticketPrice,
+    BigInt(ticketPrice),
     BigInt(startTimeTimeStamp),
     daysAmount,
     eventData.cid,
@@ -175,7 +174,7 @@ const createEvent = async (
   ) {
     throw new Error("Event place deposit size is not set");
   }
-  if (placeData.eventDepositSize <= 0) {
+  if (BigInt(placeData.eventDepositSize) <= 0n) {
     throw new Error("Event place deposit size must be greater than 0");
   }
   const depositSize = BigInt(placeData.eventDepositSize);
@@ -217,7 +216,7 @@ const createEvent = async (
   const result = submitEventRequest(
     account,
     BigInt(place),
-    ticketPrice,
+    BigInt(ticketPrice),
     BigInt(startTimeTimeStamp),
     daysAmount,
     eventData.cid,
@@ -255,10 +254,9 @@ const getOrderCid = async (
     );
 
   const totalTickets = ticket.allocations.reduce((sum, a) => sum + a.count, 0);
-  const totalPrice = ticket.allocations.reduce(
-    (sum, a) => sum + a.count * a.finalPricePerTicket,
-    0,
-  );
+  const totalPrice = ticket.allocations.reduce((sum, a) => {
+    return sum + BigInt(a.count) * a.finalPricePerTicket;
+  }, 0n);
 
   return await apiClient.PUT("/api/ipfs/orders/meta", {
     body: {
@@ -272,11 +270,11 @@ const getOrderCid = async (
       tickets: ticket.allocations.map((a) => ({
         categoryId: a.categoryId,
         categoryName: a.categoryName,
-        price: Math.trunc(a.finalPricePerTicket),
+        price: a.finalPricePerTicket.toString(),
         quantity: a.count,
       })),
       totalTickets: totalTickets,
-      totalPrice: Math.trunc(totalPrice),
+      totalPrice: totalPrice.toString(),
       currency: "USDT",
       referralData: "",
     },

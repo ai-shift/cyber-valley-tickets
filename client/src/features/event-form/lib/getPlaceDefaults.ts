@@ -1,5 +1,6 @@
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { addDays } from "date-fns";
 import { isDateAvailable, setToMidday } from "../model/formSchema";
 import type { EventFormOutput } from "../model/types";
@@ -35,7 +36,7 @@ export const getPlaceDefaults = (
   };
 
   return {
-    ticketPrice: place.minPrice,
+    ticketPrice: formatUsdt(BigInt(place.minPrice)),
     place: `${place.id}`,
     startDate: getFirstAvailableDate(),
     daysAmount,

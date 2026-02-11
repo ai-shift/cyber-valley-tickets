@@ -26,7 +26,7 @@ type ShowTicketProps = {
   event: {
     id: number;
     title: string;
-    ticketPrice: number;
+    ticketPrice: string;
   };
 };
 
@@ -145,7 +145,7 @@ export const ShowTicket: React.FC<ShowTicketProps> = ({
     setTicketOrder({
       eventId: event.id,
       eventTitle: event.title,
-      ticketPrice: event.ticketPrice,
+      ticketPrice: BigInt(event.ticketPrice),
       totalTickets: 1,
       allocations: [],
     });

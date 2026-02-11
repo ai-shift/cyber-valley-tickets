@@ -1,5 +1,6 @@
 import type { Event } from "@/entities/event";
 import type { EventPlace } from "@/entities/place";
+import { parseUsdt } from "@/shared/lib/money/usdt";
 import { addDays } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { type ZodType, z } from "zod";
@@ -30,7 +31,7 @@ export function createFormSchema(
           message: "Only .jpg and .png files are allowed.",
         }),
       place: z.string().min(1, "Place is required"),
-      ticketPrice: z.number().refine((val) => val >= 1, "Price is too small"),
+      ticketPrice: z.string().min(1, "Price is required"),
       startDate: z.date().min(new Date(), "Can't change the past"),
       daysAmount: z
         .number()
@@ -51,7 +52,21 @@ export function createFormSchema(
       if (place == null) {
         throw new Error(`Place was not found for ${data.place}`);
       }
-      if (+data.ticketPrice < place.minPrice) {
+
+      let priceUnits: bigint;
+      try {
+        priceUnits = parseUsdt(data.ticketPrice);
+      } catch {
+        ctx.addIssue({
+          path: ["ticketPrice"],
+          message:
+            "Ticket price must be a valid USDT amount (up to 6 decimals)",
+          code: z.ZodIssueCode.custom,
+        });
+        return;
+      }
+
+      if (priceUnits < BigInt(place.minPrice)) {
         ctx.addIssue({
           path: ["ticketPrice"],
           message: "Ticket price should be bigger than minimum",

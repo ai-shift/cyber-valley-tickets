@@ -2,6 +2,7 @@ import type { Point } from "@/entities/geodata";
 import type { EventPlaceForm } from "@/features/place-form";
 import { apiClient } from "@/shared/api";
 import type { SendTx } from "@/shared/hooks";
+import { parseUsdt } from "@/shared/lib/money/usdt";
 import { submitEventPlaceRequest, updatePlace } from "@/shared/lib/web3";
 import type { Account } from "thirdweb/wallets";
 
@@ -39,7 +40,8 @@ export const upsertPlaceW3 = async (
   placeForm.append("title", title);
   placeForm.append("description", "foo");
   placeForm.append("geometry", JSON.stringify(formatedGeodata));
-  placeForm.append("eventDepositSize", eventDepositSize.toString());
+  const depositUnits = parseUsdt(eventDepositSize);
+  placeForm.append("eventDepositSize", depositUnits.toString());
 
   const { data } = await apiClient.PUT("/api/ipfs/places/meta", {
     // @ts-ignore
@@ -48,6 +50,7 @@ export const upsertPlaceW3 = async (
 
   if (!data || !data.cid) throw new Error("No cid was recieved");
 
+  const minPriceUnits = parseUsdt(minPrice);
   let promise: Promise<unknown>;
   if (editPlaceId != null) {
     console.log("editing existing event place with id", editPlaceId);
@@ -56,24 +59,24 @@ export const upsertPlaceW3 = async (
       BigInt(editPlaceId),
       maxTickets,
       minTickets,
-      minPrice,
+      minPriceUnits,
       daysBeforeCancel,
       minDays,
       available,
       data.cid,
-      eventDepositSize,
+      depositUnits,
     );
   } else {
     promise = submitEventPlaceRequest(
       account,
       maxTickets,
       minTickets,
-      minPrice,
+      minPriceUnits,
       daysBeforeCancel,
       minDays,
       available,
       data.cid,
-      eventDepositSize,
+      depositUnits,
     );
   }
   sendTx(promise);

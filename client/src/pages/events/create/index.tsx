@@ -9,7 +9,7 @@ export const CreateEventPage: React.FC = () => {
   const navigate = useNavigate();
   const { setEventOrder } = useOrderStore();
 
-  function initOrderPurchase(order: EventDto, placeDepositSize: number) {
+  function initOrderPurchase(order: EventDto, placeDepositSize: string) {
     setEventOrder(order, placeDepositSize);
     navigate("/purchase");
   }

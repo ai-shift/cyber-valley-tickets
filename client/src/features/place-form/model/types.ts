@@ -1,11 +1,13 @@
 import type { LatLng } from "@/entities/geodata";
-import type { EventPlace } from "@/entities/place";
 
-export type EventPlaceForm = Omit<
-  EventPlace,
-  "id" | "isUsed" | "available" | "geometry" | "eventDepositSize"
-> & {
-  available: boolean;
-  eventDepositSize: number;
+export type EventPlaceForm = {
+  title: string;
   geometry: LatLng | null;
+  maxTickets: number;
+  minTickets: number;
+  minPrice: string;
+  minDays: number;
+  daysBeforeCancel: number;
+  eventDepositSize: string;
+  available: boolean;
 };

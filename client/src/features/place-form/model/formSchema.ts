@@ -1,3 +1,4 @@
+import { parseUsdt } from "@/shared/lib/money/usdt";
 import { type ZodType, z } from "zod";
 import type { EventPlaceForm } from "./types";
 
@@ -29,11 +30,46 @@ export const formSchema: ZodType<EventPlaceForm> = z
       .refine((val) => val != null, "Event place should have a location"),
     maxTickets: numberField(1, 65536, "Maximum ticket amount"),
     minTickets: numberField(1, 65536, "Minimum ticket amount"),
-    minPrice: numberField(1, 65536, "Minimum price"),
+    minPrice: z.string().min(1, "Minimum price is required"),
     minDays: numberField(1, 256, "Minimum days limit"),
     daysBeforeCancel: numberField(1, 65536, "Period before cancellation"),
-    eventDepositSize: numberField(1, 999999999, "Event deposit"),
+    eventDepositSize: z.string().min(1, "Event deposit is required"),
     available: z.boolean(),
+  })
+  .superRefine((data, ctx) => {
+    try {
+      const minPrice = parseUsdt(data.minPrice);
+      if (minPrice <= 0n) {
+        ctx.addIssue({
+          path: ["minPrice"],
+          message: "Minimum price must be greater than 0",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    } catch {
+      ctx.addIssue({
+        path: ["minPrice"],
+        message: "Minimum price must be a valid USDT amount (up to 6 decimals)",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+
+    try {
+      const dep = parseUsdt(data.eventDepositSize);
+      if (dep <= 0n) {
+        ctx.addIssue({
+          path: ["eventDepositSize"],
+          message: "Event deposit must be greater than 0",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    } catch {
+      ctx.addIssue({
+        path: ["eventDepositSize"],
+        message: "Event deposit must be a valid USDT amount (up to 6 decimals)",
+        code: z.ZodIssueCode.custom,
+      });
+    }
   })
   .refine(({ maxTickets, minTickets }) => maxTickets > minTickets, {
     message: "Minimum tickets amount can't be bigger then maximum",

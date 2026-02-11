@@ -1,13 +1,14 @@
 import { eventQueries } from "@/entities/event";
 import { EventsList, uniteFilter } from "@/features/events-list";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 import { SearchBar } from "@/shared/ui/SearchBar";
 import { useQuery } from "@tanstack/react-query";
 
 const SEARCH_PARAM_NAME = "search";
 
-const formatRevenue = (amount: number | undefined) => {
-  if (amount === undefined) return "0";
-  return amount;
+const formatRevenue = (amount: string | undefined) => {
+  if (!amount) return "0";
+  return formatUsdt(BigInt(amount));
 };
 
 export const Home = () => {

@@ -1,11 +1,11 @@
-import { getCurrencySymbol } from "@/shared/lib/web3";
+import { formatUsdt } from "@/shared/lib/money/usdt";
 
 /**
  * Ticket price range as returned from the API.
- * The API returns { [key: string]: number | null } but we expect { min: number | null, max: number | null }
+ * The API returns { [key: string]: string | null } where values are micro-units (USDT 6 decimals).
  */
 type ApiTicketPriceRange = {
-  [key: string]: number | null;
+  [key: string]: string | null;
 };
 
 /**
@@ -26,13 +26,11 @@ export function formatTicketPriceRange(
   const min = priceRange.min;
 
   // All categories sold out
-  if (min === null) {
+  if (min == null) {
     return null;
   }
 
-  const currencySymbol = getCurrencySymbol();
-
-  return `${min} ${currencySymbol}`;
+  return formatUsdt(BigInt(min));
 }
 
 /**
@@ -52,9 +50,9 @@ export function getTicketPriceRangeDisplay(
   const min = priceRange.min;
 
   // All categories sold out
-  if (min === null) {
+  if (min == null) {
     return null;
   }
 
-  return `${min}`;
+  return formatUsdt(BigInt(min));
 }
