@@ -1,0 +1,48 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "DateOverlapChecker",
+  "sourceName": "contracts/DateOverlapChecker.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_initialOffest",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "BUCKET_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SECONDS_IN_DAY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608034604d57601f61010b38819003918201601f19168301916001600160401b03831184841017605257808492602094604052833981010312604d575160005560405160a290816100698239f35b600080fd5b634e487b7160e01b600052604160045260246000fdfe6080806040526004361015601257600080fd5b60003560e01c90816312c5502714605357506361a52a3614603257600080fd5b34604e576000366003190112604e576020604051620151808152f35b600080fd5b34604e576000366003190112604e578061010060209252f3fea26469706673582212209a655c20c217a0d3d3dce27e631d61c662b2d0292f89eaa5f82582ee006fa8e964736f6c634300081c0033",
+  "deployedBytecode": "0x6080806040526004361015601257600080fd5b60003560e01c90816312c5502714605357506361a52a3614603257600080fd5b34604e576000366003190112604e576020604051620151808152f35b600080fd5b34604e576000366003190112604e578061010060209252f3fea26469706673582212209a655c20c217a0d3d3dce27e631d61c662b2d0292f89eaa5f82582ee006fa8e964736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

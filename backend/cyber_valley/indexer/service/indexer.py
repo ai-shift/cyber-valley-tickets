@@ -25,8 +25,8 @@ from .events import (
     CyberValleyEventManager,
     CyberValleyEventTicket,
     DynamicRevenueSplitter,
+    MockUSDT,
     ReferralRewards,
-    SimpleERC20Xylose,
 )
 
 log = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ _EVENTS_MODULES: Final = (
     CyberValleyEventTicket,
     DynamicRevenueSplitter,
     ReferralRewards,
-    SimpleERC20Xylose,
+    MockUSDT,
 )
 
 
