@@ -472,7 +472,9 @@ fi
 log_success "Blockchain indexer started" "started"
 
 log_info "Starting telegram bot" "starting"
-if [[ -z "${TELEGRAM_BOT_API_TOKEN:-}" ]]; then
+if [[ "${RUN_TELEGRAM_BOT:-0}" != "1" ]]; then
+    log_warning "Skipping telegram bot (set RUN_TELEGRAM_BOT=1 to enable)" "skipped"
+elif [[ -z "${TELEGRAM_BOT_API_TOKEN:-}" ]]; then
     log_warning "Skipping telegram bot (TELEGRAM_BOT_API_TOKEN not set)" "skipped"
 else
     create_tmux_window "telegram-bot" "/tmp/telegram-bot.log"
