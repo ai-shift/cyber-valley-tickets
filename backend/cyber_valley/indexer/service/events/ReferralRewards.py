@@ -91,6 +91,8 @@ class CyberValleyEvents(BaseModel):
     active_updated: ActiveUpdated | None = Field(None, alias="ActiveUpdated")
     config_updated: ConfigUpdated | None = Field(None, alias="ConfigUpdated")
     referrer_set: ReferrerSet | None = Field(None, alias="ReferrerSet")
-    role_admin_changed: RoleAdminChanged | None = Field(None, alias="RoleAdminChanged")
+    role_admin_changed: RoleAdminChanged | None = Field(
+        None, alias="RoleAdminChanged"
+    )
     role_granted: RoleGranted | None = Field(None, alias="RoleGranted")
     role_revoked: RoleRevoked | None = Field(None, alias="RoleRevoked")

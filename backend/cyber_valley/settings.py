@@ -270,11 +270,7 @@ DEFAULT_CHAIN_ID = 1337
 
 # XXX: Order should match actual deployment flow
 CONTRACTS_INFO: Final = (
-    (
-        BASE_DIR
-        / "ethereum_artifacts/contracts/mocks/SimpleERC20Xylose.sol"
-        / "SimpleERC20Xylose.json"
-    ),
+    (BASE_DIR / "ethereum_artifacts/contracts/mocks/MockUSDT.sol" / "MockUSDT.json"),
     (
         BASE_DIR
         / "ethereum_artifacts/contracts/CyberValleyEventTicket.sol/"

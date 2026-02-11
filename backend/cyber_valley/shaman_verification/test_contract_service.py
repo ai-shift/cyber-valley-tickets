@@ -1,5 +1,7 @@
 """Tests for ContractService to verify role granting works correctly."""
 
+import os
+
 import pytest
 from web3 import Web3
 
@@ -7,6 +9,14 @@ from .contract_service import ContractService
 
 # Test address
 TEST_SHAMAN_ADDRESS = "0xA84036A18ecd8f4F3D21ca7f85BEcC033571b15e"
+
+pytestmark = pytest.mark.skipif(
+    os.environ.get("RUN_CONTRACT_SERVICE_TESTS") != "1",
+    reason=(
+        "Requires a running Ethereum JSON-RPC node and deployed contracts. "
+        "Set RUN_CONTRACT_SERVICE_TESTS=1 to enable."
+    ),
+)
 
 
 @pytest.fixture

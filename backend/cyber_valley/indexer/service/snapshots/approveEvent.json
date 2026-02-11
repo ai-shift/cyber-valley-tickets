@@ -281,6 +281,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+        "role": "ADMIN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "PROFILE_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -348,6 +353,11 @@
       {
         "account": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
         "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+        "role": "ADMIN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -421,6 +431,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+        "role": "ADMIN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "PROFILE_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -488,6 +503,11 @@
       {
         "account": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
         "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
+        "role": "ADMIN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -561,6 +581,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d",
+        "role": "ADMIN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "PROFILE_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -628,6 +653,11 @@
       {
         "account": "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f",
         "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f",
+        "role": "ADMIN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -701,6 +731,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
+        "role": "ADMIN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "PROFILE_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -768,6 +803,11 @@
       {
         "account": "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
         "role": "EVENT_MANAGER_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "account": "0x9E545E3C0baAB3E08CdfD552C960A1050f373042",
+        "role": "ADMIN_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
@@ -841,6 +881,11 @@
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
       },
       {
+        "account": "0xf5059a5D33d5853360D16C683c16e67980206f36",
+        "role": "ADMIN_ROLE",
+        "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
         "account": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "role": "PROFILE_MANAGER_ROLE",
         "sender": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -889,110 +934,132 @@
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 2,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 2,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       },
       {
         "owner": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
         "profileId": 1,
         "recipients": [
-          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"
+          "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+          "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
         ],
         "shares": [
-          10000
+          8000,
+          500
         ]
       }
     ],
@@ -1076,7 +1143,7 @@
         "bps": 500
       }
     ],
-    "SimpleERC20Xylose.Approval": [
+    "MockUSDT.Approval": [
       {
         "owner": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
         "spender": "0x67d269191c92Caf3cD7723F116c85e6E9bf55933",
@@ -1093,7 +1160,7 @@
         "value": 100
       }
     ],
-    "SimpleERC20Xylose.Transfer": [
+    "MockUSDT.Transfer": [
       {
         "from": "0x0000000000000000000000000000000000000000",
         "to": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
@@ -1121,6 +1188,6 @@
       }
     ]
   },
-  "events_count": 189,
+  "events_count": 198,
   "test_name": "approveEvent"
 }

@@ -259,6 +259,7 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
             "minTickets": 15,
             "minPrice": 75,
             "minDays": 10,
+            "eventDepositSize": 123,
             "available": True,
             "daysBeforeCancel": 5,
             "status": 1,  # Approved
@@ -275,6 +276,7 @@ def test_sync_event_place_updated(event_place: EventPlace, address: str) -> None
     assert event_place.min_tickets == event_data.min_tickets
     assert event_place.min_price == event_data.min_price
     assert event_place.min_days == event_data.min_days
+    assert event_place.event_deposit_size == event_data.event_deposit_size
     assert event_place.title == "Changed event place title"
     assert event_place.status == "approved"
     assert event_place.geometry["type"] == "Point"
@@ -303,6 +305,7 @@ def test_sync_ticket_minted(
             "ticketId": 123,
             "categoryId": ticket_category.category_id,
             "owner": user.address,
+            "pricePaid": event.ticket_price,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
@@ -342,14 +345,15 @@ def test_sync_ticket_minted_event_not_found(user: UserType) -> None:
             "ticketId": 123,
             "categoryId": 0,
             "owner": user.address,
+            "pricePaid": 0,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
             "referrer": "0x0000000000000000000000000000000000000000",
         }
     )
-    with pytest.raises(Event.DoesNotExist):
-        _sync_ticket_minted(event_data)
+    _sync_ticket_minted(event_data)
+    assert not Ticket.objects.filter(id=str(event_data.ticket_id)).exists()
 
 
 @pytest.mark.django_db
@@ -388,9 +392,13 @@ def test_sync_event_status_changed_invalid_status(event: Event) -> None:
 
 
 @pytest.mark.django_db
-def test_sync_ticket_redeemed(event: Event, user: UserType) -> None:
+def test_sync_ticket_redeemed(
+    event: Event, user: UserType, ticket_category: TicketCategory
+) -> None:
     ticket_id = "123"
-    ticket = Ticket.objects.create(event=event, owner=user, id=ticket_id)
+    ticket = Ticket.objects.create(
+        event=event, owner=user, id=ticket_id, category=ticket_category
+    )
 
     event_data = CyberValleyEventTicket.TicketRedeemed(ticketId=123)
 
@@ -448,6 +456,7 @@ def test_sync_ticket_minted_with_referral(
             "ticketId": 124,
             "categoryId": ticket_category.category_id,
             "owner": user.address,
+            "pricePaid": event.ticket_price,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
@@ -489,6 +498,7 @@ def test_sync_ticket_minted_self_referral_skipped(
             "ticketId": 125,
             "categoryId": ticket_category.category_id,
             "owner": user.address,
+            "pricePaid": event.ticket_price,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
@@ -527,6 +537,7 @@ def test_sync_ticket_minted_invalid_referral_skipped(
             "ticketId": 126,
             "categoryId": ticket_category.category_id,
             "owner": user.address,
+            "pricePaid": event.ticket_price,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
@@ -565,6 +576,7 @@ def test_sync_ticket_minted_empty_referral_skipped(
             "ticketId": 127,
             "categoryId": ticket_category.category_id,
             "owner": user.address,
+            "pricePaid": event.ticket_price,
             "digest": multihash.digest,
             "hashFunction": multihash.hash_function,
             "size": multihash.size,
