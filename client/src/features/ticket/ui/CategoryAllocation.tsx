@@ -42,7 +42,8 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
 
   const getCategoryPrice = (category: CategoryOption): number => {
     if (category.discount === 0) return ticketPrice;
-    const discount = (ticketPrice * category.discount) / 10000;
+    // Contract amounts are integer token units. Keep this integer to avoid validation issues.
+    const discount = Math.floor((ticketPrice * category.discount) / 10000);
     return ticketPrice - discount;
   };
 
@@ -81,7 +82,9 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
       : null;
 
     const maxAllowed =
-      quotaRemaining !== null ? Math.min(quotaRemaining, maxByGlobal) : maxByGlobal;
+      quotaRemaining !== null
+        ? Math.min(quotaRemaining, maxByGlobal)
+        : maxByGlobal;
 
     const newCount = Math.max(0, Math.min(currentCount + delta, maxAllowed));
 
@@ -149,7 +152,9 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
           ? Math.max(0, category.quota - category.ticketsBought)
           : null;
         const maxAllowed =
-          quotaRemaining !== null ? Math.min(quotaRemaining, maxByGlobal) : maxByGlobal;
+          quotaRemaining !== null
+            ? Math.min(quotaRemaining, maxByGlobal)
+            : maxByGlobal;
         // "Available" in the UI means how many more can be added right now,
         // considering both global event capacity and per-category quota.
         const availableToAdd = Math.max(0, maxAllowed - count);
@@ -170,11 +175,7 @@ export const CategoryAllocation: React.FC<CategoryAllocationProps> = ({
                     alt="currency"
                   />
                 </span>
-                <span
-                  className={
-                    availableToAdd < 5 ? "text-red-500" : ""
-                  }
-                >
+                <span className={availableToAdd < 5 ? "text-red-500" : ""}>
                   {`${availableToAdd} left`}
                 </span>
               </div>

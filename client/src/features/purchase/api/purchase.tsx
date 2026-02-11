@@ -272,11 +272,11 @@ const getOrderCid = async (
       tickets: ticket.allocations.map((a) => ({
         categoryId: a.categoryId,
         categoryName: a.categoryName,
-        price: a.finalPricePerTicket,
+        price: Math.trunc(a.finalPricePerTicket),
         quantity: a.count,
       })),
       totalTickets: totalTickets,
-      totalPrice: totalPrice,
+      totalPrice: Math.trunc(totalPrice),
       currency: "USDT",
       referralData: "",
     },

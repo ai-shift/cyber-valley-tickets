@@ -60,7 +60,8 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
 
   const getCategoryPrice = (category: CategoryOption): number => {
     if (category.discount === 0) return ticketPrice;
-    const discount = (ticketPrice * category.discount) / 10000;
+    // Contract amounts are integer token units. Keep this integer to avoid validation issues.
+    const discount = Math.floor((ticketPrice * category.discount) / 10000);
     return ticketPrice - discount;
   };
 
@@ -138,9 +139,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
                     </span>
                     <span
                       className={
-                        remaining < 5
-                          ? "text-red-500"
-                          : "text-muted-foreground"
+                        remaining < 5 ? "text-red-500" : "text-muted-foreground"
                       }
                     >
                       {`${remaining} left`}
