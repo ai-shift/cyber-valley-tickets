@@ -504,6 +504,60 @@ describe("CyberValleyEventManager", () => {
         );
       });
     }
+
+    it("allows submit in a one-day gap between approved events", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        splitter,
+      } = await loadFixture(deployContract);
+
+      const { request: firstRequest } = await createEvent(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        { startDate: await timestamp(11), daysAmount: 3 },
+        {},
+        splitter,
+      );
+
+      const eventPlaceId = firstRequest.eventPlaceId;
+
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        defaultEventDepositSize,
+      );
+      const { tx: secondSubmitTx, getEventId: getSecondEventId } =
+        await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(15),
+          daysAmount: 3,
+        });
+      await secondSubmitTx;
+      const secondEventId = await getSecondEventId();
+      await expect(
+        eventManager.connect(localProvider).approveEvent(secondEventId, 1n),
+      ).to.not.be.reverted;
+
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        defaultEventDepositSize,
+      );
+      const { tx: gapEventTx } = await submitEventRequest(eventManager, creator, {
+        eventPlaceId,
+        startDate: await timestamp(14),
+        daysAmount: 1,
+      });
+      await expect(gapEventTx).to.not.be.reverted;
+    });
   });
 
   describe("approveEvent", () => {
@@ -742,6 +796,59 @@ describe("CyberValleyEventManager", () => {
           .connect(localProvider)
           .updateEvent(secondEventId, ...baseEventArgsToArray(updatedRequest)),
       ).to.be.revertedWith("Requested event overlaps with existing");
+    });
+
+    it("allows moving event into gap without self-overlap false positive", async () => {
+      const {
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        splitter,
+      } = await loadFixture(deployContract);
+
+      const { request: firstRequest } = await createEvent(
+        eventManager,
+        ERC20,
+        verifiedShaman,
+        localProvider,
+        creator,
+        {},
+        { startDate: await timestamp(11), daysAmount: 3 },
+        {},
+        splitter,
+      );
+      const eventPlaceId = firstRequest.eventPlaceId;
+
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
+      await ERC20.connect(creator).approve(
+        await eventManager.getAddress(),
+        defaultEventDepositSize,
+      );
+      const { tx: secondSubmitTx, getEventId: getSecondEventId } =
+        await submitEventRequest(eventManager, creator, {
+          eventPlaceId,
+          startDate: await timestamp(15),
+          daysAmount: 3,
+        });
+      await secondSubmitTx;
+      const secondEventId = await getSecondEventId();
+      await expect(
+        eventManager.connect(localProvider).approveEvent(secondEventId, 1n),
+      ).to.not.be.reverted;
+
+      const updatedRequest = {
+        ...defaultSubmitEventRequest,
+        eventPlaceId,
+        startDate: await timestamp(14),
+        daysAmount: 3,
+      };
+      await expect(
+        eventManager
+          .connect(localProvider)
+          .updateEvent(secondEventId, ...baseEventArgsToArray(updatedRequest)),
+      ).to.not.be.reverted;
     });
   });
 
