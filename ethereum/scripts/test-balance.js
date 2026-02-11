@@ -23,7 +23,7 @@ async function main() {
   const erc20Address = "0xf6292eE7F9d03BA5844666DD4981d8b38b8d598d";
   try {
     const ERC20 = await hre.ethers.getContractAt(
-      "SimpleERC20Xylose",
+      "MockUSDT",
       erc20Address,
     );
 
@@ -49,7 +49,7 @@ async function main() {
   const testAddress = "0xb402FD4dA064Ce84c92B1AA57DaB01faB5aFE82C"; // From watson investigation
   try {
     const ERC20 = await hre.ethers.getContractAt(
-      "SimpleERC20Xylose",
+      "MockUSDT",
       erc20Address,
     );
     const balance = await ERC20.balanceOf(testAddress);
@@ -77,13 +77,10 @@ async function main() {
       eventManagerAddress,
     );
 
-    const eventRequestPrice = await EventManager.eventRequestPrice();
     const decimals = 6; // USDT decimals
 
     console.log(`   ✓ Contract found at ${eventManagerAddress}`);
-    console.log(
-      `   ✓ Event Request Price: ${hre.ethers.formatUnits(eventRequestPrice, decimals)}`,
-    );
+    console.log("   ✓ Event request fee is per-place deposit (eventDepositSize)");
   } catch (error) {
     console.log(`   ✗ EventManager contract check failed: ${error.message}`);
   }

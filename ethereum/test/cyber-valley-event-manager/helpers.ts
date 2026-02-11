@@ -16,15 +16,15 @@ import type {
   CyberValleyEventManager,
   CyberValleyEventTicket,
   DynamicRevenueSplitter,
-  SimpleERC20Xylose,
+  MockUSDT,
 } from "../../typechain-types";
 import {
   defaultCancelEventArgs,
   defaultCloseEventArgs,
   defaultCreateEventPlaceRequest,
+  defaultEventDepositSize,
   defaultSubmitEventRequest,
   defaultUpdateEventPlaceRequest,
-  eventRequestSubmitionPrice,
 } from "./data";
 import type {
   ApproveEventArgs,
@@ -54,7 +54,7 @@ import {
 export { baseEventArgsToArray };
 
 export type ContractsFixture = {
-  ERC20: SimpleERC20Xylose & BaseContract;
+  ERC20: MockUSDT & BaseContract;
   eventManager: CyberValleyEventManager & BaseContract;
   eventTicket: CyberValleyEventTicket & BaseContract;
   splitter: DynamicRevenueSplitter & BaseContract;
@@ -87,7 +87,7 @@ export { loadFixture };
 export async function deployContract(): Promise<ContractsFixture> {
   const [owner, master, localProvider, verifiedShaman, creator, staff, signer] =
     await ethers.getSigners();
-  const ERC20 = await ethers.deployContract("SimpleERC20Xylose");
+  const ERC20 = await ethers.deployContract("MockUSDT");
   const CyberValleyEventManagerFactory = await ethers.getContractFactory(
     "CyberValleyEventManager",
   );
@@ -114,7 +114,6 @@ export async function deployContract(): Promise<ContractsFixture> {
     await ERC20.getAddress(),
     await eventTicket.getAddress(),
     master,
-    eventRequestSubmitionPrice,
     await timestamp(0),
   );
   await eventTicket
@@ -278,7 +277,7 @@ export async function createAndUpdateEventPlace(
 
 export async function createEvent(
   eventManager: CyberValleyEventManager,
-  ERC20: SimpleERC20Xylose,
+  ERC20: MockUSDT,
   verifiedShaman: Signer,
   localProvider: Signer,
   creator: Signer,
@@ -291,20 +290,19 @@ export async function createEvent(
   tx: Promise<ContractTransactionResponse>;
   eventId: BigNumberish;
 }> {
-  // Mint tokens & approve
-  await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
-  await ERC20.connect(creator).approve(
-    await eventManager.getAddress(),
-    eventRequestSubmitionPrice,
-  );
-
   // Create event place
   const { eventPlaceId } = await createEventPlace(
     eventManager,
     verifiedShaman,
     localProvider,
     eventPlacePatch,
+    defaultEventDepositSize,
   );
+
+  // Mint tokens & approve: event request fee is per-place deposit.
+  const deposit = defaultEventDepositSize;
+  await ERC20.connect(creator).mint(deposit);
+  await ERC20.connect(creator).approve(await eventManager.getAddress(), deposit);
 
   // Submit request (categories are created atomically during submission)
   const {
@@ -353,7 +351,7 @@ export async function createEvent(
 
 export async function createEventForCategories(
   eventManager: CyberValleyEventManager,
-  ERC20: SimpleERC20Xylose,
+  ERC20: MockUSDT,
   verifiedShaman: Signer,
   localProvider: Signer,
   creator: Signer,
@@ -364,20 +362,19 @@ export async function createEventForCategories(
   eventId: BigNumberish;
   eventPlaceId: BigNumberish;
 }> {
-  // Mint tokens & approve
-  await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
-  await ERC20.connect(creator).approve(
-    await eventManager.getAddress(),
-    eventRequestSubmitionPrice,
-  );
-
   // Create event place
   const { eventPlaceId } = await createEventPlace(
     eventManager,
     verifiedShaman,
     localProvider,
     eventPlacePatch,
+    defaultEventDepositSize,
   );
+
+  // Mint tokens & approve: event request fee is per-place deposit.
+  const deposit = defaultEventDepositSize;
+  await ERC20.connect(creator).mint(deposit);
+  await ERC20.connect(creator).approve(await eventManager.getAddress(), deposit);
 
   // Submit request (event is in "Submitted" state, not approved)
   const { request, getEventId } = await submitEventRequest(
@@ -444,7 +441,7 @@ export async function closeEvent(
 
 export async function createAndCloseEvent(
   eventManager: CyberValleyEventManager,
-  ERC20: SimpleERC20Xylose,
+  ERC20: MockUSDT,
   verifiedShaman: Signer,
   localProvider: Signer,
   creator: Signer,
@@ -487,7 +484,7 @@ export async function cancelEvent(
 
 export async function createAndCancelEvent(
   eventManager: CyberValleyEventManager,
-  ERC20: SimpleERC20Xylose,
+  ERC20: MockUSDT,
   verifiedShaman: Signer,
   localProvider: Signer,
   creator: Signer,

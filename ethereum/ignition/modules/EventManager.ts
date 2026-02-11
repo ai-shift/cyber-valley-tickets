@@ -1,7 +1,5 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const EVENT_REQUEST_PRICE = 100;
-
 const EventManagerModule = buildModule("EventManager", (m) => {
   const masterAddress = m.getParameter("masterAddress");
   const eventTicket = m.getParameter("eventTicket");
@@ -12,7 +10,6 @@ const EventManagerModule = buildModule("EventManager", (m) => {
     erc20,
     eventTicket,
     masterAddress,
-    EVENT_REQUEST_PRICE,
     initialOffset,
   ]);
 

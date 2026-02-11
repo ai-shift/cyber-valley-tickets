@@ -16,7 +16,7 @@ describe("DynamicRevenueSplitter", () => {
       master,
     ] = await ethers.getSigners();
 
-    const usdt = await ethers.deployContract("SimpleERC20Xylose");
+    const usdt = await ethers.deployContract("MockUSDT");
 
     const DynamicRevenueSplitter = await ethers.getContractFactory(
       "DynamicRevenueSplitter",

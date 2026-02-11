@@ -11,7 +11,7 @@ async function main() {
   ];
 
   const ERC20 = await hre.ethers.getContractAt(
-    "SimpleERC20Xylose",
+    "MockUSDT",
     erc20Address,
   );
   const decimals = await ERC20.decimals();

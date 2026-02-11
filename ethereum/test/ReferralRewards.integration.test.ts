@@ -97,7 +97,7 @@ describe("ReferralRewards (ERC20) integration", () => {
     expect(event.networth).to.equal(2978n);
 
     // Note: EventManager also holds the event submission fee paid during `createEvent`.
-    // default eventRequestSubmitionPrice is 100.
+    // Event request fee is per-place deposit; tests use a small fixed deposit.
     expect(
       await fx.ERC20.balanceOf(await fx.eventManager.getAddress()),
     ).to.equal(3078n);

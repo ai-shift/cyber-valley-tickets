@@ -38,7 +38,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address provider;
         uint16 maxTickets;
         uint16 minTickets;
-        uint16 minPrice;
+        uint256 minPrice;
         uint8 daysBeforeCancel;
         uint8 minDays;
         bool available;
@@ -76,7 +76,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     struct Event {
         address creator;
         uint256 eventPlaceId;
-        uint16 ticketPrice;
+        uint256 ticketPrice;
         uint256 startDate;
         uint16 daysAmount;
         EventStatus status;
@@ -91,7 +91,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address requester,
         uint16 maxTickets,
         uint16 minTickets,
-        uint16 minPrice,
+        uint256 minPrice,
         uint8 daysBeforeCancel,
         uint8 minDays,
         bool available,
@@ -104,7 +104,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventPlaceId,
         uint16 maxTickets,
         uint16 minTickets,
-        uint16 minPrice,
+        uint256 minPrice,
         uint8 daysBeforeCancel,
         uint8 minDays,
         bool available,
@@ -118,7 +118,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 id,
         address creator,
         uint256 eventPlaceId,
-        uint16 ticketPrice,
+        uint256 ticketPrice,
         uint256 startDate,
         uint16 daysAmount,
         bytes32 digest,
@@ -129,7 +129,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     event EventUpdated(
         uint256 id,
         uint256 eventPlaceId,
-        uint16 ticketPrice,
+        uint256 ticketPrice,
         uint256 startDate,
         uint16 daysAmount,
         bytes32 digest,
@@ -160,7 +160,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     CyberValleyEventTicket public eventTicketContract;
 
     address public master;
-    uint256 public eventRequestPrice;
     address public revenueSplitter;
     IReferralRewards public referralRewards;
 
@@ -195,13 +194,11 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         address _usdtTokenContract,
         address _eventTicketContract,
         address _master,
-        uint256 _eventRequestPrice,
         uint256 _initialOffest
     ) DateOverlapChecker(_initialOffest) {
         usdtTokenContract = IERC20(_usdtTokenContract);
         eventTicketContract = CyberValleyEventTicket(_eventTicketContract);
         master = _master;
-        eventRequestPrice = _eventRequestPrice;
 
         _grantRole(DEFAULT_ADMIN_ROLE, _master);
         _grantRole(MASTER_ROLE, _master);
@@ -273,7 +270,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     function submitEventPlaceRequest(
         uint16 _maxTickets,
         uint16 _minTickets,
-        uint16 _minPrice,
+        uint256 _minPrice,
         uint8 _daysBeforeCancel,
         uint8 _minDays,
         bool _available,
@@ -393,7 +390,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 eventPlaceId,
         uint16 _maxTickets,
         uint16 _minTickets,
-        uint16 _minPrice,
+        uint256 _minPrice,
         uint8 _daysBeforeCancel,
         uint8 _minDays,
         bool _available,
@@ -470,7 +467,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
 
     function submitEventRequest(
         uint256 eventPlaceId,
-        uint16 ticketPrice,
+        uint256 ticketPrice,
         uint256 startDate,
         uint16 daysAmount,
         bytes32 digest,
@@ -628,7 +625,7 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
     function updateEvent(
         uint256 eventId,
         uint256 eventPlaceId,
-        uint16 ticketPrice,
+        uint256 ticketPrice,
         uint256 startDate,
         uint16 daysAmount,
         bytes32 digest,
@@ -773,8 +770,8 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             require(category.sold + uint16(amount) <= category.quota, "Category quota exceeded");
             category.sold += uint16(amount);
         }
-        uint16 price = applyDiscount(evt.ticketPrice, category.discountPercentage);
-        uint256 totalPrice = uint256(price) * amount;
+        uint256 unitPrice = applyDiscount(evt.ticketPrice, category.discountPercentage);
+        uint256 totalPrice = unitPrice * amount;
 
         require(
             usdtTokenContract.transferFrom(
@@ -813,19 +810,19 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
             hashFunction,
             size,
             referrer,
-            totalPrice
+            // `pricePaid` is per-ticket. The indexer uses this to aggregate revenue.
+            unitPrice
         );
         evt.customers.push(msg.sender);
         evt.networth += (totalPrice - referralPaid);
     }
 
-    function applyDiscount(uint16 originalPrice, uint16 discountPercentage) internal pure returns (uint16) {
+    function applyDiscount(uint256 originalPrice, uint16 discountPercentage) internal pure returns (uint256) {
         if (discountPercentage == 0) {
             return originalPrice;
         }
-        uint256 price = uint256(originalPrice);
-        uint256 discount = (price * uint256(discountPercentage)) / 10000;
-        return uint16(price - discount);
+        uint256 discount = (originalPrice * uint256(discountPercentage)) / 10000;
+        return originalPrice - discount;
     }
 
     function closeEvent(

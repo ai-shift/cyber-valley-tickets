@@ -25,6 +25,11 @@ const config: HardhatUserConfig = {
       url: "http://127.0.0.1:8545",
       timeout: 60000,
     },
+    // Dedicated port for backend indexer snapshot tests (avoid conflicts with Ganache).
+    indexerTest: {
+      url: "http://127.0.0.1:18545",
+      timeout: 60000,
+    },
     cvlandTest: {
       url: "https://cvland-tickets.aishift.co/ganache",
     },

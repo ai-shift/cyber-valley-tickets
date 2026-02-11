@@ -32,9 +32,9 @@ import {
 
 import {
   defaultCreateEventPlaceRequest,
+  defaultEventDepositSize,
   defaultSubmitEventRequest,
   defaultUpdateEventPlaceRequest,
-  eventRequestSubmitionPrice,
 } from "./data";
 
 const limitedCategory = {
@@ -104,10 +104,10 @@ describe("CyberValleyEventManager", () => {
     await eventManager
       .connect(master)
       .grantRole(VERIFIED_SHAMAN_ROLE, await creator.getAddress());
-    await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+    await ERC20.connect(creator).mint(defaultEventDepositSize);
     await ERC20.connect(creator).approve(
       await eventManager.getAddress(),
-      eventRequestSubmitionPrice,
+      defaultEventDepositSize,
     );
     const { eventPlaceId } = await createEventPlace(
       eventManager,
@@ -363,10 +363,10 @@ describe("CyberValleyEventManager", () => {
     it("emits NewEventRequest", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -392,7 +392,7 @@ describe("CyberValleyEventManager", () => {
     it("transfers ERC20 token", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await expect(
         await ERC20.balanceOf(await eventManager.getAddress()),
       ).to.equal(0);
@@ -403,7 +403,7 @@ describe("CyberValleyEventManager", () => {
       );
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { tx } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
@@ -411,7 +411,7 @@ describe("CyberValleyEventManager", () => {
       await expect(tx).to.changeTokenBalances(
         ERC20,
         [await eventManager.getAddress(), await creator.getAddress()],
-        [eventRequestSubmitionPrice, -eventRequestSubmitionPrice],
+        [defaultEventDepositSize, -defaultEventDepositSize],
       );
     });
 
@@ -440,10 +440,10 @@ describe("CyberValleyEventManager", () => {
         const { eventPlacePatch, eventRequestPatch, revertsWith } = testCase;
         const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
           await loadFixture(deployContract);
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { eventPlaceId } = await createEventPlace(
@@ -489,10 +489,10 @@ describe("CyberValleyEventManager", () => {
           splitter,
         );
         await createEventTx;
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
         const { tx } = await submitEventRequest(
           eventManager,
@@ -560,10 +560,10 @@ describe("CyberValleyEventManager", () => {
     it("reverts when event has no categories", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -593,10 +593,10 @@ describe("CyberValleyEventManager", () => {
     it("emits EventStatusChanged", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       await createEventPlace(eventManager, verifiedShaman, localProvider);
       const { request, tx, getEventId } = await submitEventRequest(
@@ -624,10 +624,10 @@ describe("CyberValleyEventManager", () => {
     it("refunds tokens to creator", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       await createEventPlace(eventManager, verifiedShaman, localProvider);
       const { request, tx, getEventId } = await submitEventRequest(
@@ -643,7 +643,7 @@ describe("CyberValleyEventManager", () => {
       ).to.changeTokenBalances(
         ERC20,
         [await eventManager.getAddress(), await creator.getAddress()],
-        [-eventRequestSubmitionPrice, eventRequestSubmitionPrice],
+        [-defaultEventDepositSize, defaultEventDepositSize],
       );
     });
   });
@@ -1055,10 +1055,10 @@ describe("CyberValleyEventManager", () => {
     it("allows one unlimited category per event", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice * 2n);
+      await ERC20.connect(creator).mint(defaultEventDepositSize * 2n);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice * 2n,
+        defaultEventDepositSize * 2n,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -1112,10 +1112,10 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         {},
       );
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { getEventId } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
@@ -1163,10 +1163,10 @@ describe("CyberValleyEventManager", () => {
         localProvider,
         {},
       );
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { getEventId } = await submitEventRequest(eventManager, creator, {
         eventPlaceId,
@@ -1591,10 +1591,10 @@ describe("CyberValleyEventManager", () => {
     it("reverts to close submitted event", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -1624,10 +1624,10 @@ describe("CyberValleyEventManager", () => {
     it("reverts to close declined event", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       await createEventPlace(eventManager, verifiedShaman, localProvider);
       const { request, tx, getEventId } = await submitEventRequest(
@@ -1686,10 +1686,10 @@ describe("CyberValleyEventManager", () => {
       } = await loadFixture(deployContract);
 
       // Create event with ticket sales
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -1808,10 +1808,10 @@ describe("CyberValleyEventManager", () => {
         creator,
         owner,
       } = await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -1859,10 +1859,10 @@ describe("CyberValleyEventManager", () => {
           await creator.getAddress(),
         ],
         [
-          -(eventRequestSubmitionPrice + discountedPrice),
+          -(defaultEventDepositSize + discountedPrice),
           0,
           discountedPrice,
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         ],
       );
     });
@@ -1928,10 +1928,10 @@ describe("CyberValleyEventManager", () => {
     it("reverts to cancel submitted event", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -1961,10 +1961,10 @@ describe("CyberValleyEventManager", () => {
     it("reverts to cancel declined event", async () => {
       const { eventManager, ERC20, verifiedShaman, localProvider, creator } =
         await loadFixture(deployContract);
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       await createEventPlace(eventManager, verifiedShaman, localProvider);
       const { request, tx, getEventId } = await submitEventRequest(
@@ -2001,10 +2001,10 @@ describe("CyberValleyEventManager", () => {
       const customer2 = allSigners[6];
       const customer3 = allSigners[7];
 
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
 
       const { eventPlaceId } = await createEventPlace(
@@ -2069,8 +2069,8 @@ describe("CyberValleyEventManager", () => {
         eventId,
       });
 
-      const eventRequestPrice = Number(eventRequestSubmitionPrice);
-      const totalRevenue = totalTickets * 10;
+      const eventDepositSize = defaultEventDepositSize;
+      const totalRevenue = BigInt(totalTickets) * 10n;
 
       // After cancelEvent:
       // - Deposit goes to creator (shaman)
@@ -2089,11 +2089,11 @@ describe("CyberValleyEventManager", () => {
         [
           0,
           totalRevenue,
-          eventRequestPrice,
+          eventDepositSize,
           0,
           0,
           0,
-          -(eventRequestPrice + totalRevenue),
+          -(eventDepositSize + totalRevenue),
         ],
       );
     });
@@ -2114,10 +2114,10 @@ describe("CyberValleyEventManager", () => {
       } = await loadFixture(deployContract);
 
       // Setup event and tickets
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
 
       const { eventPlaceId } = await createEventPlace(
@@ -2209,10 +2209,10 @@ describe("CyberValleyEventManager", () => {
       } = await loadFixture(deployContract);
 
       const customer = owner;
-      await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+      await ERC20.connect(creator).mint(defaultEventDepositSize);
       await ERC20.connect(creator).approve(
         await eventManager.getAddress(),
-        eventRequestSubmitionPrice,
+        defaultEventDepositSize,
       );
       const { eventPlaceId } = await createEventPlace(
         eventManager,
@@ -2290,7 +2290,6 @@ describe("CyberValleyEventManager", () => {
           await eventManager.usdtTokenContract(),
           await eventManager.eventTicketContract(),
           master,
-          100,
           await timestamp(0),
         );
 
@@ -2496,10 +2495,10 @@ describe("CyberValleyEventManager", () => {
           localProvider,
         );
 
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { getEventId } = await submitEventRequest(eventManager, creator, {
@@ -2534,10 +2533,10 @@ describe("CyberValleyEventManager", () => {
           localProvider,
         );
 
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { getEventId } = await submitEventRequest(eventManager, creator, {
@@ -2581,10 +2580,10 @@ describe("CyberValleyEventManager", () => {
           { minTickets: 5 },
         );
 
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { getEventId } = await submitEventRequest(eventManager, creator, {
@@ -2622,10 +2621,10 @@ describe("CyberValleyEventManager", () => {
           { maxTickets: 10, minTickets: 1 },
         );
 
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { getEventId } = await submitEventRequest(eventManager, creator, {
@@ -2658,10 +2657,10 @@ describe("CyberValleyEventManager", () => {
           { minTickets: 5 },
         );
 
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { getEventId } = await submitEventRequest(eventManager, creator, {
@@ -2710,10 +2709,10 @@ describe("CyberValleyEventManager", () => {
           localProvider,
         );
 
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { getEventId } = await submitEventRequest(eventManager, creator, {
@@ -2760,10 +2759,10 @@ describe("CyberValleyEventManager", () => {
           { minTickets: 10 }, // Lower minTickets so 25+25=50 >= 10 passes
         );
 
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
 
         const { getEventId } = await submitEventRequest(eventManager, creator, {
@@ -2811,10 +2810,10 @@ describe("CyberValleyEventManager", () => {
         expect(await eventManager.getEventsCount()).to.equal(0);
 
         // Create first event
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
         const { eventId: eventId1 } = await createEvent(
           eventManager,
@@ -2831,10 +2830,10 @@ describe("CyberValleyEventManager", () => {
         expect(await eventManager.getEventsCount()).to.equal(1);
 
         // Create second event
-        await ERC20.connect(creator).mint(eventRequestSubmitionPrice);
+        await ERC20.connect(creator).mint(defaultEventDepositSize);
         await ERC20.connect(creator).approve(
           await eventManager.getAddress(),
-          eventRequestSubmitionPrice,
+          defaultEventDepositSize,
         );
         const { eventId: eventId2 } = await createEvent(
           eventManager,

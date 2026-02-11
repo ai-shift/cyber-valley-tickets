@@ -13,7 +13,8 @@ const multihash = {
   size: 32,
 };
 
-export const eventRequestSubmitionPrice = BigInt(100);
+// Monetary values are micro-USDT (6 decimals). Keep tests simple by using integer micro-units.
+export const defaultEventDepositSize = 100n;
 export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   maxTickets: 100,
   minTickets: 50,
@@ -21,7 +22,7 @@ export const defaultCreateEventPlaceRequest: CreateEventPlaceArgs = {
   daysBeforeCancel: 1,
   minDays: 1,
   available: true,
-  eventDepositSize: 100,
+  eventDepositSize: defaultEventDepositSize,
   ...multihash,
 };
 
@@ -33,7 +34,7 @@ export const defaultUpdateEventPlaceRequest: UpdateEventPlaceArgs = {
   daysBeforeCancel: 1,
   minDays: 2,
   available: true,
-  eventDepositSize: 100,
+  eventDepositSize: defaultEventDepositSize,
   ...multihash,
 };
 

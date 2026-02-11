@@ -19,7 +19,7 @@ describe("ReferralRewards (unit)", () => {
     rateSteps?: Array<{ refereeCount: number; rate: number }>,
   ) {
     const [admin, operator, a, b, c, d] = await ethers.getSigners();
-    const token = await ethers.deployContract("SimpleERC20Xylose");
+    const token = await ethers.deployContract("MockUSDT");
 
     const ReferralRewards = await ethers.getContractFactory("ReferralRewards");
     const rr = await ReferralRewards.deploy(

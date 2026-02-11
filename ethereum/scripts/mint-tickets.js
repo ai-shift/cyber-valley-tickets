@@ -33,7 +33,7 @@ async function main() {
     process.env.PUBLIC_EVENT_MANAGER_ADDRESS,
   );
   const erc20 = await hre.ethers.getContractAt(
-    "SimpleERC20Xylose",
+    "MockUSDT",
     process.env.PUBLIC_ERC20_ADDRESS,
   );
 

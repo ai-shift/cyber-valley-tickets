@@ -127,7 +127,7 @@ The following tests are **intentionally unimplemented** (contain `assert(false)`
 
 2. **Test Data Management Issues**
    - Hardcoded timestamps using `timestamp()` function could cause flakiness
-   - Magic numbers scattered throughout (e.g., `eventRequestSubmitionPrice = BigInt(100)`)
+   - Magic numbers scattered throughout (e.g., `eventDepositSize = BigInt(100)`)
    - No clear strategy for maintaining test data consistency across files
 
 3. **Error Message Testing**

@@ -16,6 +16,10 @@ deploy-dev:
 	rm -rf ignition/deployments
 	pnpm exec hardhat run scripts/deploy-dev.js --network cvlandDev
 
+validate-deploy-dev:
+	node --check scripts/deploy-dev.js
+	pnpm exec hardhat run scripts/deploy-dev.js --network cvlandDev -- --validate
+
 deploy-ens-cyberia:
 	pnpm exec hardhat run scripts/deploy-ens.js --network cyberia
 

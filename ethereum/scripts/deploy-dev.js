@@ -17,6 +17,8 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const hre = require("hardhat");
+const { network } = hre;
 const bs58 = reqDefault("bs58");
 const namehash = require("eth-ens-namehash");
 
@@ -38,6 +40,61 @@ const API_HOST = process.env.PUBLIC_API_HOST;
 const BACKEND_PORT = process.env.BACKEND_PORT || "8000";
 const BACKEND_HOST = `http://127.0.0.1:${BACKEND_PORT}`;
 const IPFS_HOST = process.env.IPFS_PUBLIC_HOST;
+const USDT_DECIMALS = 6;
+
+function usdt(amount) {
+  // Amounts are micro-USDT (6 decimals) on-chain.
+  return hre.ethers.parseUnits(String(amount), USDT_DECIMALS);
+}
+
+function usage() {
+  console.log(`
+Usage:
+  pnpm exec hardhat run scripts/deploy-dev.js --network cvlandDev
+  pnpm exec hardhat run scripts/deploy-dev.js --network cvlandDev -- --validate
+
+Manual flow (dev):
+  1) Start infra/services (systemd or tmux): ./cvland start
+  2) Ensure backend is reachable: ${BACKEND_HOST}/api/health/
+  3) Deploy + seed chain data: make -C ethereum deploy-dev
+  4) Start indexer to sync on-chain -> DB: make -C backend run-indexer
+  5) Open UI: http://127.0.0.1:5173
+
+Notes:
+  - ERC20 amounts are micro-USDT (6 decimals). Use parseUnits(x, 6) everywhere.
+  - Event request fee is per-place deposit (eventDepositSize).
+`);
+}
+
+async function validateOnly() {
+  const errors = [];
+
+  if (!IPFS_HOST) errors.push("Missing env var: IPFS_PUBLIC_HOST");
+  if (!BACKEND_PORT) errors.push("Missing/empty BACKEND_PORT");
+  if (typeof fetch !== "function") {
+    errors.push("Node.js global fetch is not available (need Node 18+).");
+  }
+
+  if (errors.length > 0) {
+    for (const e of errors) console.error(`❌ ${e}`);
+    process.exit(1);
+  }
+
+  // Backend health check: required for IPFS meta upload in this script.
+  try {
+    const resp = await fetch(`${BACKEND_HOST}/api/health/`);
+    if (!resp.ok) {
+      throw new Error(`HTTP ${resp.status}`);
+    }
+  } catch (e) {
+    console.error(
+      `❌ Backend is not reachable at ${BACKEND_HOST}/api/health/ (${String(e)})`,
+    );
+    process.exit(1);
+  }
+
+  console.log("✓ deploy-dev validation passed");
+}
 
 // ============================================================================
 // Helpers
@@ -311,7 +368,7 @@ async function createPlaces(
   const placeConfigs = [
     {
       title: "Beach Venue",
-      deposit: 10,
+      deposit: "10",
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.291059, lng: 115.0841631 }],
@@ -319,7 +376,7 @@ async function createPlaces(
     },
     {
       title: "Mountain Retreat",
-      deposit: 25,
+      deposit: "25",
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.299827, lng: 115.098407 }],
@@ -327,7 +384,7 @@ async function createPlaces(
     },
     {
       title: "City Center Hall",
-      deposit: 50,
+      deposit: "50",
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.285, lng: 115.09 }],
@@ -335,7 +392,7 @@ async function createPlaces(
     },
     {
       title: "Riverside Garden",
-      deposit: 15,
+      deposit: "15",
       geometry: {
         type: "Point",
         coordinates: [{ lat: -8.295, lng: 115.08 }],
@@ -347,11 +404,12 @@ async function createPlaces(
 
   for (const cfg of placeConfigs) {
     // Upload metadata to IPFS
+    const depositUnits = usdt(cfg.deposit);
     const body = new FormData();
     body.append("title", cfg.title);
     body.append("description", "A beautiful venue for events");
     body.append("geometry", JSON.stringify(cfg.geometry));
-    body.append("eventDepositSize", cfg.deposit.toString());
+    body.append("eventDepositSize", depositUnits.toString());
 
     const resp = await fetch(`${BACKEND_HOST}/api/ipfs/places/meta`, {
       body,
@@ -396,7 +454,7 @@ async function createPlaces(
     // Approve event place as local provider with the deposit from config
     await eventManager
       .connect(localProvider)
-      .approveEventPlace(placeId, cfg.deposit);
+      .approveEventPlace(placeId, depositUnits);
 
     places.push({ id: placeId, ...cfg, cid: result.cid });
     console.log(
@@ -425,7 +483,7 @@ async function createEvents(eventManager, erc20, places, signers) {
       description: "Previous week festival",
       website: "https://example.com/festival",
       placeIndex: 0,
-      price: 100,
+      price: "100",
       startDate: new Date(prevWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000),
       daysAmount: 3,
       cover: "seed-data/event-covers/event-1-onepiece.jpg",
@@ -438,7 +496,7 @@ async function createEvents(eventManager, erc20, places, signers) {
       description: "Previous week conference",
       website: "https://example.com/conference",
       placeIndex: 1,
-      price: 50,
+      price: "50",
       startDate: new Date(prevWeekStart.getTime() + 3 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
       cover: "seed-data/event-covers/event-2-game.jpg",
@@ -455,7 +513,7 @@ async function createEvents(eventManager, erc20, places, signers) {
       description: "GuR sVeFg rIrAg",
       website: "https://example.com/first",
       placeIndex: 0,
-      price: 100,
+      price: "100",
       startDate: new Date(currentWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000),
       daysAmount: 3,
       cover: "seed-data/event-covers/event-1-onepiece.jpg",
@@ -472,7 +530,7 @@ async function createEvents(eventManager, erc20, places, signers) {
       description: "yrg vg or gur bgure bar",
       website: "https://example.com/other",
       placeIndex: 1,
-      price: 50,
+      price: "50",
       // Keep this event visible in the public list (non-past) for a bit longer.
       startDate: new Date(currentWeekStart.getTime() + 8 * 24 * 60 * 60 * 1000),
       daysAmount: 2,
@@ -489,7 +547,7 @@ async function createEvents(eventManager, erc20, places, signers) {
       description: "la lala lalalala",
       website: "https://example.com/pending",
       placeIndex: 1,
-      price: 69,
+      price: "69",
       startDate: new Date(
         currentWeekStart.getTime() + 10 * 24 * 60 * 60 * 1000,
       ),
@@ -601,15 +659,16 @@ async function createSingleEvent(
   const mh = getBytes32FromMultiash(eventMeta.cid);
 
   // Mint tokens and approve
-  await erc20.connect(cfg.creator).mint(100);
-  await erc20
-    .connect(cfg.creator)
-    .approve(await eventManager.getAddress(), 100);
+  // Event request fee is per-place deposit (eventDepositSize).
+  // For seed, mint/approve a generous amount to cover deposits and any test buys.
+  const seedBudget = usdt("1000");
+  await erc20.connect(cfg.creator).mint(seedBudget);
+  await erc20.connect(cfg.creator).approve(await eventManager.getAddress(), seedBudget);
 
   // Submit event request with categories
   const tx = await eventManager.connect(cfg.creator).submitEventRequest(
     placeId,
-    cfg.price,
+    usdt(cfg.price),
     Math.floor(cfg.startDate / 1000),
     cfg.daysAmount,
     mh.digest,
@@ -740,7 +799,7 @@ async function mintTickets(eventManager, erc20, events, signers) {
 
   for (const cfg of ticketConfigs) {
     const event = events[cfg.eventIndex];
-    const price = event.price;
+    const unitPrice = usdt(event.price);
 
     // Create and upload order metadata directly to IPFS (bypassing backend auth)
     const orderData = {
@@ -751,12 +810,12 @@ async function mintTickets(eventManager, erc20, events, signers) {
         {
           categoryId: cfg.categoryId,
           categoryName: "Standard",
-          price: price,
+          price: unitPrice.toString(),
           quantity: 1,
         },
       ],
       total_tickets: 1,
-      total_price: price,
+      total_price: unitPrice.toString(),
       currency: "USDC",
       referral_data: "",
     };
@@ -767,11 +826,11 @@ async function mintTickets(eventManager, erc20, events, signers) {
     const mh = getBytes32FromMultiash(cid);
 
     // Mint ERC20 and approve
-    await (await erc20.connect(completeSlave).mint(price)).wait();
+    await (await erc20.connect(completeSlave).mint(unitPrice)).wait();
     await (
       await erc20
         .connect(completeSlave)
-        .approve(await eventManager.getAddress(), price)
+        .approve(await eventManager.getAddress(), unitPrice)
     ).wait();
 
     // Mint ticket
@@ -809,6 +868,16 @@ async function mintTickets(eventManager, erc20, events, signers) {
 // ============================================================================
 
 async function main() {
+  const args = process.argv.slice(2);
+  if (args.includes("--help") || args.includes("-h")) {
+    usage();
+    return;
+  }
+  if (args.includes("--validate")) {
+    await validateOnly();
+    return;
+  }
+
   console.log("============================================================");
   console.log("Cyber Valley Tickets - Deploy and Seed");
   console.log("============================================================");
@@ -824,6 +893,11 @@ async function main() {
   // Validation
   if (!API_HOST) throw new Error("PUBLIC_API_HOST env var is missing");
   if (!IPFS_HOST) throw new Error("IPFS_PUBLIC_HOST env var is missing");
+  // Backend is required for IPFS metadata upload.
+  const health = await fetch(`${BACKEND_HOST}/api/health/`);
+  if (!health.ok) {
+    throw new Error(`Backend is not reachable at ${BACKEND_HOST}/api/health/ (HTTP ${health.status})`);
+  }
 
   // Phase 1: Deploy contracts
   const {
