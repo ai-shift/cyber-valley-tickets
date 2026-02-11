@@ -351,31 +351,32 @@ export const EventForm: React.FC<EventFormProps> = ({
           <DialogTrigger>
             <p className="uppercase text-lg font-bold text-start mb-1">
               Start time{" "}
-              <span className="text-gray-500 text-sm normal-case">In UTC</span>
+              <span className="text-gray-500 text-sm normal-case">
+                In local time
+              </span>
             </p>
             <div className="border-2 border-secondary px-3 py-2">
               <h2 className="text-xl text-white text-center">
-                {getTimeString(currentDate, { utc: true })}
+                {getTimeString(currentDate)}
               </h2>
             </div>
           </DialogTrigger>
           <DialogContent aria-describedby={undefined} className="py-5">
             <DialogTitle>Select time</DialogTitle>
             <p className="text-sm text-gray-500 -mt-2 mb-4">
-              Time is set in UTC timezone (your local time: UTC
-              {getTimezoneOffset()})
+              Time is set in your local timezone (UTC{getTimezoneOffset()})
             </p>
             <TimePicker
               setValue={(data) => {
                 const date = currentDate;
-                date.setUTCHours(data.hours);
-                date.setUTCMinutes(data.minutes);
+                date.setHours(data.hours);
+                date.setMinutes(data.minutes);
                 form.setValue("startDate", date);
                 setTimeOpen(false);
               }}
               initialValue={{
-                hours: currentDate.getUTCHours(),
-                minutes: currentDate.getUTCMinutes(),
+                hours: currentDate.getHours(),
+                minutes: currentDate.getMinutes(),
               }}
             />
           </DialogContent>

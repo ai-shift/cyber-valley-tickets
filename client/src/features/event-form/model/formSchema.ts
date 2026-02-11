@@ -151,6 +151,6 @@ export const isDateAvailable = (
 
 export const setToMidday = (date: Date): Date => {
   const cloned = new Date(date);
-  cloned.setUTCHours(12, 0, 0, 0);
+  cloned.setHours(12, 0, 0, 0);
   return cloned;
 };
