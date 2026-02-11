@@ -639,14 +639,25 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         uint256 oldEventPlaceId = evt.eventPlaceId;
         uint256 oldStartDate = evt.startDate;
         uint256 oldDaysAmount = evt.daysAmount;
-        
+        uint256 normalizedStartDate = floorTimestampToDate(startDate);
+
         bool realloc = oldEventPlaceId != eventPlaceId ||
-            oldStartDate != startDate ||
+            oldStartDate != normalizedStartDate ||
             oldDaysAmount != daysAmount;
+
+        if (realloc) {
+            // Remove previous allocation first, otherwise validation may detect
+            // overlap against the same event's currently allocated range.
+            freeDateRange(
+                oldEventPlaceId,
+                oldStartDate,
+                calcDaysAfter(oldStartDate, oldDaysAmount)
+            );
+        }
         
         evt.eventPlaceId = eventPlaceId;
         evt.ticketPrice = ticketPrice;
-        evt.startDate = floorTimestampToDate(startDate);
+        evt.startDate = normalizedStartDate;
         evt.daysAmount = daysAmount;
         evt.meta = CyberValley.Multihash({
             digest: digest,
@@ -655,12 +666,6 @@ contract CyberValleyEventManager is AccessControl, DateOverlapChecker {
         });
         validateEvent(evt);
         if (realloc) {
-            // Free the OLD date range from the OLD place
-            freeDateRange(
-                oldEventPlaceId,
-                oldStartDate,
-                calcDaysAfter(oldStartDate, oldDaysAmount)
-            );
             // Allocate the NEW date range to the NEW place
             allocateDateRange(
                 eventPlaceId,
