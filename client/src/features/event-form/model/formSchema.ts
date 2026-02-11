@@ -42,7 +42,7 @@ export function createFormSchema(
             id: z.string(),
             name: z.string(),
             discount: z.number(),
-            quota: z.number(),
+            quota: z.number().int().min(1),
           }),
         )
         .min(1, "At least one category is required"),
@@ -100,26 +100,23 @@ export function createFormSchema(
       }
 
       // Validate categories quotas are within boundaries
-      const hasUnlimited = data.categories.some((cat) => cat.quota === 0);
       const totalQuota = data.categories.reduce((sum, cat) => {
-        return cat.quota > 0 ? sum + cat.quota : sum;
+        return sum + cat.quota;
       }, 0);
 
-      if (!hasUnlimited) {
-        if (totalQuota < place.minTickets) {
-          ctx.addIssue({
-            path: ["categories"],
-            message: `Total tickets (${totalQuota}) must be at least ${place.minTickets} (minimum required for this place)`,
-            code: z.ZodIssueCode.custom,
-          });
-        }
-        if (totalQuota > place.maxTickets) {
-          ctx.addIssue({
-            path: ["categories"],
-            message: `Total tickets (${totalQuota}) cannot exceed ${place.maxTickets} (maximum capacity for this place)`,
-            code: z.ZodIssueCode.custom,
-          });
-        }
+      if (totalQuota < place.minTickets) {
+        ctx.addIssue({
+          path: ["categories"],
+          message: `Total tickets (${totalQuota}) must be at least ${place.minTickets} (minimum required for this place)`,
+          code: z.ZodIssueCode.custom,
+        });
+      }
+      if (totalQuota > place.maxTickets) {
+        ctx.addIssue({
+          path: ["categories"],
+          message: `Total tickets (${totalQuota}) cannot exceed ${place.maxTickets} (maximum capacity for this place)`,
+          code: z.ZodIssueCode.custom,
+        });
       }
     });
 }

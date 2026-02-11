@@ -56,6 +56,14 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
   if (categoriesError) return <ErrorMessage errors={categoriesError} />;
   if (!existingCategories) return <ErrorMessage errors={categoriesError} />;
 
+  const boundedQuotaTotal = existingCategories.reduce((sum, c) => {
+    return c.hasQuota ? sum + c.quota : sum;
+  }, 0);
+  const remainingForLegacyUnlimited = Math.max(
+    1,
+    foundEvent.place.maxTickets - boundedQuotaTotal,
+  );
+
   return (
     <EventForm
       existingEvent={foundEvent}
@@ -64,7 +72,7 @@ const EditEventWithData: React.FC<EditEventsWithDataProps> = ({
         name: c.name,
         // Backend stores discount in basis points. Form uses percent.
         discount: Math.round((c.discount / 100) * 100) / 100,
-        quota: c.hasQuota ? c.quota : 0,
+        quota: c.hasQuota ? c.quota : remainingForLegacyUnlimited,
       }))}
       events={events}
       places={places}

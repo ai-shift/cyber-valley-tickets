@@ -98,7 +98,7 @@ export const EventForm: React.FC<EventFormProps> = ({
               id: crypto.randomUUID(),
               name: "General",
               discount: 0,
-              quota: 0,
+              quota: places[0].maxTickets,
             },
           ],
           ...getPlaceDefaults(places[0], events, eventIdsToExclude),

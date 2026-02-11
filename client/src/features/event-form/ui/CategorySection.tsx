@@ -16,7 +16,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   control,
   selectedPlace,
 }) => {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "categories",
   });
@@ -37,24 +37,40 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
   const maxTickets = selectedPlace?.maxTickets ?? Number.MAX_SAFE_INTEGER;
   const minTickets = selectedPlace?.minTickets ?? 1;
-  const hasUnlimitedCategory = categories?.some((cat) => cat.quota === 0);
 
-  // Calculate total quota used by all categories (excluding unlimited)
+  // Calculate total quota used by all categories.
   const totalQuotaUsed =
     categories?.reduce((sum, cat) => {
-      return cat.quota > 0 ? sum + cat.quota : sum;
+      return sum + cat.quota;
     }, 0) ?? 0;
 
-  // Calculate remaining tickets for categories (respecting minTickets boundary)
+  // Calculate remaining tickets for categories.
   const remainingTickets = Math.max(0, maxTickets - totalQuotaUsed);
 
-  // Check if we're below minTickets (when no unlimited category)
-  const isBelowMinTickets =
-    !hasUnlimitedCategory && totalQuotaUsed < minTickets && fields.length > 0;
+  const isBelowMinTickets = totalQuotaUsed < minTickets && fields.length > 0;
 
-  function validateCategory(): string | null {
+  function findQuotaDonorIndex(requiredExtraQuota: number): number {
+    if (requiredExtraQuota <= 0) return -1;
+    let donorIndex = -1;
+    let donorQuota = 0;
+    for (let i = 0; i < categories.length; i++) {
+      const category = categories[i];
+      if (!category) continue;
+      // Keep at least 1 ticket in donor category after reallocation.
+      if (category.quota - requiredExtraQuota < 1) continue;
+      if (category.quota > donorQuota) {
+        donorQuota = category.quota;
+        donorIndex = i;
+      }
+    }
+    return donorIndex;
+  }
+
+  function validateCategory(
+    quotaValue: number,
+    requiredExtraQuota: number,
+  ): string | null {
     const discountValue = Number(newCategory.discount);
-    const quotaValue = Number(newCategory.quota);
 
     // Validate discount range
     if (
@@ -65,27 +81,18 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
     }
 
     // Validate quota
-    if (quotaValue !== 0) {
-      if (quotaValue < 1) {
-        return "Quota must be at least 1 ticket";
-      }
-      if (quotaValue > maxTickets) {
-        return `Quota cannot exceed maximum event capacity (${pluralTickets(maxTickets)})`;
-      }
-      // Check if adding this category would exceed maxTickets
-      if (quotaValue > remainingTickets) {
-        return `Cannot add ${pluralTickets(quotaValue)}. Only ${pluralTickets(remainingTickets)} remaining for categories (max: ${maxTickets})`;
-      }
+    if (quotaValue < 1) {
+      return "Quota must be at least 1 ticket";
+    }
+    if (quotaValue > maxTickets) {
+      return `Quota cannot exceed maximum event capacity (${pluralTickets(maxTickets)})`;
     }
 
-    // Check unlimited category limit
-    if (quotaValue === 0 && hasUnlimitedCategory) {
-      return "Only one category can have unlimited quota";
-    }
-
-    // Check if any quota is available when not unlimited
-    if (quotaValue > 0 && remainingTickets <= 0) {
-      return `No tickets available for categories. All ${pluralTickets(maxTickets)} are already allocated.`;
+    if (requiredExtraQuota > 0) {
+      const donorIndex = findQuotaDonorIndex(requiredExtraQuota);
+      if (donorIndex === -1) {
+        return `Cannot add ${pluralTickets(quotaValue)}. Only ${pluralTickets(remainingTickets)} free and no existing category can donate ${pluralTickets(requiredExtraQuota)}.`;
+      }
     }
 
     return null;
@@ -94,15 +101,32 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   function handleAdd() {
     if (!newCategory.name) return;
 
-    const validationError = validateCategory();
+    const quotaValue = Number(newCategory.quota);
+    const requiredExtraQuota = Math.max(0, quotaValue - remainingTickets);
+
+    const validationError = validateCategory(quotaValue, requiredExtraQuota);
     if (validationError) {
       setError(validationError);
       return;
     }
 
+    if (requiredExtraQuota > 0) {
+      const donorIndex = findQuotaDonorIndex(requiredExtraQuota);
+      if (donorIndex !== -1) {
+        const donor = categories[donorIndex];
+        if (donor) {
+          const next = [...categories];
+          next[donorIndex] = {
+            ...donor,
+            quota: donor.quota - requiredExtraQuota,
+          };
+          replace(next);
+        }
+      }
+    }
+
     const discountValue =
       newCategory.discount === "" ? 0 : Number(newCategory.discount);
-    const quotaValue = newCategory.quota === "" ? 0 : Number(newCategory.quota);
 
     append({
       id: crypto.randomUUID(),
@@ -125,9 +149,8 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Ticket Categories (Required)</h3>
       <p className="text-sm text-muted-foreground">
-        Set up ticket categories for your event. Categories must cover all
-        available tickets. Either have one unlimited category or quotas must sum
-        to the event capacity.
+        Set up ticket categories for your event. Each category must have a
+        positive quota. The total quota cannot exceed place capacity.
       </p>
 
       {fields.length === 0 && (
@@ -149,7 +172,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
                   ({Number(field.discount).toFixed(2)}% off)
                 </span>
                 <span className="text-sm text-muted-foreground ml-2">
-                  {field.quota !== 0 ? pluralTickets(field.quota) : "Unlimited"}
+                  {pluralTickets(field.quota)}
                 </span>
               </div>
               <button
@@ -170,15 +193,14 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
       {isBelowMinTickets && (
         <div className="text-sm text-amber-500 bg-amber-500/10 p-3 rounded">
-          Total quota must be at least {minTickets}. Increase it or use an
-          unlimited category.
+          Total quota must be at least {minTickets}. Increase category quotas.
         </div>
       )}
 
-      {remainingTickets <= 0 && !hasUnlimitedCategory && (
+      {remainingTickets <= 0 && (
         <p className="text-sm text-amber-500">
-          All {pluralTickets(maxTickets)} are allocated to categories. No more
-          categories can be added.
+          All {pluralTickets(maxTickets)} are allocated. Adding a new category
+          will reallocate quota from an existing category.
         </p>
       )}
 
@@ -187,7 +209,6 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
           filling="outline"
           className="w-full"
           onClick={() => setIsAdding(true)}
-          disabled={remainingTickets <= 0 && !hasUnlimitedCategory}
         >
           Add Category
           {remainingTickets > 0 && (
@@ -238,28 +259,20 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
           <div className="space-y-2">
             <label htmlFor="cat-quota" className="text-sm">
-              Ticket Limit (1 to{" "}
-              {remainingTickets > 0 ? remainingTickets : maxTickets}, or 0 for
-              unlimited)
+              Ticket Limit (1 to {maxTickets})
             </label>
             <Input
               id="cat-quota"
               type="number"
-              min="0"
-              max={remainingTickets > 0 ? remainingTickets : maxTickets}
+              min="1"
+              max={maxTickets}
               value={newCategory.quota}
               onChange={(e) => {
                 setNewCategory({ ...newCategory, quota: e.target.value });
                 setError(null);
               }}
-              placeholder={`1-${remainingTickets > 0 ? remainingTickets : maxTickets} (0 = unlimited)`}
+              placeholder={`1-${maxTickets}`}
             />
-            {hasUnlimitedCategory && (
-              <p className="text-xs text-amber-500">
-                You already have one unlimited category. Only one unlimited
-                category is allowed per event.
-              </p>
-            )}
           </div>
 
           <div className="flex gap-2">
