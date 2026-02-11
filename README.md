@@ -462,7 +462,6 @@ classDiagram
         -address devTeam
         -uint256 masterPercentage
         -address master
-        -uint256 eventRequestPrice
         -bytes32 MASTER_ROLE
 
         +createEventPlace(uint16, uint16, uint16, uint8)
@@ -556,8 +555,8 @@ Validations:
 Creates new event request.
 
 Validations:
-- `usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice`, "Not enough tokens"
-- `usdtTokenContract.allowance(msg.sender, address(this)) >= eventRequestPrice`, "Required amount was not allowed"
+- `usdtTokenContract.balanceOf(msg.sender) >= eventPlaces[eventPlaceId].eventDepositSize`, "Not enough tokens"
+- `usdtTokenContract.allowance(msg.sender, address(this)) >= eventPlaces[eventPlaceId].eventDepositSize`, "Required amount was not allowed"
 
 ###### Approve event
 
@@ -1307,7 +1306,6 @@ classDiagram
         -address devTeam
         -uint256 masterPercentage
         -address master
-        -uint256 eventRequestPrice
         -bytes32 MASTER_ROLE
 
         +createEventPlace(uint16, uint16, uint16, uint8)
@@ -1402,8 +1400,8 @@ Validations:
 Creates new event request.
 
 Validations:
-- `usdtTokenContract.balanceOf(msg.sender) >= eventRequestPrice`, "Not enough tokens"
-- `usdtTokenContract.allowance(msg.sender, address(this)) >= eventRequestPrice`, "Required amount was not allowed"
+- `usdtTokenContract.balanceOf(msg.sender) >= eventPlaces[eventPlaceId].eventDepositSize`, "Not enough tokens"
+- `usdtTokenContract.allowance(msg.sender, address(this)) >= eventPlaces[eventPlaceId].eventDepositSize`, "Required amount was not allowed"
 
 ###### Approve event
 
