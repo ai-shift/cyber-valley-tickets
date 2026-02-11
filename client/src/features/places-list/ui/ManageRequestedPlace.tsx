@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import type { EventPlace } from "@/entities/place";
+import { parseUsdt } from "@/shared/lib/money/usdt";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -34,12 +35,18 @@ export const ManageRequestedPlace: React.FC<ManageRequestedPlaceProps> = ({
   const [depositSize, setDepositSize] = useState<string>("");
   const [showApproveDialog, setShowApproveDialog] = useState(false);
   const account = useActiveAccount();
+  let parsedDeposit: bigint | null = null;
+  try {
+    parsedDeposit = depositSize === "" ? null : parseUsdt(depositSize);
+  } catch {
+    parsedDeposit = null;
+  }
 
   async function handleApprove() {
-    if (account == null || depositSize === "") {
+    if (account == null || parsedDeposit == null) {
       return;
     }
-    const deposit = BigInt(depositSize);
+    const deposit = parsedDeposit;
     if (deposit <= 0) {
       setShowResult(true);
       setStatus("error");
@@ -94,7 +101,8 @@ export const ManageRequestedPlace: React.FC<ManageRequestedPlaceProps> = ({
                 placeholder="Enter deposit amount"
                 value={depositSize}
                 onChange={(e) => setDepositSize(e.target.value)}
-                min="1"
+                min="0"
+                step="0.000001"
               />
               <p className="text-sm text-muted-foreground">
                 This amount will be required from event creators when submitting
@@ -106,7 +114,7 @@ export const ManageRequestedPlace: React.FC<ManageRequestedPlaceProps> = ({
                 <Button
                   variant="secondary"
                   onClick={handleApprove}
-                  disabled={depositSize === "" || BigInt(depositSize) <= 0}
+                  disabled={parsedDeposit == null || parsedDeposit <= 0n}
                 >
                   Confirm
                 </Button>

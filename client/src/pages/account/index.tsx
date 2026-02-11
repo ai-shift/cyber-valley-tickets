@@ -5,7 +5,7 @@ import { EventsList, myEventsFilter } from "@/features/events-list";
 import { useLogin } from "@/features/login/hooks/useLogin";
 import { useTokenBalance } from "@/shared/hooks";
 import { getPrimaryRole, hasRole } from "@/shared/lib/RBAC";
-import { formatUsdt } from "@/shared/lib/money/usdt";
+import { formatUsdt, parseUsdt } from "@/shared/lib/money/usdt";
 import { getCurrencySymbol, mintERC20 } from "@/shared/lib/web3";
 // import { BridgeWidget } from "@/shared/ui/bridge/BridgeWidget";
 import { Button } from "@/shared/ui/button";
@@ -176,7 +176,7 @@ export const AccountPage: React.FC = () => {
 
                     let amount: bigint;
                     try {
-                      amount = BigInt(maybeAmount);
+                      amount = parseUsdt(maybeAmount);
                     } catch (e) {
                       alert(
                         `Failed to process amount with: ${JSON.stringify(e)}`,
@@ -197,7 +197,7 @@ export const AccountPage: React.FC = () => {
                     setIsMinting(true);
                     try {
                       await mintERC20(account, amount);
-                      alert(`Minted ${amount} tokens`);
+                      alert(`Minted ${formatUsdt(amount)} USDT`);
                       // Invalidate and refetch the token balance
                       queryClient.invalidateQueries({
                         queryKey: ["tokenBalance", account?.address],

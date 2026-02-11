@@ -416,10 +416,8 @@ export const EventForm: React.FC<EventFormProps> = ({
                     {...field}
                     disabled={!isSelected}
                     type="text"
-                    inputMode="numeric"
-                    onChange={(e) =>
-                      field.onChange(handleNumericInput(e.target.value))
-                    }
+                    inputMode="decimal"
+                    onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
                 <FormMessage />

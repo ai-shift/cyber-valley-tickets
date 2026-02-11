@@ -74,7 +74,14 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
           alt="currency"
         />
       </p>
-      <p className="text-muted text-md">Min price: {minPrice}</p>
+      <p className="text-muted text-md">
+        Min price: {formatUsdt(BigInt(minPrice))}{" "}
+        <img
+          src={getCurrencySymbol()}
+          className="h-5 aspect-square inline"
+          alt="currency"
+        />
+      </p>
       <p className="text-muted text-md">
         Min dutration: {minDays} {pluralDays(minDays)}
       </p>
