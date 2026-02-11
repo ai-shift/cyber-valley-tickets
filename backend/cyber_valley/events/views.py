@@ -535,14 +535,24 @@ def event_status(_: Request, event_id: int) -> Response:
             "type": "object",
             "properties": {
                 "total_revenue": {
-                    "type": "integer",
-                    "description": "Total revenue in USDT (6 decimals)",
+                    "type": "string",
+                    "description": (
+                        "Total revenue in USDT micro-units (6 decimals) as a string"
+                    ),
                 },
                 "ticket_revenue": {
-                    "type": "integer",
-                    "description": "Revenue from ticket sales",
+                    "type": "string",
+                    "description": (
+                        "Ticket revenue in USDT micro-units (6 decimals) as a string"
+                    ),
                 },
-                "deposit": {"type": "integer", "description": "Event request deposit"},
+                "deposit": {
+                    "type": "string",
+                    "description": (
+                        "Event request deposit in USDT micro-units (6 decimals) "
+                        "as a string"
+                    ),
+                },
                 "tickets_sold": {
                     "type": "integer",
                     "description": "Number of tickets sold",
@@ -557,9 +567,9 @@ def lifetime_revenue(_: Request, event_id: int) -> Response:
     event = get_object_or_404(Event, id=event_id)
     return Response(
         {
-            "total_revenue": event.total_revenue + event.paid_deposit,
-            "ticket_revenue": event.total_revenue,
-            "deposit": event.paid_deposit,
+            "total_revenue": str(event.total_revenue + event.paid_deposit),
+            "ticket_revenue": str(event.total_revenue),
+            "deposit": str(event.paid_deposit),
             "tickets_sold": event.tickets_bought,
         }
     )
@@ -571,9 +581,10 @@ def lifetime_revenue(_: Request, event_id: int) -> Response:
             "type": "object",
             "properties": {
                 "totalRevenue": {
-                    "type": "integer",
+                    "type": "string",
                     "description": (
-                        "Total revenue across all events in USDT (6 decimals)"
+                        "Total revenue across all events in USDT micro-units "
+                        "(6 decimals) as a string"
                     ),
                 },
             },
@@ -588,7 +599,7 @@ def total_revenue(_: Request) -> Response:
         total=Sum("total_revenue") + Sum("paid_deposit"),
     )["total"]
 
-    return Response({"totalRevenue": total or 0})
+    return Response({"totalRevenue": str(total or 0)})
 
 
 @extend_schema(

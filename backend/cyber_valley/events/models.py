@@ -44,7 +44,7 @@ class EventPlace(models.Model):
     min_days = models.PositiveIntegerField(null=False)
     geometry = models.JSONField(null=False)
     days_before_cancel = models.PositiveSmallIntegerField(null=False)
-    event_deposit_size = models.PositiveIntegerField(default=0)
+    event_deposit_size = models.PositiveBigIntegerField(default=0)
     available = models.BooleanField(null=False, default=True)
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default="submitted", null=False
@@ -83,8 +83,8 @@ class Event(models.Model):
     tickets_bought = models.PositiveIntegerField(null=False)
     start_date = models.DateTimeField(null=False)
     days_amount = models.PositiveIntegerField(null=False)
-    paid_deposit = models.PositiveIntegerField(default=0)
-    total_revenue = models.PositiveIntegerField(default=0)
+    paid_deposit = models.PositiveBigIntegerField(default=0)
+    total_revenue = models.PositiveBigIntegerField(default=0)
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default="submitted", null=False
     )
@@ -115,7 +115,7 @@ class Ticket(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     is_redeemed = models.BooleanField(default=False, null=False)
     pending_is_redeemed = models.BooleanField(default=False, null=False)
-    price_paid = models.PositiveIntegerField(default=0)
+    price_paid = models.PositiveBigIntegerField(default=0)
 
     def __str__(self) -> str:
         return f"Ticket for {self.event.title} owned by {self.owner.address}"

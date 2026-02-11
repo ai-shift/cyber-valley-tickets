@@ -1207,16 +1207,16 @@
                                     "type": "object",
                                     "properties": {
                                         "total_revenue": {
-                                            "type": "integer",
-                                            "description": "Total revenue in USDT (6 decimals)"
+                                            "type": "string",
+                                            "description": "Total revenue in USDT micro-units (6 decimals) as a string"
                                         },
                                         "ticket_revenue": {
-                                            "type": "integer",
-                                            "description": "Revenue from ticket sales"
+                                            "type": "string",
+                                            "description": "Ticket revenue in USDT micro-units (6 decimals) as a string"
                                         },
                                         "deposit": {
-                                            "type": "integer",
-                                            "description": "Event request deposit"
+                                            "type": "string",
+                                            "description": "Event request deposit in USDT micro-units (6 decimals) as a string"
                                         },
                                         "tickets_sold": {
                                             "type": "integer",
@@ -2617,8 +2617,8 @@
                                     "type": "object",
                                     "properties": {
                                         "totalRevenue": {
-                                            "type": "integer",
-                                            "description": "Total revenue across all events in USDT (6 decimals)"
+                                            "type": "string",
+                                            "description": "Total revenue across all events in USDT micro-units (6 decimals) as a string"
                                         }
                                     }
                                 }
@@ -5480,16 +5480,6 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TelegramLinkTokenRequestRequest"
-                            }
-                        },
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TelegramLinkTokenRequestRequest"
-                            }
-                        },
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/TelegramLinkTokenRequestRequest"
@@ -5497,36 +5487,15 @@
                         }
                     }
                 },
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "400": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiTelegramLinkTokenCreateErrorResponse400"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse403"
-                                },
-                                "examples": {
-                                    "PermissionDenied": {
-                                        "value": {
-                                            "type": "client_error",
-                                            "errors": [
-                                                {
-                                                    "code": "permission_denied",
-                                                    "detail": "You do not have permission to perform this action.",
-                                                    "attr": null
-                                                }
-                                            ]
-                                        }
-                                    }
                                 }
                             }
                         },
@@ -7995,13 +7964,15 @@
                     },
                     "code": {
                         "enum": [
+                            "blank",
                             "invalid",
-                            "max_string_length",
                             "null",
-                            "required"
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
                         ],
                         "type": "string",
-                        "description": "* `invalid` - invalid\n* `max_string_length` - max_string_length\n* `null` - null\n* `required` - required"
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
                     },
                     "detail": {
                         "type": "string"
@@ -8085,14 +8056,15 @@
                     },
                     "code": {
                         "enum": [
+                            "blank",
                             "invalid",
-                            "max_string_length",
-                            "min_value",
                             "null",
-                            "required"
+                            "null_characters_not_allowed",
+                            "required",
+                            "surrogate_characters_not_allowed"
                         ],
                         "type": "string",
-                        "description": "* `invalid` - invalid\n* `max_string_length` - max_string_length\n* `min_value` - min_value\n* `null` - null\n* `required` - required"
+                        "description": "* `blank` - blank\n* `invalid` - invalid\n* `null` - null\n* `null_characters_not_allowed` - null_characters_not_allowed\n* `required` - required\n* `surrogate_characters_not_allowed` - surrogate_characters_not_allowed"
                     },
                     "detail": {
                         "type": "string"
@@ -9916,15 +9888,13 @@
                         "readOnly": true
                     },
                     "ticketPrice": {
-                        "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "ticketPriceRange": {
                         "type": "object",
                         "additionalProperties": {
-                            "type": "integer",
+                            "type": "string",
                             "nullable": true
                         },
                         "description": "Calculate the min and max available ticket prices from categories.\nExcludes categories that are sold out (quota exceeded).\nReturns None for min/max if no categories are available.",
@@ -9957,11 +9927,11 @@
                         "nullable": true
                     },
                     "totalRevenue": {
-                        "type": "integer",
+                        "type": "string",
                         "readOnly": true
                     },
                     "paidDeposit": {
-                        "type": "integer",
+                        "type": "string",
                         "readOnly": true
                     },
                     "ticketsRequiredUntilCancel": {
@@ -10078,26 +10048,6 @@
                     "updatedAt"
                 ]
             },
-            "Error403": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "$ref": "#/components/schemas/ErrorCode403Enum"
-                    },
-                    "detail": {
-                        "type": "string"
-                    },
-                    "attr": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                },
-                "required": [
-                    "attr",
-                    "code",
-                    "detail"
-                ]
-            },
             "Error404": {
                 "type": "object",
                 "properties": {
@@ -10198,13 +10148,6 @@
                     "detail"
                 ]
             },
-            "ErrorCode403Enum": {
-                "enum": [
-                    "permission_denied"
-                ],
-                "type": "string",
-                "description": "* `permission_denied` - Permission Denied"
-            },
             "ErrorCode404Enum": {
                 "enum": [
                     "not_found"
@@ -10249,24 +10192,6 @@
                 },
                 "required": [
                     "error"
-                ]
-            },
-            "ErrorResponse403": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "$ref": "#/components/schemas/ClientErrorEnum"
-                    },
-                    "errors": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Error403"
-                        }
-                    }
-                },
-                "required": [
-                    "errors",
-                    "type"
                 ]
             },
             "ErrorResponse404": {
@@ -10385,10 +10310,8 @@
                         "format": "int64"
                     },
                     "minPrice": {
-                        "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "minDays": {
                         "type": "integer",
@@ -10406,10 +10329,8 @@
                         "format": "int64"
                     },
                     "eventDepositSize": {
-                        "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "available": {
                         "type": "boolean"
@@ -10424,6 +10345,7 @@
                 },
                 "required": [
                     "daysBeforeCancel",
+                    "eventDepositSize",
                     "geometry",
                     "id",
                     "isUsed",
@@ -10574,7 +10496,10 @@
                         "minLength": 1
                     },
                     "price": {
-                        "type": "integer"
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Token amount in micro-units (USDT 6 decimals), as a string.",
+                        "pattern": "^\\d+$"
                     },
                     "quantity": {
                         "type": "integer",
@@ -10971,15 +10896,13 @@
                         "readOnly": true
                     },
                     "ticketPrice": {
-                        "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": 0,
-                        "format": "int64"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "ticketPriceRange": {
                         "type": "object",
                         "additionalProperties": {
-                            "type": "integer",
+                            "type": "string",
                             "nullable": true
                         },
                         "description": "Calculate the min and max available ticket prices from categories.\nExcludes categories that are sold out (quota exceeded).\nReturns None for min/max if no categories are available.",
@@ -11014,11 +10937,11 @@
                         "format": "int64"
                     },
                     "totalRevenue": {
-                        "type": "integer",
+                        "type": "string",
                         "readOnly": true
                     },
                     "paidDeposit": {
-                        "type": "integer",
+                        "type": "string",
                         "readOnly": true
                     },
                     "ticketsRequiredUntilCancel": {
@@ -11229,8 +11152,10 @@
                         "minimum": 1
                     },
                     "totalPrice": {
-                        "type": "integer",
-                        "minimum": 0
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Token amount in micro-units (USDT 6 decimals), as a string.",
+                        "pattern": "^\\d+$"
                     },
                     "currency": {
                         "type": "string",

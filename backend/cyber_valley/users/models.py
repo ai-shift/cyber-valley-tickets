@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Any, ClassVar
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
-from django.utils import timezone
 
 if TYPE_CHECKING:
     CharFieldType = models.CharField[str, str]

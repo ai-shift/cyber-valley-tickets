@@ -28,7 +28,7 @@ sync-geodata: migrate
 	$(python) manage.py sync_geodata
 
 open-api-schema:
-	$(python) manage.py spectacular --format openapi-json --validate > schema.json
+	$(python) manage.py spectacular --format openapi-json --validate --file schema.json
 
 tests:
 	uv run pytest -vvv -s $(NAME)

@@ -24,6 +24,8 @@ User = get_user_model()
 class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
     is_used = serializers.SerializerMethodField()
     geometry = GeoFeatureSerializer()
+    min_price = serializers.SerializerMethodField()
+    event_deposit_size = serializers.SerializerMethodField()
 
     class Meta:
         model = EventPlace
@@ -44,6 +46,13 @@ class EventPlaceSerializer(serializers.ModelSerializer[EventPlace]):
 
     def get_is_used(self, obj: EventPlace) -> bool:
         return obj.event_set.exclude(status__in=["closed", "cancelled"]).exists()
+
+    def get_min_price(self, obj: EventPlace) -> str:
+        # Monetary values are returned as strings of micro-units (USDT 6 decimals).
+        return str(obj.min_price)
+
+    def get_event_deposit_size(self, obj: EventPlace) -> str:
+        return str(obj.event_deposit_size)
 
 
 class CreatorSerializer(serializers.ModelSerializer[UserType]):
@@ -82,8 +91,9 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     place = EventPlaceSerializer(required=True)
     creator = CreatorSerializer(required=True)
     start_date_timestamp = serializers.SerializerMethodField()
-    total_revenue = serializers.IntegerField(read_only=True)
-    paid_deposit = serializers.IntegerField(read_only=True)
+    ticket_price = serializers.SerializerMethodField()
+    total_revenue = serializers.SerializerMethodField()
+    paid_deposit = serializers.SerializerMethodField()
     ticket_price_range = serializers.SerializerMethodField()
 
     class Meta:
@@ -110,7 +120,16 @@ class EventSerializer(serializers.ModelSerializer[Event]):
     def get_start_date_timestamp(self, obj: Event) -> int:
         return int(obj.start_date.timestamp())
 
-    def get_ticket_price_range(self, obj: Event) -> dict[str, int | None]:
+    def get_ticket_price(self, obj: Event) -> str:
+        return str(obj.ticket_price)
+
+    def get_total_revenue(self, obj: Event) -> str:
+        return str(obj.total_revenue)
+
+    def get_paid_deposit(self, obj: Event) -> str:
+        return str(obj.paid_deposit)
+
+    def get_ticket_price_range(self, obj: Event) -> dict[str, str | None]:
         """
         Calculate the min and max available ticket prices from categories.
         Excludes categories that are sold out (quota exceeded).
@@ -120,7 +139,8 @@ class EventSerializer(serializers.ModelSerializer[Event]):
 
         if not categories:
             # No categories defined, use base ticket price
-            return {"min": obj.ticket_price, "max": obj.ticket_price}
+            v = str(obj.ticket_price)
+            return {"min": v, "max": v}
 
         available_prices = []
 
@@ -142,7 +162,7 @@ class EventSerializer(serializers.ModelSerializer[Event]):
             # All categories sold out
             return {"min": None, "max": None}
 
-        return {"min": min(available_prices), "max": max(available_prices)}
+        return {"min": str(min(available_prices)), "max": str(max(available_prices))}
 
 
 class TicketCategorySerializer(serializers.ModelSerializer[TicketCategory]):
@@ -319,7 +339,7 @@ class UploadTicketMetaToIpfsSerializer(serializers.Serializer[TicketMetaData]):
 class OrderTicketItem:
     category_id: int
     category_name: str
-    price: int
+    price: str
     quantity: int
 
 
@@ -330,7 +350,7 @@ class OrderMetaData:
     socials: dict[str, Any]
     tickets: list[OrderTicketItem]
     total_tickets: int
-    total_price: int
+    total_price: str
     currency: str
     referral_data: str
 
@@ -338,7 +358,10 @@ class OrderMetaData:
 class OrderTicketItemSerializer(serializers.Serializer[OrderTicketItem]):
     category_id = serializers.IntegerField()
     category_name = serializers.CharField()
-    price = serializers.IntegerField()
+    price = serializers.RegexField(
+        regex=r"^\d+$",
+        help_text="Token amount in micro-units (USDT 6 decimals), as a string.",
+    )
     quantity = serializers.IntegerField(min_value=1)
 
 
@@ -348,7 +371,10 @@ class UploadOrderMetaToIpfsSerializer(serializers.Serializer[OrderMetaData]):
     socials = UploadSocialsSerializer()
     tickets = OrderTicketItemSerializer(many=True)
     total_tickets = serializers.IntegerField(min_value=1)
-    total_price = serializers.IntegerField(min_value=0)
+    total_price = serializers.RegexField(
+        regex=r"^\d+$",
+        help_text="Token amount in micro-units (USDT 6 decimals), as a string.",
+    )
     currency = serializers.CharField(default="USDC")
     referral_data = serializers.CharField(default="", allow_blank=True)
 
