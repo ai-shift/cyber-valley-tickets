@@ -430,7 +430,7 @@ async function createPlaces(
       .submitEventPlaceRequest(
         100,
         20,
-        5,
+        usdt("5"),
         1,
         1,
         true,
