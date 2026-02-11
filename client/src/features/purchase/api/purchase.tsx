@@ -205,7 +205,7 @@ const createEvent = async (
       // Form stores discount in percent; contract expects basis points.
       discountPercentage: Math.round(cat.discount * 100),
       quota: cat.quota,
-      hasQuota: cat.quota > 0, // quota === 0 means unlimited
+      hasQuota: true,
     }),
   );
 
