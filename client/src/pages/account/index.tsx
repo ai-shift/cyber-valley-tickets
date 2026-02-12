@@ -315,17 +315,7 @@ const manageView = (user: User): React.ReactNode => {
   }
 };
 
-const VerifiedShamanView = (): React.ReactNode => (
-  <div className="p-5">
-    <h3 className="text-xl font-semibold text-primary mb-4">Management</h3>
-    <Link
-      className="card border-primary/30 text-center text-xl py-5"
-      to="/request-place"
-    >
-      Request event place
-    </Link>
-  </div>
-);
+const VerifiedShamanView = (): React.ReactNode => null;
 
 const LocalProviderView = (): React.ReactNode => (
   <div className="p-5">
