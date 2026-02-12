@@ -17,17 +17,27 @@ export const ApplyEventButton = () => {
       navigate("/verify");
     } else {
       setIsGeneratingToken(true);
+      const popup = window.open("", "_blank");
       try {
         const response = await createTelegramLinkToken("verifyshaman");
         if (response.error) {
+          if (popup) {
+            popup.close();
+          }
           // Handle error silently or show toast
           return;
         }
         const { hash } = response.data;
-        window.open(
-          `https://t.me/cyberia_tickets_bot?start=${hash}_verifyshaman`,
-          "_blank",
-        );
+        const telegramUrl = `https://t.me/cyberia_tickets_bot?start=${hash}_verifyshaman`;
+        if (popup) {
+          popup.location.href = telegramUrl;
+        } else {
+          window.location.href = telegramUrl;
+        }
+      } catch {
+        if (popup) {
+          popup.close();
+        }
       } finally {
         setIsGeneratingToken(false);
       }

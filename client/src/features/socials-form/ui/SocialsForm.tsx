@@ -110,18 +110,30 @@ export const SocialsForm: React.FC<SocialsFormProps> = ({
   async function handleTelegramConnect() {
     setTokenError(null);
     setIsGeneratingToken(true);
+    const popup = window.open("", "_blank");
 
     try {
       const response = await createTelegramLinkToken("link");
       if (response.error) {
+        if (popup) {
+          popup.close();
+        }
         setTokenError("Failed to generate Telegram link. Please try again.");
         return;
       }
       const { hash } = response.data;
-      window.open(`https://t.me/MimiThePresidentBot?start=${hash}`, "_blank");
+      const telegramUrl = `https://t.me/MimiThePresidentBot?start=${hash}`;
+      if (popup) {
+        popup.location.href = telegramUrl;
+      } else {
+        window.location.href = telegramUrl;
+      }
       setIsTelegramAwaiting(true);
       setPollingElapsed(0);
     } catch {
+      if (popup) {
+        popup.close();
+      }
       setTokenError("Failed to generate Telegram link. Please try again.");
     } finally {
       setIsGeneratingToken(false);
