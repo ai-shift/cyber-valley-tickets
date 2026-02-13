@@ -1,9 +1,12 @@
+import { useAuthSlice } from "@/app/providers";
 import { EventDetails } from "@/features/event-details";
 import { PageContainer } from "@/shared/ui/PageContainer";
+import { Share2 } from "lucide-react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router";
 
 export const EventsDetailsPage: React.FC = () => {
   const { eventId } = useParams();
+  const { user } = useAuthSlice();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,8 +26,47 @@ export const EventsDetailsPage: React.FC = () => {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      const shareUrl = new URL(window.location.href);
+      if (user?.address) {
+        shareUrl.searchParams.set("ref", user.address);
+      } else {
+        shareUrl.searchParams.delete("ref");
+      }
+
+      const url = shareUrl.toString();
+      if (navigator.share) {
+        await navigator.share({
+          title: "Cyber Valley Event",
+          url,
+        });
+        return;
+      }
+
+      await navigator.clipboard.writeText(url);
+    } catch {
+      // Ignore share/copy cancellation errors.
+    }
+  };
+
   return (
-    <PageContainer name="Event Details" onBack={handleBack}>
+    <PageContainer
+      name="Event Details"
+      onBack={handleBack}
+      rightSlot={
+        <button
+          type="button"
+          className="cursor-pointer"
+          aria-label="Share event"
+          onClick={() => {
+            void handleShare();
+          }}
+        >
+          <Share2 size={24} />
+        </button>
+      }
+    >
       <EventDetails eventId={numericId} />
     </PageContainer>
   );
