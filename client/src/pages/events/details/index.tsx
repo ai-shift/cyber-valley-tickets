@@ -3,7 +3,6 @@ import { eventQueries } from "@/entities/event";
 import { EventDetails } from "@/features/event-details";
 import { PageContainer } from "@/shared/ui/PageContainer";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "lucide-react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router";
 
 export const EventsDetailsPage: React.FC = () => {
@@ -66,7 +65,12 @@ export const EventsDetailsPage: React.FC = () => {
             void handleShare();
           }}
         >
-          <Link size={24} />
+          <img
+            src="/icons/share.svg"
+            alt=""
+            aria-hidden="true"
+            className="h-6 w-6"
+          />
         </button>
       }
     >
