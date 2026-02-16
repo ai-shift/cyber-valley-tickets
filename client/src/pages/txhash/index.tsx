@@ -36,8 +36,9 @@ export const TxHashPlaceholderPage: React.FC = () => {
           {
             params: {
               path: {
-                txHash: normalizedTxHash,
-              },
+                tx_hash: normalizedTxHash,
+                // biome-ignore lint/suspicious/noExplicitAny: OpenAPI types use camelCase but runtime URL template uses snake_case
+              } as any,
             },
           },
         );
