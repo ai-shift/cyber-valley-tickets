@@ -12,7 +12,7 @@ Scope reviewed: commits on `main` from Jan 1, 2026 through Feb 16, 2026.
 - Master role event moderation expanded: masters can approve, decline, close, and cancel events more directly.
 - Unified search was added across key entities (events, users, places, notifications), including reusable search UI.
 - User-facing profile capabilities expanded with a dedicated profile page and better identity display across screens.
-- Telegram linking and login flows were extended, including in-app wallet/Telegram integration and tokenized linking flow.
+- Telegram integration was updated to use `@MimiThePresidentBot` for wallet and profile linking flows.
 - Map capabilities grew significantly: richer event layers, improved popup detail, better interaction controls, and clearer layer management.
 - A systemd-based development workflow with `cvland` CLI was introduced as a modern alternative to legacy tmux flow.
 
