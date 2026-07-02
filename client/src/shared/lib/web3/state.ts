@@ -35,6 +35,8 @@ export const cvlandChain = defineChain({
   rpc: import.meta.env.PUBLIC_HTTP_ETH_NODE_HOST,
 });
 
+console.log("configured ETH node host", import.meta.env.PUBLIC_HTTP_ETH_NODE_HOST)
+
 export const client = createThirdwebClient({
   clientId: import.meta.env.PUBLIC_THIRDWEB_PUBLIC_CLIENT_ID,
 });
